@@ -1,8 +1,24 @@
-Package: brpubValueCleanEvid
+Package: brpubValueClinEvid
 Title: What the Package Does (One Line, Title Case)
 Version: 0.0.0.9000
 Authors@R: 
-    person("First", "Last", , "first.last@example.com", role = c("aut", "cre"))
+  c(person(given = "Lovemore",
+           family = "Gakava",
+           role = c("aut", "cre"),
+           email = "Lovemore.Gakava@gmail.com",
+           comment = c(ORCID = "")),
+    person(given = "Chen",
+           family = "Chen",
+           role = c("aut"),
+           comment = c(ORCID = "")),
+    person(given = "Abigail",
+           family = "Mabe",
+           role = c("aut"),
+           comment = c(ORCID = "")),
+    person(given = "Michael",
+           family = "Colopy",
+           role = c("aut"),
+           comment = c(ORCID = "")))
 Description: What the package does (one paragraph).
 License: `use_mit_license()`, `use_gpl3_license()` or friends to pick a
     license
