@@ -1,5 +1,5 @@
 Package: brpubVJCE
-Title: What the Package Does (One Line, Title Case)
+Title: Charts to Integrate Value Judgement with Clinical Evidence
 Version: 0.0.0.9000
 Authors@R: 
   c(person(given = "Lovemore",
@@ -18,8 +18,12 @@ Authors@R:
     person(given = "Michael",
            family = "Colopy",
            role = c("aut"),
+           comment = c(ORCID = "")),
+    person(given = "Brian",
+           family = "Waterhouse",
+           role = c("aut"),
            comment = c(ORCID = "")))
-Description: What the package does (one paragraph).
+Description: A package for creating benefit-risk charts in the publication.
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
@@ -28,3 +32,5 @@ Suggests:
     knitr,
     rmarkdown
 VignetteBuilder: knitr
+Imports: 
+    ggplot2
