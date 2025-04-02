@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        The logrx team loves documentation!  Help us keep it up to date and fresh!
+        The brpubVJCE team loves documentation!  Help us keep it up to date and fresh!
   - type: dropdown
     id: browsers
     attributes:
@@ -16,8 +16,7 @@ body:
       multiple: true
       options:
         - Function Documentation
-        - User Guides
-        - Developer Guides
+        - Website
         - Other
         - I have a new documentation idea! Yay!
   - type: textarea
