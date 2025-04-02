@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this feature request!  We love keeping logrx fresh!
+        Thanks for taking the time to fill out this feature request!  We love keeping brpubVJCE fresh!
   - type: textarea
     id: feature
     attributes:
