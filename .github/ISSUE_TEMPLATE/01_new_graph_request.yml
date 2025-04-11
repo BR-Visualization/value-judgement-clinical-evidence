@@ -22,7 +22,7 @@ body:
     attributes:
       label: X-axis
       description: Can you describe the X-axis?
-      placeholder: 
+      placeholder: "Describe the X-axis here"
     validations:
       required: false
   - type: textarea
@@ -30,7 +30,7 @@ body:
     attributes:
       label: Y-axis
       description: Can you describe the Y-axis?
-      placeholder: 
+      placeholder: "Describe the Y-axis here"
     validations:
       required: false
   - type: textarea
@@ -38,7 +38,7 @@ body:
     attributes:
       label: Graph Area Objects
       description: Can you describe the graph area objects (e.g., dots, lines, shaded areas)?
-      placeholder: 
+      placeholder: "Describe the graph area objects (e.g., dots, lines, shaded areas) here"
     validations:
       required: false
   - type: textarea
@@ -46,7 +46,7 @@ body:
     attributes:
       label: Legend
       description: Can you describe the legend?
-      placeholder: 
+      placeholder: "Describe the legend here"
     validations:
       required: false
   - type: textarea
@@ -62,7 +62,7 @@ body:
     attributes:
       label: Use of graph
       description: Can you describe the use of the graph?
-      placeholder: 
+      placeholder: "What will be the use of ghe graph?"
     validations:
       required: false
   - type: textarea
