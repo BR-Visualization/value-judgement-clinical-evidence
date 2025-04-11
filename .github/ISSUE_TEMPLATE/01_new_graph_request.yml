@@ -54,7 +54,7 @@ body:
     attributes:
       label: Relevant Input
       description: Can you provide what the input should look like?
-      placeholder: REMINDER: no patient level data or company sensitive information should be shared via this open public issue
+      "What should the input look like? REMINDER: no patient level data or company sensitive information should be shared via this open public issue"
     validations:
       required: false
   - type: textarea
