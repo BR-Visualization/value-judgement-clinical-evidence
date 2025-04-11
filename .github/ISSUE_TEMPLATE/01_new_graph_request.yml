@@ -10,27 +10,59 @@ body:
       value: |
         Thanks for taking the time to fill out this new graph request!  We love keeping brpubVJCE fresh!
   - type: textarea
-    id: feature
+    id: shell
     attributes:
-      label: Feature Idea
-      description: Tell us your idea in as few words as possible
-      placeholder: "`example_fun()` should do x, y and z"
+      label: Figure Shell
+      description: Give a figure shell for the requested new graph (could be a draft version)
+      placeholder: 
     validations:
       required: true
+  - type: textarea
+    id: x-axis
+    attributes:
+      label: X-axis
+      description: Can you describe the X-axis?
+      placeholder: 
+    validations:
+      required: true
+  - type: textarea
+    id: y-axis
+    attributes:
+      label: Y-axis
+      description: Can you describe the Y-axis?
+      placeholder: 
+    validations:
+      required: false
+  - type: textarea
+    id: graph_area_objects
+    attributes:
+      label: Graph Area Objects
+      description: Can you describe the graph area objects (e.g., dots, lines, shaded areas)?
+      placeholder: 
+    validations:
+      required: false
+  - type: textarea
+    id: legend
+    attributes:
+      label: Legend
+      description: Can you describe the legend?
+      placeholder: 
+    validations:
+      required: false
   - type: textarea
     id: input
     attributes:
       label: Relevant Input
-      description: Can you provide what the inputs should look like?
-      placeholder: "What should the input look like? REMINDER: no patient level data or company sensitive information should be shared via this open public issue"
+      description: Can you provide what the input should look like?
+      placeholder: REMINDER: no patient level data or company sensitive information should be shared via this open public issue
     validations:
       required: false
   - type: textarea
-    id: output
+    id: use
     attributes:
-      label: Relevant Output
-      description: Can you provide what the final output should look like?
-      placeholder: "What should the output look like? REMINDER: no patient level data or company sensitive information should be shared via this open public issue"
+      label: Use of graph
+      description: Can you describe the use of the graph?
+      placeholder: 
     validations:
       required: false
   - type: textarea
