@@ -13,8 +13,8 @@ body:
     id: shell
     attributes:
       label: Figure Shell
-      description: Give a figure shell for the requested new graph (could be a draft version)
-      placeholder: 
+      description: Can you provide a figure shell for the requested new graph (could be a draft version)
+      placeholder: "What should the graph look like? REMINDER: no patient level data or company sensitive information should be shared via this open public issue"
     validations:
       required: true
   - type: textarea
@@ -24,7 +24,7 @@ body:
       description: Can you describe the X-axis?
       placeholder: 
     validations:
-      required: true
+      required: false
   - type: textarea
     id: y-axis
     attributes:
