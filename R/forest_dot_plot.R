@@ -2,8 +2,8 @@
 library(ggplot2)
 library(dplyr)
 library(patchwork) # For combining plots side by side
-library(cowplot)   # For legend extraction
-library(rlang)     # For tidy evaluation with sym()
+library(cowplot) # For legend extraction
+library(rlang) # For tidy evaluation with sym()
 
 # Uncomment and adjust the next line if reading data from CSV
 # effects_table <- read.csv("effects_table.csv", stringsAsFactors = FALSE)
@@ -23,7 +23,7 @@ create_forest_dot_plot <- function(data) {
   filtered_data <- data %>%
     filter(
       Outcome %in% outcomes_of_interest,
-      Trt1 == "Drug A",  # Only include Drug A
+      Trt1 == "Drug A", # Only include Drug A
       Trt2 == "Placebo",
       Filter == "None"
     ) %>%
@@ -57,20 +57,20 @@ create_forest_dot_plot <- function(data) {
           y = Outcome,
           x = !!sym(estimate1),
           color = Trt1
-        ), size = 3) +  # Drug A
+        ), size = 3) + # Drug A
         geom_point(aes(
           y = Outcome,
           x = !!sym(estimate2),
           color = Trt2
-        ), size = 3) +  # Placebo
+        ), size = 3) + # Placebo
         labs(
           title = paste("Dot Plot for", type, factor, "Outcomes"),
           x = "Effect Estimate"
         ) +
         theme_minimal() +
         theme(
-          legend.position = "none",         # Remove legend from individual plots
-          axis.title.y = element_blank()      # Remove y-axis label
+          legend.position = "none", # Remove legend from individual plots
+          axis.title.y = element_blank() # Remove y-axis label
         )
 
       # Create the forest plot showing the treatment difference and CI error bars (if available)
@@ -95,8 +95,8 @@ create_forest_dot_plot <- function(data) {
         ) +
         theme_minimal() +
         theme(
-          axis.title.y = element_blank(),   # Remove y-axis label
-          legend.position = "none"            # Remove legend
+          axis.title.y = element_blank(), # Remove y-axis label
+          legend.position = "none" # Remove legend
         )
 
       # Combine the dot plot and forest plot for this Type and Factor
@@ -126,7 +126,7 @@ create_forest_dot_plot <- function(data) {
       legend.title = element_text(size = 10),
       legend.text = element_text(size = 9)
     ) +
-    guides(color = guide_legend(nrow = 1))  # Force a single row for the legend
+    guides(color = guide_legend(nrow = 1)) # Force a single row for the legend
 
   # Extract the legend grob and wrap it with patchwork so it's recognized as a single panel
   legend <- cowplot::get_legend(legend_plot)
