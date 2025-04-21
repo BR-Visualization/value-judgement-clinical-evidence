@@ -19,19 +19,18 @@ prepare_forest_dot_data(
 
 \item{outcomes_of_interest}{Character vector of outcome names to include in the plots}
 
-\item{treatment1}{Character, name of the first treatment (default: "Drug A")}
+\item{treatment1}{Name of the first treatment (default: "Drug A")}
 
-\item{treatment2}{Character, name of the second treatment (default: "Placebo")}
+\item{treatment2}{Name of the second treatment (default: "Placebo")}
 
-\item{filter_value}{Character, value for the Filter column to include (default: "None")}
+\item{filter_value}{Value for the Filter column to include (default: "None")}
 
-\item{precalculated_stats}{Logical, whether the input data already contains calculated statistics
-(Diff, Diff_LowerCI, Diff_UpperCI) (default: FALSE)}
+\item{precalculated_stats}{Logical; if TRUE, assumes data already includes Diff, Diff_LowerCI, and Diff_UpperCI}
 }
 \value{
 A filtered and processed data frame with calculated statistics
 }
 \description{
-Prepares and processes data for forest and dot plots by filtering outcomes of interest
-and calculating treatment differences and confidence intervals if they're not already provided.
+Calculates or validates treatment differences and confidence intervals for outcomes,
+adjusting direction based on whether higher values are "Risk" or "Benefit".
 }
