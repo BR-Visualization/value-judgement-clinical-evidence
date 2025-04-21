@@ -14,13 +14,14 @@
 #' @return A filtered and processed data frame with calculated statistics
 #' @export
 prepare_forest_dot_data <- function(data,
-                                    outcomes_of_interest = c("Primary Efficacy", "Secondary Efficacy",
-                                                             "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
+                                    outcomes_of_interest = c(
+                                      "Primary Efficacy", "Secondary Efficacy",
+                                      "HR Quality of Life", "Reoccurring AE", "Rare SAE"
+                                    ),
                                     treatment1 = "Drug A",
                                     treatment2 = "Placebo",
                                     filter_value = "None",
                                     precalculated_stats = FALSE) {
-
   # Filter data
   filtered_data <- data %>%
     filter(

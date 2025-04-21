@@ -16,13 +16,14 @@
 #' @export
 create_forest_dot_plot <- function(data,
                                    clin_thresholds = NULL,
-                                   outcomes_of_interest = c("Primary Efficacy", "Secondary Efficacy",
-                                                            "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
+                                   outcomes_of_interest = c(
+                                     "Primary Efficacy", "Secondary Efficacy",
+                                     "HR Quality of Life", "Reoccurring AE", "Rare SAE"
+                                   ),
                                    treatment1 = "Drug A",
                                    treatment2 = "Placebo",
                                    filter_value = "None",
                                    precalculated_stats = FALSE) {
-
   if (is.null(clin_thresholds)) {
     clin_thresholds <- data.frame(
       Outcome = c("Primary Efficacy", "Secondary Efficacy", "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
@@ -82,7 +83,9 @@ create_forest_dot_plot <- function(data,
       dot_plot <- ggplot(dot_data) +
         geom_point(aes(y = Outcome, x = x, shape = Treatment, color = Treatment, fill = Treatment), size = 3) +
         scale_y_discrete(limits = y_levels) +
-        color_scale + shape_scale + fill_scale +
+        color_scale +
+        shape_scale +
+        fill_scale +
         labs(x = if (is_last_plot) "Treatment Response" else NULL) +
         theme_minimal(base_family = "serif") +
         theme(
@@ -94,20 +97,27 @@ create_forest_dot_plot <- function(data,
 
       # Forest plot
       forest_plot <- ggplot() +
-        geom_point(data = type_data,
-                   aes(y = Outcome, x = Diff, color = CI_color, fill = CI_color),
-                   size = 3) +
-        geom_errorbarh(data = type_data,
-                       aes(y = Outcome, xmin = Diff_LowerCI, xmax = Diff_UpperCI, color = CI_color),
-                       height = 0.2) +
+        geom_point(
+          data = type_data,
+          aes(y = Outcome, x = Diff, color = CI_color, fill = CI_color),
+          size = 3
+        ) +
+        geom_errorbarh(
+          data = type_data,
+          aes(y = Outcome, xmin = Diff_LowerCI, xmax = Diff_UpperCI, color = CI_color),
+          height = 0.2
+        ) +
         scale_color_manual(values = c("green" = "forestgreen", "red" = "firebrick", "black" = "black", "Clinical Meaningful Difference" = "black")) +
         guides(color = "none") +
-        geom_point(data = thresholds_with_treatment,
-                   aes(x = Threshold, y = Outcome, color = Treatment, shape = Treatment, fill = Treatment),
-                   size = 4) +
+        geom_point(
+          data = thresholds_with_treatment,
+          aes(x = Threshold, y = Outcome, color = Treatment, shape = Treatment, fill = Treatment),
+          size = 4
+        ) +
         geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
         scale_y_discrete(limits = y_levels) +
-        shape_scale + fill_scale +
+        shape_scale +
+        fill_scale +
         coord_cartesian(xlim = x_lim, clip = "off") +
         theme_minimal(base_family = "serif") +
         theme(
@@ -118,9 +128,11 @@ create_forest_dot_plot <- function(data,
           legend.position = "bottom",
           plot.margin = unit(c(0.5, 0.5, 1.5, 0.5), "cm")
         ) +
-        labs(x = if (is_last_plot)
+        labs(x = if (is_last_plot) {
           paste0("\u2190 Favours ", treatment2, "       Favours ", treatment1, " \u2192\n\nTreatment Difference with 95% CI")
-          else NULL) +
+        } else {
+          NULL
+        }) +
         theme(axis.title.x = element_text(face = "bold"))
 
       combined_plot <- wrap_plots(dot_plot, forest_plot, ncol = 2, widths = c(1, 1))
