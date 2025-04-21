@@ -18,14 +18,15 @@
 #' @import rlang
 #'
 #' @export
-prepare_forest_dot_data <- function(data, 
-                                   outcomes_of_interest = c("Primary Efficacy", "Secondary Efficacy", 
-                                                           "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
-                                   treatment1 = "Drug A", 
-                                   treatment2 = "Placebo",
-                                   filter_value = "None",
-                                   precalculated_stats = FALSE) {
-  
+prepare_forest_dot_data <- function(data,
+                                    outcomes_of_interest = c(
+                                      "Primary Efficacy", "Secondary Efficacy",
+                                      "HR Quality of Life", "Reoccurring AE", "Rare SAE"
+                                    ),
+                                    treatment1 = "Drug A",
+                                    treatment2 = "Placebo",
+                                    filter_value = "None",
+                                    precalculated_stats = FALSE) {
   # Filter data for outcomes of interest and specified treatments
   filtered_data <- data %>%
     filter(
@@ -35,21 +36,23 @@ prepare_forest_dot_data <- function(data,
       Filter == filter_value
     ) %>%
     arrange(match(Outcome, outcomes_of_interest))
-  
+
   # If statistics are already calculated, return the filtered data
   if (precalculated_stats) {
     # Check if required columns exist
     required_cols <- c("Diff", "Diff_LowerCI", "Diff_UpperCI")
     missing_cols <- required_cols[!required_cols %in% names(filtered_data)]
-    
+
     if (length(missing_cols) > 0) {
-      stop(paste("Input data is missing required precalculated columns:", 
-                 paste(missing_cols, collapse = ", ")))
+      stop(paste(
+        "Input data is missing required precalculated columns:",
+        paste(missing_cols, collapse = ", ")
+      ))
     }
-    
+
     return(filtered_data)
   }
-  
+
   # Calculate statistics for treatment differences and confidence intervals
   processed_data <- filtered_data %>%
     mutate(
@@ -86,6 +89,6 @@ prepare_forest_dot_data <- function(data,
         Diff + qnorm(0.975) * SE_diff
       )
     )
-  
+
   return(processed_data)
 }
