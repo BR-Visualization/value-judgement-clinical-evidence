@@ -1,7 +1,9 @@
 #' Prepare Data for Forest and Dot Plots
 #'
 #' @description
-#' Prepares and processes data for forest and dot plots by filtering outcomes of interest
+#' For outcomes where `Factor` is "Risk", treatment differences are calculated as Mean2 - Mean1
+#' or Prop2 - Prop1 to reflect higher values being worse. For "Benefit", the direction is reversed
+#' (Mean1 - Mean2 or Prop1 - Prop2).
 #' and calculating treatment differences and confidence intervals if they're not already provided.
 #'
 #' @param data A data frame containing treatment effect data
@@ -39,7 +41,6 @@ prepare_forest_dot_data <- function(data,
 
   # If statistics are already calculated, return the filtered data
   if (precalculated_stats) {
-    # Check if required columns exist
     required_cols <- c("Diff", "Diff_LowerCI", "Diff_UpperCI")
     missing_cols <- required_cols[!required_cols %in% names(filtered_data)]
 
@@ -56,37 +57,41 @@ prepare_forest_dot_data <- function(data,
   # Calculate statistics for treatment differences and confidence intervals
   processed_data <- filtered_data %>%
     mutate(
-      # Compute the treatment difference:
-      # For continuous outcomes, use Mean1 - Mean2;
-      # For binary outcomes, use Prop1 - Prop2.
-      Diff = if_else(Type == "Continuous", Mean1 - Mean2, Prop1 - Prop2),
-
-      # Compute the standard error:
-      SE_diff = if_else(
-        Type == "Continuous",
-        sqrt((Sd1^2 / N1) + (Sd2^2 / N2)),
-        sqrt((Prop1 * (1 - Prop1) / N1) + (Prop2 * (1 - Prop2) / N2))
+      Diff = case_when(
+        Type == "Continuous" & Factor == "Benefit" ~ Mean1 - Mean2,
+        Type == "Continuous" & Factor == "Risk" ~ Mean2 - Mean1,
+        Type == "Binary" & Factor == "Benefit" ~ Prop1 - Prop2,
+        Type == "Binary" & Factor == "Risk" ~ Prop2 - Prop1,
+        TRUE ~ NA_real_
+      ),
+      SE_diff = case_when(
+        Type == "Continuous" ~ sqrt((Sd1^2 / N1) + (Sd2^2 / N2)),
+        Type == "Binary" ~ sqrt((Prop1 * (1 - Prop1) / N1) + (Prop2 * (1 - Prop2) / N2)),
+        TRUE ~ NA_real_
       ),
 
-      # Degrees of freedom for continuous outcomes (Welch–Satterthwaite approximation).
       df = if_else(
         Type == "Continuous",
-        ((Sd1^2 / N1 + Sd2^2 / N2)^2) / (((Sd1^2 / N1)^2 / (N1 - 1)) + ((Sd2^2 / N2)^2 / (N2 - 1))),
+        ((Sd1^2 / N1 + Sd2^2 / N2)^2) /
+          (((Sd1^2 / N1)^2 / (N1 - 1)) + ((Sd2^2 / N2)^2 / (N2 - 1))),
         NA_real_
       ),
 
-      # Lower bound of the 95% CI.
       Diff_LowerCI = if_else(
         Type == "Continuous",
         Diff - qt(0.975, df) * SE_diff,
         Diff - qnorm(0.975) * SE_diff
       ),
 
-      # Upper bound of the 95% CI.
       Diff_UpperCI = if_else(
         Type == "Continuous",
         Diff + qt(0.975, df) * SE_diff,
         Diff + qnorm(0.975) * SE_diff
+      ),
+      CI_color = case_when(
+        Diff_LowerCI > 0 ~ "green",
+        Diff_UpperCI < 0 ~ "red",
+        TRUE ~ "black"
       )
     )
 
