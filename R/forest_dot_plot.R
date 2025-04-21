@@ -84,11 +84,11 @@
 #' }
 #'
 #' @export
-create_forest_dot_plot <- function(data, 
+create_forest_dot_plot <- function(data,
   clin_thresholds = NULL,
-  outcomes_of_interest = c("Primary Efficacy", "Secondary Efficacy", 
+  outcomes_of_interest = c("Primary Efficacy", "Secondary Efficacy",
                           "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
-  treatment1 = "Drug A", 
+  treatment1 = "Drug A",
   treatment2 = "Placebo",
   filter_value = "None",
   precalculated_stats = FALSE) {
@@ -110,10 +110,10 @@ stringsAsFactors = FALSE
 
 # Prepare the data using the separate function
 filtered_data <- prepare_forest_dot_data(
-data, 
-outcomes_of_interest, 
-treatment1, 
-treatment2, 
+data,
+outcomes_of_interest,
+treatment1,
+treatment2,
 filter_value,
 precalculated_stats
 )
@@ -123,106 +123,121 @@ factors <- unique(filtered_data$Factor)
 plots <- list()
 
 # Create the shared color and shape scales that will be used across all plots
-color_scale <- scale_color_manual(
-name = "",
-values = c(treatment1 = "red", treatment2 = "blue", "Clinical Meaningful Difference" = "black")
+
+manual_colors <- setNames(
+  c("red", "blue", "black"),
+  c(treatment1, treatment2, "Clinical Meaningful Difference")
 )
 
-shape_scale <- scale_shape_manual(
-name = "",
-values = c(treatment1 = 16, treatment2 = 16, "Clinical Meaningful Difference" = 18)
+manual_shapes <- setNames(
+  c(16, 16, 18),
+  c(treatment1, treatment2, "Clinical Meaningful Difference")
 )
+
+
+color_scale <- scale_color_manual(name = "", values = manual_colors)
+shape_scale <- scale_shape_manual(name = "", values = manual_shapes)
 
 for (factor in factors) {
-factor_data <- filtered_data %>% filter(Factor == factor)
-types <- unique(factor_data$Type)
+  factor_data <- filtered_data %>% filter(Factor == factor)
+  types <- unique(factor_data$Type)
 
-for (type in types) {
-type_data <- factor_data %>% filter(Type == type)
+  for (type in types) {
+    type_data <- factor_data %>% filter(Type == type)
+    is_last_plot <- (factor == tail(factors, 1) && type == tail(types, 1))
 
-# Determine which columns to use based on outcome type:
-# For Binary outcomes, use the proportion columns; for Continuous outcomes, use the mean columns.
-if (type == "Binary") {
-estimate1 <- "Prop1"
-estimate2 <- "Prop2"
-} else if (type == "Continuous") {
-estimate1 <- "Mean1"
-estimate2 <- "Mean2"
-} else {
-next  # Skip unknown types
-}
+    # Determine estimates based on type
+    if (type == "Binary") {
+      estimate1 <- "Prop1"
+      estimate2 <- "Prop2"
+    } else if (type == "Continuous") {
+      estimate1 <- "Mean1"
+      estimate2 <- "Mean2"
+    } else {
+      next
+    }
 
-# Prepare data for dot plot in long format (without dummy data)
-dot_data <- rbind(
-data.frame(
-Outcome = type_data$Outcome,
-x = type_data[[estimate1]],
-Treatment = rep(treatment1, nrow(type_data)),
-stringsAsFactors = FALSE
-),
-data.frame(
-Outcome = type_data$Outcome,
-x = type_data[[estimate2]],
-Treatment = rep(treatment2, nrow(type_data)),
-stringsAsFactors = FALSE
-)
-)
+    y_levels <- rev(unique(type_data$Outcome))
 
-## Dot Plot Setup without dummy point
-  dot_plot <- ggplot(dot_data) +
-    geom_point(aes(y = Outcome, x = x, color = Treatment, shape = Treatment), size = 3) +
-    scale_color_manual(
-      name = "",
-      values = c("Drug A" = "red", "Placebo" = "blue", "Clinical Meaningful Difference" = "black")
-    ) +
-    scale_shape_manual(
-      name = "",
-      values = c("Drug A" = 16, "Placebo" = 16, "Clinical Meaningful Difference" = 18)
-    ) +
-    labs() + # No axis titles or plot titles.
-    theme_minimal() +
-    theme(
-      axis.title.y = element_blank(),
-      axis.title.x = element_blank(),
-      legend.position = "bottom"
+    dot_data <- rbind(
+      data.frame(
+        Outcome = type_data$Outcome,
+        x = type_data[[estimate1]],
+        Treatment = rep(treatment1, nrow(type_data)),
+        stringsAsFactors = FALSE
+      ),
+      data.frame(
+        Outcome = type_data$Outcome,
+        x = type_data[[estimate2]],
+        Treatment = rep(treatment2, nrow(type_data)),
+        stringsAsFactors = FALSE
+      )
     )
-## Forest Plot Setup with Clinical Meaningful Difference showing in plot and legend ##
-# Add the clinical thresholds data with Treatment column for legend
-thresholds_with_treatment <- clin_thresholds %>% 
-filter(Outcome %in% type_data$Outcome) %>%
-mutate(Treatment = "Clinical Meaningful Difference")
 
-forest_plot <- ggplot() +
-# Add the treatment difference points and error bars
-geom_point(data = type_data, 
-aes(y = Outcome, x = Diff), 
-color = "red", size = 3) +
-geom_errorbarh(data = type_data,
-aes(y = Outcome, xmin = Diff_LowerCI, xmax = Diff_UpperCI),
-color = "red", height = 0.2) +
-# Add clinical meaningful difference markers with aesthetics for legend
-geom_point(data = thresholds_with_treatment,
-aes(x = Threshold, y = Outcome, color = Treatment, shape = Treatment),
-size = 4) +
-color_scale +
-shape_scale +
-labs() +  # No axis titles or plot titles.
-theme_minimal() +
-theme(
-axis.title.y = element_blank(),
-axis.title.x = element_blank(),
-axis.text.y = element_blank(),   # Remove y-axis text so labels come only from dot plot.
-axis.ticks.y = element_blank(),
-legend.position = "bottom"       # Include legend in forest plot
-)
+    # Dot Plot
+    dot_plot <- ggplot(dot_data) +
+      geom_point(aes(y = Outcome, x = x, color = Treatment, shape = Treatment), size = 3) +
+      scale_y_discrete(limits = y_levels) +
+      color_scale +
+      shape_scale +
+      labs(x = NULL, y = NULL) +
+      theme_minimal() +
+      theme(
+        axis.title.y = element_blank(),
+        axis.title.x = element_blank(),
+        legend.position = "bottom"
+      )
 
-# Combine the dot and forest plots side-by-side with aligned y-axes.
-combined_plot <- wrap_plots(dot_plot, forest_plot, ncol = 2, widths = c(1, 1)) &
-theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))
+    # Prepare clinical thresholds
+    thresholds_with_treatment <- clin_thresholds %>%
+      filter(Outcome %in% type_data$Outcome) %>%
+      mutate(Treatment = "Clinical Meaningful Difference")
 
-plots[[paste(factor, type, sep = "_")]] <- combined_plot
+    # Determine local x-axis limits per forest plot, symmetric around zero
+    x_min <- min(type_data$Diff_LowerCI, na.rm = TRUE)
+    x_max <- max(type_data$Diff_UpperCI, na.rm = TRUE)
+    x_range <- max(abs(x_min), abs(x_max))
+    x_lim <- c(-x_range, x_range)
+
+    # Forest Plot
+    forest_plot <- ggplot() +
+      geom_point(data = type_data,
+                 aes(y = Outcome, x = Diff),
+                 color = "red", size = 3) +
+      geom_errorbarh(data = type_data,
+                     aes(y = Outcome, xmin = Diff_LowerCI, xmax = Diff_UpperCI),
+                     color = "red", height = 0.2) +
+      geom_point(data = thresholds_with_treatment,
+                 aes(x = Threshold, y = Outcome, color = Treatment, shape = Treatment),
+                 size = 4) +
+      geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
+      scale_y_discrete(limits = y_levels) +
+      color_scale +
+      shape_scale +
+      coord_cartesian(xlim = x_lim, clip = "off") +
+      theme_minimal() +
+      theme(
+        axis.title.y = element_blank(),
+        axis.text.y = element_blank(),
+        axis.ticks.y = element_blank(),
+        legend.position = "bottom",
+        plot.margin = unit(c(0.5, 0.5, 1.5, 0.5), "cm")
+      )
+
+    # Add axis label only on final plot
+      forest_plot <- forest_plot +
+        labs(x = if (is_last_plot) paste0(
+          "\U2190 Favours ", treatment2, "    Favours ", treatment1, " \U2192 \n\nTreatment Difference"
+        ) else "")
+
+    # Combine and store
+    combined_plot <- wrap_plots(dot_plot, forest_plot, ncol = 2, widths = c(1, 1)) &
+      theme(plot.margin = unit(c(1, 1, 1, 1), "cm"))
+
+    plots[[paste(factor, type, sep = "_")]] <- combined_plot
+  }
 }
-}
+
 
 # Combine all the factor/type plots vertically and collect only the legend from both plots.
 final_plot <- wrap_plots(plots, ncol = 1) +
