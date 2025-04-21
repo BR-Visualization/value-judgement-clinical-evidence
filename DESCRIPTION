@@ -33,7 +33,11 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Imports: 
-    ggplot2
+    cowplot,
+    dplyr,
+    ggplot2,
+    patchwork,
+    rlang
 Depends: 
     R (>= 3.5)
 LazyData: true
