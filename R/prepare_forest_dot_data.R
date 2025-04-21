@@ -1,18 +1,29 @@
 #' Prepare Data for Forest and Dot Plots
 #'
 #' @description
-#' Calculates or validates treatment differences and confidence intervals for outcomes,
-#' adjusting direction based on whether higher values are "Risk" or "Benefit".
+#' Prepares and optionally calculates treatment effect differences and confidence intervals
+#' for specified outcomes, based on whether a higher value indicates risk or benefit.
 #'
-#' @param data A data frame containing treatment effect data
-#' @param outcomes_of_interest Character vector of outcome names to include in the plots
-#' @param treatment1 Name of the first treatment (default: "Drug A")
-#' @param treatment2 Name of the second treatment (default: "Placebo")
-#' @param filter_value Value for the Filter column to include (default: "None")
-#' @param precalculated_stats Logical; if TRUE, assumes data already includes Diff, Diff_LowerCI, and Diff_UpperCI
+#' @param data A data frame containing treatment comparisons, estimates, and metadata.
+#' @param outcomes_of_interest Character vector of outcome names to include (default includes key efficacy and safety outcomes).
+#' @param treatment1 Character; label of the first treatment group (default: `"Drug A"`).
+#' @param treatment2 Character; label of the second treatment group (default: `"Placebo"`).
+#' @param filter_value Character; value to filter the `Filter` column (default: `"None"`).
+#' @param precalculated_stats Logical; if `TRUE`, assumes data already contains `Diff`, `Diff_LowerCI`, and `Diff_UpperCI`.
 #'
-#' @return A filtered and processed data frame with calculated statistics
+#' @return A filtered data frame with computed or validated treatment differences and 95% confidence intervals.
+#'         Includes directionally colored confidence intervals for plotting.
 #' @export
+#'
+#' @examples
+#' # Load or create a sample dataset `effects_table`
+#' head(effects_table)
+#'
+#' # Prepare and calculate statistics
+#' prepared_data <- prepare_forest_dot_data(effects_table)
+#'
+#' # Use precalculated stats
+#' prepared_data2 <- prepare_forest_dot_data(effects_table, precalculated_stats = TRUE)
 prepare_forest_dot_data <- function(data,
                                     outcomes_of_interest = c(
                                       "Primary Efficacy", "Secondary Efficacy",
@@ -34,7 +45,7 @@ prepare_forest_dot_data <- function(data,
 
   # If using precalculated stats, validate presence of required columns
   if (precalculated_stats) {
-    required_cols <- c("Diff", "Diff_LowerCI", "Diff_UpperCI")
+    required_cols <- c("Diff_LowerCI", "Diff_UpperCI")
     missing_cols <- setdiff(required_cols, names(filtered_data))
 
     if (length(missing_cols) > 0) {

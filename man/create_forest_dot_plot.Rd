@@ -16,24 +16,40 @@ create_forest_dot_plot(
 )
 }
 \arguments{
-\item{data}{A data frame containing treatment effect data}
+\item{data}{A data frame prepared using \code{prepare_forest_dot_data()} or with matching structure.}
 
-\item{clin_thresholds}{Data frame with 'Outcome' and 'Threshold' columns (optional)}
+\item{clin_thresholds}{Optional data frame with \code{Outcome} and \code{Threshold} columns for reference lines (defaults provided).}
 
-\item{outcomes_of_interest}{Character vector of outcomes to include}
+\item{outcomes_of_interest}{Character vector of outcomes to include (default includes major efficacy and safety endpoints).}
 
-\item{treatment1}{Name of the first treatment (default: "Drug A")}
+\item{treatment1}{Character; label of the first treatment group (default: \code{"Drug A"}).}
 
-\item{treatment2}{Name of the second treatment (default: "Placebo")}
+\item{treatment2}{Character; label of the second treatment group (default: \code{"Placebo"}).}
 
-\item{filter_value}{Filter value to include (default: "None")}
+\item{filter_value}{Character; value used to filter the \code{Filter} column (default: \code{"None"}).}
 
-\item{precalculated_stats}{Logical; if TRUE, assumes stats are already calculated}
+\item{precalculated_stats}{Logical; if \code{TRUE}, skips calculation and uses provided statistics.}
 }
 \value{
-A patchwork plot object combining dot and forest plots with a shared legend
+A patchwork object containing combined dot and forest plots with a shared legend.
 }
 \description{
-Combines dot plots and forest plots to visualize treatment effects across outcomes,
-highlighting confidence intervals and clinical thresholds.
+Generates side-by-side forest and dot plots for specified outcomes, grouped by factor and type.
+Displays treatment effects, confidence intervals, and optional clinical thresholds.
+}
+\examples{
+# First, prepare the data
+prepared_data <- prepare_forest_dot_data(effects_table)
+
+# Generate the plot
+create_forest_dot_plot(prepared_data)
+
+# With clinical thresholds
+thresholds <- data.frame(
+  Outcome = c("Primary Efficacy", "Secondary Efficacy"),
+  Threshold = c(0.10, 0.08)
+)
+create_forest_dot_plot(prepared_data, outcomes_of_interest =  c("Primary Efficacy",
+"Secondary Efficacy"),
+clin_thresholds = thresholds)
 }

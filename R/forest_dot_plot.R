@@ -1,19 +1,35 @@
 #' Create Forest and Dot Plots for Treatment Effects
 #'
 #' @description
-#' Combines dot plots and forest plots to visualize treatment effects across outcomes,
-#' highlighting confidence intervals and clinical thresholds.
+#' Generates side-by-side forest and dot plots for specified outcomes, grouped by factor and type.
+#' Displays treatment effects, confidence intervals, and optional clinical thresholds.
 #'
-#' @param data A data frame containing treatment effect data
-#' @param clin_thresholds Data frame with 'Outcome' and 'Threshold' columns (optional)
-#' @param outcomes_of_interest Character vector of outcomes to include
-#' @param treatment1 Name of the first treatment (default: "Drug A")
-#' @param treatment2 Name of the second treatment (default: "Placebo")
-#' @param filter_value Filter value to include (default: "None")
-#' @param precalculated_stats Logical; if TRUE, assumes stats are already calculated
+#' @param data A data frame prepared using `prepare_forest_dot_data()` or with matching structure.
+#' @param clin_thresholds Optional data frame with `Outcome` and `Threshold` columns for reference lines (defaults provided).
+#' @param outcomes_of_interest Character vector of outcomes to include (default includes major efficacy and safety endpoints).
+#' @param treatment1 Character; label of the first treatment group (default: `"Drug A"`).
+#' @param treatment2 Character; label of the second treatment group (default: `"Placebo"`).
+#' @param filter_value Character; value used to filter the `Filter` column (default: `"None"`).
+#' @param precalculated_stats Logical; if `TRUE`, skips calculation and uses provided statistics.
 #'
-#' @return A patchwork plot object combining dot and forest plots with a shared legend
+#' @return A patchwork object containing combined dot and forest plots with a shared legend.
 #' @export
+#'
+#' @examples
+#' # First, prepare the data
+#' prepared_data <- prepare_forest_dot_data(effects_table)
+#'
+#' # Generate the plot
+#' create_forest_dot_plot(prepared_data)
+#'
+#' # With clinical thresholds
+#' thresholds <- data.frame(
+#'   Outcome = c("Primary Efficacy", "Secondary Efficacy"),
+#'   Threshold = c(0.10, 0.08)
+#' )
+#' create_forest_dot_plot(prepared_data, outcomes_of_interest =  c("Primary Efficacy",
+#' "Secondary Efficacy"),
+#' clin_thresholds = thresholds)
 create_forest_dot_plot <- function(data,
                                    clin_thresholds = NULL,
                                    outcomes_of_interest = c(
@@ -129,11 +145,17 @@ create_forest_dot_plot <- function(data,
           plot.margin = unit(c(0.5, 0.5, 1.5, 0.5), "cm")
         ) +
         labs(x = if (is_last_plot) {
-          paste0("\u2190 Favours ", treatment2, "       Favours ", treatment1, " \u2192\n\nTreatment Difference with 95% CI")
+          paste0(
+            "<span style='color:firebrick;font-weight:bold;'>&larr; Favours ", treatment2, "</span>",
+            "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003",
+            "<span style='color:forestgreen;font-weight:bold;'>Favours ", treatment1, " &rarr;</span>",
+            "<br><br>",
+            "Treatment Difference with 95% CI"
+          )
         } else {
           NULL
         }) +
-        theme(axis.title.x = element_text(face = "bold"))
+        theme(axis.title.x = ggtext::element_markdown(face = "bold"))
 
       combined_plot <- wrap_plots(dot_plot, forest_plot, ncol = 2, widths = c(1, 1))
       plots[[paste(factor, type, sep = "_")]] <- combined_plot
