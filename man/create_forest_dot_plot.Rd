@@ -49,7 +49,11 @@ thresholds <- data.frame(
   Outcome = c("Primary Efficacy", "Secondary Efficacy"),
   Threshold = c(0.10, 0.08)
 )
-create_forest_dot_plot(prepared_data, outcomes_of_interest =  c("Primary Efficacy",
-"Secondary Efficacy"),
-clin_thresholds = thresholds)
+create_forest_dot_plot(prepared_data,
+  outcomes_of_interest = c(
+    "Primary Efficacy",
+    "Secondary Efficacy"
+  ),
+  clin_thresholds = thresholds
+)
 }

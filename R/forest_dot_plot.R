@@ -171,7 +171,19 @@ create_forest_dot_plot <- function(data,
         }) +
         theme(axis.title.x = ggtext::element_markdown(face = "bold"))
 
-      combined_plot <- wrap_plots(dot_plot, forest_plot, ncol = 2, widths = c(1, 1))
+      dot_plot <- dot_plot +
+        theme(
+          plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")  # tighter margins
+        )
+
+      forest_plot <- forest_plot +
+        theme(
+          plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")  # tighter margins
+        )
+
+      combined_plot <- wrap_plots(dot_plot, forest_plot, ncol = 2, widths = c(1, 1)) +
+        plot_layout(heights = c(1))  # uniform height
+
       plots[[paste(factor, type, sep = "_")]] <- combined_plot
     }
   }
@@ -179,5 +191,7 @@ create_forest_dot_plot <- function(data,
   # Assemble final plot
   wrap_plots(plots, ncol = 1) +
     plot_layout(guides = "collect") &
-    theme(legend.position = "bottom")
+    theme(legend.position = "bottom",
+          plot.margin = unit(c(0.3, 0.2, 0.3, 0.2), "cm"))  # final padding
+
 }
