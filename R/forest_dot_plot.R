@@ -151,7 +151,9 @@ create_forest_dot_plot <- function(data,
       dot_plot <- ggplot(dot_data) +
         geom_point(aes(y = Outcome, x = x, shape = Treatment, color = Treatment, fill = Treatment), size = 3) +
         scale_y_discrete(limits = y_levels) +
-        color_scale + shape_scale + fill_scale +
+        color_scale +
+        shape_scale +
+        fill_scale +
         labs(x = if (is_last_plot) "Treatment Response" else NULL) +
         theme_minimal(base_family = "serif") +
         theme(
@@ -185,8 +187,10 @@ create_forest_dot_plot <- function(data,
           height = 0.2
         ) +
         scale_color_manual(values = c("green" = "forestgreen", "red" = "firebrick", "black" = "black", "Clinical Threshold" = "black")) +
-        guides(color = "none",
-               shape = guide_legend(override.aes = list(bg = "white"))) +
+        guides(
+          color = "none",
+          shape = guide_legend(override.aes = list(bg = "white"))
+        ) +
         geom_point(
           data = thresholds_with_treatment,
           aes(x = Threshold, y = Outcome, shape = Treatment),
@@ -195,7 +199,8 @@ create_forest_dot_plot <- function(data,
         # guides(fill = "none") +
         geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
         scale_y_discrete(limits = y_levels) +
-        shape_scale + fill_scale +
+        shape_scale +
+        fill_scale +
         coord_cartesian(xlim = x_lim, clip = "off") +
         theme_minimal(base_family = "serif") +
         theme(
@@ -215,7 +220,9 @@ create_forest_dot_plot <- function(data,
             "<br><br>",
             "Treatment Difference with 95% CI"
           )
-        } else NULL) +
+        } else {
+          NULL
+        }) +
         theme(axis.title.x = ggtext::element_markdown(face = "bold"))
 
       combined_plot <- wrap_plots(dot_plot, forest_plot, ncol = 2, widths = c(1, 1)) +
