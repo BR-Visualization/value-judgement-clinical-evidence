@@ -13,6 +13,8 @@
 #'
 #' @return A filtered data frame with computed or validated treatment differences and 95% confidence intervals.
 #'         Includes directionally colored confidence intervals for plotting.
+#'
+#' @importFrom dplyr %>% filter mutate case_when if_else arrange bind_rows
 #' @export
 #'
 #' @examples

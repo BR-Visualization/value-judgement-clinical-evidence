@@ -5,3 +5,6 @@
 ^LICENSE\.md$
 ^\.github$
 ^CODE_OF_CONDUCT\.md$
+^.devcontainer$
+^brpubVJCE.Rproj$
+^data-raw$

@@ -13,6 +13,16 @@
 #' @param precalculated_stats Logical; if `TRUE`, skips calculation and uses provided statistics.
 #'
 #' @return A patchwork object containing combined dot and forest plots with a shared legend.
+#'
+#' @importFrom dplyr %>% filter mutate case_when if_else arrange bind_rows
+#' @importFrom ggplot2 ggplot aes geom_point geom_errorbarh geom_vline labs theme theme_minimal element_text element_blank element_rect
+#' @importFrom ggplot2 scale_color_manual scale_fill_manual scale_shape_manual scale_y_discrete coord_cartesian guides
+#' @importFrom patchwork wrap_plots plot_layout
+#' @importFrom stats qt qnorm setNames df
+#' @importFrom utils tail
+#' @importFrom grid unit
+#' @importFrom rlang .data
+#'
 #' @export
 #'
 #' @examples

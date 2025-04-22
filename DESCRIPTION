@@ -1,6 +1,6 @@
 Package: brpubVJCE
 Title: Charts to Integrate Value Judgement with Clinical Evidence
-Version: 0.0.0.9000
+Version: 0.0.1
 Authors@R: 
   c(person(given = "Lovemore",
            family = "Gakava",
@@ -33,9 +33,9 @@ Suggests:
     rmarkdown
 VignetteBuilder: knitr
 Imports: 
-    cowplot,
     dplyr,
     ggplot2,
+    ggtext,
     patchwork,
     rlang
 Depends: 
