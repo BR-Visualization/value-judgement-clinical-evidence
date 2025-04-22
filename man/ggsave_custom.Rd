@@ -47,7 +47,7 @@ Save a ggplot or patchwork object with cleaner defaults (BRAP Journal style).
 \examples{
 # Example usage:
 dotforest <- create_forest_dot_plot(
- prepare_forest_dot_data(effects_table)
+  prepare_forest_dot_data(effects_table)
 )
 ggsave_custom("dotforest.png", imgpath = tempdir(), inplot = dotforest)
 

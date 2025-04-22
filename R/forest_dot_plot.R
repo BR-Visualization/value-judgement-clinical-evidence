@@ -58,11 +58,11 @@ create_forest_dot_plot <- function(data,
     clin_thresholds <- data.frame(
       Outcome = c("Primary Efficacy", "Secondary Efficacy", "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
       Threshold = c(0.10, 0.08, 5, -0.10, -0.05),
+      Direction = c("greater", "greater", "greater", "less", "less"),
       stringsAsFactors = FALSE
     )
   }
 
-  # Prepare data
   filtered_data <- prepare_forest_dot_data(
     data, outcomes_of_interest, treatment1, treatment2, filter_value, precalculated_stats
   )
@@ -78,32 +78,48 @@ create_forest_dot_plot <- function(data,
       type_data <- factor_data %>% filter(Type == type)
       is_last_plot <- (factor == tail(factors, 1) && type == tail(types, 1))
 
-      # Determine columns for plotting
       estimate1 <- if (type == "Binary") "Prop1" else "Mean1"
       estimate2 <- if (type == "Binary") "Prop2" else "Mean2"
       y_levels <- rev(unique(type_data$Outcome))
 
-      # Build dot plot data
       dot_data <- bind_rows(
         data.frame(Outcome = type_data$Outcome, x = type_data[[estimate1]], Treatment = treatment1),
         data.frame(Outcome = type_data$Outcome, x = type_data[[estimate2]], Treatment = treatment2)
       ) %>% filter(!is.na(x))
 
-      # Clinical thresholds (for forest plot)
       thresholds_with_treatment <- clin_thresholds %>%
         filter(Outcome %in% type_data$Outcome) %>%
-        mutate(Treatment = "Clinical Meaningful Difference")
+        mutate(Treatment = "Clinical Threshold")
 
-      # Aesthetic mappings
-      unique_trts <- unique(c(treatment1, treatment2, "Clinical Meaningful Difference"))
+      # Shaded region data
+      shade_data <- thresholds_with_treatment %>%
+        mutate(
+          ymin = as.numeric(factor(Outcome, levels = y_levels)) - 0.4,
+          ymax = as.numeric(factor(Outcome, levels = y_levels)) + 0.4,
+          xmin = if_else(Direction == "greater", Threshold, -Inf),
+          xmax = if_else(Direction == "greater", Inf, Threshold),
+          FillGroup = "Clinically Meaningful Difference"
+        )
+
+      # Dummy rect for legend
+      dummy_legend <- data.frame(
+        xmin = -Inf, xmax = -Inf, ymin = -Inf, ymax = -Inf,
+        FillGroup = "Clinically Meaningful Difference"
+      )
+
+      unique_trts <- unique(c(treatment1, treatment2, "Clinical Threshold"))
       manual_colors <- setNames(c("#D55E00", "#0072B2", "black"), unique_trts)
       manual_shapes <- setNames(c(21, 24, 18), unique_trts)
+      manual_fills <- setNames(c("#D55E00", "#0072B2", "gray85", "black"), c(treatment1, treatment2, "Clinically Meaningful Difference", "Clinical Threshold"))
 
       color_scale <- scale_color_manual(name = "", values = manual_colors)
-      fill_scale <- scale_fill_manual(name = "", values = manual_colors)
       shape_scale <- scale_shape_manual(name = "", values = manual_shapes)
+      fill_scale <- scale_fill_manual(
+        name = "",
+        values = manual_fills,
+        breaks = c(treatment1, treatment2, "Clinical Threshold", "Clinically Meaningful Difference")
+      )
 
-      # Define axis limits for forest plot
       x_min <- min(type_data$Diff_LowerCI, na.rm = TRUE)
       x_max <- max(type_data$Diff_UpperCI, na.rm = TRUE)
       x_range <- max(abs(x_min), abs(x_max))
@@ -113,20 +129,29 @@ create_forest_dot_plot <- function(data,
       dot_plot <- ggplot(dot_data) +
         geom_point(aes(y = Outcome, x = x, shape = Treatment, color = Treatment, fill = Treatment), size = 3) +
         scale_y_discrete(limits = y_levels) +
-        color_scale +
-        shape_scale +
-        fill_scale +
+        color_scale + shape_scale + fill_scale +
         labs(x = if (is_last_plot) "Treatment Response" else NULL) +
         theme_minimal(base_family = "serif") +
         theme(
           panel.border = element_rect(color = "gray90", fill = NA, linewidth = 0.5),
           axis.title.y = element_blank(),
           axis.title.x = element_text(face = "bold"),
-          legend.position = "bottom"
+          legend.position = "bottom",
+          plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
         )
 
       # Forest plot
       forest_plot <- ggplot() +
+        geom_rect( # Legend dummy
+          data = dummy_legend,
+          aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = FillGroup),
+          inherit.aes = FALSE, show.legend = TRUE
+        ) +
+        geom_rect( # Actual shading
+          data = shade_data,
+          aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = FillGroup),
+          alpha = 0.3, inherit.aes = FALSE, show.legend = FALSE
+        ) +
         geom_point(
           data = type_data,
           aes(y = Outcome, x = Diff, color = CI_color, fill = CI_color),
@@ -137,26 +162,28 @@ create_forest_dot_plot <- function(data,
           aes(y = Outcome, xmin = Diff_LowerCI, xmax = Diff_UpperCI, color = CI_color),
           height = 0.2
         ) +
-        scale_color_manual(values = c("green" = "forestgreen", "red" = "firebrick", "black" = "black", "Clinical Meaningful Difference" = "black")) +
-        guides(color = "none") +
+        scale_color_manual(values = c("green" = "forestgreen", "red" = "firebrick", "black" = "black", "Clinical Threshold" = "black")) +
+        guides(color = "none",
+               shape = guide_legend(override.aes = list(bg = "white"))) +
         geom_point(
           data = thresholds_with_treatment,
-          aes(x = Threshold, y = Outcome, color = Treatment, shape = Treatment, fill = Treatment),
+          aes(x = Threshold, y = Outcome, shape = Treatment),
           size = 4
         ) +
+        # guides(fill = "none") +
         geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
         scale_y_discrete(limits = y_levels) +
-        shape_scale +
-        fill_scale +
+        shape_scale + fill_scale +
         coord_cartesian(xlim = x_lim, clip = "off") +
         theme_minimal(base_family = "serif") +
         theme(
+          legend.key = element_rect(fill = "white", color = NA),
           panel.border = element_rect(color = "gray90", fill = NA, linewidth = 0.5),
           axis.title.y = element_blank(),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
           legend.position = "bottom",
-          plot.margin = unit(c(0.5, 0.5, 1.5, 0.5), "cm")
+          plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
         ) +
         labs(x = if (is_last_plot) {
           paste0(
@@ -166,33 +193,20 @@ create_forest_dot_plot <- function(data,
             "<br><br>",
             "Treatment Difference with 95% CI"
           )
-        } else {
-          NULL
-        }) +
+        } else NULL) +
         theme(axis.title.x = ggtext::element_markdown(face = "bold"))
 
-      dot_plot <- dot_plot +
-        theme(
-          plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm") # tighter margins
-        )
-
-      forest_plot <- forest_plot +
-        theme(
-          plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm") # tighter margins
-        )
-
       combined_plot <- wrap_plots(dot_plot, forest_plot, ncol = 2, widths = c(1, 1)) +
-        plot_layout(heights = c(1)) # uniform height
+        plot_layout(heights = c(1))
 
       plots[[paste(factor, type, sep = "_")]] <- combined_plot
     }
   }
 
-  # Assemble final plot
   wrap_plots(plots, ncol = 1) +
     plot_layout(guides = "collect") &
     theme(
       legend.position = "bottom",
       plot.margin = unit(c(0.3, 0.2, 0.3, 0.2), "cm")
-    ) # final padding
+    )
 }
