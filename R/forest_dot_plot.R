@@ -169,10 +169,11 @@ create_forest_dot_plot <- function(data,
           aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = FillGroup),
           inherit.aes = FALSE, show.legend = TRUE
         ) +
-        geom_rect( # Actual shading
-          data = shade_data,
+        geom_rect( # Dummy for legend
+          data = dummy_legend,
           aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = FillGroup),
-          alpha = 0.3, inherit.aes = FALSE, show.legend = FALSE
+          inherit.aes = FALSE,
+          show.legend = TRUE
         ) +
         geom_point(
           data = type_data,
@@ -192,10 +193,28 @@ create_forest_dot_plot <- function(data,
           aes(x = Threshold, y = Outcome, shape = Treatment),
           size = 4
         ) +
-        # guides(fill = "none") +
+        scale_fill_manual(
+          name = "",
+          values = manual_fills,
+          breaks = c(treatment1, treatment2, "Clinical Threshold", "Clinically Meaningful Difference")
+        ) +
+        guides(
+          fill = guide_legend(
+            override.aes = list(
+              size = 3,              # adjusts legend key size
+              shape = 22,            # needed only if legend interprets shape
+              fill = "gray85",       # color shown in legend
+              color = NA
+            ),
+            label.position = "right",
+            label.hjust = 0,
+            keyheight = unit(1, "lines")
+          )
+        )+
         geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
         scale_y_discrete(limits = y_levels) +
-        shape_scale + fill_scale +
+        shape_scale +
+        # fill_scale +
         coord_cartesian(xlim = x_lim, clip = "off") +
         theme_minimal(base_family = "serif") +
         theme(
