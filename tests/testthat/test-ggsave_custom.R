@@ -1,8 +1,8 @@
 test_that("ggsave_custom saves hi-res and optional web-res plot", {
-
   tmp_dir <- tempdir()
 
-  p <- ggplot(mtcars, aes(mpg, wt)) + geom_point()
+  p <- ggplot(mtcars, aes(mpg, wt)) +
+    geom_point()
   file_name <- "test_plot.png"
   file_path <- file.path(tmp_dir, file_name)
   web_path <- file.path(tmp_dir, "test_plot_web.png")
@@ -25,4 +25,3 @@ test_that("ggsave_custom saves hi-res and optional web-res plot", {
   unlink(file_path)
   unlink(web_path)
 })
-
