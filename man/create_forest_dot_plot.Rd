@@ -7,6 +7,7 @@
 create_forest_dot_plot(
   data,
   clin_thresholds = NULL,
+  direction = NULL,
   outcomes_of_interest = c("Primary Efficacy", "Secondary Efficacy",
     "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
   treatment1 = "Drug A",
@@ -19,6 +20,9 @@ create_forest_dot_plot(
 \item{data}{A data frame prepared using \code{prepare_forest_dot_data()} or with matching structure.}
 
 \item{clin_thresholds}{Optional data frame with \code{Outcome} and \code{Threshold} columns for reference lines (defaults provided).}
+
+\item{direction}{Optional character vector or single value indicating the direction of clinical significance for each outcome.
+Accepts \code{"greater"} or \code{"less"}. Can be a single value applied to all, a vector matching \code{clin_thresholds}, or a named vector by outcome.}
 
 \item{outcomes_of_interest}{Character vector of outcomes to include (default includes major efficacy and safety endpoints).}
 
@@ -47,7 +51,8 @@ create_forest_dot_plot(prepared_data)
 # With clinical thresholds
 thresholds <- data.frame(
   Outcome = c("Primary Efficacy", "Secondary Efficacy"),
-  Threshold = c(0.10, 0.08)
+  Threshold = c(0.10, 0.08),
+  Direction = c("greater", "greater")
 )
 create_forest_dot_plot(prepared_data,
   outcomes_of_interest = c(

@@ -6,6 +6,8 @@
 #'
 #' @param data A data frame prepared using `prepare_forest_dot_data()` or with matching structure.
 #' @param clin_thresholds Optional data frame with `Outcome` and `Threshold` columns for reference lines (defaults provided).
+#' @param direction Optional character vector or single value indicating the direction of clinical significance for each outcome.
+#'   Accepts `"greater"` or `"less"`. Can be a single value applied to all, a vector matching `clin_thresholds`, or a named vector by outcome.
 #' @param outcomes_of_interest Character vector of outcomes to include (default includes major efficacy and safety endpoints).
 #' @param treatment1 Character; label of the first treatment group (default: `"Drug A"`).
 #' @param treatment2 Character; label of the second treatment group (default: `"Placebo"`).
@@ -15,8 +17,8 @@
 #' @return A patchwork object containing combined dot and forest plots with a shared legend.
 #'
 #' @importFrom dplyr %>% filter mutate case_when if_else arrange bind_rows
-#' @importFrom ggplot2 ggplot aes geom_point geom_errorbarh geom_vline labs theme theme_minimal element_text element_blank element_rect
-#' @importFrom ggplot2 scale_color_manual scale_fill_manual scale_shape_manual scale_y_discrete coord_cartesian guides
+#' @importFrom ggplot2 ggplot aes geom_point geom_errorbarh geom_vline labs theme theme_minimal element_text element_blank element_rect geom_rect
+#' @importFrom ggplot2 scale_color_manual scale_fill_manual scale_shape_manual scale_y_discrete coord_cartesian guides guide_legend
 #' @importFrom patchwork wrap_plots plot_layout
 #' @importFrom stats qt qnorm setNames df
 #' @importFrom utils tail
@@ -35,7 +37,8 @@
 #' # With clinical thresholds
 #' thresholds <- data.frame(
 #'   Outcome = c("Primary Efficacy", "Secondary Efficacy"),
-#'   Threshold = c(0.10, 0.08)
+#'   Threshold = c(0.10, 0.08),
+#'   Direction = c("greater", "greater")
 #' )
 #' create_forest_dot_plot(prepared_data,
 #'   outcomes_of_interest = c(
@@ -46,6 +49,7 @@
 #' )
 create_forest_dot_plot <- function(data,
                                    clin_thresholds = NULL,
+                                   direction = NULL,
                                    outcomes_of_interest = c(
                                      "Primary Efficacy", "Secondary Efficacy",
                                      "HR Quality of Life", "Reoccurring AE", "Rare SAE"
@@ -54,14 +58,32 @@ create_forest_dot_plot <- function(data,
                                    treatment2 = "Placebo",
                                    filter_value = "None",
                                    precalculated_stats = FALSE) {
+  default_thresholds <- data.frame(
+    Outcome = c("Primary Efficacy", "Secondary Efficacy", "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
+    Threshold = c(0.10, 0.08, 5, -0.10, -0.05),
+    Direction = c("greater", "greater", "greater", "less", "less"),
+    stringsAsFactors = FALSE
+  )
+
   if (is.null(clin_thresholds)) {
-    clin_thresholds <- data.frame(
-      Outcome = c("Primary Efficacy", "Secondary Efficacy", "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
-      Threshold = c(0.10, 0.08, 5, -0.10, -0.05),
-      Direction = c("greater", "greater", "greater", "less", "less"),
-      stringsAsFactors = FALSE
-    )
+    clin_thresholds <- default_thresholds
+  } else {
+    # Add Direction from argument if supplied
+    if (!is.null(direction)) {
+      if (is.character(direction) && length(direction) == 1) {
+        # Single direction applied to all
+        clin_thresholds$Direction <- direction
+      } else if (is.character(direction) && length(direction) == nrow(clin_thresholds)) {
+        clin_thresholds$Direction <- direction
+      } else {
+        warning("Invalid 'direction' argument: must be a single value or match the number of rows in clin_thresholds.")
+      }
+    } else if (!"Direction" %in% names(clin_thresholds)) {
+      # Use defaults for missing directions
+      clin_thresholds <- merge(clin_thresholds, default_thresholds[, c("Outcome", "Direction")], by = "Outcome", all.x = TRUE)
+    }
   }
+
 
   filtered_data <- prepare_forest_dot_data(
     data, outcomes_of_interest, treatment1, treatment2, filter_value, precalculated_stats
