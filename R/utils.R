@@ -512,20 +512,20 @@ labs_bold <- function(cond, bold, nonbold) {
 relmin <- function(rmin, type_scale) {
   if (type_scale == "Fixed") {
     ifelse(rmin >= 0,
-           0,
-           ifelse(
-             rmin >= -1,
-             floor(10 * rmin) / 10,
-             floor(rmin)
-           )
+      0,
+      ifelse(
+        rmin >= -1,
+        floor(10 * rmin) / 10,
+        floor(rmin)
+      )
     )
   } else {
     ifelse(rmin >= 1,
-           floor(rmin),
-           ifelse(rmin >= -1,
-                  floor(10 * rmin) / 10,
-                  floor(rmin)
-           )
+      floor(rmin),
+      ifelse(rmin >= -1,
+        floor(10 * rmin) / 10,
+        floor(rmin)
+      )
     )
   }
 }
@@ -546,20 +546,20 @@ relmin <- function(rmin, type_scale) {
 relmax <- function(rmax, type_scale) {
   if (type_scale == "Fixed") {
     ifelse(rmax <= 0,
-           0,
-           ifelse(
-             rmax <= 1,
-             ceiling(10 * rmax) / 10,
-             ceiling(rmax)
-           )
+      0,
+      ifelse(
+        rmax <= 1,
+        ceiling(10 * rmax) / 10,
+        ceiling(rmax)
+      )
     )
   } else {
     ifelse(rmax <= -1,
-           ceiling(rmax),
-           ifelse(rmax <= 1,
-                  ceiling(10 * rmax) / 10,
-                  ceiling(rmax)
-           )
+      ceiling(rmax),
+      ifelse(rmax <= 1,
+        ceiling(10 * rmax) / 10,
+        ceiling(rmax)
+      )
     )
   }
 }
