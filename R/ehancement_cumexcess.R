@@ -117,9 +117,9 @@ gensurv_plot <- function(
   obsv_dur <- unique(df_outcome$obsv_duration)
   min1 <- min((df_outcome$diff) * subjects)
   num_break <- ifelse(((min1 * (-2)) %% 6 == 0), 6,
-                      ifelse(((min1 * (-2)) %% 4 == 0), 4,
-                             ifelse(((min1 * (-2)) %% 5 == 0), 5, 7)
-                      )
+    ifelse(((min1 * (-2)) %% 4 == 0), 4,
+      ifelse(((min1 * (-2)) %% 5 == 0), 5, 7)
+    )
   )
 
   actual_min <- (min1 %% (-num_break)) + (min1)
@@ -131,19 +131,19 @@ gensurv_plot <- function(
     fontface = "bold", size = 12
   )
 
-  adjustment <- if(!is.na(subjects) & (subjects <= 100)){
+  adjustment <- if (!is.na(subjects) & (subjects <= 100)) {
     1
-  } else if (!is.na(subjects) & (subjects <= 1000)){
+  } else if (!is.na(subjects) & (subjects <= 1000)) {
     7
   } else {
-    0.9*subjects
+    0.9 * subjects
   }
 
   plot1 <- ggplot() +
     geom_hline(yintercept = mab, color = "#0571b0", linetype = "dashed", size = 1) +
-    geom_hline(yintercept = mar, color ="#ca0020", linetype = "dashed", size = 1) +
-    annotate("text", x = 0, y = (mab)-adjustment, color = "#0571b0", label = "MAB", size = 3.5) +
-    annotate("text", x = 0, y = (mar)+adjustment, color = "#ca0020", label = "MAR", size = 3.5) +
+    geom_hline(yintercept = mar, color = "#ca0020", linetype = "dashed", size = 1) +
+    annotate("text", x = 0, y = (mab) - adjustment, color = "#0571b0", label = "MAB", size = 3.5) +
+    annotate("text", x = 0, y = (mar) + adjustment, color = "#ca0020", label = "MAR", size = 3.5) +
     annotate("rect", xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = mab, fill = "#0571b0", alpha = .1, color = NA) +
     annotate("rect", xmin = -Inf, xmax = Inf, ymin = mar, ymax = Inf, fill = "#ca0020", alpha = .1, color = NA) +
     geom_line(
@@ -312,7 +312,7 @@ gensurv_table <- function(df_table,
     ) %>%
     mutate(effect = forcats::fct_reorder(
       as.factor(paste(effect, outcome,
-                      sep = " "
+        sep = " "
       )), y,
       .na_rm = FALSE
     ))
