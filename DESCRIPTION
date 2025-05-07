@@ -34,3 +34,6 @@ Suggests:
 VignetteBuilder: knitr
 Imports: 
     ggplot2
+Depends: 
+    R (>= 3.5)
+LazyData: true
