@@ -1,3 +1,14 @@
+#' @name forest_dot_plot_imports
+#' @title Internal package dependencies for forest and dot plots
+#' @description Load required libraries for forest_dot_plot functionality
+#' @keywords internal
+# Load required libraries
+library(dplyr)
+library(ggplot2)
+library(patchwork)
+library(grid)
+library(rlang)
+
 #' Create Forest and Dot Plots for Treatment Effects
 #'
 #' @description
@@ -47,24 +58,38 @@
 #'   ),
 #'   clin_thresholds = thresholds
 #' )
-create_forest_dot_plot <- function(data,
-                                   clin_thresholds = NULL,
-                                   direction = NULL,
-                                   outcomes_of_interest = c(
-                                     "Primary Efficacy", "Secondary Efficacy",
-                                     "HR Quality of Life", "Reoccurring AE", "Rare SAE"
-                                   ),
-                                   treatment1 = "Drug A",
-                                   treatment2 = "Placebo",
-                                   filter_value = "None",
-                                   precalculated_stats = FALSE) {
+
+create_forest_dot_plot <- function(
+  data,
+  clin_thresholds = NULL,
+  direction = NULL,
+  outcomes_of_interest = c(
+    "Primary Efficacy",
+    "Secondary Efficacy",
+    "HR Quality of Life",
+    "Reoccurring AE",
+    "Rare SAE"
+  ),
+  treatment1 = "Drug A",
+  treatment2 = "Placebo",
+  filter_value = "None",
+  precalculated_stats = FALSE
+) {
+  # Set up default clinical thresholds
   default_thresholds <- data.frame(
-    Outcome = c("Primary Efficacy", "Secondary Efficacy", "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
+    Outcome = c(
+      "Primary Efficacy",
+      "Secondary Efficacy",
+      "HR Quality of Life",
+      "Reoccurring AE",
+      "Rare SAE"
+    ),
     Threshold = c(0.10, 0.08, 5, -0.10, -0.05),
     Direction = c("greater", "greater", "greater", "less", "less"),
     stringsAsFactors = FALSE
   )
 
+  # Process clinical thresholds
   if (is.null(clin_thresholds)) {
     clin_thresholds <- default_thresholds
   } else {
@@ -73,169 +98,365 @@ create_forest_dot_plot <- function(data,
       if (is.character(direction) && length(direction) == 1) {
         # Single direction applied to all
         clin_thresholds$Direction <- direction
-      } else if (is.character(direction) && length(direction) == nrow(clin_thresholds)) {
+      } else if (
+        is.character(direction) && length(direction) == nrow(clin_thresholds)
+      ) {
         clin_thresholds$Direction <- direction
       } else {
-        warning("Invalid 'direction' argument: must be a single value or match the number of rows in clin_thresholds.")
+        warning(
+          "Invalid 'direction' argument: must be a single value or match the number of rows in clin_thresholds."
+        )
       }
     } else if (!"Direction" %in% names(clin_thresholds)) {
       # Use defaults for missing directions
-      clin_thresholds <- merge(clin_thresholds, default_thresholds[, c("Outcome", "Direction")], by = "Outcome", all.x = TRUE)
+      clin_thresholds <- merge(
+        clin_thresholds,
+        default_thresholds[, c("Outcome", "Direction")],
+        by = "Outcome",
+        all.x = TRUE
+      )
     }
   }
 
-
+  # Prepare data
   filtered_data <- prepare_forest_dot_data(
-    data, outcomes_of_interest, treatment1, treatment2, filter_value, precalculated_stats
+    data,
+    outcomes_of_interest,
+    treatment1,
+    treatment2,
+    filter_value,
+    precalculated_stats
   )
 
   plots <- list()
   factors <- unique(filtered_data$Factor)
 
+  # Loop through factors and types to create plots
   for (factor in factors) {
-    factor_data <- filtered_data %>% filter(Factor == factor)
+    factor_data <- filtered_data %>% dplyr::filter(Factor == factor)
     types <- unique(factor_data$Type)
 
     for (type in types) {
-      type_data <- factor_data %>% filter(Type == type)
+      # Check if this is the last plot (for legend and x-axis title display)
       is_last_plot <- (factor == tail(factors, 1) && type == tail(types, 1))
 
+      # Filter data for current type
+      type_data <- factor_data %>% dplyr::filter(Type == type)
+
+      # Determine estimate column names based on type
       estimate1 <- if (type == "Binary") "Prop1" else "Mean1"
       estimate2 <- if (type == "Binary") "Prop2" else "Mean2"
       y_levels <- rev(unique(type_data$Outcome))
 
-      dot_data <- bind_rows(
-        data.frame(Outcome = type_data$Outcome, x = type_data[[estimate1]], Treatment = treatment1),
-        data.frame(Outcome = type_data$Outcome, x = type_data[[estimate2]], Treatment = treatment2)
-      ) %>% filter(!is.na(x))
+      # Create data for dot plot
+      dot_data <- dplyr::bind_rows(
+        data.frame(
+          Outcome = type_data$Outcome,
+          x = type_data[[estimate1]],
+          Treatment = treatment1
+        ),
+        data.frame(
+          Outcome = type_data$Outcome,
+          x = type_data[[estimate2]],
+          Treatment = treatment2
+        )
+      ) %>%
+        dplyr::filter(!is.na(x))
 
+      # Create data for clinical thresholds
       thresholds_with_treatment <- clin_thresholds %>%
-        filter(Outcome %in% type_data$Outcome) %>%
-        mutate(Treatment = "Clinical Threshold")
+        dplyr::filter(Outcome %in% type_data$Outcome) %>%
+        dplyr::mutate(Treatment = "Clinical Threshold")
 
-      # Shaded region data
+      # Prepare data for shaded regions
       shade_data <- thresholds_with_treatment %>%
-        mutate(
+        dplyr::mutate(
+          xmin = dplyr::if_else(Direction == "greater", Threshold, -Inf),
+          xmax = dplyr::if_else(Direction == "greater", Inf, Threshold),
           ymin = as.numeric(factor(Outcome, levels = y_levels)) - 0.4,
           ymax = as.numeric(factor(Outcome, levels = y_levels)) + 0.4,
-          xmin = if_else(Direction == "greater", Threshold, -Inf),
-          xmax = if_else(Direction == "greater", Inf, Threshold),
-          FillGroup = "Clinically Meaningful Difference"
+          FillGroup = dplyr::if_else(Direction == "greater", "Benefit", "Risk")
         )
 
-      # Dummy rect for legend
+      # Dummy data for legend
       dummy_legend <- data.frame(
-        xmin = -Inf, xmax = -Inf, ymin = -Inf, ymax = -Inf,
-        FillGroup = "Clinically Meaningful Difference"
+        xmin = -Inf,
+        xmax = -Inf,
+        ymin = -Inf,
+        ymax = -Inf,
+        FillGroup = c("Benefit", "Risk")
       )
 
+      # Set up color and shape scales
+      manual_fill_colors <- c("Benefit" = "lightgreen", "Risk" = "lightcoral")
       unique_trts <- unique(c(treatment1, treatment2, "Clinical Threshold"))
       manual_colors <- setNames(c("#D55E00", "#0072B2", "black"), unique_trts)
       manual_shapes <- setNames(c(21, 24, 18), unique_trts)
-      manual_fills <- setNames(c("#D55E00", "#0072B2", "gray85", "black"), c(treatment1, treatment2, "Clinically Meaningful Difference", "Clinical Threshold"))
+      manual_fills <- setNames(
+        c("#D55E00", "#0072B2", "gray85", "black"),
+        c(
+          treatment1,
+          treatment2,
+          "Clinically Meaningful Difference",
+          "Clinical Threshold"
+        )
+      )
 
+      # Create scales
       color_scale <- scale_color_manual(name = "", values = manual_colors)
       shape_scale <- scale_shape_manual(name = "", values = manual_shapes)
       fill_scale <- scale_fill_manual(
         name = "",
         values = manual_fills,
-        breaks = c(treatment1, treatment2, "Clinical Threshold", "Clinically Meaningful Difference")
+        breaks = c(
+          treatment1,
+          treatment2,
+          "Clinical Threshold",
+          "Clinically Meaningful Difference"
+        )
       )
 
+      # Calculate x-axis limits for forest plot
       x_min <- min(type_data$Diff_LowerCI, na.rm = TRUE)
       x_max <- max(type_data$Diff_UpperCI, na.rm = TRUE)
       x_range <- max(abs(x_min), abs(x_max))
       x_lim <- c(-x_range, x_range)
 
-      # Dot plot
+      # Find the maximum value across all dot plots in the same factor/type
+      max_x_value <- max(dot_data$x, na.rm = TRUE)
+
+      # Round up the maximum value to a nice number
+      # Add a small buffer to ensure we don't cut off points
+      max_x_value <- max_x_value * 1.05
+
+      # Create breaks with more intuitive intervals based on rounded max value
+      if (max_x_value <= 0.05) {
+        # For very small values up to 0.05, use 0.01 intervals
+        max_x_value <- ceiling(max_x_value * 100) / 100 # Round up to nearest 0.01
+        dot_breaks <- seq(0, max_x_value, by = 0.01)
+      } else if (max_x_value <= 0.2) {
+        # For small values up to 0.2, use 0.05 intervals: 0, 0.05, 0.10, 0.15, 0.20
+        max_x_value <- ceiling(max_x_value * 20) / 20 # Round up to nearest 0.05
+        dot_breaks <- seq(0, max_x_value, by = 0.05)
+      } else if (max_x_value <= 0.5) {
+        # For values up to 0.5, use 0.1 intervals: 0, 0.1, 0.2, 0.3, 0.4, 0.5
+        max_x_value <- ceiling(max_x_value * 10) / 10 # Round up to nearest 0.1
+        dot_breaks <- seq(0, max_x_value, by = 0.1)
+      } else if (max_x_value <= 1) {
+        # For values up to 1, use 0.2 intervals: 0, 0.2, 0.4, 0.6, 0.8, 1.0
+        max_x_value <- ceiling(max_x_value * 5) / 5 # Round up to nearest 0.2
+        dot_breaks <- seq(0, max_x_value, by = 0.2)
+      } else if (max_x_value <= 2) {
+        # For values up to 2, use 0.5 intervals: 0, 0.5, 1.0, 1.5, 2.0
+        max_x_value <- ceiling(max_x_value * 2) / 2 # Round up to nearest 0.5
+        dot_breaks <- seq(0, max_x_value, by = 0.5)
+      } else if (max_x_value <= 5) {
+        # For values up to 5, use 1.0 intervals: 0, 1, 2, 3, 4, 5
+        max_x_value <- ceiling(max_x_value)
+        dot_breaks <- seq(0, max_x_value, by = 1)
+      } else if (max_x_value <= 10) {
+        # For values up to 10, use 2.0 intervals: 0, 2, 4, 6, 8, 10
+        max_x_value <- ceiling(max_x_value / 2) * 2 # Round up to nearest 2
+        dot_breaks <- seq(0, max_x_value, by = 2)
+      } else if (max_x_value <= 20) {
+        # For values up to 20, use 5.0 intervals: 0, 5, 10, 15, 20
+        max_x_value <- ceiling(max_x_value / 5) * 5 # Round up to nearest 5
+        dot_breaks <- seq(0, max_x_value, by = 5)
+      } else if (max_x_value <= 50) {
+        # For values up to 50, use 10.0 intervals: 0, 10, 20, 30, 40, 50
+        max_x_value <- ceiling(max_x_value / 10) * 10 # Round up to nearest 10
+        dot_breaks <- seq(0, max_x_value, by = 10)
+      } else if (max_x_value <= 100) {
+        # For values up to 100, use 20.0 intervals: 0, 20, 40, 60, 80, 100
+        max_x_value <- ceiling(max_x_value / 20) * 20 # Round up to nearest 20
+        dot_breaks <- seq(0, max_x_value, by = 20)
+      } else {
+        # For larger values, use appropriate 'nice' intervals
+        power <- floor(log10(max_x_value))
+        base <- 10^(power - 1)
+        if (max_x_value <= 5 * 10^power) {
+          interval <- base * 10
+        } else {
+          interval <- base * 20
+        }
+        max_x_value <- ceiling(max_x_value / interval) * interval
+        dot_breaks <- seq(0, max_x_value, by = interval)
+      }
+
+      # Create dot plot with intuitive breaks
       dot_plot <- ggplot(dot_data) +
-        geom_point(aes(y = Outcome, x = x, shape = Treatment, color = Treatment, fill = Treatment), size = 3) +
+        geom_point(
+          aes(
+            y = Outcome,
+            x = x,
+            shape = Treatment,
+            color = Treatment,
+            fill = Treatment
+          ),
+          size = 3
+        ) +
         scale_y_discrete(limits = y_levels) +
+        scale_x_continuous(
+          limits = c(0, max(dot_breaks)),
+          breaks = dot_breaks,
+          labels = function(x) {
+            # Custom function to format numbers with minimal decimal places
+            format(x, nsmall = 0, trim = TRUE)
+          }
+        ) +
         color_scale +
         shape_scale +
         fill_scale +
         labs(x = if (is_last_plot) "Treatment Response" else NULL) +
         theme_minimal(base_family = "serif") +
         theme(
-          panel.border = element_rect(color = "gray90", fill = NA, linewidth = 0.5),
+          panel.border = element_rect(
+            color = "gray90",
+            fill = NA,
+            linewidth = 0.5
+          ),
           axis.title.y = element_blank(),
-          axis.title.x = element_text(face = "bold"),
-          legend.position = "bottom",
+          axis.title.x = element_blank(),
+          legend.position = if (is_last_plot) "bottom" else "none", # Only show legend on last plot
+          axis.text.y = element_text(),
+          axis.ticks.y = element_line(),
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
         )
 
-      # Forest plot
+      # Create forest plot
       forest_plot <- ggplot() +
-        geom_rect( # Legend dummy
+        # Add shaded regions for clinical meaning
+        geom_rect(
           data = dummy_legend,
-          aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = FillGroup),
-          inherit.aes = FALSE, show.legend = TRUE
+          aes(
+            xmin = xmin,
+            xmax = xmax,
+            ymin = ymin,
+            ymax = ymax,
+            fill = FillGroup
+          ),
+          inherit.aes = FALSE,
+          show.legend = FALSE
         ) +
-        geom_rect( # Actual shading
+        geom_rect(
           data = shade_data,
-          aes(xmin = xmin, xmax = xmax, ymin = ymin, ymax = ymax, fill = FillGroup),
-          alpha = 0.3, inherit.aes = FALSE, show.legend = FALSE
+          aes(
+            xmin = xmin,
+            xmax = xmax,
+            ymin = ymin,
+            ymax = ymax,
+            fill = FillGroup
+          ),
+          alpha = 0.3,
+          inherit.aes = FALSE,
+          show.legend = FALSE
         ) +
+        scale_fill_manual(
+          values = manual_fill_colors,
+          guide = "none"
+        ) +
+        # Add points and error bars for treatment differences
         geom_point(
           data = type_data,
-          aes(y = Outcome, x = Diff, color = CI_color, fill = CI_color),
+          aes(y = Outcome, x = Diff),
+          color = "black",
+          fill = "black",
           size = 3
         ) +
         geom_errorbarh(
           data = type_data,
-          aes(y = Outcome, xmin = Diff_LowerCI, xmax = Diff_UpperCI, color = CI_color),
+          aes(y = Outcome, xmin = Diff_LowerCI, xmax = Diff_UpperCI),
+          color = "black",
           height = 0.2
         ) +
-        scale_color_manual(values = c("green" = "forestgreen", "red" = "firebrick", "black" = "black", "Clinical Threshold" = "black")) +
-        guides(
-          color = "none",
-          shape = guide_legend(override.aes = list(bg = "white"))
-        ) +
+        # Add threshold points
         geom_point(
           data = thresholds_with_treatment,
           aes(x = Threshold, y = Outcome, shape = Treatment),
+          color = "black",
           size = 4
         ) +
-        # guides(fill = "none") +
-        geom_vline(xintercept = 0, linetype = "dashed", color = "black", linewidth = 0.5) +
+        # Add reference line at zero
+        geom_vline(
+          xintercept = 0,
+          linetype = "dashed",
+          color = "black",
+          linewidth = 0.5
+        ) +
+        # Apply scales and coordinate system
+        scale_color_manual(
+          values = c(
+            "green" = "forestgreen",
+            "red" = "firebrick",
+            "black" = "black",
+            "Clinical Threshold" = "black"
+          ),
+          guide = "none"
+        ) +
+        guides(
+          shape = guide_legend(override.aes = list(bg = "white"))
+        ) +
         scale_y_discrete(limits = y_levels) +
         shape_scale +
-        fill_scale +
         coord_cartesian(xlim = x_lim, clip = "off") +
+        # Add x-axis label for last plot
+        labs(
+          x = if (is_last_plot) {
+            paste0(
+              "<br><br>",
+              "<span style='color:black;font-weight:bold;'>&larr; Favours ",
+              treatment2,
+              "</span>",
+              "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003",
+              "<span style='color:black;font-weight:bold;'>Favours ",
+              treatment1,
+              " &rarr;</span>",
+              "<br><br>",
+              "Treatment Difference with 95% CI"
+            )
+          } else {
+            NULL
+          }
+        ) +
+        # Apply theme
         theme_minimal(base_family = "serif") +
         theme(
           legend.key = element_rect(fill = "white", color = NA),
-          panel.border = element_rect(color = "gray90", fill = NA, linewidth = 0.5),
+          panel.border = element_rect(
+            color = "gray90",
+            fill = NA,
+            linewidth = 0.5
+          ),
           axis.title.y = element_blank(),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
-          legend.position = "bottom",
+          axis.title.x = element_blank(),
+          axis.text.x = element_text(color = "black"),
+          legend.position = if (is_last_plot) "bottom" else "none", # Only show legend on last plot
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
-        ) +
-        labs(x = if (is_last_plot) {
-          paste0(
-            "<span style='color:firebrick;font-weight:bold;'>&larr; Favours ", treatment2, "</span>",
-            "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003",
-            "<span style='color:forestgreen;font-weight:bold;'>Favours ", treatment1, " &rarr;</span>",
-            "<br><br>",
-            "Treatment Difference with 95% CI"
-          )
-        } else {
-          NULL
-        }) +
-        theme(axis.title.x = ggtext::element_markdown(face = "bold"))
+        )
 
-      combined_plot <- wrap_plots(dot_plot, forest_plot, ncol = 2, widths = c(1, 1)) +
-        plot_layout(heights = c(1))
+      # Combine dot and forest plots
+      combined_plot <- wrap_plots(
+        dot_plot,
+        forest_plot,
+        ncol = 2,
+        widths = c(1, 1)
+      ) +
+        theme(
+          plot.margin = unit(c(0.3, 0.2, 0.3, 0.2), "cm"),
+          axis.title.x = if (is_last_plot)
+            ggtext::element_markdown(color = "black", face = "bold") else
+            element_blank()
+        )
 
+      # Store combined plot
       plots[[paste(factor, type, sep = "_")]] <- combined_plot
     }
   }
 
-  wrap_plots(plots, ncol = 1) +
-    plot_layout(guides = "collect") &
-    theme(
-      legend.position = "bottom",
-      plot.margin = unit(c(0.3, 0.2, 0.3, 0.2), "cm")
-    )
+  # Combine all plots vertically
+  final_plot_assembly <- wrap_plots(plots, ncol = 1)
+
+  return(final_plot_assembly)
 }
