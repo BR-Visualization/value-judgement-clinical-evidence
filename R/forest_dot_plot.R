@@ -57,23 +57,21 @@ library(rlang)
 #'   ),
 #'   clin_thresholds = thresholds
 #' )
-
 create_forest_dot_plot <- function(
-  data,
-  clin_thresholds = NULL,
-  direction = NULL,
-  outcomes_of_interest = c(
-    "Primary Efficacy",
-    "Secondary Efficacy",
-    "HR Quality of Life",
-    "Reoccurring AE",
-    "Rare SAE"
-  ),
-  treatment1 = "Drug A",
-  treatment2 = "Placebo",
-  filter_value = "None",
-  precalculated_stats = FALSE
-) {
+    data,
+    clin_thresholds = NULL,
+    direction = NULL,
+    outcomes_of_interest = c(
+      "Primary Efficacy",
+      "Secondary Efficacy",
+      "HR Quality of Life",
+      "Reoccurring AE",
+      "Rare SAE"
+    ),
+    treatment1 = "Drug A",
+    treatment2 = "Placebo",
+    filter_value = "None",
+    precalculated_stats = FALSE) {
   # Set up default clinical thresholds
   default_thresholds <- data.frame(
     Outcome = c(
@@ -449,9 +447,11 @@ create_forest_dot_plot <- function(
       ) +
         theme(
           plot.margin = unit(c(0.3, 0.2, 0.3, 0.2), "cm"),
-          axis.title.x = if (is_last_plot)
-            ggtext::element_markdown(color = "black", face = "bold") else
+          axis.title.x = if (is_last_plot) {
+            ggtext::element_markdown(color = "black", face = "bold")
+          } else {
             element_blank()
+          }
         )
 
       # Store combined plot
