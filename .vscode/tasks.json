@@ -1,0 +1,287 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "R: Test Package",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"testthat::test_package('brpubVJCE')\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "group": {
+        "kind": "test",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Check Package",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::check()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Document Package",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::document()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Build Package",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::build()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Run Test Coverage",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"covr::package_coverage()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Install Package",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::install()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Load All",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::load_all()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Run Examples",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::run_examples()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Build and Check",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::build(); devtools::check()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "group": "build",
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Build Documentation Site",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"pkgdown::build_site()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Update Dependencies",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"renv::status(); renv::update()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Clean Project",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::clean_vignettes(); unlink(c('man', 'NAMESPACE'), recursive = TRUE)\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Build README",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"rmarkdown::render('README.Rmd')\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Build Vignettes",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::build_vignettes()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Create Release Tag",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"usethis::use_version()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Check with All Tests",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"Sys.setenv(NOT_CRAN='true'); devtools::check()\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    },
+    {
+      "label": "R: Install and Build README",
+      "type": "shell",
+      "command": "cd ${workspaceFolder} && C:/PROGRA~1/R/R-4.5.0/bin/Rscript.exe -e \"devtools::install(); rmarkdown::render('README.Rmd')\"",
+      "options": {
+        "shell": {
+          "executable": "cmd.exe",
+          "args": ["/d", "/c"]
+        }
+      },
+      "presentation": {
+        "reveal": "always",
+        "panel": "new"
+      },
+      "problemMatcher": []
+    }
+  ]
+}

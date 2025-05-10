@@ -27,9 +27,8 @@ library(rlang)
 #'
 #' @return A patchwork object containing combined dot and forest plots with a shared legend.
 #'
+#' @import ggplot2
 #' @importFrom dplyr %>% filter mutate case_when if_else arrange bind_rows
-#' @importFrom ggplot2 ggplot aes geom_point geom_errorbarh geom_vline labs theme theme_minimal element_text element_blank element_rect geom_rect
-#' @importFrom ggplot2 scale_color_manual scale_fill_manual scale_shape_manual scale_y_discrete coord_cartesian guides guide_legend
 #' @importFrom patchwork wrap_plots plot_layout
 #' @importFrom stats qt qnorm setNames df
 #' @importFrom utils tail
@@ -223,16 +222,20 @@ create_forest_dot_plot <- function(
       x_lim <- c(-x_range, x_range)
 
       # Find the maximum value across all dot plots in the same factor/type
-      max_x_value <- max(dot_data$x, na.rm = TRUE)
-
+      max_x_value <- max(dot_data$x, na.rm = TRUE) 
+      
       # Round up the maximum value to a nice number
       # Add a small buffer to ensure we don't cut off points
       max_x_value <- max_x_value * 1.05
-
+      
       # Create breaks with more intuitive intervals based on rounded max value
-      if (max_x_value <= 0.05) {
+      if (length(dot_data$x) == 0 || max_x_value <= 0) {
+        # Handle edge case of empty data or zero/negative max values
+        max_x_value <- 1
+        dot_breaks <- c(0, 0.2, 0.4, 0.6, 0.8, 1.0)
+      } else if (max_x_value <= 0.05) {
         # For very small values up to 0.05, use 0.01 intervals
-        max_x_value <- ceiling(max_x_value * 100) / 100 # Round up to nearest 0.01
+        max_x_value <- ceiling(max_x_value * 100) / 100  # Round up to nearest 0.01
         dot_breaks <- seq(0, max_x_value, by = 0.01)
       } else if (max_x_value <= 0.2) {
         # For small values up to 0.2, use 0.05 intervals: 0, 0.05, 0.10, 0.15, 0.20
@@ -301,6 +304,7 @@ create_forest_dot_plot <- function(
           breaks = dot_breaks,
           labels = function(x) {
             # Custom function to format numbers with minimal decimal places
+            if(length(x) == 0) return(character(0))
             format(x, nsmall = 0, trim = TRUE)
           }
         ) +
