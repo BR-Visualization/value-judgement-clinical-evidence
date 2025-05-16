@@ -29,11 +29,14 @@
 #' team, must be numerical.
 #' @param mab The minimum acceptable benefit for the drug, as discussed by the
 #' team, must be numerical.
+#' @param mcd The minimum clinically important difference of the drug, as
+#' discussed by the team, must be numerical.
 #'
 #' @return A cumulative excess plot.
 #' @export
 #' @import cowplot
 #' @import ggplot2
+#' @import zoo
 #' @import simsurv
 #' @import dplyr
 #' @import magrittr
@@ -43,6 +46,7 @@
 #' @import reshape2
 #' @import tidyverse
 #' @import colorBlindness
+#' @import ggtext
 #'
 #' @examples
 #' gensurv_plot(cumexcess, 100, 6,
@@ -58,7 +62,8 @@ gensurv_plot <- function(
     risk_name = "Recurring AE",
     legend_position = c(-0.03, 1.15),
     mar,
-    mab) {
+    mab,
+    mcd) {
   outcome <- active <- control <- NULL
   eventtime <- obsv_duration <- obsv_unit <- eff_diff_lbl <- NULL
 
@@ -131,30 +136,165 @@ gensurv_plot <- function(
     fontface = "bold", size = 12
   )
 
-  adjustment <- if (!is.na(subjects) & (subjects <= 100)) {
-    1
-  } else if (!is.na(subjects) & (subjects <= 1000)) {
-    7
-  } else {
-    0.9 * subjects
-  }
+  window_size <- 5
 
-  plot1 <- ggplot() +
-    geom_hline(yintercept = mab, color = "#0571b0", linetype = "dashed", size = 1) +
-    geom_hline(yintercept = mar, color = "#ca0020", linetype = "dashed", size = 1) +
-    annotate("text", x = 0, y = (mab) - adjustment, color = "#0571b0", label = "MAB", size = 3.5) +
-    annotate("text", x = 0, y = (mar) + adjustment, color = "#ca0020", label = "MAR", size = 3.5) +
-    annotate("rect", xmin = -Inf, xmax = Inf, ymin = -Inf, ymax = mab, fill = "#0571b0", alpha = .1, color = NA) +
-    annotate("rect", xmin = -Inf, xmax = Inf, ymin = mar, ymax = Inf, fill = "#ca0020", alpha = .1, color = NA) +
+  df_ben <- df_ben %>%
+    mutate(
+      sd_diff = rollapply(diff, window_size, sd, fill = NA, align = "right")
+      ) %>%
+      mutate(
+        lower_ci = diff - 5 * sd_diff,
+        upper_ci = diff + 5 * sd_diff
+      )
+
+
+  df_risk <- df_risk %>%
+    mutate(
+      sd_diff = rollapply(diff, window_size, sd, fill = NA, align = "right")
+    ) %>%
+    mutate(
+      lower_ci = diff - 10 * sd_diff,
+      upper_ci = diff + 10 * sd_diff
+    )
+
+  temp_plot <- ggplot() +
+    scale_y_continuous(
+      sec.axis = sec_axis(trans = ~., breaks = breaks2),
+      breaks = breaks2
+    )
+
+  plot_temp <- ggplot() +
     geom_line(
       aes(x = df_ben$eventtime, y = df_ben$diff * subjects, color = "Benefit")
     ) +
     geom_line(
       aes(x = df_risk$eventtime, y = df_risk$diff * subjects, color = "Risk")
     ) +
+    scale_y_continuous(
+      sec.axis = sec_axis(trans = ~., breaks = breaks2),
+      breaks = breaks2
+    )
+
+  y_limits <- ggplot_build(plot_temp)$layout$panel_params[[1]]$y.range
+  y_range <- y_limits[2] - y_limits[1]
+
+  adjustment <- y_range * 0.06
+  text_size <- y_range * 0.015
+
+  all_breaks <- sort(c(breaks2, mcd))
+
+  all_labels <- sapply(all_breaks, function(b) {
+    if (b == mcd) {
+      paste0('<span style="color:black; font-weight:bold; font-size:', round(text_size*3), 'pt;">MCD &#8594;</span>')
+    } else {
+      paste0('<span style="color:#0571b0;">', as.character(b), '</span>')
+    }
+  })
+
+  legend_levels <- c(
+    "Benefit_Acceptable",
+    "Benefit_Nonacceptable",
+    "Benefit_Error",
+    "Risk_Acceptable",
+    "Risk_Nonacceptable",
+    "Risk_Error"
+  )
+
+  legend_data <- data.frame(
+    eventtime = 1:6,
+    diff = c(1,2,3,4,5,6),
+    color_group = c(
+      "Benefit_Acceptable",
+      "Benefit_Nonacceptable",
+      "Benefit_Error",
+      "Risk_Acceptable",
+      "Risk_Nonacceptable",
+      "Risk_Error"
+    )
+  )
+
+  legend_data$color_group <- factor(legend_data$color_group, levels = legend_levels)
+
+  plot1 <- ggplot() +
+    geom_hline(yintercept = mab, color = "#0571b0", linetype = "dashed", size = 1) +
+    geom_hline(yintercept = mar, color = "#ca0020", linetype = "dashed", size = 1) +
+    annotate("text", x = -1.27, y = ifelse(mar > mab, mab - adjustment, mab + adjustment), color = "#0571b0", label = "MAB", size = ceiling(text_size)) +
+    annotate("text", x = -1.27, y = ifelse(mar > mab, mar + adjustment, mar - adjustment), color = "#ca0020", label = "MAR", size = ceiling(text_size)) +
+    geom_line(
+      data = df_ben,
+      aes(x = eventtime, y = diff * subjects, color = "Benefit_Acceptable"), size = 0.5
+    ) +
+    geom_line(
+      data = df_ben %>% filter(diff * subjects < mab), # Only below MAB
+      aes(x = eventtime, y = diff * subjects, color = "Benefit_Nonacceptable"), size = 0.5
+    ) +
+    geom_ribbon(
+      data = df_ben %>% filter(diff * subjects >= mab),  # Only Acceptable Region
+      aes(x = eventtime, ymin = lower_ci * subjects, ymax = upper_ci * subjects),
+      fill = "#0571b0",
+      alpha = 0.2
+    ) +
+    geom_ribbon(
+      data = df_ben %>% filter(diff * subjects < mab),
+      aes(x = eventtime, ymin = lower_ci * subjects, ymax = upper_ci * subjects),
+      fill = "#7f7f7f",
+      alpha = 0.2
+    ) +
+    geom_line(
+      data = df_risk,
+      aes(x = eventtime, y = diff * subjects, color = "Risk_Acceptable"), size = 0.5
+    ) +
+    geom_line(
+      data = df_risk %>% filter(diff * subjects > mar), # Only above MAR
+      aes(x = eventtime, y = diff * subjects, color = "Risk_Nonacceptable"), size = 0.5
+    ) +
+    geom_ribbon(
+      data = df_risk %>% filter(diff * subjects <= mar),  # Only Acceptable Region
+      aes(x = eventtime, ymin = lower_ci * subjects, ymax = upper_ci * subjects),
+      fill = "#ca0020",
+      alpha = 0.2
+    ) +
+    geom_ribbon(
+      data = df_risk %>% filter(diff * subjects > mar),
+      aes(x = eventtime, ymin = lower_ci * subjects, ymax = upper_ci * subjects),
+      fill = "#7f7f7f",
+      alpha = 0.2
+    ) +
+    geom_point(
+      data = df_ben %>% filter(abs(diff * subjects - mcd) == min(abs(diff * subjects - mcd))),
+      aes(x = eventtime, y = diff * subjects),
+      shape = 23, fill = "black", size = 2
+    ) +
+    geom_line(data = legend_data,
+             aes(x = eventtime, y = diff, color = color_group),
+             size = c(0.5, 1.5, 2, 0.5, 1.5, 2),
+             alpha = c(1, 1, 0.1, 1, 1, 0.1))  +
     scale_color_manual(
-      name = "", values = c(fig_colors[1], fig_colors[2]),
-      limits = c("Benefit", "Risk")
+      name = "",
+      values = c(
+        "Benefit_Acceptable" = "#0571b0",
+        "Benefit_Nonacceptable" = "#808080",
+        "Risk_Acceptable" = "#ca0020",
+        "Risk_Nonacceptable" = "#808080"
+      ),
+      labels = c(
+        "Acceptable Benefit",
+        "Nonacceptable Benefit",
+        "Acceptable Risk",
+        "Nonacceptable Risk"
+      )
+    ) +
+    guides(
+      color = guide_legend(
+        title = "",
+        ncol = 2,
+        byrow = TRUE,
+        override.aes = list(
+          linetype = c(1, 1, 1, 1),  # Solid for all
+          linewidth = c(0.5, 0.5, 0.5, 0.5),  # Thick for error bands
+          alpha = c(1, 1, 1, 1) # Transparent for error bands
+        )
+      )
     ) +
     geom_hline(yintercept = 0, color = "grey") +
     coord_cartesian(
@@ -165,12 +305,13 @@ gensurv_plot <- function(
         )
     ) +
     scale_x_continuous(
-      limits = c(0, obsv_dur),
+      limits = c(-1.5, obsv_dur),
       breaks = seq(0, obsv_dur, visits)
     ) +
     scale_y_continuous(
       sec.axis = sec_axis(trans = ~., breaks = breaks2),
-      breaks = breaks2
+      breaks = all_breaks,
+      labels = all_labels
     ) +
     xlab(paste("Time in", df_outcome$obsv_unit[1])) +
     labs(
@@ -182,7 +323,7 @@ gensurv_plot <- function(
     theme(
       axis.ticks.x = element_blank(),
       axis.ticks.y = element_blank(),
-      axis.text.y = element_text(color = fig_colors[1]),
+      axis.text.y = element_markdown(color = NA),
       axis.text.y.right = element_text(color = fig_colors[2]),
       axis.line = element_blank(),
       panel.grid.minor.y = element_blank(),
@@ -442,6 +583,8 @@ gensurv_table <- function(df_table,
 #' team, must be numerical.
 #' @param mab The minimum acceptable benefit for the drug, as discussed by the
 #' team, must be numerical.
+#' @param mcd The minimum clinically important difference of the drug, as
+#' discussed by the team, must be numerical.
 #'
 #' @return A combined cumulative excess plot and table.
 #' @export
@@ -461,6 +604,7 @@ gensurv_combined <- function(df_plot,
                              (per 1000 Subjects)",
                              mar,
                              mab,
+                             mcd,
                              rel_heights_table = c(1, 0.2),
                              ben_name_p = "Primary Efficacy",
                              risk_name_p = "Recurring AE",
@@ -503,7 +647,8 @@ gensurv_combined <- function(df_plot,
     ben_name = ben_name_p, risk_name = risk_name_p,
     legend_position = legend_position_p,
     mab = mab,
-    mar = mar
+    mar = mar,
+    mcd = mcd
   )
   table <- gensurv_table(
     df_table, subjects_pt, visits_pt,
