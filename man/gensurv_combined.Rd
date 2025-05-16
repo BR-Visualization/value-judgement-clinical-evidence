@@ -14,6 +14,7 @@ gensurv_combined(
     "Cumulative Excess # of Subjects w/ Events\\n                             (per 1000 Subjects)",
   mar,
   mab,
+  mcd,
   rel_heights_table = c(1, 0.2),
   ben_name_p = "Primary Efficacy",
   risk_name_p = "Recurring AE",
@@ -63,6 +64,9 @@ team, must be numerical.}
 
 \item{mab}{The minimum acceptable benefit for the drug, as discussed by the
 team, must be numerical.}
+
+\item{mcd}{The minimum clinically important difference of the drug, as
+discussed by the team, must be numerical.}
 
 \item{rel_heights_table}{Elements for fig vs table size.}
 

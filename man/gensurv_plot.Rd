@@ -14,7 +14,8 @@ gensurv_plot(
   risk_name = "Recurring AE",
   legend_position = c(-0.03, 1.15),
   mar,
-  mab
+  mab,
+  mcd
 )
 }
 \arguments{
@@ -58,6 +59,9 @@ team, must be numerical.}
 
 \item{mab}{The minimum acceptable benefit for the drug, as discussed by the
 team, must be numerical.}
+
+\item{mcd}{The minimum clinically important difference of the drug, as
+discussed by the team, must be numerical.}
 }
 \value{
 A cumulative excess plot.
