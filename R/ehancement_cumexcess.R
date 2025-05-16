@@ -141,11 +141,11 @@ gensurv_plot <- function(
   df_ben <- df_ben %>%
     mutate(
       sd_diff = rollapply(diff, window_size, sd, fill = NA, align = "right")
-      ) %>%
-      mutate(
-        lower_ci = diff - 5 * sd_diff,
-        upper_ci = diff + 5 * sd_diff
-      )
+    ) %>%
+    mutate(
+      lower_ci = diff - 5 * sd_diff,
+      upper_ci = diff + 5 * sd_diff
+    )
 
 
   df_risk <- df_risk %>%
@@ -185,9 +185,9 @@ gensurv_plot <- function(
 
   all_labels <- sapply(all_breaks, function(b) {
     if (b == mcd) {
-      paste0('<span style="color:black; font-weight:bold; font-size:', round(text_size*3), 'pt;">MCD &#8594;</span>')
+      paste0('<span style="color:black; font-weight:bold; font-size:', round(text_size * 3), 'pt;">MCD &#8594;</span>')
     } else {
-      paste0('<span style="color:#0571b0;">', as.character(b), '</span>')
+      paste0('<span style="color:#0571b0;">', as.character(b), "</span>")
     }
   })
 
@@ -202,7 +202,7 @@ gensurv_plot <- function(
 
   legend_data <- data.frame(
     eventtime = 1:6,
-    diff = c(1,2,3,4,5,6),
+    diff = c(1, 2, 3, 4, 5, 6),
     color_group = c(
       "Benefit_Acceptable",
       "Benefit_Nonacceptable",
@@ -229,7 +229,7 @@ gensurv_plot <- function(
       aes(x = eventtime, y = diff * subjects, color = "Benefit_Nonacceptable"), size = 0.5
     ) +
     geom_ribbon(
-      data = df_ben %>% filter(diff * subjects >= mab),  # Only Acceptable Region
+      data = df_ben %>% filter(diff * subjects >= mab), # Only Acceptable Region
       aes(x = eventtime, ymin = lower_ci * subjects, ymax = upper_ci * subjects),
       fill = "#0571b0",
       alpha = 0.2
@@ -249,7 +249,7 @@ gensurv_plot <- function(
       aes(x = eventtime, y = diff * subjects, color = "Risk_Nonacceptable"), size = 0.5
     ) +
     geom_ribbon(
-      data = df_risk %>% filter(diff * subjects <= mar),  # Only Acceptable Region
+      data = df_risk %>% filter(diff * subjects <= mar), # Only Acceptable Region
       aes(x = eventtime, ymin = lower_ci * subjects, ymax = upper_ci * subjects),
       fill = "#ca0020",
       alpha = 0.2
@@ -265,10 +265,12 @@ gensurv_plot <- function(
       aes(x = eventtime, y = diff * subjects),
       shape = 23, fill = "black", size = 2
     ) +
-    geom_line(data = legend_data,
-             aes(x = eventtime, y = diff, color = color_group),
-             size = c(0.5, 1.5, 2, 0.5, 1.5, 2),
-             alpha = c(1, 1, 0.1, 1, 1, 0.1))  +
+    geom_line(
+      data = legend_data,
+      aes(x = eventtime, y = diff, color = color_group),
+      size = c(0.5, 1.5, 2, 0.5, 1.5, 2),
+      alpha = c(1, 1, 0.1, 1, 1, 0.1)
+    ) +
     scale_color_manual(
       name = "",
       values = c(
@@ -290,8 +292,8 @@ gensurv_plot <- function(
         ncol = 2,
         byrow = TRUE,
         override.aes = list(
-          linetype = c(1, 1, 1, 1),  # Solid for all
-          linewidth = c(0.5, 0.5, 0.5, 0.5),  # Thick for error bands
+          linetype = c(1, 1, 1, 1), # Solid for all
+          linewidth = c(0.5, 0.5, 0.5, 0.5), # Thick for error bands
           alpha = c(1, 1, 1, 1) # Transparent for error bands
         )
       )
