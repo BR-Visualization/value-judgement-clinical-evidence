@@ -408,13 +408,13 @@ create_forest_dot_plot <- function(
           x = if (is_last_plot) {
             paste0(
               "<br><br>",
-              "<span style='color:black;font-weight:bold;'>&larr; Favours ",
+              "<span style='color:black;font-weight:bold;'>&lt;- Favours ",
               treatment2,
               "</span>",
               "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003",
               "<span style='color:black;font-weight:bold;'>Favours ",
               treatment1,
-              " &rarr;</span>",
+              " -&gt;</span>",
               "<br><br>",
               "Treatment Difference with 95% CI"
             )
@@ -434,7 +434,7 @@ create_forest_dot_plot <- function(
           axis.title.y = element_blank(),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
-          axis.title.x = element_blank(),
+          axis.title.x = if (is_last_plot) ggtext::element_markdown(color = "black", face = "bold") else element_blank(),
           axis.text.x = element_text(color = "black"),
           legend.position = if (is_last_plot) "bottom" else "none", # Only show legend on last plot
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
