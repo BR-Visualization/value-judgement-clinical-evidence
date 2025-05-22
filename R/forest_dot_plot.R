@@ -408,13 +408,13 @@ create_forest_dot_plot <- function(
           x = if (is_last_plot) {
             paste0(
               "<br><br>",
-              "<span style='color:black;font-weight:bold;'>← Favours ",  # Unicode left arrow
+              "<span style='color:black;font-weight:bold;'>← Favours ", # Unicode left arrow
               treatment2,
               "</span>",
               "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003",
               "<span style='color:black;font-weight:bold;'>Favours ",
               treatment1,
-              " →</span>",  # Unicode right arrow
+              " →</span>", # Unicode right arrow
               "<br><br>",
               "Treatment Difference with 95% CI"
             )
