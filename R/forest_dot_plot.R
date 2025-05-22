@@ -408,13 +408,13 @@ create_forest_dot_plot <- function(
           x = if (is_last_plot) {
             paste0(
               "<br><br>",
-              "<span style='color:black;font-weight:bold;'>&lt;- Favours ",
+              "<span style='color:black;font-weight:bold;'>← Favours ",  # Unicode left arrow
               treatment2,
               "</span>",
               "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003",
               "<span style='color:black;font-weight:bold;'>Favours ",
               treatment1,
-              " -&gt;</span>",
+              " →</span>",  # Unicode right arrow
               "<br><br>",
               "Treatment Difference with 95% CI"
             )
@@ -423,7 +423,7 @@ create_forest_dot_plot <- function(
           }
         ) +
         # Apply theme
-        theme_minimal(base_family = "serif") +
+        theme_minimal() +
         theme(
           legend.key = element_rect(fill = "white", color = NA),
           panel.border = element_rect(
