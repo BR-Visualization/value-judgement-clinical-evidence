@@ -377,7 +377,7 @@ create_forest_dot_plot <- function(
         geom_point(
           data = thresholds_with_treatment,
           aes(x = Threshold, y = Outcome, shape = Treatment),
-          color = "black",
+          color = "purple",
           size = 4
         ) +
         # Add reference line at zero
