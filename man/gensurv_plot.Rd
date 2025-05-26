@@ -6,7 +6,7 @@
 \usage{
 gensurv_plot(
   df_outcome,
-  subjects,
+  base_subjects,
   visits,
   fig_colors = c("#0571b0", "#ca0020"),
   titlename = NULL,
@@ -31,7 +31,7 @@ observational period (this is a non-numerical input).
 \item eff_diff_lbl: A vector containing the label for effect difference.
 }}
 
-\item{subjects}{A numerical input that specifies the baseline proportion
+\item{base_subjects}{A numerical input that specifies the baseline proportion
 of subjects in the study (for example, "per 100 subjects")}
 
 \item{visits}{A numerical input that is the length between normal visits.}
