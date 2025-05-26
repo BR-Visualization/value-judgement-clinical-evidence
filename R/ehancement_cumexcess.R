@@ -141,11 +141,11 @@ gensurv_plot <- function(
   df_ben <- df_ben %>%
     mutate(
       sd_diff = rollapply(diff, window_size, sd, fill = NA, align = "right")
-      ) %>%
-      mutate(
-        lower_ci = diff - 5 * sd_diff,
-        upper_ci = diff + 5 * sd_diff
-      )
+    ) %>%
+    mutate(
+      lower_ci = diff - 5 * sd_diff,
+      upper_ci = diff + 5 * sd_diff
+    )
 
   df_risk <- df_risk %>%
     mutate(
@@ -198,7 +198,7 @@ gensurv_plot <- function(
 
   legend_data <- data.frame(
     eventtime = 1:6,
-    diff = c(1,2,3,4,5,6),
+    diff = c(1, 2, 3, 4, 5, 6),
     color_group = c(
       "Benefit_Acceptable",
       "Nonacceptable",
@@ -651,6 +651,8 @@ cowplot::plot_grid(
 #' 4) outcome: specifies whether the an outcome should be classified as a
 #' "Benefit" or "Risk" (this must have either "Benefit" or "Risk" as values).
 #' 5) eff_code: 0 for control and 1 for active effect.
+#' 6) subjects: A vector containing the total number of active/placebo subjects
+#' in the study at a given time.
 #' @param subjects_pt A numerical input that specifies the baseline proportion
 #' of subjects in the study.
 #' @param visits_pt A numerical input that is the length between observational
@@ -702,7 +704,7 @@ gensurv_combined <- function(df_plot,
   if (!is.null(df_table$eventtime)) {
     all_columns <- c(
       "obsv_duration", "n", "effect", "outcome", "eff_code",
-      "eventtime"
+      "eventtime", "subjects"
     )
     nonexistent_columns <- setdiff(all_columns, colnames(df_table))
     if (length(nonexistent_columns) > 0) {
@@ -711,7 +713,8 @@ gensurv_combined <- function(df_plot,
       stop(error_message)
     }
   } else {
-    all_columns <- c("obsv_duration", "n", "effect", "outcome", "eff_code")
+    all_columns <- c("obsv_duration", "n", "effect", "outcome", "eff_code",
+                     "subjects")
     nonexistent_columns <- setdiff(all_columns, colnames(df_table))
     if (length(nonexistent_columns) > 0) {
       error_message <- paste0("You are missing a required variable in your
