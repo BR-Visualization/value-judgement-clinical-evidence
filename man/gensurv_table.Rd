@@ -4,10 +4,15 @@
 \alias{gensurv_table}
 \title{Create a table that corresponds to the cumulative excess plot}
 \usage{
-gensurv_table(df_table, subjects, visits, fig_colors = c("#0571b0", "#ca0020"))
+gensurv_table(
+  df_table,
+  base_subjects,
+  visits,
+  fig_colors = c("#0571b0", "#ca0020")
+)
 }
 \arguments{
-\item{df_table}{A dataframe with 5 variables named the following:
+\item{df_table}{A dataframe with 6 variables named the following:
 \enumerate{
 \item obsv_duration: A variable that specifies the duration of the
 observational period (numerical).
@@ -17,9 +22,11 @@ at a given time (numerical).
 \item outcome: specifies whether the an outcome should be classified as a
 "Benefit" or "Risk" (this must have either "Benefit" or "Risk" as values).
 \item eff_code: 0 for control and 1 for active effect.
+\item subjects: A vector containing the total number of active/placebo subjects
+in the study at a given time.
 }}
 
-\item{subjects}{A numerical input that specifies the baseline proportion
+\item{base_subjects}{A numerical input that specifies the baseline proportion
 of subjects in the study (for example, "per 100 subjects")}
 
 \item{visits}{A numerical input that is the length between observational
