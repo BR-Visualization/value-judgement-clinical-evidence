@@ -44,6 +44,8 @@ at a given time (numerical).
 \item outcome: specifies whether the an outcome should be classified as a
 "Benefit" or "Risk" (this must have either "Benefit" or "Risk" as values).
 \item eff_code: 0 for control and 1 for active effect.
+\item subjects: A vector containing the total number of active/placebo subjects
+in the study at a given time.
 }}
 
 \item{subjects_pt}{A numerical input that specifies the baseline proportion
