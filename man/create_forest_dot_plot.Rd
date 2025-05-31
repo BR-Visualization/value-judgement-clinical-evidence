@@ -13,7 +13,8 @@ create_forest_dot_plot(
   treatment1 = "Drug A",
   treatment2 = "Placebo",
   filter_value = "None",
-  precalculated_stats = FALSE
+  precalculated_stats = FALSE,
+  forest_upper_limit = NULL
 )
 }
 \arguments{
@@ -33,6 +34,8 @@ Accepts \code{"greater"} or \code{"less"}. Can be a single value applied to all,
 \item{filter_value}{Character; value used to filter the \code{Filter} column (default: \code{"None"}).}
 
 \item{precalculated_stats}{Logical; if \code{TRUE}, skips calculation and uses provided statistics.}
+
+\item{forest_upper_limit}{Numeric; optional upper limit for the forest plot, adds a reference line at this value if provided.}
 }
 \value{
 A patchwork object containing combined dot and forest plots with a shared legend.
@@ -46,7 +49,8 @@ Displays treatment effects, confidence intervals, and optional clinical threshol
 prepared_data <- prepare_forest_dot_data(effects_table)
 
 # Generate the plot
-create_forest_dot_plot(prepared_data)
+(dotforest <- create_forest_dot_plot(prepared_data))
+ggsave_custom("dotforest.png", imgpath = "./", inplot = dotforest, dpi = 300)
 
 # With clinical thresholds
 thresholds <- data.frame(
