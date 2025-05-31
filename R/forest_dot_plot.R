@@ -24,6 +24,7 @@ library(rlang)
 #' @param treatment2 Character; label of the second treatment group (default: `"Placebo"`).
 #' @param filter_value Character; value used to filter the `Filter` column (default: `"None"`).
 #' @param precalculated_stats Logical; if `TRUE`, skips calculation and uses provided statistics.
+#' @param forest_upper_limit Numeric; optional upper limit for the forest plot, adds a reference line at this value if provided.
 #'
 #' @return A patchwork object containing combined dot and forest plots with a shared legend.
 #'
@@ -42,7 +43,8 @@ library(rlang)
 #' prepared_data <- prepare_forest_dot_data(effects_table)
 #'
 #' # Generate the plot
-#' create_forest_dot_plot(prepared_data)
+#' (dotforest <- create_forest_dot_plot(prepared_data))
+#' ggsave_custom("dotforest.png", imgpath = "./", inplot = dotforest, dpi = 300)
 #'
 #' # With clinical thresholds
 #' thresholds <- data.frame(
@@ -71,7 +73,8 @@ create_forest_dot_plot <- function(
     treatment1 = "Drug A",
     treatment2 = "Placebo",
     filter_value = "None",
-    precalculated_stats = FALSE) {
+    precalculated_stats = FALSE,
+    forest_upper_limit = NULL) {
   # Set up default clinical thresholds
   default_thresholds <- data.frame(
     Outcome = c(
@@ -126,6 +129,7 @@ create_forest_dot_plot <- function(
   )
 
   plots <- list()
+  plot_outcome_counts <- c() # Store number of outcomes for each plot
   factors <- unique(filtered_data$Factor)
 
   # Loop through factors and types to create plots
@@ -187,8 +191,9 @@ create_forest_dot_plot <- function(
       # Set up color and shape scales
       manual_fill_colors <- c("Benefit" = "lightgreen", "Risk" = "lightcoral")
       unique_trts <- unique(c(treatment1, treatment2, "Clinical Threshold"))
+      # Use hollow circle (5) for Clinical Threshold
+      manual_shapes <- setNames(c(21, 24, 5), unique_trts)
       manual_colors <- setNames(c("#D55E00", "#0072B2", "black"), unique_trts)
-      manual_shapes <- setNames(c(21, 24, 18), unique_trts)
       manual_fills <- setNames(
         c("#D55E00", "#0072B2", "gray85", "black"),
         c(
@@ -218,6 +223,26 @@ create_forest_dot_plot <- function(
       x_max <- max(type_data$Diff_UpperCI, na.rm = TRUE)
       x_range <- max(abs(x_min), abs(x_max))
       x_lim <- c(-x_range, x_range)
+
+      # Set up x-axis breaks for forest plot
+      forest_breaks <- pretty(x_lim, n = 5)
+      # Ensure forest_upper_limit is included as a tick if specified
+      if (!is.null(forest_upper_limit)) {
+        # Expand x_lim if needed
+        if (forest_upper_limit > max(x_lim)) {
+          x_lim[2] <- forest_upper_limit
+        }
+        # Always set the last break to forest_upper_limit
+        forest_breaks <- forest_breaks[forest_breaks <= x_lim[2]]
+        if (tail(forest_breaks, 1) != forest_upper_limit) {
+          forest_breaks <- c(forest_breaks, forest_upper_limit)
+        }
+        # Add an extra interval to ensure a tick after the plotted points
+        interval <- if (length(forest_breaks) > 1) diff(tail(forest_breaks, 2)) else 1
+        extra_tick <- forest_upper_limit + interval
+        forest_breaks <- c(forest_breaks, extra_tick)
+        x_lim[2] <- extra_tick
+      }
 
       # Find the maximum value across all dot plots in the same factor/type
       max_x_value <- max(dot_data$x, na.rm = TRUE)
@@ -311,8 +336,8 @@ create_forest_dot_plot <- function(
         color_scale +
         shape_scale +
         fill_scale +
-        labs(x = if (is_last_plot) "Treatment Response" else NULL) +
-        theme_minimal(base_family = "serif") +
+        labs(x = if (is_last_plot) "\n Treatment Response" else NULL) +
+        theme_minimal(base_family = "sans") +
         theme(
           panel.border = element_rect(
             color = "gray90",
@@ -320,8 +345,8 @@ create_forest_dot_plot <- function(
             linewidth = 0.5
           ),
           axis.title.y = element_blank(),
-          axis.title.x = element_blank(),
-          legend.position = if (is_last_plot) "bottom" else "none", # Only show legend on last plot
+          axis.title.x = element_text(face = "bold", color = "black"),
+          legend.position = if (is_last_plot) "bottom" else "none",
           axis.text.y = element_text(),
           axis.ticks.y = element_line(),
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
@@ -378,7 +403,9 @@ create_forest_dot_plot <- function(
           data = thresholds_with_treatment,
           aes(x = Threshold, y = Outcome, shape = Treatment),
           color = "black",
-          size = 4
+          fill = NA, # hollow symbol
+          size = 3,
+          stroke = 1 # make outline thicker for visibility
         ) +
         # Add reference line at zero
         geom_vline(
@@ -403,18 +430,19 @@ create_forest_dot_plot <- function(
         scale_y_discrete(limits = y_levels) +
         shape_scale +
         coord_cartesian(xlim = x_lim, clip = "off") +
+        scale_x_continuous(limits = x_lim, breaks = forest_breaks) +
         # Add x-axis label for last plot
         labs(
           x = if (is_last_plot) {
             paste0(
               "<br><br>",
-              "<span style='color:black;font-weight:bold;'>&larr; Favours ",
+              "<span style='color:black;font-weight:bold;'>← Favours ", # Unicode left arrow
               treatment2,
               "</span>",
               "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003",
               "<span style='color:black;font-weight:bold;'>Favours ",
               treatment1,
-              " &rarr;</span>",
+              " →</span>", # Unicode right arrow
               "<br><br>",
               "Treatment Difference with 95% CI"
             )
@@ -423,7 +451,7 @@ create_forest_dot_plot <- function(
           }
         ) +
         # Apply theme
-        theme_minimal(base_family = "serif") +
+        theme_minimal() +
         theme(
           legend.key = element_rect(fill = "white", color = NA),
           panel.border = element_rect(
@@ -434,7 +462,7 @@ create_forest_dot_plot <- function(
           axis.title.y = element_blank(),
           axis.text.y = element_blank(),
           axis.ticks.y = element_blank(),
-          axis.title.x = element_blank(),
+          axis.title.x = if (is_last_plot) ggtext::element_markdown(color = "black", face = "bold") else element_blank(),
           axis.text.x = element_text(color = "black"),
           legend.position = if (is_last_plot) "bottom" else "none", # Only show legend on last plot
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
@@ -458,11 +486,18 @@ create_forest_dot_plot <- function(
 
       # Store combined plot
       plots[[paste(factor, type, sep = "_")]] <- combined_plot
+      # Store number of outcomes for this plot
+      plot_outcome_counts <- c(plot_outcome_counts, length(y_levels))
     }
   }
 
-  # Combine all plots vertically
-  final_plot_assembly <- wrap_plots(plots, ncol = 1)
+  # Set min and max height to avoid too tall/short plots
+  min_height <- 1
+  max_height <- 3
+  heights <- pmax(min_height, pmin(sqrt(plot_outcome_counts), max_height))
+
+  # Combine all plots vertically, resizing according to number of outcomes (with limits)
+  final_plot_assembly <- wrap_plots(plots, ncol = 1, heights = heights)
 
   return(final_plot_assembly)
 }
