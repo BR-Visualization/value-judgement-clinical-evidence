@@ -252,52 +252,42 @@ create_forest_dot_plot <- function(
       max_x_value <- max_x_value * 1.05
 
       # Create breaks with more intuitive intervals based on rounded max value
+      # Ensure there is always a tick mark after the last data point
       if (length(dot_data$x) == 0 || max_x_value <= 0) {
         # Handle edge case of empty data or zero/negative max values
         max_x_value <- 1
         dot_breaks <- c(0, 0.2, 0.4, 0.6, 0.8, 1.0)
       } else if (max_x_value <= 0.05) {
-        # For very small values up to 0.05, use 0.01 intervals
         max_x_value <- ceiling(max_x_value * 100) / 100 # Round up to nearest 0.01
         dot_breaks <- seq(0, max_x_value, by = 0.01)
       } else if (max_x_value <= 0.2) {
-        # For small values up to 0.2, use 0.05 intervals: 0, 0.05, 0.10, 0.15, 0.20
         max_x_value <- ceiling(max_x_value * 20) / 20 # Round up to nearest 0.05
         dot_breaks <- seq(0, max_x_value, by = 0.05)
       } else if (max_x_value <= 0.5) {
-        # For values up to 0.5, use 0.1 intervals: 0, 0.1, 0.2, 0.3, 0.4, 0.5
         max_x_value <- ceiling(max_x_value * 10) / 10 # Round up to nearest 0.1
         dot_breaks <- seq(0, max_x_value, by = 0.1)
       } else if (max_x_value <= 1) {
-        # For values up to 1, use 0.2 intervals: 0, 0.2, 0.4, 0.6, 0.8, 1.0
         max_x_value <- ceiling(max_x_value * 5) / 5 # Round up to nearest 0.2
         dot_breaks <- seq(0, max_x_value, by = 0.2)
       } else if (max_x_value <= 2) {
-        # For values up to 2, use 0.5 intervals: 0, 0.5, 1.0, 1.5, 2.0
         max_x_value <- ceiling(max_x_value * 2) / 2 # Round up to nearest 0.5
         dot_breaks <- seq(0, max_x_value, by = 0.5)
       } else if (max_x_value <= 5) {
-        # For values up to 5, use 1.0 intervals: 0, 1, 2, 3, 4, 5
         max_x_value <- ceiling(max_x_value)
         dot_breaks <- seq(0, max_x_value, by = 1)
       } else if (max_x_value <= 10) {
-        # For values up to 10, use 2.0 intervals: 0, 2, 4, 6, 8, 10
         max_x_value <- ceiling(max_x_value / 2) * 2 # Round up to nearest 2
         dot_breaks <- seq(0, max_x_value, by = 2)
       } else if (max_x_value <= 20) {
-        # For values up to 20, use 5.0 intervals: 0, 5, 10, 15, 20
         max_x_value <- ceiling(max_x_value / 5) * 5 # Round up to nearest 5
         dot_breaks <- seq(0, max_x_value, by = 5)
       } else if (max_x_value <= 50) {
-        # For values up to 50, use 10.0 intervals: 0, 10, 20, 30, 40, 50
         max_x_value <- ceiling(max_x_value / 10) * 10 # Round up to nearest 10
         dot_breaks <- seq(0, max_x_value, by = 10)
       } else if (max_x_value <= 100) {
-        # For values up to 100, use 20.0 intervals: 0, 20, 40, 60, 80, 100
         max_x_value <- ceiling(max_x_value / 20) * 20 # Round up to nearest 20
         dot_breaks <- seq(0, max_x_value, by = 20)
       } else {
-        # For larger values, use appropriate 'nice' intervals
         power <- floor(log10(max_x_value))
         base <- 10^(power - 1)
         if (max_x_value <= 5 * 10^power) {
@@ -307,6 +297,30 @@ create_forest_dot_plot <- function(
         }
         max_x_value <- ceiling(max_x_value / interval) * interval
         dot_breaks <- seq(0, max_x_value, by = interval)
+      }
+
+      # Always add a tick after the last CI bound for forest plot
+      max_ci <- max(type_data$Diff_UpperCI, na.rm = TRUE)
+      min_ci <- min(type_data$Diff_LowerCI, na.rm = TRUE)
+      if (length(forest_breaks) > 1) {
+        interval <- forest_breaks[2] - forest_breaks[1]
+        last_tick <- max(forest_breaks)
+        if (last_tick <= max_ci) {
+          forest_breaks <- c(forest_breaks, last_tick + interval)
+          x_lim[2] <- last_tick + interval
+        }
+        # Also check lower bound for symmetry
+        first_tick <- min(forest_breaks)
+        if (first_tick >= min_ci) {
+          forest_breaks <- c(first_tick - interval, forest_breaks)
+          x_lim[1] <- first_tick - interval
+        }
+      }
+
+      # After all forest_breaks are finalized, ensure x_lim[2] matches the last tick
+      if (length(forest_breaks) > 1) {
+        x_lim[2] <- max(forest_breaks)
+        x_lim[1] <- min(forest_breaks)
       }
 
       # Create dot plot with intuitive breaks
