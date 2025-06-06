@@ -1,6 +1,6 @@
 testthat::test_that("create_forest_dot_plot returns patchwork object", {
   test_data <- data.frame(
-    Outcome = rep(c("Primary Efficacy", "Secondary Efficacy"), each = 2),
+    Outcome = rep(c("Benefit 1", "Benefit 2"), each = 2),
     Type = rep("Continuous", 4),
     Factor = rep("Benefit", 4),
     Trt1 = rep("Drug A", 4),
@@ -15,7 +15,7 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
   )
 
   test_data_bin <- data.frame(
-    Outcome = c("Reoccurring AE", "Rare SAE"),
+    Outcome = c("Risk 1", "Risk 2"),
     Type = rep("Binary", 2),
     Factor = rep("Risk", 2),
     Trt1 = rep("Drug A", 2),
@@ -34,10 +34,10 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
 
   # Define direction as a named vector
   directions <- c(
-    "Primary Efficacy" = "greater",
-    "Secondary Efficacy" = "greater",
-    "Reoccurring AE" = "less",
-    "Rare SAE" = "less"
+    "Benefit 1" = "greater",
+    "Benefit 2" = "greater",
+    "Risk 1" = "less",
+    "Risk 2" = "less"
   )
 
   # Create the plot with custom direction

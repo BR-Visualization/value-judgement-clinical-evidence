@@ -1,6 +1,6 @@
 testthat::test_that("prepare_forest_dot_data computes CIs correctly", {
   test_data <- data.frame(
-    Outcome = rep(c("Primary Efficacy", "Secondary Efficacy"), each = 2),
+    Outcome = rep(c("Benefit 1", "Benefit 2"), each = 2),
     Type = rep("Continuous", 4),
     Factor = rep("Benefit", 4),
     Trt1 = rep("Drug A", 4),
@@ -15,7 +15,7 @@ testthat::test_that("prepare_forest_dot_data computes CIs correctly", {
   )
 
   test_data_bin <- data.frame(
-    Outcome = c("Reoccurring AE", "Rare SAE"),
+    Outcome = c("Risk 1", "Risk 2"),
     Type = rep("Binary", 2),
     Factor = rep("Risk", 2),
     Trt1 = rep("Drug A", 2),
@@ -38,7 +38,7 @@ testthat::test_that("prepare_forest_dot_data computes CIs correctly", {
 
 testthat::test_that("prepare_forest_dot_data errors on missing CI columns with precalculated", {
   test_data_bin <- data.frame(
-    Outcome = c("Reoccurring AE", "Rare SAE"),
+    Outcome = c("Risk 1", "Risk 2"),
     Type = rep("Binary", 2),
     Factor = rep("Risk", 2),
     Trt1 = rep("Drug A", 2),
@@ -60,7 +60,7 @@ testthat::test_that("prepare_forest_dot_data errors on missing CI columns with p
 
 testthat::test_that("prepare_forest_dot_data passes with precalculated columns", {
   test_data <- data.frame(
-    Outcome = rep("Primary Efficacy", 2),
+    Outcome = rep("Benefit 1", 2),
     Type = rep("Binary", 2),
     Factor = rep("Benefit", 2),
     Trt1 = rep("Drug A", 2),

@@ -8,8 +8,8 @@ create_forest_dot_plot(
   data,
   clin_thresholds = NULL,
   direction = NULL,
-  outcomes_of_interest = c("Primary Efficacy", "Secondary Efficacy",
-    "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
+  outcomes_of_interest = c("Benefit 1", "Benefit 2",
+    "Benefit 3", "Risk 1", "Risk 2"),
   treatment1 = "Drug A",
   treatment2 = "Placebo",
   filter_value = "None",
@@ -54,14 +54,14 @@ ggsave_custom("dotforest.png", imgpath = "./", inplot = dotforest, dpi = 300)
 
 # With clinical thresholds
 thresholds <- data.frame(
-  Outcome = c("Primary Efficacy", "Secondary Efficacy"),
+  Outcome = c("Benefit 1", "Benefit 2"),
   Threshold = c(0.10, 0.08),
   Direction = c("greater", "greater")
 )
 create_forest_dot_plot(prepared_data,
   outcomes_of_interest = c(
-    "Primary Efficacy",
-    "Secondary Efficacy"
+    "Benefit 1",
+    "Benefit 2"
   ),
   clin_thresholds = thresholds
 )

@@ -48,14 +48,14 @@ library(rlang)
 #'
 #' # With clinical thresholds
 #' thresholds <- data.frame(
-#'   Outcome = c("Primary Efficacy", "Secondary Efficacy"),
+#'   Outcome = c("Benefit 1", "Benefit 2"),
 #'   Threshold = c(0.10, 0.08),
 #'   Direction = c("greater", "greater")
 #' )
 #' create_forest_dot_plot(prepared_data,
 #'   outcomes_of_interest = c(
-#'     "Primary Efficacy",
-#'     "Secondary Efficacy"
+#'     "Benefit 1",
+#'     "Benefit 2"
 #'   ),
 #'   clin_thresholds = thresholds
 #' )
@@ -64,11 +64,11 @@ create_forest_dot_plot <- function(
     clin_thresholds = NULL,
     direction = NULL,
     outcomes_of_interest = c(
-      "Primary Efficacy",
-      "Secondary Efficacy",
-      "HR Quality of Life",
-      "Reoccurring AE",
-      "Rare SAE"
+      "Benefit 1",
+      "Benefit 2",
+      "Benefit 3",
+      "Risk 1",
+      "Risk 2"
     ),
     treatment1 = "Drug A",
     treatment2 = "Placebo",
@@ -78,11 +78,11 @@ create_forest_dot_plot <- function(
   # Set up default clinical thresholds
   default_thresholds <- data.frame(
     Outcome = c(
-      "Primary Efficacy",
-      "Secondary Efficacy",
-      "HR Quality of Life",
-      "Reoccurring AE",
-      "Rare SAE"
+      "Benefit 1",
+      "Benefit 2",
+      "Benefit 3",
+      "Risk 1",
+      "Risk 2"
     ),
     Threshold = c(0.10, 0.08, 5, -0.10, -0.05),
     Direction = c("greater", "greater", "greater", "less", "less"),
@@ -350,7 +350,7 @@ create_forest_dot_plot <- function(
         color_scale +
         shape_scale +
         fill_scale +
-        labs(x = if (is_last_plot) "\n Treatment Response" else NULL) +
+        labs(x = if (is_last_plot) "<br>Treatment Response" else NULL) +
         theme_minimal(base_family = "sans") +
         theme(
           panel.border = element_rect(
@@ -359,10 +359,10 @@ create_forest_dot_plot <- function(
             linewidth = 0.5
           ),
           axis.title.y = element_blank(),
-          axis.title.x = element_text(face = "bold", color = "black"),
+          axis.title.x = if (is_last_plot) ggtext::element_markdown(face = "bold", color = "black") else element_text(face = "bold", color = "black"),
           legend.position = if (is_last_plot) "bottom" else "none",
-          axis.text.y = element_text(),
-          axis.ticks.y = element_line(),
+          axis.text.y = element_blank(),  # Remove y-axis labels from dot plot
+          axis.ticks.y = element_blank(), # Remove y-axis ticks from dot plot
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
         )
 
@@ -449,7 +449,7 @@ create_forest_dot_plot <- function(
         labs(
           x = if (is_last_plot) {
             paste0(
-              "<br><br>",
+              "<br>",
               "<span style='color:black;font-weight:bold;'>← Favours ", # Unicode left arrow
               treatment2,
               "</span>",
@@ -457,7 +457,7 @@ create_forest_dot_plot <- function(
               "<span style='color:black;font-weight:bold;'>Favours ",
               treatment1,
               " →</span>", # Unicode right arrow
-              "<br><br>",
+              "<br>",
               "Treatment Difference with 95% CI"
             )
           } else {
@@ -474,23 +474,23 @@ create_forest_dot_plot <- function(
             linewidth = 0.5
           ),
           axis.title.y = element_blank(),
-          axis.text.y = element_blank(),
-          axis.ticks.y = element_blank(),
+          axis.text.y = element_text(), # Show y-axis labels on forest plot
+          axis.ticks.y = element_line(), # Show y-axis ticks on forest plot
           axis.title.x = if (is_last_plot) ggtext::element_markdown(color = "black", face = "bold") else element_blank(),
           axis.text.x = element_text(color = "black"),
           legend.position = if (is_last_plot) "bottom" else "none", # Only show legend on last plot
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
         )
 
-      # Combine dot and forest plots
+      # Combine forest and dot plots (forest on left, dot on right)
       combined_plot <- wrap_plots(
-        dot_plot,
         forest_plot,
+        dot_plot,
         ncol = 2,
         widths = c(1, 1)
       ) +
         theme(
-          plot.margin = unit(c(0.3, 0.2, 0.3, 0.2), "cm"),
+          plot.margin = unit(c(0.3, 0.2, 0.1, 0.2), "cm"),  # Reduced bottom margin
           axis.title.x = if (is_last_plot) {
             ggtext::element_markdown(color = "black", face = "bold")
           } else {

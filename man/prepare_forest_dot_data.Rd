@@ -6,8 +6,8 @@
 \usage{
 prepare_forest_dot_data(
   data,
-  outcomes_of_interest = c("Primary Efficacy", "Secondary Efficacy",
-    "HR Quality of Life", "Reoccurring AE", "Rare SAE"),
+  outcomes_of_interest = c("Benefit 1", "Benefit 2",
+    "Benefit 3", "Risk 1", "Risk 2"),
   treatment1 = "Drug A",
   treatment2 = "Placebo",
   filter_value = "None",
