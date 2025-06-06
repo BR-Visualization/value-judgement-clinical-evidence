@@ -122,9 +122,9 @@ gensurv_plot <- function(
   obsv_dur <- unique(df_outcome$obsv_duration)
   min1 <- min((df_outcome$diff) * base_subjects)
   num_break <- ifelse(((min1 * (-2)) %% 6 == 0), 6,
-    ifelse(((min1 * (-2)) %% 4 == 0), 4,
-      ifelse(((min1 * (-2)) %% 5 == 0), 5, 7)
-    )
+                      ifelse(((min1 * (-2)) %% 4 == 0), 4,
+                             ifelse(((min1 * (-2)) %% 5 == 0), 5, 7)
+                      )
   )
 
   actual_min <- (min1 %% (-num_break)) + (min1)
@@ -192,8 +192,8 @@ gensurv_plot <- function(
 
   legend_levels <- c(
     "Benefit_Acceptable",
-    "Nonacceptable",
-    "Risk_Acceptable"
+    "Risk_Acceptable",
+    "Nonacceptable"
   )
 
   legend_data <- data.frame(
@@ -201,8 +201,8 @@ gensurv_plot <- function(
     diff = c(1, 2, 3, 4, 5, 6),
     color_group = c(
       "Benefit_Acceptable",
-      "Nonacceptable",
-      "Risk_Acceptable"
+      "Risk_Acceptable",
+      "Nonacceptable"
     )
   )
 
@@ -213,14 +213,6 @@ gensurv_plot <- function(
     geom_hline(yintercept = mar, color = "#ca0020", linetype = "dashed", size = 1) +
     annotate("text", x = -0.5, y = ifelse(mar > mab, mab - adjustment, mab + adjustment), color = "#0571b0", label = "MAB", size = 3) +
     annotate("text", x = (.95*obsv_dur), y = ifelse(mar > mab, mar + adjustment, mar - adjustment), color = "#ca0020", label = "MAR", size = 3) +
-    geom_line(
-      data = df_ben %>% filter(diff * base_subjects >= mab),
-      aes(x = eventtime, y = diff * base_subjects, color = "Benefit_Acceptable"), size = 0.5
-    ) +
-    geom_line(
-      data = df_ben %>% filter(diff * base_subjects < mab), # Only below MAB
-      aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"), size = 0.5
-    ) +
     geom_ribbon(
       data = df_ben %>% filter(diff * base_subjects >= mab),  # Only Acceptable Region
       aes(x = eventtime, ymin = lower_ci * base_subjects, ymax = upper_ci * base_subjects),
@@ -232,15 +224,7 @@ gensurv_plot <- function(
       aes(x = eventtime, ymin = lower_ci * base_subjects, ymax = upper_ci * base_subjects),
       fill = "#7f7f7f",
       alpha = 0.2
-    ) +
-    geom_line(
-      data = df_risk %>% filter(diff * base_subjects <= mar),
-      aes(x = eventtime, y = diff * base_subjects, color = "Risk_Acceptable"), size = 0.5
-    ) +
-    geom_line(
-      data = df_risk %>% filter(diff * base_subjects > mar), # Only above MAR
-      aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"), size = 0.5
-    ) +
+    )  +
     geom_ribbon(
       data = df_risk %>% filter(diff * base_subjects <= mar),  # Only Acceptable Region
       aes(x = eventtime, ymin = lower_ci * base_subjects, ymax = upper_ci * base_subjects),
@@ -266,25 +250,25 @@ gensurv_plot <- function(
       size = 3
     ) +
     geom_line(data = legend_data,
-             aes(x = eventtime, y = diff, color = color_group),
-             size = 0, alpha = 0)  +
+              aes(x = eventtime, y = diff, color = color_group),
+              size = 0, alpha = 0)  +
     scale_color_manual(
       name = "",
       values = c(
         "Benefit_Acceptable" = "#0571b0",
-        "Nonacceptable" = "#7f7f7f",
-        "Risk_Acceptable" = "#ca0020"
+        "Risk_Acceptable" = "#ca0020",
+        "Nonacceptable" = "#7f7f7f"
       ),
       labels = c(
         "Acceptable Benefit",
-        "Nonacceptable Region",
-        "Acceptable Risk"
+        "Acceptable Risk",
+        "Nonacceptable Region"
       )
     ) +
     guides(
       color = guide_legend(
         title = "",
-        ncol = 2,
+        ncol = 3,
         byrow = TRUE,
         override.aes = list(
           linetype = c(1, 1, 1),
@@ -297,7 +281,7 @@ gensurv_plot <- function(
     coord_cartesian(
       ylim =
         c(
-          actual_min,
+          (actual_min-adjustment),
           max(breaks2)
         )
     ) +
@@ -345,7 +329,27 @@ gensurv_plot <- function(
       plot.margin = margin(14.506, 30, 14.506, 14.506),
       axis.title.y = element_text(color = fig_colors[1]),
       axis.title.y.right = element_text(color = fig_colors[2])
+    ) +
+    geom_line(
+      data = df_risk %>% filter(diff * base_subjects <= mar),
+      aes(x = eventtime, y = diff * base_subjects, color = "Risk_Acceptable"), size = 0.5
+    ) +
+    geom_line(
+      data = df_ben %>% filter(diff * base_subjects >= mab),
+      aes(x = eventtime, y = diff * base_subjects, color = "Benefit_Acceptable"), size = 0.5
+    ) +
+    geom_line(
+      data = df_risk %>% filter(diff * base_subjects > mar), # Only above MAR
+      aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"), size = 0.5
+    ) +
+    geom_line(
+      data = df_ben %>% filter(diff * base_subjects < mab), # Only below MAB
+      aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"), size = 0.5
     )
+
+  plot1 <- ggdraw() +
+    draw_plot(plot1, 0,0,1,1)
+
   if (!is.null(titlename)) {
     plot_grid(
       mytitle,
@@ -453,10 +457,15 @@ gensurv_table <- function(df_table,
     ) %>%
     mutate(effect = forcats::fct_reorder(
       as.factor(paste(effect, outcome,
-        sep = " "
+                      sep = " "
       )), y,
       .na_rm = FALSE
     ))
+
+  df_table1 <- df_table1 %>%
+    mutate(
+      effect = factor(effect, levels = unique(effect[order(y)]))
+    )
 
   len <- df_table$obsv_duration[1]
   visit <- seq.default(0, len, by = visits)
@@ -485,7 +494,8 @@ gensurv_table <- function(df_table,
   )
 
   x_ctrl <- list(
-    breaks = unique(df_table1$visit),
+    limits = c(-0.25, (len+1.5)),
+    breaks = seq(0, len, visits),
     labels = NULL
   )
 
@@ -514,7 +524,7 @@ gensurv_table <- function(df_table,
   scale_x_control <- do.call(scale_x_continuous, x_ctrl)
   scale_y_control <- do.call(scale_y_continuous, y_ctrl)
 
-og_table1 <- ggplot(data = df_table1) +
+  og_table1 <- ggplot(data = df_table1) +
     geom_text_control +
     scale_x_control +
     scale_y_control +
@@ -540,94 +550,99 @@ og_table1 <- ggplot(data = df_table1) +
       legend.position = "none"
     )
 
-df_table2 <- df_table %>%
-  mutate(z = dplyr::case_when(
-    eff_code == 0 ~ 1,
-    eff_code == 1 ~ 2
-  ))
+  df_table2 <- df_table %>%
+    mutate(z = dplyr::case_when(
+      eff_code == 0 ~ 1,
+      eff_code == 1 ~ 2
+    ))
 
-if (!is.null(df_table2$eventtime)) {
   df_table2 <- df_table2 %>%
-    filter(eventtime %in% unlist(visit)) %>%
-    mutate(visit = eventtime) %>%
-    select(visit, n, effect, z, subjects) %>%
-    distinct(visit, effect, z, .keep_all = TRUE)
-} else {
-  df_table2$visit <- visit
-  df_table2 <- df_table2 %>%
-    select(visit, n, effect, z, subjects)%>%
-    distinct(visit, effect, z, .keep_all = TRUE)
-}
+    mutate(
+      effect = factor(effect, levels = unique(effect[order(z)]))
+    )
 
-geom_text_subjects_ctrl <- list(
-  aes_string(
-    x = "visit",
-    label = "subjects",
-    y = "z"
-  ),
-  color = "black",
-  family = "sans",
-  size = 3
-)
+  if (!is.null(df_table2$eventtime)) {
+    df_table2 <- df_table2 %>%
+      filter(eventtime %in% unlist(visit)) %>%
+      mutate(visit = eventtime) %>%
+      select(visit, n, effect, z, subjects) %>%
+      distinct(visit, effect, z, .keep_all = TRUE)
+  } else {
+    df_table2$visit <- visit
+    df_table2 <- df_table2 %>%
+      select(visit, n, effect, z, subjects)%>%
+      distinct(visit, effect, z, .keep_all = TRUE)
+  }
 
-extra_code1 <- labs(titles = "Number of Subjects")
-
-if (any(is.na(df_table))) {
-  df_table3 <- na.omit(df_table2)
-  df_table3 <- droplevels(df_table3)
-
-  y_ctrl_2 <- list(
-    name = "",
-    breaks = c(1, 2),
-    limits = c(0, 2.5),
-    labels = levels(factor(df_table2$effect))
-  )
-} else {
-  y_ctrl_2 <- list(
-    name = "",
-    breaks = c(1, 2),
-    limits = c(0, 2.5),
-    labels = levels(factor(df_table2$effect))
-  )
-}
-
-geom_text_subj_control <- do.call(geom_text, geom_text_subjects_ctrl)
-scale_x_control1 <- do.call(scale_x_continuous, x_ctrl)
-scale_y_control1 <- do.call(scale_y_continuous, y_ctrl_2)
-
-subj_table <-ggplot(data = df_table2) +
-  geom_text_subj_control +
-  scale_x_control1 +
-  scale_y_control1 +
-  extra_code1 +
-  #labs(caption = paste(
-  #  "Total number of subjects:", active1, "=",
-  #  base_subjects,
-  #  "and", control1, "=",
-  #  base_subjects
-  #)) +
-  br_charts_theme() +
-  theme(
-    plot.title = ggplot2::element_text(size = 8),
-    axis.ticks.x = element_blank(),
-    axis.ticks.y = element_blank(),
-    panel.grid.major = element_blank(),
-    panel.grid.minor = element_blank(),
-    panel.border = element_blank(),
-    axis.title.x = element_blank(),
-    axis.line = element_blank(),
-    plot.margin = margin(2,15,0.1,8),
-    plot.caption = element_text(hjust = 0.42),
-    legend.position = "none"
+  geom_text_subjects_ctrl <- list(
+    aes_string(
+      x = "visit",
+      label = "subjects",
+      y = "z"
+    ),
+    color = "black",
+    family = "sans",
+    size = 3
   )
 
-cowplot::plot_grid(
-  subj_table,
-  og_table1,
-  ncol = 1,
-  align = "v",
-  rel_heights = c(0.55, 1)  # Adjust to control height ratio
-)
+  extra_code1 <- labs(titles = "Number of Subjects")
+
+  if (any(is.na(df_table))) {
+    df_table3 <- na.omit(df_table2)
+    df_table3 <- droplevels(df_table3)
+
+    y_ctrl_2 <- list(
+      name = "",
+      breaks = c(1, 2),
+      limits = c(0, 2.5),
+      labels = levels(factor(df_table2$effect))
+    )
+  } else {
+    y_ctrl_2 <- list(
+      name = "",
+      breaks = c(1, 2),
+      limits = c(0, 2.5),
+      labels = levels(factor(df_table2$effect))
+    )
+  }
+
+  geom_text_subj_control <- do.call(geom_text, geom_text_subjects_ctrl)
+  scale_x_control1 <- do.call(scale_x_continuous, x_ctrl)
+  scale_y_control1 <- do.call(scale_y_continuous, y_ctrl_2)
+
+  subj_table <-ggplot(data = df_table2) +
+    geom_text_subj_control +
+    scale_x_control1 +
+    scale_y_control1 +
+    extra_code1 +
+    #labs(caption = paste(
+    #  "Total number of subjects:", active1, "=",
+    #  base_subjects,
+    #  "and", control1, "=",
+    #  base_subjects
+    #)) +
+    br_charts_theme() +
+    theme(
+      plot.title = ggplot2::element_text(size = 8),
+      axis.ticks.x = element_blank(),
+      axis.ticks.y = element_blank(),
+      panel.grid.major = element_blank(),
+      panel.grid.minor = element_blank(),
+      panel.border = element_blank(),
+      axis.title.x = element_blank(),
+      axis.line = element_blank(),
+      plot.margin = margin(2,15,0.1,8),
+      plot.caption = element_text(hjust = 0.42),
+      legend.position = "none"
+    )
+
+  cowplot::plot_grid(
+    subj_table,
+    og_table1,
+    ncol = 1,
+    align = "v",
+    rel_heights = c(0.55, 1)  # Adjust to control height ratio
+  )
 
 }
 
@@ -662,6 +677,9 @@ cowplot::plot_grid(
 #' benefit first and risk second.
 #' @param titlename_p Allows user to change the documentation of title (default
 #' is provided)
+#' @param rel_adjust Allows user to specify the figure and table alignment. Must
+#' be a single number, corresponding to the space to the left of the figure,
+#' relative to the figure's width (denoted as 1).
 #' @param rel_heights_table Elements for fig vs table size.
 #' @param ben_name_p Allows user to specify benefit of interest
 #' (default is provided).
@@ -697,7 +715,8 @@ gensurv_combined <- function(df_plot,
                              mar,
                              mab,
                              mcd,
-                             rel_heights_table = c(1, 0.2),
+                             rel_adjust = .12,
+                             rel_heights_table = c(1, 0.4),
                              ben_name_p = "Primary Efficacy",
                              risk_name_p = "Recurring AE",
                              legend_position_p = c(-0.03, 1.15)) {
@@ -743,35 +762,60 @@ gensurv_combined <- function(df_plot,
     mar = mar,
     mcd = mcd
   )
-  table <- gensurv_table(
-    df_table, subjects_pt, visits_pt,
-    fig_colors = fig_colors_pt
-  )
-  fig_plot <- cowplot::plot_grid(
-    cowplot::plot_grid(
-      plot,
-      table +
-        ggplot2::theme(legend.position = "none"),
-      ncol = 1,
-      align = "v",
-      axis = "b",
-      rel_heights = rel_heights_table
-    ),
-    ncol = 1
-  )
+
   mytitle <- cowplot::ggdraw() + cowplot::draw_label(
     titlename_p,
     fontface = "bold", size = 12
   )
-  fig_plot_title <- cowplot::plot_grid(
+
+  plot <- cowplot::plot_grid(
     mytitle,
-    fig_plot,
+    plot,
     ncol = 1,
     align = "v",
     axis = "l",
     rel_heights = c(0.2, 2)
   )
-  return(fig_plot_title)
+
+  table <- gensurv_table(
+    df_table, subjects_pt, visits_pt,
+    fig_colors = fig_colors_pt
+  )
+
+  plot <- cowplot::plot_grid(
+    NULL,
+    plot + ggplot2::theme(legend.position = legend_position_p),
+    ncol = 2,
+    rel_widths = c(rel_adjust, 1)
+  )
+
+  fig_plot <- cowplot::plot_grid(
+    plot,
+    table,
+    ncol = 1,
+    align = "v",
+    axis = "l",
+    rel_heights = rel_heights_table
+  )
+
+  #fig_plot <- cowplot::plot_grid(
+  #  cowplot::plot_grid(
+  #    plot,
+  #    table +
+  #      ggplot2::theme(legend.position = "none"),
+  #    ncol = 1,
+  #    align = "v",
+  #    axis = "b",
+  #    rel_heights = rel_heights_table
+  #  ),
+  #  ncol = 1
+  #)
+  #mytitle <- cowplot::ggdraw() + cowplot::draw_label(
+  #  titlename_p,
+  #  fontface = "bold", size = 12
+  #)
+
+  return(fig_plot)
 }
 
 #' Simulate data (utilized for function tests)
@@ -836,3 +880,4 @@ gensurv <- function(
     mutate(obsv_duration = obsv_duration, obsv_unit = unit) %>%
     rename(eventtime = eventtime_sim, diff = diff_sim)
 }
+
