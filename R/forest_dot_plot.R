@@ -361,7 +361,7 @@ create_forest_dot_plot <- function(
           axis.title.y = element_blank(),
           axis.title.x = if (is_last_plot) ggtext::element_markdown(face = "bold", color = "black") else element_text(face = "bold", color = "black"),
           legend.position = if (is_last_plot) "bottom" else "none",
-          axis.text.y = element_blank(),  # Remove y-axis labels from dot plot
+          axis.text.y = element_blank(), # Remove y-axis labels from dot plot
           axis.ticks.y = element_blank(), # Remove y-axis ticks from dot plot
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
         )
@@ -490,7 +490,7 @@ create_forest_dot_plot <- function(
         widths = c(1, 1)
       ) +
         theme(
-          plot.margin = unit(c(0.3, 0.2, 0.1, 0.2), "cm"),  # Reduced bottom margin
+          plot.margin = unit(c(0.3, 0.2, 0.1, 0.2), "cm"), # Reduced bottom margin
           axis.title.x = if (is_last_plot) {
             ggtext::element_markdown(color = "black", face = "bold")
           } else {
