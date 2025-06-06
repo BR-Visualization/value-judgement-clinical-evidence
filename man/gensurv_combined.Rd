@@ -15,7 +15,8 @@ gensurv_combined(
   mar,
   mab,
   mcd,
-  rel_heights_table = c(1, 0.2),
+  rel_adjust = 0.12,
+  rel_heights_table = c(1, 0.4),
   ben_name_p = "Primary Efficacy",
   risk_name_p = "Recurring AE",
   legend_position_p = c(-0.03, 1.15)
@@ -69,6 +70,10 @@ team, must be numerical.}
 
 \item{mcd}{The minimum clinically important difference of the drug, as
 discussed by the team, must be numerical.}
+
+\item{rel_adjust}{Allows user to specify the figure and table alignment. Must
+be a single number, corresponding to the space to the left of the figure,
+relative to the figure's width (denoted as 1).}
 
 \item{rel_heights_table}{Elements for fig vs table size.}
 
