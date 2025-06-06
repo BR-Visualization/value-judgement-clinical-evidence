@@ -237,11 +237,6 @@ gensurv_plot <- function(
       fill = "#7f7f7f",
       alpha = 0.2
     ) +
-    geom_point(
-      data = df_ben %>% filter(abs(diff * base_subjects - mcd) == min(abs(diff * base_subjects - mcd))) %>% slice(1),
-      aes(x = eventtime, y = diff * base_subjects),
-      shape = 23, fill = "black", size = 2
-    ) +
     geom_text(
       data = df_ben %>% filter(abs(diff * base_subjects - mcd) == min(abs(diff * base_subjects - mcd))) %>% slice(1),
       aes(x = eventtime, y = diff * base_subjects, label = "MCD"),
@@ -345,6 +340,11 @@ gensurv_plot <- function(
     geom_line(
       data = df_ben %>% filter(diff * base_subjects < mab), # Only below MAB
       aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"), size = 0.5
+    ) +
+    geom_point(
+      data = df_ben %>% filter(abs(diff * base_subjects - mcd) == min(abs(diff * base_subjects - mcd))) %>% slice(1),
+      aes(x = eventtime, y = diff * base_subjects),
+      shape = 23, fill = "black", size = 2
     )
 
   plot1 <- ggdraw() +
