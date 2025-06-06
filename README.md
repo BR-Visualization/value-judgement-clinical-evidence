@@ -36,7 +36,7 @@ gensurv_combined(
   df_plot = cumexcess, subjects_pt = 100, visits_pt = 6,
   df_table = cumexcess, fig_colors_pt = colfun()$fig13_colors,
   rel_heights_table = c(1, 0.5),
-  legend_position_p = c(.2, 1.5),
+  legend_position_p = c(.1, 1.56),
   titlename =
     "Cumulative Excess # of Subjects w/ Events (per 100 Subjects)",
   mar = 32,
