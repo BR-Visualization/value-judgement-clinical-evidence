@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# brpubVJCE
+# brpubVJCE 📊
 
 <!-- badges: start -->
 
@@ -17,23 +17,68 @@ evidence”.
 
 ## Installation
 
-You can install the development version of brpubVJCE from
-[GitHub](https://github.com/) with:
+### Recommended Installation
 
 ``` r
-# install.packages("pak")
+# Install using pak (recommended)
+install.packages("pak")
 pak::pak("BR-Visualization/brpubVJCE")
 ```
 
-## Example
-
-This is a basic example which shows you how to solve a common problem:
+### Alternative Installation
 
 ``` r
-library(brpubVJCE)
+# Install using remotes
+install.packages("remotes")
+remotes::install_github("BR-Visualization/brpubVJCE")
+```
+
+## Quick Start
+
+Here’s how to create your first benefit-risk visualization:
+
+``` r
 create_forest_dot_plot(
   prepare_forest_dot_data(effects_table)
 )
 ```
 
 <img src="man/figures/README-example-1.png" width="100%" />
+
+## Getting Help
+
+- 📖 **Documentation**: Use `?create_forest_dot_plot` or
+  `?prepare_forest_dot_data` for detailed function help
+- 🐛 **Issues**: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- 💬 **Discussions**: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- 📧 **Contact**: Reach out to the package maintainers via GitHub
+
+## Citation
+
+If you use this package in your research, please cite:
+
+``` r
+citation("brpubVJCE")
+```
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing
+Guidelines](https://github.com/BR-Visualization/brpubVJCE/blob/main/CONTRIBUTING.md)
+for details on:
+
+- 🔧 How to submit bug reports and feature requests
+- 📝 How to contribute code and documentation  
+- 🧪 How to run tests and ensure code quality
+- 📋 Our code of conduct and style guidelines
+
+## License
+
+This package is licensed under the MIT License. See the
+[LICENSE](LICENSE.md) file for details.
+
+------------------------------------------------------------------------
+
+*Built with ❤️ for the benefit-risk visualization community*

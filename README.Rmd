@@ -1,19 +1,26 @@
 ---
-output: github_document
+output: 
+  github_document:
+    html_preview: true
+encoding: UTF-8
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 ```{r, include = FALSE}
+devtools::load_all()
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
   fig.path = "man/figures/README-",
-  out.width = "100%"
+  out.width = "100%",
+  dpi = 300
 )
+# Ensure UTF-8 encoding for proper Unicode character display
+Sys.setlocale("LC_CTYPE", "en_US.UTF-8")
 ```
 
-# brpubVJCE
+# brpubVJCE 📊
 
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/BR-Visualization/brpubVJCE/graph/badge.svg)](https://app.codecov.io/gh/BR-Visualization/brpubVJCE)
@@ -24,20 +31,62 @@ The goal of brpubVJCE is to generate benefit-risk visualizations for the publica
 
 ## Installation
 
-You can install the development version of brpubVJCE from [GitHub](https://github.com/) with:
+### Recommended Installation
 
-``` r
-# install.packages("pak")
+```r
+# Install using pak (recommended)
+install.packages("pak")
 pak::pak("BR-Visualization/brpubVJCE")
 ```
 
-## Example
+### Alternative Installation  
 
-This is a basic example which shows you how to solve a common problem:
+```r
+# Install using remotes
+install.packages("remotes")
+remotes::install_github("BR-Visualization/brpubVJCE")
+```
 
-```{r example}
-library(brpubVJCE)
+
+## Quick Start
+
+Here's how to create your first benefit-risk visualization:
+
+```{r example, fig.width=10, fig.height=6}
 create_forest_dot_plot(
   prepare_forest_dot_data(effects_table)
 )
 ```
+
+
+## Getting Help
+
+- 📖 **Documentation**: Use `?create_forest_dot_plot` or `?prepare_forest_dot_data` for detailed function help
+- 🐛 **Issues**: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- 💬 **Discussions**: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- 📧 **Contact**: Reach out to the package maintainers via GitHub
+
+## Citation
+
+If you use this package in your research, please cite:
+
+```{r citation, eval=FALSE}
+citation("brpubVJCE")
+```
+
+## Contributing
+
+We welcome contributions! Please see our [Contributing Guidelines](https://github.com/BR-Visualization/brpubVJCE/blob/main/CONTRIBUTING.md) for details on:
+
+- 🔧 How to submit bug reports and feature requests
+- 📝 How to contribute code and documentation  
+- 🧪 How to run tests and ensure code quality
+- 📋 Our code of conduct and style guidelines
+
+## License
+
+This package is licensed under the MIT License. See the [LICENSE](LICENSE.md) file for details.
+
+---
+
+*Built with ❤️ for the benefit-risk visualization community*
