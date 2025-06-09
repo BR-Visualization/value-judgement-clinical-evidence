@@ -31,7 +31,7 @@ testthat::test_that("prepare_forest_dot_data computes CIs correctly", {
 
   testthat::expect_equal(nrow(result), 4)
   testthat::expect_true(all(c("Diff", "Diff_LowerCI", "Diff_UpperCI") %in%
-                              names(result)))
+    names(result)))
 })
 
 testthat::test_that("prepare_forest_dot_data handles binary data", {
