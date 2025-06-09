@@ -82,7 +82,7 @@ prepare_forest_dot_data <- function(data,
       SE_diff = case_when(
         Type == "Continuous" ~ sqrt((Sd1^2 / N1) + (Sd2^2 / N2)),
         Type == "Binary" ~ sqrt((Prop1 * (1 - Prop1) / N1) +
-                                  (Prop2 * (1 - Prop2) / N2)),
+          (Prop2 * (1 - Prop2) / N2)),
         TRUE ~ NA_real_
       ),
       df = if_else(
