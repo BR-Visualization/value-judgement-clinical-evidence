@@ -34,7 +34,8 @@
 #'
 #' # Use precalculated stats
 #' prepared_data2 <- prepare_forest_dot_data(effects_table,
-#'   precalculated_stats = TRUE)
+#'   precalculated_stats = TRUE
+#' )
 prepare_forest_dot_data <- function(data,
                                     outcomes_of_interest = c(
                                       "Benefit 1", "Benefit 2",
@@ -60,8 +61,10 @@ prepare_forest_dot_data <- function(data,
     missing_cols <- setdiff(required_cols, names(filtered_data))
 
     if (length(missing_cols) > 0) {
-      stop("Missing required precalculated columns: ",
-           paste(missing_cols, collapse = ", "))
+      stop(
+        "Missing required precalculated columns: ",
+        paste(missing_cols, collapse = ", ")
+      )
     }
 
     return(filtered_data)
@@ -80,7 +83,7 @@ prepare_forest_dot_data <- function(data,
       SE_diff = case_when(
         Type == "Continuous" ~ sqrt((Sd1^2 / N1) + (Sd2^2 / N2)),
         Type == "Binary" ~ sqrt((Prop1 * (1 - Prop1) / N1) +
-                                  (Prop2 * (1 - Prop2) / N2)),
+          (Prop2 * (1 - Prop2) / N2)),
         TRUE ~ NA_real_
       ),
       df = if_else(

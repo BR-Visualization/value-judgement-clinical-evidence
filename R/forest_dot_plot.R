@@ -92,7 +92,6 @@ create_forest_dot_plot <- function(
     filter_value = "None",
     precalculated_stats = FALSE,
     forest_upper_limit = NULL) {
-
   # Define arrow symbols to avoid issues with LaTeX documentation
   left_arrow <- "\u2190"
   right_arrow <- "\u2192"
@@ -491,8 +490,8 @@ create_forest_dot_plot <- function(
           x = if (is_last_plot) {
             paste0(
               "<br>",
-              "<span style='color:black;font-weight:bold;'>"
-              , left_arrow, " Favours ",
+              "<span style='color:black;font-weight:bold;'>",
+              left_arrow, " Favours ",
               treatment2,
               "</span>",
               spacing,

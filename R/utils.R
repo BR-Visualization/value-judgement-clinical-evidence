@@ -60,9 +60,13 @@ ggsave_custom <- function(save_name,
 
   # Save web-optimized version (if enabled)
   if (web_suffix) {
-    web_path <- file.path(imgpath,
-                          paste0(tools::file_path_sans_ext(save_name),
-                                 "_web.", ext))
+    web_path <- file.path(
+      imgpath,
+      paste0(
+        tools::file_path_sans_ext(save_name),
+        "_web.", ext
+      )
+    )
     ggplot2::ggsave(
       filename = web_path,
       plot = inplot,
