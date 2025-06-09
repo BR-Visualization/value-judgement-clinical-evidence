@@ -1,7 +1,7 @@
 #' Prepare Data for Forest and Dot Plots
 #'
 #' @description Prepares and optionally calculates treatment effect
-#' differences and confidence intervals for specified outcomes, based 
+#' differences and confidence intervals for specified outcomes, based
 #' on whether a higher value indicates risk or benefit.
 #'
 #' @param data A data frame containing treatment comparisons, estimates, and

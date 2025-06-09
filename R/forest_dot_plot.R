@@ -11,9 +11,9 @@ library(rlang)
 
 #' Create Forest and Dot Plots for Treatment Effects
 #'
-#' @description Generates side-by-side forest and dot plots for 
-#' specified outcomes, grouped by factor and type. Displays 
-#' treatment effects, confidence intervals, and optional clinical 
+#' @description Generates side-by-side forest and dot plots for
+#' specified outcomes, grouped by factor and type. Displays
+#' treatment effects, confidence intervals, and optional clinical
 #' thresholds.
 #'
 #' @param data A data frame prepared using `prepare_forest_dot_data()`
@@ -90,10 +90,10 @@ create_forest_dot_plot <- function(
     treatment2 = "Placebo",
     filter_value = "None",
     precalculated_stats = FALSE,
-    forest_upper_limit = NULL) {  # Define arrow symbols to avoid issues with LaTeX documentation
+    forest_upper_limit = NULL) { # Define arrow symbols to avoid issues with LaTeX documentation
   # Use UTF-8 encoded Unicode arrows for proper display in all contexts
-  left_arrow <- enc2utf8("\u2190")  # ← (leftwards arrow)
-  right_arrow <- enc2utf8("\u2192")  # → (rightwards arrow)
+  left_arrow <- enc2utf8("\u2190") # ← (leftwards arrow)
+  right_arrow <- enc2utf8("\u2192") # → (rightwards arrow)
   spacing <- "                    "
   # Set up default clinical thresholds
   default_thresholds <- data.frame(
