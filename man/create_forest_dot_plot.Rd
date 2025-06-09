@@ -8,8 +8,7 @@ create_forest_dot_plot(
   data,
   clin_thresholds = NULL,
   direction = NULL,
-  outcomes_of_interest = c("Benefit 1", "Benefit 2",
-    "Benefit 3", "Risk 1", "Risk 2"),
+  outcomes_of_interest = c("Benefit 1", "Benefit 2", "Benefit 3", "Risk 1", "Risk 2"),
   treatment1 = "Drug A",
   treatment2 = "Placebo",
   filter_value = "None",
@@ -45,11 +44,12 @@ Generates side-by-side forest and dot plots for specified outcomes, grouped by f
 Displays treatment effects, confidence intervals, and optional clinical thresholds.
 }
 \examples{
+\donttest{
 # First, prepare the data
 prepared_data <- prepare_forest_dot_data(effects_table)
 
 # Generate the plot
-(dotforest <- create_forest_dot_plot(prepared_data))
+dotforest <- create_forest_dot_plot(prepared_data)
 ggsave_custom("dotforest.png", imgpath = "./", inplot = dotforest, dpi = 300)
 
 # With clinical thresholds
@@ -65,4 +65,5 @@ create_forest_dot_plot(prepared_data,
   ),
   clin_thresholds = thresholds
 )
+}
 }

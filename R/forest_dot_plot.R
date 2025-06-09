@@ -35,15 +35,17 @@ library(rlang)
 #' @importFrom utils tail
 #' @importFrom grid unit
 #' @importFrom rlang .data
+#' @importFrom ggtext element_markdown
 #'
 #' @export
 #'
 #' @examples
+#' \donttest{
 #' # First, prepare the data
 #' prepared_data <- prepare_forest_dot_data(effects_table)
 #'
 #' # Generate the plot
-#' (dotforest <- create_forest_dot_plot(prepared_data))
+#' dotforest <- create_forest_dot_plot(prepared_data)
 #' ggsave_custom("dotforest.png", imgpath = "./", inplot = dotforest, dpi = 300)
 #'
 #' # With clinical thresholds
@@ -59,6 +61,7 @@ library(rlang)
 #'   ),
 #'   clin_thresholds = thresholds
 #' )
+#' }
 create_forest_dot_plot <- function(
     data,
     clin_thresholds = NULL,
@@ -75,6 +78,11 @@ create_forest_dot_plot <- function(
     filter_value = "None",
     precalculated_stats = FALSE,
     forest_upper_limit = NULL) {
+  
+  # Define arrow symbols to avoid issues with LaTeX documentation
+  left_arrow <- "\u2190"
+  right_arrow <- "\u2192"
+  spacing <- "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003"
   # Set up default clinical thresholds
   default_thresholds <- data.frame(
     Outcome = c(
@@ -444,26 +452,25 @@ create_forest_dot_plot <- function(
         scale_y_discrete(limits = y_levels) +
         shape_scale +
         coord_cartesian(xlim = x_lim, clip = "off") +
-        scale_x_continuous(limits = x_lim, breaks = forest_breaks) +
-        # Add x-axis label for last plot
+        scale_x_continuous(limits = x_lim, breaks = forest_breaks) +        # Add x-axis label for last plot
         labs(
-          x = if (is_last_plot) {
-            paste0(
-              "<br>",
-              "<span style='color:black;font-weight:bold;'>← Favours ", # Unicode left arrow
-              treatment2,
-              "</span>",
-              "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003",
-              "<span style='color:black;font-weight:bold;'>Favours ",
-              treatment1,
-              " →</span>", # Unicode right arrow
-              "<br>",
-              "Treatment Difference with 95% CI"
-            )
-          } else {
-            NULL
-          }
-        ) +
+            x = if (is_last_plot) {
+              paste0(
+                "<br>",
+                "<span style='color:black;font-weight:bold;'>", left_arrow, " Favours ",
+                treatment2,
+                "</span>",
+                spacing,
+                "<span style='color:black;font-weight:bold;'>Favours ",
+                treatment1,
+                " ", right_arrow, "</span>",
+                "<br>",
+                "Treatment Difference with 95% CI"
+              )
+            } else {
+              NULL
+            }
+        )+
         # Apply theme
         theme_minimal() +
         theme(

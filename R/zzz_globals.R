@@ -14,5 +14,12 @@ utils::globalVariables(c(
   "Diff",
   "CI_color",
   "Diff_LowerCI",
-  "Diff_UpperCI"
+  "Diff_UpperCI",
+  "Trt1", 
+  "Trt2", 
+  "Sd1",
+  "Sd2",
+  "SE_diff",
+  "N1", 
+  "N2"
 ))
