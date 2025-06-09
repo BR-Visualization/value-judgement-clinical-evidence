@@ -91,11 +91,11 @@ create_forest_dot_plot <- function(
     treatment2 = "Placebo",
     filter_value = "None",
     precalculated_stats = FALSE,
-    forest_upper_limit = NULL) {
-  # Define arrow symbols to avoid issues with LaTeX documentation
-  left_arrow <- "\u2190"
-  right_arrow <- "\u2192"
-  spacing <- "\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003\u2003"
+    forest_upper_limit = NULL) {  # Define arrow symbols to avoid issues with LaTeX documentation
+  # Use UTF-8 encoded Unicode arrows for proper display in all contexts
+  left_arrow <- enc2utf8("\u2190")  # ← (leftwards arrow)
+  right_arrow <- enc2utf8("\u2192")  # → (rightwards arrow)
+  spacing <- "                    "
   # Set up default clinical thresholds
   default_thresholds <- data.frame(
     Outcome = c(
