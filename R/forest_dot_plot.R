@@ -11,11 +11,10 @@ library(rlang)
 
 #' Create Forest and Dot Plots for Treatment Effects
 #'
-#' @description
-#' @description
-#' Generates side-by-side forest and dot plots for specified outcomes,
-#' grouped by factor and type. Displays treatment effects, confidence
-#' intervals, and optional clinical thresholds.
+#' @description Generates side-by-side forest and dot plots for 
+#' specified outcomes, grouped by factor and type. Displays 
+#' treatment effects, confidence intervals, and optional clinical 
+#' thresholds.
 #'
 #' @param data A data frame prepared using `prepare_forest_dot_data()`
 #'   or with matching structure.

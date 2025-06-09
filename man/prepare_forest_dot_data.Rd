@@ -38,9 +38,9 @@ differences and 95\% confidence intervals. Includes directionally colored
 confidence intervals for plotting.
 }
 \description{
-Prepares and optionally calculates treatment effect differences and
-confidence intervals for specified outcomes, based on whether a higher
-value indicates risk or benefit.
+Prepares and optionally calculates treatment effect
+differences and confidence intervals for specified outcomes, based
+on whether a higher value indicates risk or benefit.
 }
 \examples{
 # Load or create a sample dataset `effects_table`
@@ -51,5 +51,6 @@ prepared_data <- prepare_forest_dot_data(effects_table)
 
 # Use precalculated stats
 prepared_data2 <- prepare_forest_dot_data(effects_table,
-  precalculated_stats = TRUE)
+  precalculated_stats = TRUE
+)
 }

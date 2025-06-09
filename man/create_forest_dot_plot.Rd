@@ -52,9 +52,10 @@ A patchwork object containing combined dot and forest plots with a
 shared legend.
 }
 \description{
-Generates side-by-side forest and dot plots for specified outcomes,
-grouped by factor and type. Displays treatment effects, confidence
-intervals, and optional clinical thresholds.
+Generates side-by-side forest and dot plots for
+specified outcomes, grouped by factor and type. Displays
+treatment effects, confidence intervals, and optional clinical
+thresholds.
 }
 \examples{
 \donttest{
