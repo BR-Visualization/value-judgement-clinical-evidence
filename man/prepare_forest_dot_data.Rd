@@ -14,25 +14,33 @@ prepare_forest_dot_data(
 )
 }
 \arguments{
-\item{data}{A data frame containing treatment comparisons, estimates, and metadata.}
+\item{data}{A data frame containing treatment comparisons, estimates, and
+metadata.}
 
-\item{outcomes_of_interest}{Character vector of outcome names to include (default includes key efficacy and safety outcomes).}
+\item{outcomes_of_interest}{Character vector of outcome names to include
+(default includes key efficacy and safety outcomes).}
 
-\item{treatment1}{Character; label of the first treatment group (default: \code{"Drug A"}).}
+\item{treatment1}{Character; label of the first treatment group
+(default: \code{"Drug A"}).}
 
-\item{treatment2}{Character; label of the second treatment group (default: \code{"Placebo"}).}
+\item{treatment2}{Character; label of the second treatment group
+(default: \code{"Placebo"}).}
 
-\item{filter_value}{Character; value to filter the \code{Filter} column (default: \code{"None"}).}
+\item{filter_value}{Character; value to filter the \code{Filter} column
+(default: \code{"None"}).}
 
-\item{precalculated_stats}{Logical; if \code{TRUE}, assumes data already contains \code{Diff}, \code{Diff_LowerCI}, and \code{Diff_UpperCI}.}
+\item{precalculated_stats}{Logical; if \code{TRUE}, assumes data already
+contains \code{Diff}, \code{Diff_LowerCI}, and \code{Diff_UpperCI}.}
 }
 \value{
-A filtered data frame with computed or validated treatment differences and 95\% confidence intervals.
-Includes directionally colored confidence intervals for plotting.
+A filtered data frame with computed or validated treatment
+differences and 95\% confidence intervals. Includes directionally colored
+confidence intervals for plotting.
 }
 \description{
-Prepares and optionally calculates treatment effect differences and confidence intervals
-for specified outcomes, based on whether a higher value indicates risk or benefit.
+Prepares and optionally calculates treatment effect differences and
+confidence intervals for specified outcomes, based on whether a higher
+value indicates risk or benefit.
 }
 \examples{
 # Load or create a sample dataset `effects_table`
@@ -42,5 +50,6 @@ head(effects_table)
 prepared_data <- prepare_forest_dot_data(effects_table)
 
 # Use precalculated stats
-prepared_data2 <- prepare_forest_dot_data(effects_table, precalculated_stats = TRUE)
+prepared_data2 <- prepare_forest_dot_data(effects_table,
+  precalculated_stats = TRUE)
 }

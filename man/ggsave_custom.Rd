@@ -22,7 +22,8 @@ ggsave_custom(
 
 \item{inplot}{Plot object. If NULL, saves the last displayed plot.}
 
-\item{imgpath}{Directory path where the plot is saved (default: current directory).}
+\item{imgpath}{Directory path where the plot is saved (default: current
+directory).}
 
 \item{wdth}{Width of the plot in units (default: 7).}
 
@@ -34,7 +35,8 @@ ggsave_custom(
 
 \item{dpi}{Resolution in dots per inch (default: 600).}
 
-\item{web_suffix}{If TRUE, also saves a low-res version with "_web" suffix (default: FALSE).}
+\item{web_suffix}{If TRUE, also saves a low-res version with "_web" suffix
+(default: FALSE).}
 
 \item{...}{Additional arguments passed to \code{ggsave()}.}
 }

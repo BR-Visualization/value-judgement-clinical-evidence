@@ -17,31 +17,44 @@ create_forest_dot_plot(
 )
 }
 \arguments{
-\item{data}{A data frame prepared using \code{prepare_forest_dot_data()} or with matching structure.}
+\item{data}{A data frame prepared using \code{prepare_forest_dot_data()}
+or with matching structure.}
 
-\item{clin_thresholds}{Optional data frame with \code{Outcome} and \code{Threshold} columns for reference lines (defaults provided).}
+\item{clin_thresholds}{Optional data frame with \code{Outcome} and
+\code{Threshold} columns for reference lines (defaults provided).}
 
-\item{direction}{Optional character vector or single value indicating the direction of clinical significance for each outcome.
-Accepts \code{"greater"} or \code{"less"}. Can be a single value applied to all, a vector matching \code{clin_thresholds}, or a named vector by outcome.}
+\item{direction}{Optional character vector or single value indicating
+the direction of clinical significance for each outcome. Accepts
+\code{"greater"} or \code{"less"}. Can be a single value applied to all,
+a vector matching \code{clin_thresholds}, or a named vector by outcome.}
 
-\item{outcomes_of_interest}{Character vector of outcomes to include (default includes major efficacy and safety endpoints).}
+\item{outcomes_of_interest}{Character vector of outcomes to include
+(default includes major efficacy and safety endpoints).
+(default includes major efficacy and safety endpoints).}
 
-\item{treatment1}{Character; label of the first treatment group (default: \code{"Drug A"}).}
+\item{treatment1}{Character; label of the first treatment group
+(default: \code{"Drug A"}).}
 
-\item{treatment2}{Character; label of the second treatment group (default: \code{"Placebo"}).}
+\item{treatment2}{Character; label of the second treatment group
+(default: \code{"Placebo"}).}
 
-\item{filter_value}{Character; value used to filter the \code{Filter} column (default: \code{"None"}).}
+\item{filter_value}{Character; value used to filter the \code{Filter} column
+(default: \code{"None"}).}
 
-\item{precalculated_stats}{Logical; if \code{TRUE}, skips calculation and uses provided statistics.}
+\item{precalculated_stats}{Logical; if \code{TRUE}, skips calculation and uses
+provided statistics.}
 
-\item{forest_upper_limit}{Numeric; optional upper limit for the forest plot, adds a reference line at this value if provided.}
+\item{forest_upper_limit}{Numeric; optional upper limit for the forest
+plot, adds a reference line at this value if provided.}
 }
 \value{
-A patchwork object containing combined dot and forest plots with a shared legend.
+A patchwork object containing combined dot and forest plots with a
+shared legend.
 }
 \description{
-Generates side-by-side forest and dot plots for specified outcomes, grouped by factor and type.
-Displays treatment effects, confidence intervals, and optional clinical thresholds.
+Generates side-by-side forest and dot plots for specified outcomes,
+grouped by factor and type. Displays treatment effects, confidence
+intervals, and optional clinical thresholds.
 }
 \examples{
 \donttest{
