@@ -78,7 +78,6 @@ create_forest_dot_plot <- function(
     filter_value = "None",
     precalculated_stats = FALSE,
     forest_upper_limit = NULL) {
-  
   # Define arrow symbols to avoid issues with LaTeX documentation
   left_arrow <- "\u2190"
   right_arrow <- "\u2192"
@@ -452,25 +451,25 @@ create_forest_dot_plot <- function(
         scale_y_discrete(limits = y_levels) +
         shape_scale +
         coord_cartesian(xlim = x_lim, clip = "off") +
-        scale_x_continuous(limits = x_lim, breaks = forest_breaks) +        # Add x-axis label for last plot
+        scale_x_continuous(limits = x_lim, breaks = forest_breaks) + # Add x-axis label for last plot
         labs(
-            x = if (is_last_plot) {
-              paste0(
-                "<br>",
-                "<span style='color:black;font-weight:bold;'>", left_arrow, " Favours ",
-                treatment2,
-                "</span>",
-                spacing,
-                "<span style='color:black;font-weight:bold;'>Favours ",
-                treatment1,
-                " ", right_arrow, "</span>",
-                "<br>",
-                "Treatment Difference with 95% CI"
-              )
-            } else {
-              NULL
-            }
-        )+
+          x = if (is_last_plot) {
+            paste0(
+              "<br>",
+              "<span style='color:black;font-weight:bold;'>", left_arrow, " Favours ",
+              treatment2,
+              "</span>",
+              spacing,
+              "<span style='color:black;font-weight:bold;'>Favours ",
+              treatment1,
+              " ", right_arrow, "</span>",
+              "<br>",
+              "Treatment Difference with 95% CI"
+            )
+          } else {
+            NULL
+          }
+        ) +
         # Apply theme
         theme_minimal() +
         theme(
