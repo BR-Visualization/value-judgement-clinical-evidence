@@ -12,21 +12,35 @@ library(rlang)
 #' Create Forest and Dot Plots for Treatment Effects
 #'
 #' @description
-#' Generates side-by-side forest and dot plots for specified outcomes, grouped by factor and type.
-#' Displays treatment effects, confidence intervals, and optional clinical thresholds.
+#' @description
+#' Generates side-by-side forest and dot plots for specified outcomes,
+#' grouped by factor and type. Displays treatment effects, confidence
+#' intervals, and optional clinical thresholds.
 #'
-#' @param data A data frame prepared using `prepare_forest_dot_data()` or with matching structure.
-#' @param clin_thresholds Optional data frame with `Outcome` and `Threshold` columns for reference lines (defaults provided).
-#' @param direction Optional character vector or single value indicating the direction of clinical significance for each outcome.
-#'   Accepts `"greater"` or `"less"`. Can be a single value applied to all, a vector matching `clin_thresholds`, or a named vector by outcome.
-#' @param outcomes_of_interest Character vector of outcomes to include (default includes major efficacy and safety endpoints).
-#' @param treatment1 Character; label of the first treatment group (default: `"Drug A"`).
-#' @param treatment2 Character; label of the second treatment group (default: `"Placebo"`).
-#' @param filter_value Character; value used to filter the `Filter` column (default: `"None"`).
-#' @param precalculated_stats Logical; if `TRUE`, skips calculation and uses provided statistics.
-#' @param forest_upper_limit Numeric; optional upper limit for the forest plot, adds a reference line at this value if provided.
+#' @param data A data frame prepared using `prepare_forest_dot_data()`
+#'   or with matching structure.
+#' @param clin_thresholds Optional data frame with `Outcome` and
+#'   `Threshold` columns for reference lines (defaults provided).
+#' @param direction Optional character vector or single value indicating
+#'   the direction of clinical significance for each outcome. Accepts
+#'   `"greater"` or `"less"`. Can be a single value applied to all,
+#'   a vector matching `clin_thresholds`, or a named vector by outcome.
+#' @param outcomes_of_interest Character vector of outcomes to include
+#'   (default includes major efficacy and safety endpoints).
+#'   (default includes major efficacy and safety endpoints).
+#' @param treatment1 Character; label of the first treatment group
+#'   (default: `"Drug A"`).
+#' @param treatment2 Character; label of the second treatment group
+#'   (default: `"Placebo"`).
+#' @param filter_value Character; value used to filter the `Filter` column
+#'   (default: `"None"`).
+#' @param precalculated_stats Logical; if `TRUE`, skips calculation and uses
+#'   provided statistics.
+#' @param forest_upper_limit Numeric; optional upper limit for the forest
+#'   plot, adds a reference line at this value if provided.
 #'
-#' @return A patchwork object containing combined dot and forest plots with a shared legend.
+#' @return A patchwork object containing combined dot and forest plots with a
+#'   shared legend.
 #'
 #' @import ggplot2
 #' @importFrom dplyr %>% filter mutate case_when if_else arrange bind_rows
@@ -78,7 +92,7 @@ create_forest_dot_plot <- function(
     filter_value = "None",
     precalculated_stats = FALSE,
     forest_upper_limit = NULL) {
-  
+
   # Define arrow symbols to avoid issues with LaTeX documentation
   left_arrow <- "\u2190"
   right_arrow <- "\u2192"
@@ -112,7 +126,8 @@ create_forest_dot_plot <- function(
         clin_thresholds$Direction <- direction
       } else {
         warning(
-          "Invalid 'direction' argument: must be a single value or match the number of rows in clin_thresholds."
+          "Invalid 'direction' argument: must be a single value or match",
+          " the number of rows in clin_thresholds."
         )
       }
     } else if (!"Direction" %in% names(clin_thresholds)) {
@@ -246,7 +261,11 @@ create_forest_dot_plot <- function(
           forest_breaks <- c(forest_breaks, forest_upper_limit)
         }
         # Add an extra interval to ensure a tick after the plotted points
-        interval <- if (length(forest_breaks) > 1) diff(tail(forest_breaks, 2)) else 1
+        interval <- if (length(forest_breaks) > 1) {
+          diff(tail(forest_breaks, 2))
+        } else {
+          1
+        }
         extra_tick <- forest_upper_limit + interval
         forest_breaks <- c(forest_breaks, extra_tick)
         x_lim[2] <- extra_tick
@@ -256,7 +275,7 @@ create_forest_dot_plot <- function(
       max_x_value <- max(dot_data$x, na.rm = TRUE)
 
       # Round up the maximum value to a nice number
-      # Add a small buffer to ensure we don't cut off points
+      # Add a small buffer to ensure we do not cut off points
       max_x_value <- max_x_value * 1.05
 
       # Create breaks with more intuitive intervals based on rounded max value
@@ -266,34 +285,43 @@ create_forest_dot_plot <- function(
         max_x_value <- 1
         dot_breaks <- c(0, 0.2, 0.4, 0.6, 0.8, 1.0)
       } else if (max_x_value <= 0.05) {
-        max_x_value <- ceiling(max_x_value * 100) / 100 # Round up to nearest 0.01
+        # Round up to nearest 0.01
+        max_x_value <- ceiling(max_x_value * 100) / 100
         dot_breaks <- seq(0, max_x_value, by = 0.01)
       } else if (max_x_value <= 0.2) {
-        max_x_value <- ceiling(max_x_value * 20) / 20 # Round up to nearest 0.05
+        # Round up to nearest 0.05
+        max_x_value <- ceiling(max_x_value * 20) / 20
         dot_breaks <- seq(0, max_x_value, by = 0.05)
       } else if (max_x_value <= 0.5) {
-        max_x_value <- ceiling(max_x_value * 10) / 10 # Round up to nearest 0.1
+        # Round up to nearest 0.1
+        max_x_value <- ceiling(max_x_value * 10) / 10
         dot_breaks <- seq(0, max_x_value, by = 0.1)
       } else if (max_x_value <= 1) {
-        max_x_value <- ceiling(max_x_value * 5) / 5 # Round up to nearest 0.2
+        # Round up to nearest 0.2
+        max_x_value <- ceiling(max_x_value * 5) / 5
         dot_breaks <- seq(0, max_x_value, by = 0.2)
       } else if (max_x_value <= 2) {
-        max_x_value <- ceiling(max_x_value * 2) / 2 # Round up to nearest 0.5
+        # Round up to nearest 0.5
+        max_x_value <- ceiling(max_x_value * 2) / 2
         dot_breaks <- seq(0, max_x_value, by = 0.5)
       } else if (max_x_value <= 5) {
         max_x_value <- ceiling(max_x_value)
         dot_breaks <- seq(0, max_x_value, by = 1)
       } else if (max_x_value <= 10) {
-        max_x_value <- ceiling(max_x_value / 2) * 2 # Round up to nearest 2
+        # Round up to nearest 2
+        max_x_value <- ceiling(max_x_value / 2) * 2
         dot_breaks <- seq(0, max_x_value, by = 2)
       } else if (max_x_value <= 20) {
-        max_x_value <- ceiling(max_x_value / 5) * 5 # Round up to nearest 5
+        # Round up to nearest 5
+        max_x_value <- ceiling(max_x_value / 5) * 5
         dot_breaks <- seq(0, max_x_value, by = 5)
       } else if (max_x_value <= 50) {
-        max_x_value <- ceiling(max_x_value / 10) * 10 # Round up to nearest 10
+        # Round up to nearest 10
+        max_x_value <- ceiling(max_x_value / 10) * 10
         dot_breaks <- seq(0, max_x_value, by = 10)
       } else if (max_x_value <= 100) {
-        max_x_value <- ceiling(max_x_value / 20) * 20 # Round up to nearest 20
+        # Round up to nearest 20
+        max_x_value <- ceiling(max_x_value / 20) * 20
         dot_breaks <- seq(0, max_x_value, by = 20)
       } else {
         power <- floor(log10(max_x_value))
@@ -325,7 +353,8 @@ create_forest_dot_plot <- function(
         }
       }
 
-      # After all forest_breaks are finalized, ensure x_lim[2] matches the last tick
+      # After all forest_breaks are finalized, ensure x_lim[2] matches the
+      # last tick
       if (length(forest_breaks) > 1) {
         x_lim[2] <- max(forest_breaks)
         x_lim[1] <- min(forest_breaks)
@@ -367,7 +396,11 @@ create_forest_dot_plot <- function(
             linewidth = 0.5
           ),
           axis.title.y = element_blank(),
-          axis.title.x = if (is_last_plot) ggtext::element_markdown(face = "bold", color = "black") else element_text(face = "bold", color = "black"),
+          axis.title.x = if (is_last_plot) {
+            ggtext::element_markdown(face = "bold", color = "black")
+          } else {
+            element_text(face = "bold", color = "black")
+          },
           legend.position = if (is_last_plot) "bottom" else "none",
           axis.text.y = element_blank(), # Remove y-axis labels from dot plot
           axis.ticks.y = element_blank(), # Remove y-axis ticks from dot plot
@@ -452,25 +485,27 @@ create_forest_dot_plot <- function(
         scale_y_discrete(limits = y_levels) +
         shape_scale +
         coord_cartesian(xlim = x_lim, clip = "off") +
-        scale_x_continuous(limits = x_lim, breaks = forest_breaks) +        # Add x-axis label for last plot
+        # Add x-axis label for last plot
+        scale_x_continuous(limits = x_lim, breaks = forest_breaks) +
         labs(
-            x = if (is_last_plot) {
-              paste0(
-                "<br>",
-                "<span style='color:black;font-weight:bold;'>", left_arrow, " Favours ",
-                treatment2,
-                "</span>",
-                spacing,
-                "<span style='color:black;font-weight:bold;'>Favours ",
-                treatment1,
-                " ", right_arrow, "</span>",
-                "<br>",
-                "Treatment Difference with 95% CI"
-              )
-            } else {
-              NULL
-            }
-        )+
+          x = if (is_last_plot) {
+            paste0(
+              "<br>",
+              "<span style='color:black;font-weight:bold;'>"
+              , left_arrow, " Favours ",
+              treatment2,
+              "</span>",
+              spacing,
+              "<span style='color:black;font-weight:bold;'>Favours ",
+              treatment1,
+              " ", right_arrow, "</span>",
+              "<br>",
+              "Treatment Difference with 95% CI"
+            )
+          } else {
+            NULL
+          }
+        ) +
         # Apply theme
         theme_minimal() +
         theme(
@@ -483,9 +518,14 @@ create_forest_dot_plot <- function(
           axis.title.y = element_blank(),
           axis.text.y = element_text(), # Show y-axis labels on forest plot
           axis.ticks.y = element_line(), # Show y-axis ticks on forest plot
-          axis.title.x = if (is_last_plot) ggtext::element_markdown(color = "black", face = "bold") else element_blank(),
+          axis.title.x = if (is_last_plot) {
+            ggtext::element_markdown(color = "black", face = "bold")
+          } else {
+            element_blank()
+          },
           axis.text.x = element_text(color = "black"),
-          legend.position = if (is_last_plot) "bottom" else "none", # Only show legend on last plot
+          # Only show legend on last plot
+          legend.position = if (is_last_plot) "bottom" else "none",
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
         )
 
@@ -497,7 +537,8 @@ create_forest_dot_plot <- function(
         widths = c(1, 1)
       ) +
         theme(
-          plot.margin = unit(c(0.3, 0.2, 0.1, 0.2), "cm"), # Reduced bottom margin
+          # Reduced bottom margin
+          plot.margin = unit(c(0.3, 0.2, 0.1, 0.2), "cm"),
           axis.title.x = if (is_last_plot) {
             ggtext::element_markdown(color = "black", face = "bold")
           } else {
@@ -517,7 +558,8 @@ create_forest_dot_plot <- function(
   max_height <- 3
   heights <- pmax(min_height, pmin(sqrt(plot_outcome_counts), max_height))
 
-  # Combine all plots vertically, resizing according to number of outcomes (with limits)
+  # Combine all plots vertically, resizing according to number of outcomes
+  # (with limits)
   final_plot_assembly <- wrap_plots(plots, ncol = 1, heights = heights)
 
   return(final_plot_assembly)

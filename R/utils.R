@@ -5,13 +5,15 @@
 #'
 #' @param save_name File name (e.g. 'plot.png', 'plot.pdf') to save.
 #' @param inplot Plot object. If NULL, saves the last displayed plot.
-#' @param imgpath Directory path where the plot is saved (default: current directory).
+#' @param imgpath Directory path where the plot is saved (default: current
+#'   directory).
 #' @param wdth Width of the plot in units (default: 7).
 #' @param hght Height of the plot in units (default: 4.1).
 #' @param unts Units for width/height (default: "in").
 #' @param bgcol Background color (default: "white").
 #' @param dpi Resolution in dots per inch (default: 600).
-#' @param web_suffix If TRUE, also saves a low-res version with "_web" suffix (default: FALSE).
+#' @param web_suffix If TRUE, also saves a low-res version with "_web" suffix
+#'   (default: FALSE).
 #' @param ... Additional arguments passed to `ggsave()`.
 #'
 #' @return Invisibly returns full file path to saved image.
@@ -58,7 +60,9 @@ ggsave_custom <- function(save_name,
 
   # Save web-optimized version (if enabled)
   if (web_suffix) {
-    web_path <- file.path(imgpath, paste0(tools::file_path_sans_ext(save_name), "_web.", ext))
+    web_path <- file.path(imgpath,
+                          paste0(tools::file_path_sans_ext(save_name),
+                                 "_web.", ext))
     ggplot2::ggsave(
       filename = web_path,
       plot = inplot,

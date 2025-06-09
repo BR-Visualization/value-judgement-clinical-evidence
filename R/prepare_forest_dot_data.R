@@ -1,18 +1,26 @@
 #' Prepare Data for Forest and Dot Plots
 #'
 #' @description
-#' Prepares and optionally calculates treatment effect differences and confidence intervals
-#' for specified outcomes, based on whether a higher value indicates risk or benefit.
+#' Prepares and optionally calculates treatment effect differences and
+#' confidence intervals for specified outcomes, based on whether a higher
+#' value indicates risk or benefit.
 #'
-#' @param data A data frame containing treatment comparisons, estimates, and metadata.
-#' @param outcomes_of_interest Character vector of outcome names to include (default includes key efficacy and safety outcomes).
-#' @param treatment1 Character; label of the first treatment group (default: `"Drug A"`).
-#' @param treatment2 Character; label of the second treatment group (default: `"Placebo"`).
-#' @param filter_value Character; value to filter the `Filter` column (default: `"None"`).
-#' @param precalculated_stats Logical; if `TRUE`, assumes data already contains `Diff`, `Diff_LowerCI`, and `Diff_UpperCI`.
+#' @param data A data frame containing treatment comparisons, estimates, and
+#'   metadata.
+#' @param outcomes_of_interest Character vector of outcome names to include
+#'   (default includes key efficacy and safety outcomes).
+#' @param treatment1 Character; label of the first treatment group
+#'   (default: `"Drug A"`).
+#' @param treatment2 Character; label of the second treatment group
+#'   (default: `"Placebo"`).
+#' @param filter_value Character; value to filter the `Filter` column
+#'   (default: `"None"`).
+#' @param precalculated_stats Logical; if `TRUE`, assumes data already
+#'   contains `Diff`, `Diff_LowerCI`, and `Diff_UpperCI`.
 #'
-#' @return A filtered data frame with computed or validated treatment differences and 95% confidence intervals.
-#'         Includes directionally colored confidence intervals for plotting.
+#' @return A filtered data frame with computed or validated treatment
+#'   differences and 95% confidence intervals. Includes directionally colored
+#'   confidence intervals for plotting.
 #'
 #' @importFrom dplyr %>% filter mutate case_when if_else arrange bind_rows
 #' @export
@@ -25,7 +33,8 @@
 #' prepared_data <- prepare_forest_dot_data(effects_table)
 #'
 #' # Use precalculated stats
-#' prepared_data2 <- prepare_forest_dot_data(effects_table, precalculated_stats = TRUE)
+#' prepared_data2 <- prepare_forest_dot_data(effects_table,
+#'   precalculated_stats = TRUE)
 prepare_forest_dot_data <- function(data,
                                     outcomes_of_interest = c(
                                       "Benefit 1", "Benefit 2",
@@ -51,7 +60,8 @@ prepare_forest_dot_data <- function(data,
     missing_cols <- setdiff(required_cols, names(filtered_data))
 
     if (length(missing_cols) > 0) {
-      stop("Missing required precalculated columns: ", paste(missing_cols, collapse = ", "))
+      stop("Missing required precalculated columns: ",
+           paste(missing_cols, collapse = ", "))
     }
 
     return(filtered_data)
@@ -69,7 +79,8 @@ prepare_forest_dot_data <- function(data,
       ),
       SE_diff = case_when(
         Type == "Continuous" ~ sqrt((Sd1^2 / N1) + (Sd2^2 / N2)),
-        Type == "Binary" ~ sqrt((Prop1 * (1 - Prop1) / N1) + (Prop2 * (1 - Prop2) / N2)),
+        Type == "Binary" ~ sqrt((Prop1 * (1 - Prop1) / N1) +
+                                  (Prop2 * (1 - Prop2) / N2)),
         TRUE ~ NA_real_
       ),
       df = if_else(
