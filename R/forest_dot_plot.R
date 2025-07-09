@@ -18,15 +18,12 @@ library(rlang)
 #'
 #' @param data A data frame prepared using `prepare_forest_dot_data()`
 #'   or with matching structure.
-#' @param clin_thresholds Optional data frame with `Outcome` and
-#'   `Threshold` columns for reference lines (defaults provided).
-#' @param direction Optional character vector or single value indicating
-#'   the direction of clinical significance for each outcome. Accepts
-#'   `"greater"` or `"less"`. Can be a single value applied to all,
-#'   a vector matching `clin_thresholds`, or a named vector by outcome.
-#' @param outcomes_of_interest Character vector of outcomes to include
-#'   (default includes major efficacy and safety endpoints).
-#'   (default includes major efficacy and safety endpoints).
+#' @param outcomes_with_thresholds Either NULL (uses all available outcomes
+#'   with no thresholds), a character vector of outcome names to include
+#'   (with no thresholds), or a named list where names are outcomes and
+#'   values are thresholds. For lists, directions default to "greater" for
+#'   positive values and "less" for negative values, or can be specified as
+#'   list(outcome = list(threshold = 0.1, direction = "greater")).
 #' @param treatment1 Character; label of the first treatment group
 #'   (default: `"Drug A"`).
 #' @param treatment2 Character; label of the second treatment group
@@ -53,90 +50,144 @@ library(rlang)
 #' @export
 #'
 #' @examples
-#' \donttest{
 #' # First, prepare the data
 #' prepared_data <- prepare_forest_dot_data(effects_table)
 #'
-#' # Generate the plot
+#' # Generate the plot using all available outcomes with no thresholds
 #' dotforest <- create_forest_dot_plot(prepared_data)
+#' \dontrun{
 #' ggsave_custom("dotforest.png", imgpath = "./", inplot = dotforest, dpi = 300)
-#'
-#' # With clinical thresholds
-#' thresholds <- data.frame(
-#'   Outcome = c("Benefit 1", "Benefit 2"),
-#'   Threshold = c(0.10, 0.08),
-#'   Direction = c("greater", "greater")
-#' )
-#' create_forest_dot_plot(prepared_data,
-#'   outcomes_of_interest = c(
-#'     "Benefit 1",
-#'     "Benefit 2"
-#'   ),
-#'   clin_thresholds = thresholds
-#' )
 #' }
+#'
+#' # Use only specific outcomes with no thresholds
+#' create_forest_dot_plot(prepared_data,
+#'   outcomes_with_thresholds = c("Benefit 1", "Benefit 2")
+#' )
+#'
+#' # Custom thresholds with automatic direction detection
+#' create_forest_dot_plot(prepared_data,
+#'   outcomes_with_thresholds = list(
+#'     "Benefit 1" = 0.10,
+#'     "Benefit 2" = 0.08,
+#'     "Risk 1" = -0.05
+#'   )
+#' )
+#'
+#' # Custom thresholds with explicit directions
+#' create_forest_dot_plot(prepared_data,
+#'   outcomes_with_thresholds = list(
+#'     "Benefit 1" = list(threshold = 0.10, direction = "greater"),
+#'     "Risk 1" = list(threshold = -0.05, direction = "less")
+#'   )
+#' )
 create_forest_dot_plot <- function(
     data,
-    clin_thresholds = NULL,
-    direction = NULL,
-    outcomes_of_interest = c(
-      "Benefit 1",
-      "Benefit 2",
-      "Benefit 3",
-      "Risk 1",
-      "Risk 2"
-    ),
+    outcomes_with_thresholds = NULL,
     treatment1 = "Drug A",
     treatment2 = "Placebo",
     filter_value = "None",
     precalculated_stats = FALSE,
-    forest_upper_limit = NULL) { # Define arrow symbols to avoid issues with LaTeX documentation
+    forest_upper_limit = NULL) {
+  # Define arrow symbols to avoid issues with LaTeX documentation
   # Use UTF-8 encoded Unicode arrows for proper display in all contexts
   left_arrow <- "\u2190" # ← (leftwards arrow)
   right_arrow <- "\u2192" # → (rightwards arrow)
   spacing <- "                    "
-  # Set up default clinical thresholds
-  default_thresholds <- data.frame(
-    Outcome = c(
-      "Benefit 1",
-      "Benefit 2",
-      "Benefit 3",
-      "Risk 1",
-      "Risk 2"
-    ),
-    Threshold = c(0.10, 0.08, 5, -0.10, -0.05),
-    Direction = c("greater", "greater", "greater", "less", "less"),
-    stringsAsFactors = FALSE
-  )
 
-  # Process clinical thresholds
-  if (is.null(clin_thresholds)) {
-    clin_thresholds <- default_thresholds
-  } else {
-    # Add Direction from argument if supplied
-    if (!is.null(direction)) {
-      if (is.character(direction) && length(direction) == 1) {
-        # Single direction applied to all
-        clin_thresholds$Direction <- direction
-      } else if (
-        is.character(direction) && length(direction) == nrow(clin_thresholds)
-      ) {
-        clin_thresholds$Direction <- direction
-      } else {
-        warning(
-          "Invalid 'direction' argument: must be a single value or match",
-          " the number of rows in clin_thresholds."
-        )
-      }
-    } else if (!"Direction" %in% names(clin_thresholds)) {
-      # Use defaults for missing directions
-      clin_thresholds <- merge(
-        clin_thresholds,
-        default_thresholds[, c("Outcome", "Direction")],
-        by = "Outcome",
-        all.x = TRUE
+  # Process outcomes and thresholds from combined parameter
+  show_thresholds <- FALSE # Flag to track whether to show thresholds
+
+  if (is.null(outcomes_with_thresholds)) {
+    # Default: use all available outcomes from the data, no thresholds
+    if ("Outcome" %in% names(data)) {
+      available_outcomes <- unique(data$Outcome)
+      # Use all available outcomes
+      outcomes_of_interest <- available_outcomes
+      # Create empty thresholds data frame (no thresholds shown)
+      clin_thresholds <- data.frame(
+        Outcome = character(0),
+        Threshold = numeric(0),
+        Direction = character(0),
+        stringsAsFactors = FALSE
+      )
+    } else {
+      stop(
+        "No 'Outcome' col found in data. Specify outcomes_with_thresholds."
       )
     }
+  } else if (is.character(outcomes_with_thresholds)) {
+    # Simple character vector - no thresholds shown for this case either
+    outcomes_of_interest <- outcomes_with_thresholds
+    # Create empty thresholds data frame (no thresholds shown)
+    clin_thresholds <- data.frame(
+      Outcome = character(0),
+      Threshold = numeric(0),
+      Direction = character(0),
+      stringsAsFactors = FALSE
+    )
+  } else if (is.list(outcomes_with_thresholds)) {
+    # List format - extract outcomes and build thresholds, show thresholds
+    show_thresholds <- TRUE
+    outcomes_of_interest <- names(outcomes_with_thresholds)
+
+    # Debug: Check if outcomes_of_interest is NULL or empty
+    if (is.null(outcomes_of_interest) || length(outcomes_of_interest) == 0) {
+      stop(
+        "outcomes_with_thresholds list must have named elements."
+      )
+    }
+
+    # Convert list to data frame
+    threshold_df <- data.frame(
+      Outcome = character(0),
+      Threshold = numeric(0),
+      Direction = character(0),
+      stringsAsFactors = FALSE
+    )
+
+    for (outcome_name in names(outcomes_with_thresholds)) {
+      threshold_value <- outcomes_with_thresholds[[outcome_name]]
+
+      if (is.list(threshold_value)) {
+        thresh <- if (!is.null(threshold_value$threshold)) {
+          threshold_value$threshold
+        } else if (!is.null(threshold_value$Threshold)) {
+          threshold_value$Threshold
+        } else {
+          stop("Threshold value must be specified for outcome: ", outcome_name)
+        }
+
+        direction <- if (!is.null(threshold_value$direction)) {
+          threshold_value$direction
+        } else if (!is.null(threshold_value$Direction)) {
+          threshold_value$Direction
+        } else {
+          # Default direction based on threshold sign if not specified
+          if (thresh >= 0) "greater" else "less"
+        }
+      } else {
+        thresh <- threshold_value
+        # Default direction based on threshold sign
+        direction <- if (thresh >= 0) "greater" else "less"
+      }
+
+      threshold_df <- rbind(
+        threshold_df,
+        data.frame(
+          Outcome = outcome_name,
+          Threshold = thresh,
+          Direction = direction,
+          stringsAsFactors = FALSE
+        )
+      )
+    }
+
+    clin_thresholds <- threshold_df
+  } else {
+    stop(
+      "outcomes_with_thresholds must be either NULL, a character vector,
+      or a named list"
+    )
   }
 
   # Prepare data
@@ -149,8 +200,28 @@ create_forest_dot_plot <- function(
     precalculated_stats
   )
 
+  # Check if we have any data after filtering
+  if (nrow(filtered_data) == 0) {
+    # Get available outcomes from the original data to help with debugging
+    available_outcomes <- if ("Outcome" %in% names(data)) {
+      unique(data$Outcome)
+    } else {
+      "Column 'Outcome' not found in data"
+    }
+
+    stop(paste0(
+      "No data found for the specified outcomes: ",
+      paste(outcomes_of_interest, collapse = ", "),
+      "\n",
+      "Available outcomes in data: ",
+      paste(available_outcomes, collapse = ", "),
+      "\n",
+      "Please check that the outcome names match those in your data."
+    ))
+  }
+
   plots <- list()
-  plot_outcome_counts <- c() # Store number of outcomes for each plot
+  plot_outcome_counts <- numeric(0) # Store number of outcomes for each plot
   factors <- unique(filtered_data$Factor)
 
   # Loop through factors and types to create plots
@@ -164,6 +235,11 @@ create_forest_dot_plot <- function(
 
       # Filter data for current type
       type_data <- factor_data %>% dplyr::filter(Type == type)
+
+      # Skip if no data for this factor/type combination
+      if (nrow(type_data) == 0) {
+        next
+      }
 
       # Determine estimate column names based on type
       estimate1 <- if (type == "Binary") "Prop1" else "Mean1"
@@ -185,20 +261,43 @@ create_forest_dot_plot <- function(
       ) %>%
         dplyr::filter(!is.na(x))
 
-      # Create data for clinical thresholds
-      thresholds_with_treatment <- clin_thresholds %>%
-        dplyr::filter(Outcome %in% type_data$Outcome) %>%
-        dplyr::mutate(Treatment = "Clinical Threshold")
+      # Create data for clinical thresholds (only if thresholds should be shown)
+      if (show_thresholds && nrow(clin_thresholds) > 0) {
+        thresholds_with_treatment <- clin_thresholds %>%
+          dplyr::filter(Outcome %in% type_data$Outcome) %>%
+          dplyr::mutate(Treatment = "Clinical Threshold")
 
-      # Prepare data for shaded regions
-      shade_data <- thresholds_with_treatment %>%
-        dplyr::mutate(
-          xmin = dplyr::if_else(Direction == "greater", Threshold, -Inf),
-          xmax = dplyr::if_else(Direction == "greater", Inf, Threshold),
-          ymin = as.numeric(factor(Outcome, levels = y_levels)) - 0.4,
-          ymax = as.numeric(factor(Outcome, levels = y_levels)) + 0.4,
-          FillGroup = dplyr::if_else(Direction == "greater", "Benefit", "Risk")
+        # Prepare data for shaded regions
+        shade_data <- thresholds_with_treatment %>%
+          dplyr::mutate(
+            xmin = dplyr::if_else(Direction == "greater", Threshold, -Inf),
+            xmax = dplyr::if_else(Direction == "greater", Inf, Threshold),
+            ymin = as.numeric(factor(Outcome, levels = y_levels)) - 0.4,
+            ymax = as.numeric(factor(Outcome, levels = y_levels)) + 0.4,
+            FillGroup = dplyr::if_else(
+              Direction == "greater",
+              "Benefit",
+              "Risk"
+            )
+          )
+      } else {
+        # No thresholds to show
+        thresholds_with_treatment <- data.frame(
+          Outcome = character(0),
+          Threshold = numeric(0),
+          Direction = character(0),
+          Treatment = character(0),
+          stringsAsFactors = FALSE
         )
+        shade_data <- data.frame(
+          xmin = numeric(0),
+          xmax = numeric(0),
+          ymin = numeric(0),
+          ymax = numeric(0),
+          FillGroup = character(0),
+          stringsAsFactors = FALSE
+        )
+      }
 
       # Dummy data for legend
       dummy_legend <- data.frame(
@@ -211,19 +310,46 @@ create_forest_dot_plot <- function(
 
       # Set up color and shape scales
       manual_fill_colors <- c("Benefit" = "lightgreen", "Risk" = "lightcoral")
-      unique_trts <- unique(c(treatment1, treatment2, "Clinical Threshold"))
-      # Use hollow circle (5) for Clinical Threshold
-      manual_shapes <- setNames(c(21, 24, 5), unique_trts)
-      manual_colors <- setNames(c("#D55E00", "#0072B2", "black"), unique_trts)
-      manual_fills <- setNames(
-        c("#D55E00", "#0072B2", "gray85", "black"),
-        c(
+
+      # Create scales only for treatments that are actually used
+      if (show_thresholds && nrow(thresholds_with_treatment) > 0) {
+        # With thresholds - include Clinical Threshold in scales
+        manual_shapes <- setNames(
+          c(21, 24, 5),
+          c(treatment1, treatment2, "Clinical Threshold")
+        )
+        manual_colors <- setNames(
+          c("#D55E00", "#0072B2", "black"),
+          c(treatment1, treatment2, "Clinical Threshold")
+        )
+        manual_fills <- setNames(
+          c("#D55E00", "#0072B2", "gray85", "black"),
+          c(
+            treatment1,
+            treatment2,
+            "Clinically Meaningful Difference",
+            "Clinical Threshold"
+          )
+        )
+        fill_breaks <- c(
           treatment1,
           treatment2,
-          "Clinically Meaningful Difference",
-          "Clinical Threshold"
+          "Clinical Threshold",
+          "Clinically Meaningful Difference"
         )
-      )
+      } else {
+        # No thresholds - only treatment scales
+        manual_shapes <- setNames(c(21, 24), c(treatment1, treatment2))
+        manual_colors <- setNames(
+          c("#D55E00", "#0072B2"),
+          c(treatment1, treatment2)
+        )
+        manual_fills <- setNames(
+          c("#D55E00", "#0072B2"),
+          c(treatment1, treatment2)
+        )
+        fill_breaks <- c(treatment1, treatment2)
+      }
 
       # Create scales
       color_scale <- scale_color_manual(name = "", values = manual_colors)
@@ -231,17 +357,19 @@ create_forest_dot_plot <- function(
       fill_scale <- scale_fill_manual(
         name = "",
         values = manual_fills,
-        breaks = c(
-          treatment1,
-          treatment2,
-          "Clinical Threshold",
-          "Clinically Meaningful Difference"
-        )
+        breaks = fill_breaks
       )
 
       # Calculate x-axis limits for forest plot
       x_min <- min(type_data$Diff_LowerCI, na.rm = TRUE)
       x_max <- max(type_data$Diff_UpperCI, na.rm = TRUE)
+
+      # Handle case where all values are NA/missing
+      if (is.infinite(x_min) || is.infinite(x_max)) {
+        x_min <- -1
+        x_max <- 1
+      }
+
       x_range <- max(abs(x_min), abs(x_max))
       x_lim <- c(-x_range, x_range)
 
@@ -271,6 +399,11 @@ create_forest_dot_plot <- function(
 
       # Find the maximum value across all dot plots in the same factor/type
       max_x_value <- max(dot_data$x, na.rm = TRUE)
+
+      # Handle case where all values are NA/missing or no data
+      if (is.infinite(max_x_value) || length(dot_data$x) == 0) {
+        max_x_value <- 1
+      }
 
       # Round up the maximum value to a nice number
       # Add a small buffer to ensure we do not cut off points
@@ -336,6 +469,15 @@ create_forest_dot_plot <- function(
       # Always add a tick after the last CI bound for forest plot
       max_ci <- max(type_data$Diff_UpperCI, na.rm = TRUE)
       min_ci <- min(type_data$Diff_LowerCI, na.rm = TRUE)
+
+      # Handle case where all CI values are NA/missing
+      if (is.infinite(max_ci)) {
+        max_ci <- 1
+      }
+      if (is.infinite(min_ci)) {
+        min_ci <- -1
+      }
+
       if (length(forest_breaks) > 1) {
         interval <- forest_breaks[2] - forest_breaks[1]
         last_tick <- max(forest_breaks)
@@ -405,39 +547,43 @@ create_forest_dot_plot <- function(
           plot.margin = unit(c(0.2, 0.2, 0.2, 0.2), "cm")
         )
 
-      # Create forest plot
-      forest_plot <- ggplot() +
-        # Add shaded regions for clinical meaning
-        geom_rect(
-          data = dummy_legend,
-          aes(
-            xmin = xmin,
-            xmax = xmax,
-            ymin = ymin,
-            ymax = ymax,
-            fill = FillGroup
-          ),
-          inherit.aes = FALSE,
-          show.legend = FALSE
-        ) +
-        geom_rect(
-          data = shade_data,
-          aes(
-            xmin = xmin,
-            xmax = xmax,
-            ymin = ymin,
-            ymax = ymax,
-            fill = FillGroup
-          ),
-          alpha = 0.3,
-          inherit.aes = FALSE,
-          show.legend = FALSE
-        ) +
-        scale_fill_manual(
-          values = manual_fill_colors,
-          guide = "none"
-        ) +
-        # Add points and error bars for treatment differences
+      # Create the base forest plot
+      forest_plot <- ggplot()
+      # Add shaded regions for clinical meaning (only if thresholds are shown)
+      if (show_thresholds && nrow(shade_data) > 0) {
+        forest_plot <- forest_plot +
+          geom_rect(
+            data = dummy_legend,
+            aes(
+              xmin = xmin,
+              xmax = xmax,
+              ymin = ymin,
+              ymax = ymax,
+              fill = FillGroup
+            ),
+            inherit.aes = FALSE,
+            show.legend = FALSE
+          ) +
+          geom_rect(
+            data = shade_data,
+            aes(
+              xmin = xmin,
+              xmax = xmax,
+              ymin = ymin,
+              ymax = ymax,
+              fill = FillGroup
+            ),
+            alpha = 0.3,
+            inherit.aes = FALSE,
+            show.legend = FALSE
+          ) +
+          scale_fill_manual(
+            values = manual_fill_colors,
+            guide = "none"
+          )
+      }
+      # Add points and error bars for treatment differences
+      forest_plot <- forest_plot +
         geom_point(
           data = type_data,
           aes(y = Outcome, x = Diff),
@@ -450,17 +596,23 @@ create_forest_dot_plot <- function(
           aes(y = Outcome, xmin = Diff_LowerCI, xmax = Diff_UpperCI),
           color = "black",
           height = 0.2
-        ) +
-        # Add threshold points
-        geom_point(
-          data = thresholds_with_treatment,
-          aes(x = Threshold, y = Outcome, shape = Treatment),
-          color = "black",
-          fill = NA, # hollow symbol
-          size = 3,
-          stroke = 1 # make outline thicker for visibility
-        ) +
-        # Add reference line at zero
+        )
+
+      # Add threshold points (only if thresholds are shown)
+      if (show_thresholds && nrow(thresholds_with_treatment) > 0) {
+        forest_plot <- forest_plot +
+          geom_point(
+            data = thresholds_with_treatment,
+            aes(x = Threshold, y = Outcome, shape = Treatment),
+            color = "black",
+            fill = NA, # hollow symbol
+            size = 3,
+            stroke = 1 # make outline thicker for visibility
+          )
+      }
+
+      # Add reference line at zero
+      forest_plot <- forest_plot +
         geom_vline(
           xintercept = 0,
           linetype = "dashed",
@@ -480,22 +632,32 @@ create_forest_dot_plot <- function(
         guides(
           shape = guide_legend(override.aes = list(bg = "white"))
         ) +
-        scale_y_discrete(limits = y_levels) +
-        shape_scale +
+        scale_y_discrete(limits = y_levels)
+
+      # Only apply shape scale if thresholds are being used
+      if (show_thresholds && nrow(thresholds_with_treatment) > 0) {
+        forest_plot <- forest_plot + shape_scale
+      }
+
+      forest_plot <- forest_plot +
         coord_cartesian(xlim = x_lim, clip = "off") +
-        scale_x_continuous(limits = x_lim, breaks = forest_breaks) + # Add x-axis label for last plot
+        scale_x_continuous(limits = x_lim, breaks = forest_breaks) +
+        # Add x-axis label for last plot
         labs(
           x = if (is_last_plot) {
             paste0(
               "<br>",
               "<span style='color:black;font-weight:bold;'>",
-              left_arrow, " Favours ",
+              left_arrow,
+              " Favours ",
               treatment2,
               "</span>",
               spacing,
               "<span style='color:black;font-weight:bold;'>Favours ",
               treatment1,
-              " ", right_arrow, "</span>",
+              " ",
+              right_arrow,
+              "</span>",
               "<br>",
               "Treatment Difference with 95% CI"
             )
@@ -548,6 +710,14 @@ create_forest_dot_plot <- function(
       # Store number of outcomes for this plot
       plot_outcome_counts <- c(plot_outcome_counts, length(y_levels))
     }
+  }
+
+  # Check if we have any plots to combine
+  if (length(plots) == 0) {
+    stop(
+      "No plots were generated. This may be because no data was found for
+      the specified outcomes and factor/type combinations."
+    )
   }
 
   # Set min and max height to avoid too tall/short plots

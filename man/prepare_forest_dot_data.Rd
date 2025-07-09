@@ -6,7 +6,7 @@
 \usage{
 prepare_forest_dot_data(
   data,
-  outcomes_of_interest = c("Benefit 1", "Benefit 2", "Benefit 3", "Risk 1", "Risk 2"),
+  outcomes_of_interest = NULL,
   treatment1 = "Drug A",
   treatment2 = "Placebo",
   filter_value = "None",
@@ -17,8 +17,8 @@ prepare_forest_dot_data(
 \item{data}{A data frame containing treatment comparisons, estimates, and
 metadata.}
 
-\item{outcomes_of_interest}{Character vector of outcome names to include
-(default includes key efficacy and safety outcomes).}
+\item{outcomes_of_interest}{Character vector of outcome names to include.
+If NULL (default), uses all available outcomes from the data.}
 
 \item{treatment1}{Character; label of the first treatment group
 (default: \code{"Drug A"}).}
@@ -46,7 +46,7 @@ on whether a higher value indicates risk or benefit.
 # Load or create a sample dataset `effects_table`
 head(effects_table)
 
-# Prepare and calculate statistics
+# Prepare using all available outcomes and calculate statistics
 prepared_data <- prepare_forest_dot_data(effects_table)
 
 # Use precalculated stats
