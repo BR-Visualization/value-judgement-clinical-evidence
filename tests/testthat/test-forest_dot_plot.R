@@ -45,4 +45,3 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
 
   testthat::expect_s3_class(plot, "patchwork")
 })
-
