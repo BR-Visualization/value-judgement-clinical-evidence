@@ -6,8 +6,8 @@
 #'
 #' @param data A data frame containing treatment comparisons, estimates, and
 #'   metadata.
-#' @param outcomes_of_interest Character vector of outcome names to include
-#'   (default includes key efficacy and safety outcomes).
+#' @param outcomes_of_interest Character vector of outcome names to include.
+#'   If NULL (default), uses all available outcomes from the data.
 #' @param treatment1 Character; label of the first treatment group
 #'   (default: `"Drug A"`).
 #' @param treatment2 Character; label of the second treatment group
@@ -28,7 +28,7 @@
 #' # Load or create a sample dataset `effects_table`
 #' head(effects_table)
 #'
-#' # Prepare and calculate statistics
+#' # Prepare using all available outcomes and calculate statistics
 #' prepared_data <- prepare_forest_dot_data(effects_table)
 #'
 #' # Use precalculated stats
@@ -36,14 +36,22 @@
 #'   precalculated_stats = TRUE
 #' )
 prepare_forest_dot_data <- function(data,
-                                    outcomes_of_interest = c(
-                                      "Benefit 1", "Benefit 2",
-                                      "Benefit 3", "Risk 1", "Risk 2"
-                                    ),
+                                    outcomes_of_interest = NULL,
                                     treatment1 = "Drug A",
                                     treatment2 = "Placebo",
                                     filter_value = "None",
                                     precalculated_stats = FALSE) {
+  # Auto-discover outcomes if not specified
+  if (is.null(outcomes_of_interest)) {
+    if ("Outcome" %in% names(data)) {
+      outcomes_of_interest <- unique(data$Outcome)
+    } else {
+      stop(
+        "No 'Outcome' col found in data and no outcomes_of_interest specified."
+      )
+    }
+  }
+
   # Filter data
   filtered_data <- data %>%
     filter(

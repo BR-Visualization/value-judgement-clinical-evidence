@@ -6,9 +6,7 @@
 \usage{
 create_forest_dot_plot(
   data,
-  clin_thresholds = NULL,
-  direction = NULL,
-  outcomes_of_interest = c("Benefit 1", "Benefit 2", "Benefit 3", "Risk 1", "Risk 2"),
+  outcomes_with_thresholds = NULL,
   treatment1 = "Drug A",
   treatment2 = "Placebo",
   filter_value = "None",
@@ -20,17 +18,12 @@ create_forest_dot_plot(
 \item{data}{A data frame prepared using \code{prepare_forest_dot_data()}
 or with matching structure.}
 
-\item{clin_thresholds}{Optional data frame with \code{Outcome} and
-\code{Threshold} columns for reference lines (defaults provided).}
-
-\item{direction}{Optional character vector or single value indicating
-the direction of clinical significance for each outcome. Accepts
-\code{"greater"} or \code{"less"}. Can be a single value applied to all,
-a vector matching \code{clin_thresholds}, or a named vector by outcome.}
-
-\item{outcomes_of_interest}{Character vector of outcomes to include
-(default includes major efficacy and safety endpoints).
-(default includes major efficacy and safety endpoints).}
+\item{outcomes_with_thresholds}{Either NULL (uses all available outcomes
+with no thresholds), a character vector of outcome names to include
+(with no thresholds), or a named list where names are outcomes and
+values are thresholds. For lists, directions default to "greater" for
+positive values and "less" for negative values, or can be specified as
+list(outcome = list(threshold = 0.1, direction = "greater")).}
 
 \item{treatment1}{Character; label of the first treatment group
 (default: \code{"Drug A"}).}
@@ -58,26 +51,34 @@ treatment effects, confidence intervals, and optional clinical
 thresholds.
 }
 \examples{
-\donttest{
 # First, prepare the data
 prepared_data <- prepare_forest_dot_data(effects_table)
 
-# Generate the plot
+# Generate the plot using all available outcomes with no thresholds
 dotforest <- create_forest_dot_plot(prepared_data)
+\dontrun{
 ggsave_custom("dotforest.png", imgpath = "./", inplot = dotforest, dpi = 300)
-
-# With clinical thresholds
-thresholds <- data.frame(
-  Outcome = c("Benefit 1", "Benefit 2"),
-  Threshold = c(0.10, 0.08),
-  Direction = c("greater", "greater")
-)
-create_forest_dot_plot(prepared_data,
-  outcomes_of_interest = c(
-    "Benefit 1",
-    "Benefit 2"
-  ),
-  clin_thresholds = thresholds
-)
 }
+
+# Use only specific outcomes with no thresholds
+create_forest_dot_plot(prepared_data,
+  outcomes_with_thresholds = c("Benefit 1", "Benefit 2")
+)
+
+# Custom thresholds with automatic direction detection
+create_forest_dot_plot(prepared_data,
+  outcomes_with_thresholds = list(
+    "Benefit 1" = 0.10,
+    "Benefit 2" = 0.08,
+    "Risk 1" = -0.05
+  )
+)
+
+# Custom thresholds with explicit directions
+create_forest_dot_plot(prepared_data,
+  outcomes_with_thresholds = list(
+    "Benefit 1" = list(threshold = 0.10, direction = "greater"),
+    "Risk 1" = list(threshold = -0.05, direction = "less")
+  )
+)
 }

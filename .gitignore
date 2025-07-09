@@ -1,11 +1,4 @@
 
-.Rproj.user
-.Rhistory
-.Rdata
-.httr-oauth
-.DS_Store
-.quarto
-=======
 # History files
 .Rhistory
 .Rapp.history
@@ -13,9 +6,16 @@
 # Session Data files
 .RData
 .RDataTmp
+.Rdata
 
 # User-specific files
 .Ruserdata
+.Rproj.user
+
+# System files
+.httr-oauth
+.DS_Store
+.quarto
 
 # Example code in package build process
 *-Ex.R
@@ -56,7 +56,14 @@ po/*~
 # RStudio Connect folder
 rsconnect/
 
-inst/doc
-docs
+# Linting configuration
+.lintr
 
+# Package documentation
+inst/doc
+
+# Quarto
 /.quarto/
+
+# air setup
+.vscode/
