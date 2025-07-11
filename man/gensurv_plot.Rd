@@ -54,13 +54,13 @@ vector of length 2, with the first value corresponding to the position of the
 legend relative to the x-axis, and the second corresponding to the position
 of the legend relative to the y-axis (numeric).}
 
-\item{mar}{The maximum acceptable risk for the drug, as discussed by the
+\item{mar}{The maximum acceptable risk for the treatment, as discussed by the
 team, must be numerical.}
 
-\item{mab}{The minimum acceptable benefit for the drug, as discussed by the
+\item{mab}{The minimum acceptable benefit for the treatment, as discussed by the
 team, must be numerical.}
 
-\item{mcd}{The minimum clinically important difference of the drug, as
+\item{mcd}{The minimum clinically important difference of the treatment, as
 discussed by the team, must be numerical.}
 }
 \value{

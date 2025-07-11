@@ -25,11 +25,11 @@
 #' vector of length 2, with the first value corresponding to the position of the
 #' legend relative to the x-axis, and the second corresponding to the position
 #' of the legend relative to the y-axis (numeric).
-#' @param mar The maximum acceptable risk for the drug, as discussed by the
+#' @param mar The maximum acceptable risk for the treatment, as discussed by the
 #' team, must be numerical.
-#' @param mab The minimum acceptable benefit for the drug, as discussed by the
+#' @param mab The minimum acceptable benefit for the treatment, as discussed by the
 #' team, must be numerical.
-#' @param mcd The minimum clinically important difference of the drug, as
+#' @param mcd The minimum clinically important difference of the treatment, as
 #' discussed by the team, must be numerical.
 #'
 #' @return A cumulative excess plot.
@@ -682,11 +682,11 @@ gensurv_table <- function(df_table,
 #' vector of length 2, with the first value corresponding to the position of the
 #' legend relative to the x-axis, and the second corresponding to the position
 #' of the legend relative to the y-axis (numeric).
-#' @param mar The maximum acceptable risk for the drug, as discussed by the
+#' @param mar The maximum acceptable risk for the treatment, as discussed by the
 #' team, must be numerical.
-#' @param mab The minimum acceptable benefit for the drug, as discussed by the
+#' @param mab The minimum acceptable benefit for the treatment, as discussed by the
 #' team, must be numerical.
-#' @param mcd The minimum clinically important difference of the drug, as
+#' @param mcd The minimum clinically important difference of the treatment, as
 #' discussed by the team, must be numerical.
 #'
 #' @return A combined cumulative excess plot and table.
