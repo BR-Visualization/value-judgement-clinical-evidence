@@ -180,16 +180,6 @@ gensurv_plot <- function(
   adjustment <- y_range * 0.06
   text_size <- y_range * 0.015
 
-  #all_breaks <- sort(c(breaks2, mcd))
-
-  #all_labels <- sapply(all_breaks, function(b) {
-  #  if (b == mcd) {
-  #    paste0('<span style="color:black; font-weight:bold; font-size:', round(text_size*3), 'pt;">MCD &#8594;</span>')
-  #  } else {
-  #    paste0('<span style="color:#0571b0;">', as.character(b), '</span>')
-  #  }
-  #})
-
   legend_levels <- c(
     "Benefit_Acceptable",
     "Risk_Acceptable",
@@ -222,7 +212,7 @@ gensurv_plot <- function(
     geom_ribbon(
       data = df_ben %>% filter(diff * base_subjects < mab),
       aes(x = eventtime, ymin = lower_ci * base_subjects, ymax = upper_ci * base_subjects),
-      fill = "#7f7f7f",
+      fill = "#504D4E",
       alpha = 0.2
     )  +
     geom_ribbon(
@@ -234,7 +224,7 @@ gensurv_plot <- function(
     geom_ribbon(
       data = df_risk %>% filter(diff * base_subjects > mar),
       aes(x = eventtime, ymin = lower_ci * base_subjects, ymax = upper_ci * base_subjects),
-      fill = "#7f7f7f",
+      fill = "#504D4E",
       alpha = 0.2
     ) +
     geom_text(
@@ -252,7 +242,7 @@ gensurv_plot <- function(
       values = c(
         "Benefit_Acceptable" = "#0571b0",
         "Risk_Acceptable" = "#ca0020",
-        "Nonacceptable" = "#7f7f7f"
+        "Nonacceptable" = "#504D4E"
       ),
       labels = c(
         "Acceptable Benefit",
