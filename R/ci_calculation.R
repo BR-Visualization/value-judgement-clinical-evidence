@@ -148,9 +148,9 @@ calculate_log_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
   # Calculating the different elements
   diff <- log((prop1 * (1 - prop2)) / (prop2 * (1 - prop1)))
   se <- sqrt(1 / (N1 * prop1) +
-               1 / (N1 * (1 - prop1)) +
-               1 / (N2 * prop2) +
-               1 / (N2 * (1 - prop2)))
+    1 / (N1 * (1 - prop1)) +
+    1 / (N2 * prop2) +
+    1 / (N2 * (1 - prop2)))
   lower <- diff - zscore * se
   upper <- diff + zscore * se
 
@@ -197,9 +197,9 @@ calculate_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
   or <- (prop1 * (1 - prop2)) / (prop2 * (1 - prop1))
 
   se <- sqrt(1 / (N1 * prop1) +
-               1 / (N1 * (1 - prop1)) +
-               1 / (N2 * prop2) +
-               1 / (N2 * (1 - prop2)))
+    1 / (N1 * (1 - prop1)) +
+    1 / (N2 * prop2) +
+    1 / (N2 * (1 - prop2)))
   lower <- exp(log(or) - zscore * se)
   upper <- exp(log(or) + zscore * se)
 
