@@ -7,12 +7,14 @@ defaults}
 \usage{
 ggsave_custom(
   save_name,
-  inplot,
+  inplot = NULL,
+  imgpath = ".",
   wdth = 7,
   hght = 4.1,
   unts = "in",
-  imgpath = "inst/img/",
   bgcol = "white",
+  dpi = 600,
+  web_suffix = FALSE,
   ...
 )
 }
@@ -21,13 +23,13 @@ ggsave_custom(
 
 \item{inplot}{Plot to save, defaults to last plot displayed.}
 
+\item{imgpath}{Path of the directory to save plot to: path}
+
 \item{wdth}{width of plot}
 
 \item{hght}{height of plot}
 
 \item{unts}{units of plot}
-
-\item{imgpath}{Path of the directory to save plot to: path}
 
 \item{bgcol}{Background color. If NULL, uses the plot.background fill value
 from the plot theme.}
