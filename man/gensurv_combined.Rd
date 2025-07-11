@@ -62,13 +62,13 @@ benefit first and risk second.}
 \item{titlename_p}{Allows user to change the documentation of title (default
 is provided)}
 
-\item{mar}{The maximum acceptable risk for the drug, as discussed by the
+\item{mar}{The maximum acceptable risk for the treatment, as discussed by the
 team, must be numerical.}
 
-\item{mab}{The minimum acceptable benefit for the drug, as discussed by the
+\item{mab}{The minimum acceptable benefit for the treatment, as discussed by the
 team, must be numerical.}
 
-\item{mcd}{The minimum clinically important difference of the drug, as
+\item{mcd}{The minimum clinically important difference of the treatment, as
 discussed by the team, must be numerical.}
 
 \item{rel_adjust}{Allows user to specify the figure and table alignment. Must
