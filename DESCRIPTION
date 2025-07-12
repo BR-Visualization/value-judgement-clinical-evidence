@@ -47,7 +47,8 @@ Imports:
     forcats,
     reshape2,
     colorBlindness,
-    ggtext
+    ggtext,
+    magrittr
 Depends: 
     R (>= 3.5)
 LazyData: true
