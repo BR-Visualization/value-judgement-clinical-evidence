@@ -97,7 +97,8 @@ Combine the cumulative excess plot and corresponding table into one figure
 \examples{
 gensurv_combined(
   df_plot = cumexcess, subjects_pt = 100, visits_pt = 6,
-  df_table = cumexcess, fig_colors_pt = colfun()$fig13_colors
+  df_table = cumexcess, fig_colors_pt = colfun()$fig13_colors,
+  mar = 30, mab = 10, mcd = 15
 )
 
 }
