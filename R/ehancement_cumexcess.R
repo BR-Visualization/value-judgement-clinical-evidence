@@ -39,12 +39,10 @@
 #' @import zoo
 #' @import simsurv
 #' @import dplyr
-#' @import magrittr
 #' @importFrom stats sd
 #' @importFrom ggrepel geom_label_repel
 #' @importFrom forcats fct_reorder
 #' @import reshape2
-#' @import tidyverse
 #' @import colorBlindness
 #' @import ggtext
 #'

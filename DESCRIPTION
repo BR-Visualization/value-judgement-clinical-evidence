@@ -38,7 +38,16 @@ Imports:
     ggplot2,
     ggtext,
     patchwork,
-    rlang
+    rlang,
+    cowplot,
+    zoo,
+    simsurv,
+    stats,
+    ggrepel,
+    forcats,
+    reshape2,
+    colorBlindness,
+    ggtext
 Depends: 
     R (>= 3.5)
 LazyData: true
