@@ -49,7 +49,10 @@
 #' @examples
 #' gensurv_plot(cumexcess, 100, 6,
 #'   titlename =
-#'     "Cumulative Excess # of Subjects w/ Events (per 100 Subjects)"
+#'     "Cumulative Excess # of Subjects w/ Events (per 100 Subjects)",
+#'     mar = 40,
+#'     mab = 10,
+#'     mcd = 20
 #' )
 gensurv_plot <- function(
     df_outcome,
@@ -692,7 +695,8 @@ gensurv_table <- function(df_table,
 #' @examples
 #' gensurv_combined(
 #'   df_plot = cumexcess, subjects_pt = 100, visits_pt = 6,
-#'   df_table = cumexcess, fig_colors_pt = colfun()$fig13_colors
+#'   df_table = cumexcess, fig_colors_pt = colfun()$fig13_colors,
+#'   mar = 30, mab = 10, mcd = 15
 #' )
 #'
 gensurv_combined <- function(df_plot,
