@@ -1,7 +1,6 @@
 #' Function for colors
 #'
 #' @return figure colors
-#' @import colorBlindness
 #' @export
 #'
 colfun <- function() {
@@ -456,7 +455,6 @@ add_exprs <- function(...) {
 #' with string in (`nonbold`) and returns a `dataframe`.
 #'
 #' @import magrittr dplyr
-#' @importFrom glue glue
 #'
 #' @seealso `?plotmath`.
 #'
@@ -489,7 +487,7 @@ labs_bold <- function(cond, bold, nonbold) {
   }
 
   # Writing a message that will be displayed in the log
-  message(glue('[{format(Sys.time(),"%F %T")}] > Dataout object from
+  message(glue::glue('[{format(Sys.time(),"%F %T")}] > Dataout object from
                the labs_bold function is created'))
 
   # Returning the dataout object
