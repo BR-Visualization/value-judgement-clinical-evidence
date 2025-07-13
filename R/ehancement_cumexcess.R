@@ -27,8 +27,8 @@
 #' of the legend relative to the y-axis (numeric).
 #' @param mar The maximum acceptable risk for the treatment, as discussed by the
 #' team, must be numerical.
-#' @param mab The minimum acceptable benefit for the treatment, as discussed by the
-#' team, must be numerical.
+#' @param mab The minimum acceptable benefit for the treatment, as discussed by
+#' the team, must be numerical.
 #' @param mcd The minimum clinically important difference of the treatment, as
 #' discussed by the team, must be numerical.
 #'
@@ -65,8 +65,8 @@ gensurv_plot <- function(
     mar,
     mab,
     mcd) {
-  outcome <- active <- control <- NULL
-  eventtime <- obsv_duration <- obsv_unit <- eff_diff_lbl <- NULL
+  outcome <- active <- control <- sd_diff <- lower_ci <- upper_ci <- NULL
+  eventtime <- obsv_duration <- obsv_unit <- eff_diff_lbl <- color_group <- NULL
 
   all_columns <- c(
     "obsv_duration", "eventtime", "diff", "obsv_unit",
@@ -157,18 +157,14 @@ gensurv_plot <- function(
       upper_ci = diff + 10 * sd_diff
     )
 
-  temp_plot <- ggplot() +
-    scale_y_continuous(
-      sec.axis = sec_axis(trans = ~., breaks = breaks2),
-      breaks = breaks2
-    )
-
   plot_temp <- ggplot() +
     geom_line(
-      aes(x = df_ben$eventtime, y = df_ben$diff * base_subjects, color = "Benefit")
+      aes(x = df_ben$eventtime, y = df_ben$diff * base_subjects,
+          color = "Benefit")
     ) +
     geom_line(
-      aes(x = df_risk$eventtime, y = df_risk$diff * base_subjects, color = "Risk")
+      aes(x = df_risk$eventtime, y = df_risk$diff * base_subjects,
+          color = "Risk")
     ) +
     scale_y_continuous(
       sec.axis = sec_axis(trans = ~., breaks = breaks2),
@@ -179,7 +175,6 @@ gensurv_plot <- function(
   y_range <- y_limits[2] - y_limits[1]
 
   adjustment <- y_range * 0.06
-  text_size <- y_range * 0.015
 
   legend_levels <- c(
     "Benefit_Acceptable",
@@ -197,39 +192,52 @@ gensurv_plot <- function(
     )
   )
 
-  legend_data$color_group <- factor(legend_data$color_group, levels = legend_levels)
+  legend_data$color_group <- factor(legend_data$color_group,
+                                    levels = legend_levels)
 
   plot1 <- ggplot() +
-    geom_hline(yintercept = mab, color = "#0571b0", linetype = "dashed", size = 1) +
-    geom_hline(yintercept = mar, color = "#ca0020", linetype = "dashed", size = 1) +
-    annotate("text", x = -0.5, y = ifelse(mar > mab, mab - adjustment, mab + adjustment), color = "#0571b0", label = "MAB", size = 3) +
-    annotate("text", x = (.95 * obsv_dur), y = ifelse(mar > mab, mar + adjustment, mar - adjustment), color = "#ca0020", label = "MAR", size = 3) +
+    geom_hline(yintercept = mab, color = "#0571b0", linetype = "dashed",
+               size = 1) +
+    geom_hline(yintercept = mar, color = "#ca0020", linetype = "dashed",
+               size = 1) +
+    annotate("text", x = -0.5, y = ifelse(mar > mab, mab - adjustment,
+                                          mab + adjustment), color = "#0571b0",
+             label = "MAB", size = 3) +
+    annotate("text", x = (.95 * obsv_dur),
+             y = ifelse(mar > mab, mar + adjustment, mar - adjustment),
+             color = "#ca0020", label = "MAR", size = 3) +
     geom_ribbon(
-      data = df_ben %>% filter(diff * base_subjects >= mab), # Only Acceptable Region
-      aes(x = eventtime, ymin = lower_ci * base_subjects, ymax = upper_ci * base_subjects),
+      data = df_ben %>% filter(diff * base_subjects >= mab),
+      aes(x = eventtime, ymin = lower_ci * base_subjects,
+          ymax = upper_ci * base_subjects),
       fill = "#0571b0",
       alpha = 0.2
     ) +
     geom_ribbon(
       data = df_ben %>% filter(diff * base_subjects < mab),
-      aes(x = eventtime, ymin = lower_ci * base_subjects, ymax = upper_ci * base_subjects),
+      aes(x = eventtime, ymin = lower_ci * base_subjects,
+          ymax = upper_ci * base_subjects),
       fill = "#504D4E",
       alpha = 0.2
     ) +
     geom_ribbon(
-      data = df_risk %>% filter(diff * base_subjects <= mar), # Only Acceptable Region
-      aes(x = eventtime, ymin = lower_ci * base_subjects, ymax = upper_ci * base_subjects),
+      data = df_risk %>% filter(diff * base_subjects <= mar),
+      aes(x = eventtime, ymin = lower_ci * base_subjects,
+          ymax = upper_ci * base_subjects),
       fill = "#ca0020",
       alpha = 0.2
     ) +
     geom_ribbon(
       data = df_risk %>% filter(diff * base_subjects > mar),
-      aes(x = eventtime, ymin = lower_ci * base_subjects, ymax = upper_ci * base_subjects),
+      aes(x = eventtime, ymin = lower_ci * base_subjects,
+          ymax = upper_ci * base_subjects),
       fill = "#504D4E",
       alpha = 0.2
     ) +
     geom_text(
-      data = df_ben %>% filter(abs(diff * base_subjects - mcd) == min(abs(diff * base_subjects - mcd))) %>% slice(1),
+      data = df_ben %>% filter(abs(diff * base_subjects - mcd) == min(
+        abs(diff * base_subjects - mcd))) %>%
+        slice(1),
       aes(x = eventtime, y = diff * base_subjects, label = "MCD"),
       color = "black",
       vjust = -1,
@@ -319,23 +327,34 @@ gensurv_plot <- function(
       axis.title.y.right = element_text(color = fig_colors[2])
     ) +
     geom_line(
-      data = df_risk %>% filter(diff * base_subjects <= mar),
-      aes(x = eventtime, y = diff * base_subjects, color = "Risk_Acceptable"), size = 0.5
+      data = df_risk %>%
+        filter(diff * base_subjects <= mar),
+      aes(x = eventtime, y = diff * base_subjects, color = "Risk_Acceptable"),
+      size = 0.5
     ) +
     geom_line(
-      data = df_ben %>% filter(diff * base_subjects >= mab),
-      aes(x = eventtime, y = diff * base_subjects, color = "Benefit_Acceptable"), size = 0.5
+      data = df_ben %>%
+        filter(diff * base_subjects >= mab),
+      aes(x = eventtime, y = diff * base_subjects,
+          color = "Benefit_Acceptable"), size = 0.5
     ) +
     geom_line(
-      data = df_risk %>% filter(diff * base_subjects > mar), # Only above MAR
-      aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"), size = 0.5
+      data = df_risk %>%
+        filter(diff * base_subjects > mar),
+      aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"),
+      size = 0.5
     ) +
     geom_line(
-      data = df_ben %>% filter(diff * base_subjects < mab), # Only below MAB
-      aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"), size = 0.5
+      data = df_ben %>%
+        filter(diff * base_subjects < mab),
+      aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"),
+      size = 0.5
     ) +
     geom_point(
-      data = df_ben %>% filter(abs(diff * base_subjects - mcd) == min(abs(diff * base_subjects - mcd))) %>% slice(1),
+      data = df_ben %>%
+        filter(abs(diff * base_subjects - mcd) == min(
+        abs(diff * base_subjects - mcd))) %>%
+        slice(1),
       aes(x = eventtime, y = diff * base_subjects),
       shape = 23, fill = "black", size = 2
     )
@@ -386,8 +405,8 @@ gensurv_table <- function(df_table,
                           base_subjects,
                           visits,
                           fig_colors = c("#0571b0", "#ca0020")) {
-  effect <- outcome <- visit <- y <- color_ctrl_var <- NULL
-  eff_code <- eventtime <- obsv_duration <- NULL
+  effect <- outcome <- visit <- y <- color_ctrl_var <- z <- NULL
+  eff_code <- eventtime <- obsv_duration <- subjects <- NULL
 
   if (!is.null(df_table$eventtime)) {
     all_columns <- c(
@@ -418,11 +437,6 @@ gensurv_table <- function(df_table,
         select(obsv_duration, n, effect, outcome, eff_code)
     }
   }
-
-  active <- which(df_table$eff_code == 1)
-  active1 <- df_table$effect[active[1]]
-  control <- which(df_table$eff_code == 0)
-  control1 <- df_table$effect[control[1]]
 
   if (any(is.na(df_table))) {
     miss_vars <- colnames(df_table)[colSums(is.na(df_table) > 0)]
@@ -524,12 +538,6 @@ gensurv_table <- function(df_table,
     scale_x_control +
     scale_y_control +
     extra_code2 +
-    # labs(caption = paste(
-    #  "Total number of subjects:", active1, "=",
-    #  base_subjects,
-    #  "and", control1, "=",
-    #  base_subjects
-    # )) +
     br_charts_theme() +
     theme(
       plot.title = ggplot2::element_text(size = 8),
@@ -610,12 +618,6 @@ gensurv_table <- function(df_table,
     scale_x_control1 +
     scale_y_control1 +
     extra_code1 +
-    # labs(caption = paste(
-    #  "Total number of subjects:", active1, "=",
-    #  base_subjects,
-    #  "and", control1, "=",
-    #  base_subjects
-    # )) +
     br_charts_theme() +
     theme(
       plot.title = ggplot2::element_text(size = 8),
@@ -685,8 +687,8 @@ gensurv_table <- function(df_table,
 #' of the legend relative to the y-axis (numeric).
 #' @param mar The maximum acceptable risk for the treatment, as discussed by the
 #' team, must be numerical.
-#' @param mab The minimum acceptable benefit for the treatment, as discussed by the
-#' team, must be numerical.
+#' @param mab The minimum acceptable benefit for the treatment, as discussed by
+#' the team, must be numerical.
 #' @param mcd The minimum clinically important difference of the treatment, as
 #' discussed by the team, must be numerical.
 #'
@@ -794,23 +796,6 @@ gensurv_combined <- function(df_plot,
     axis = "l",
     rel_heights = rel_heights_table
   )
-
-  # fig_plot <- cowplot::plot_grid(
-  #  cowplot::plot_grid(
-  #    plot,
-  #    table +
-  #      ggplot2::theme(legend.position = "none"),
-  #    ncol = 1,
-  #    align = "v",
-  #    axis = "b",
-  #    rel_heights = rel_heights_table
-  #  ),
-  #  ncol = 1
-  # )
-  # mytitle <- cowplot::ggdraw() + cowplot::draw_label(
-  #  titlename_p,
-  #  fontface = "bold", size = 12
-  # )
 
   return(fig_plot)
 }
