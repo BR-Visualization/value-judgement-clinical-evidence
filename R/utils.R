@@ -55,7 +55,7 @@ colfun <- function() {
   fig12_colors <- c("#0571b0", "#92c5de", "#f7f7f7", "#f4a582", "#ca0020")
   fig13_colors <- c("#0571b0", "#ca0020")
 
-  return(list(
+  list(
     control_palettes = control_palettes,
     fig2_colors = fig2_colors,
     fig3_colors = fig3_colors,
@@ -66,7 +66,7 @@ colfun <- function() {
     fig11_colors = fig11_colors,
     fig12_colors = fig12_colors,
     fig13_colors = fig13_colors
-  ))
+  )
 }
 
 

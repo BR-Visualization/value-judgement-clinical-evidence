@@ -65,8 +65,8 @@ is provided)}
 \item{mar}{The maximum acceptable risk for the treatment, as discussed by the
 team, must be numerical.}
 
-\item{mab}{The minimum acceptable benefit for the treatment, as discussed by the
-team, must be numerical.}
+\item{mab}{The minimum acceptable benefit for the treatment, as discussed by
+the team, must be numerical.}
 
 \item{mcd}{The minimum clinically important difference of the treatment, as
 discussed by the team, must be numerical.}
