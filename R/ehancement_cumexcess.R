@@ -159,12 +159,16 @@ gensurv_plot <- function(
 
   plot_temp <- ggplot() +
     geom_line(
-      aes(x = df_ben$eventtime, y = df_ben$diff * base_subjects,
-          color = "Benefit")
+      aes(
+        x = df_ben$eventtime, y = df_ben$diff * base_subjects,
+        color = "Benefit"
+      )
     ) +
     geom_line(
-      aes(x = df_risk$eventtime, y = df_risk$diff * base_subjects,
-          color = "Risk")
+      aes(
+        x = df_risk$eventtime, y = df_risk$diff * base_subjects,
+        color = "Risk"
+      )
     ) +
     scale_y_continuous(
       sec.axis = sec_axis(trans = ~., breaks = breaks2),
@@ -193,50 +197,69 @@ gensurv_plot <- function(
   )
 
   legend_data$color_group <- factor(legend_data$color_group,
-                                    levels = legend_levels)
+    levels = legend_levels
+  )
 
   plot1 <- ggplot() +
-    geom_hline(yintercept = mab, color = "#0571b0", linetype = "dashed",
-               size = 1) +
-    geom_hline(yintercept = mar, color = "#ca0020", linetype = "dashed",
-               size = 1) +
-    annotate("text", x = -0.5, y = ifelse(mar > mab, mab - adjustment,
-                                          mab + adjustment), color = "#0571b0",
-             label = "MAB", size = 3) +
-    annotate("text", x = (.95 * obsv_dur),
-             y = ifelse(mar > mab, mar + adjustment, mar - adjustment),
-             color = "#ca0020", label = "MAR", size = 3) +
+    geom_hline(
+      yintercept = mab, color = "#0571b0", linetype = "dashed",
+      size = 1
+    ) +
+    geom_hline(
+      yintercept = mar, color = "#ca0020", linetype = "dashed",
+      size = 1
+    ) +
+    annotate("text",
+      x = -0.5, y = ifelse(mar > mab, mab - adjustment,
+        mab + adjustment
+      ), color = "#0571b0",
+      label = "MAB", size = 3
+    ) +
+    annotate("text",
+      x = (.95 * obsv_dur),
+      y = ifelse(mar > mab, mar + adjustment, mar - adjustment),
+      color = "#ca0020", label = "MAR", size = 3
+    ) +
     geom_ribbon(
       data = df_ben %>% filter(diff * base_subjects >= mab),
-      aes(x = eventtime, ymin = lower_ci * base_subjects,
-          ymax = upper_ci * base_subjects),
+      aes(
+        x = eventtime, ymin = lower_ci * base_subjects,
+        ymax = upper_ci * base_subjects
+      ),
       fill = "#0571b0",
       alpha = 0.2
     ) +
     geom_ribbon(
       data = df_ben %>% filter(diff * base_subjects < mab),
-      aes(x = eventtime, ymin = lower_ci * base_subjects,
-          ymax = upper_ci * base_subjects),
+      aes(
+        x = eventtime, ymin = lower_ci * base_subjects,
+        ymax = upper_ci * base_subjects
+      ),
       fill = "#504D4E",
       alpha = 0.2
     ) +
     geom_ribbon(
       data = df_risk %>% filter(diff * base_subjects <= mar),
-      aes(x = eventtime, ymin = lower_ci * base_subjects,
-          ymax = upper_ci * base_subjects),
+      aes(
+        x = eventtime, ymin = lower_ci * base_subjects,
+        ymax = upper_ci * base_subjects
+      ),
       fill = "#ca0020",
       alpha = 0.2
     ) +
     geom_ribbon(
       data = df_risk %>% filter(diff * base_subjects > mar),
-      aes(x = eventtime, ymin = lower_ci * base_subjects,
-          ymax = upper_ci * base_subjects),
+      aes(
+        x = eventtime, ymin = lower_ci * base_subjects,
+        ymax = upper_ci * base_subjects
+      ),
       fill = "#504D4E",
       alpha = 0.2
     ) +
     geom_text(
       data = df_ben %>% filter(abs(diff * base_subjects - mcd) == min(
-        abs(diff * base_subjects - mcd))) %>%
+        abs(diff * base_subjects - mcd)
+      )) %>%
         slice(1),
       aes(x = eventtime, y = diff * base_subjects, label = "MCD"),
       color = "black",
@@ -335,8 +358,10 @@ gensurv_plot <- function(
     geom_line(
       data = df_ben %>%
         filter(diff * base_subjects >= mab),
-      aes(x = eventtime, y = diff * base_subjects,
-          color = "Benefit_Acceptable"), size = 0.5
+      aes(
+        x = eventtime, y = diff * base_subjects,
+        color = "Benefit_Acceptable"
+      ), size = 0.5
     ) +
     geom_line(
       data = df_risk %>%
@@ -353,7 +378,8 @@ gensurv_plot <- function(
     geom_point(
       data = df_ben %>%
         filter(abs(diff * base_subjects - mcd) == min(
-        abs(diff * base_subjects - mcd))) %>%
+          abs(diff * base_subjects - mcd)
+        )) %>%
         slice(1),
       aes(x = eventtime, y = diff * base_subjects),
       shape = 23, fill = "black", size = 2
