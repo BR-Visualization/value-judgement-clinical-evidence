@@ -13,8 +13,6 @@ ggsave_custom(
   hght = 4.1,
   unts = "in",
   bgcol = "white",
-  dpi = 600,
-  web_suffix = FALSE,
   ...
 )
 }
