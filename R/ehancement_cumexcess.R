@@ -50,9 +50,9 @@
 #' gensurv_plot(cumexcess, 100, 6,
 #'   titlename =
 #'     "Cumulative Excess # of Subjects w/ Events (per 100 Subjects)",
-#'     mar = 40,
-#'     mab = 10,
-#'     mcd = 20
+#'   mar = 40,
+#'   mab = 10,
+#'   mcd = 20
 #' )
 gensurv_plot <- function(
     df_outcome,
