@@ -572,6 +572,8 @@ relmax <- function(rmax, type_scale) {
 #' @param imgpath Path of the directory to save plot to: path
 #' @param bgcol Background color. If NULL, uses the plot.background fill value
 #' from the plot theme.
+#' @param dpi Dots per image, determines resolution of image.
+#' @param web_suffix Website suffix to save as web-optimized version.
 #' @param ... Other arguments passed on to the graphics device function,
 #' as specified by device.
 #' @param bgcol Background color. If NULL, uses the plot.background fill value
@@ -589,6 +591,8 @@ ggsave_custom <- function(save_name,
                           hght = 4.1,
                           unts = "in",
                           bgcol = "white",
+                          dpi = 600,
+                          web_suffix = FALSE,
                           ...) {
   if (is.null(inplot)) {
     inplot <- ggplot2::last_plot()
