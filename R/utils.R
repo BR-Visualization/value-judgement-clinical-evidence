@@ -589,8 +589,6 @@ ggsave_custom <- function(save_name,
                           hght = 4.1,
                           unts = "in",
                           bgcol = "white",
-                          dpi = 600,
-                          web_suffix = FALSE,
                           ...) {
   if (is.null(inplot)) {
     inplot <- ggplot2::last_plot()
