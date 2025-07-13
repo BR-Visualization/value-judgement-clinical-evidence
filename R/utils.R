@@ -572,8 +572,9 @@ relmax <- function(rmax, type_scale) {
 #' @param imgpath Path of the directory to save plot to: path
 #' @param bgcol Background color. If NULL, uses the plot.background fill value
 #' from the plot theme.
-#' @param dpi Dots per image, determines resolution of image.
-#' @param web_suffix Website suffix to save as web-optimized version.
+#' @param dpi Resolution in dots per inch (default: 600).
+#' @param web_suffix If TRUE, also saves a low-res version with "_web" suffix
+#' (default: FALSE).
 #' @param ... Other arguments passed on to the graphics device function,
 #' as specified by device.
 #' @param bgcol Background color. If NULL, uses the plot.background fill value
