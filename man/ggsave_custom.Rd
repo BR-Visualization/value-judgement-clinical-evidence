@@ -34,9 +34,10 @@ ggsave_custom(
 \item{bgcol}{Background color. If NULL, uses the plot.background fill value
 from the plot theme.}
 
-\item{dpi}{Dots per image, determines resolution of image.}
+\item{dpi}{Resolution in dots per inch (default: 600).}
 
-\item{web_suffix}{Website suffix to save as web-optimized version.}
+\item{web_suffix}{If TRUE, also saves a low-res version with "_web" suffix
+(default: FALSE).}
 
 \item{...}{Other arguments passed on to the graphics device function,
 as specified by device.}
