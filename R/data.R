@@ -1,7 +1,7 @@
 #' Example cumulative excess plot data used for Figure 13
 #'
 #' @name cumexcess
-#' @format A data frame with 880 rows and 9 columns:
+#' @format A data frame with 880 rows and 10 columns:
 #'   \describe{
 #'   \item{eventtime}{Simulated event times}
 #'   \item{diff}{Simulated difference in active/control effects}
@@ -12,6 +12,7 @@
 #'   \item{n}{Number of subjects}
 #'   \item{effect}{Specifies active/control effect}
 #'   \item{eff_code}{0/1 depicting control/active effects}
+#'   \item{subjects}{Specifies number of subjects at a given time}
 #'
 #'   }
 "cumexcess"

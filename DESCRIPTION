@@ -47,6 +47,7 @@ Imports:
     forcats,
     reshape2,
     colorBlindness,
+    glue,
     ggtext,
     magrittr
 Depends: 
