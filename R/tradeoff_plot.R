@@ -446,7 +446,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
 
     df_curve <- data.frame(x_curve, y_curve)
     df_curve <- df_curve %>%
-      filter(!is.na(x_curve) && !is.na(y_curve))
+      filter(!is.na(x_curve) & !is.na(y_curve))
 
     if (threshold == "Segmented line") {
       # display the threshold as a segmented line
@@ -811,7 +811,7 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
       filter(Filter == "None")
   } else {
     df_filter <- data %>%
-      filter(Filter == filter && Category %in% category)
+      filter(Filter == filter & Category %in% category)
   }
 
   validate(
