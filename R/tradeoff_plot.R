@@ -636,7 +636,7 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
   )
 
   # set a shape for each category
-  my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[seq(length(
+  my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[seq_along(length(
     levels(as.factor(data$Category))))]
   names(my_shapes) <- c(levels(as.factor(data$Category)))
 
