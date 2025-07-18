@@ -153,7 +153,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
 
     # log10 scale doesn't work when x_min is 0
     if ((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-        unique(df_br$benefit_Type) == "Binary" & x_min == 0) {
+      unique(df_br$benefit_Type) == "Binary" & x_min == 0) {
       x_min <- 0.01
       x_max <- max(0.01, x_max)
     }
@@ -166,7 +166,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
 
     # log10 scale doesn't work when y_min is 0
     if ((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-        type_risk == "Crude proportions" & y_min == 0) {
+      type_risk == "Crude proportions" & y_min == 0) {
       y_min <- 0.01
       y_max <- max(y_max, 0.01)
     }
@@ -199,32 +199,32 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   } else if (type_scale == "Free") {
     error_msg <- paste0(
       ifelse(!is.na(lower_x), "",
-             "please enter a numeric number for lower limit x axis; "
+        "please enter a numeric number for lower limit x axis; "
       ),
       ifelse(!is.na(upper_x), "",
-             "please enter a numeric number for upper limit x axis; "
+        "please enter a numeric number for upper limit x axis; "
       ),
       ifelse(!is.na(lower_y), "",
-             "please enter a numeric number for lower limit y axis; "
+        "please enter a numeric number for lower limit y axis; "
       ),
       ifelse(!is.na(upper_y), "",
-             "please enter a numeric number for upper limit y axis; "
+        "please enter a numeric number for upper limit y axis; "
       ),
       ifelse((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-               unique(df_br$benefit_Type) == "Binary" & lower_x <= 0,
-             "please enter a positive value for lower limit x axis; ",
-             ""
+        unique(df_br$benefit_Type) == "Binary" & lower_x <= 0,
+      "please enter a positive value for lower limit x axis; ",
+      ""
       ),
       ifelse((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-               type_risk == "Crude proportions" & lower_y <= 0,
-             "please enter a positive value for lower limit y axis; ",
-             ""
+        type_risk == "Crude proportions" & lower_y <= 0,
+      "please enter a positive value for lower limit y axis; ",
+      ""
       ),
       ifelse((!is.na(lower_x)) & (!is.na(upper_x)) & (lower_x < upper_x), "",
-             "the lower limit x axis should be less than upper limit x axis; "
+        "the lower limit x axis should be less than upper limit x axis; "
       ),
       ifelse((!is.na(lower_y)) & (!is.na(upper_y)) & (lower_y < upper_y), "",
-             "the lower limit y axis should be less than upper limit y axis"
+        "the lower limit y axis should be less than upper limit y axis"
       )
     )
 
@@ -273,15 +273,15 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   if (!is.na(mab)) {
     myplot <- myplot +
       annotate("rect",
-               xmin = x_min, xmax = mab, ymin = y_min,
-               ymax = y_max, fill = "grey", alpha = 0.7
+        xmin = x_min, xmax = mab, ymin = y_min,
+        ymax = y_max, fill = "grey", alpha = 0.7
       )
   }
   if (!is.na(mar)) {
     myplot <- myplot +
       annotate("rect",
-               xmin = x_min, xmax = x_max, ymin = mar,
-               ymax = y_max, fill = "grey", alpha = 0.7
+        xmin = x_min, xmax = x_max, ymin = mar,
+        ymax = y_max, fill = "grey", alpha = 0.7
       )
   }
 
@@ -312,12 +312,12 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
 
     myplot <- myplot +
       geom_line(aes(x = x_line, y = y_line),
-                data = df_line,
-                linetype = 1, size = 1.2, colour = "maroon4"
+        data = df_line,
+        linetype = 1, size = 1.2, colour = "maroon4"
       ) +
       geom_ribbon(aes(x = x_line, ymin = y_line, ymax = y_max),
-                  data = df_line,
-                  fill = "grey", alpha = 0.7
+        data = df_line,
+        fill = "grey", alpha = 0.7
       )
   } else {
     x_curve <- c(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10)
@@ -327,8 +327,8 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
 
     error_msg <- paste0(
       ifelse(min(x_curve) < x_min | max(x_curve) > x_max |
-               min(y_curve) < y_min | max(y_curve) > y_max,
-             my_warning, ""
+        min(y_curve) < y_min | max(y_curve) > y_max,
+      my_warning, ""
       )
     )
 
@@ -354,30 +354,30 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
       # display the threshold as a segmented line
       myplot <- myplot +
         geom_line(aes(x = x_curve, y = y_curve),
-                  data = df_curve,
-                  linetype = 1, size = 1.2, colour = "maroon4"
+          data = df_curve,
+          linetype = 1, size = 1.2, colour = "maroon4"
         ) +
         geom_point(aes(x = x_curve, y = y_curve), df_curve,
-                   colour = "black", size = 2, shape = 15
+          colour = "black", size = 2, shape = 15
         ) +
         geom_ribbon(aes(x = x_curve, ymin = y_curve, ymax = y_max),
-                    data = df_curve, fill = "grey", alpha = 0.7
+          data = df_curve, fill = "grey", alpha = 0.7
         )
     } else if (threshold == "Smooth curve") {
       # display the threshold as a smooth curve
       new_df_curve <- expand.grid(x_curve = seq(x_min, x_max, by = 0.01))
       new_df_curve$y_curve <- stats::predict(stats::loess(y_curve ~ x_curve),
-                                             data = df_curve,
-                                             newdata = new_df_curve
+        data = df_curve,
+        newdata = new_df_curve
       )
       myplot <- myplot +
         geom_smooth(aes(x = x_curve, y = y_curve),
-                    data = df_curve, se = FALSE,
-                    linetype = 1, size = 1.2, colour = "maroon4"
+          data = df_curve, se = FALSE,
+          linetype = 1, size = 1.2, colour = "maroon4"
         ) +
         geom_point(aes(x = x_curve, y = y_curve),
-                   data = df_curve,
-                   colour = "black", size = 2, shape = 15
+          data = df_curve,
+          colour = "black", size = 2, shape = 15
         ) +
         geom_ribbon(
           aes(
@@ -395,29 +395,29 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   if (!is.na(mab)) {
     myplot <- myplot +
       geom_segment(aes(x = mab, xend = mab, y = y_min, yend = y_max),
-                   linetype = 2, colour = "darkorange3", size = 1.2
+        linetype = 2, colour = "darkorange3", size = 1.2
       )
   }
   if (!is.na(mar)) {
     myplot <- myplot +
       geom_segment(aes(x = x_min, xend = x_max, y = mar, yend = mar),
-                   linetype = 2, colour = "darkorange3", size = 1.2
+        linetype = 2, colour = "darkorange3", size = 1.2
       )
   }
 
   # create segments for graph margins
   myplot <- myplot +
     geom_segment(aes(x = x_min, xend = x_max, y = y_max, yend = y_max),
-                 linetype = 2, colour = "darkorange3", size = 1.2
+      linetype = 2, colour = "darkorange3", size = 1.2
     ) +
     geom_segment(aes(x = x_max, xend = x_max, y = y_min, yend = y_max),
-                 linetype = 2, colour = "darkorange3", size = 1.2
+      linetype = 2, colour = "darkorange3", size = 1.2
     ) +
     geom_segment(aes(x = x_min, xend = x_min, y = y_min, yend = y_max),
-                 linetype = 1, size = 1
+      linetype = 1, size = 1
     ) +
     geom_segment(aes(x = x_min, xend = x_max, y = y_min, yend = y_min),
-                 linetype = 1, size = 1
+      linetype = 1, size = 1
     )
 
   # labels
@@ -433,7 +433,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
 
   # x coordinates - the 0.03 part is to leave room to display the "MAR" label
   if ((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-      unique(df_br$benefit_Type) == "Binary") {
+    unique(df_br$benefit_Type) == "Binary") {
     myplot <- myplot +
       scale_x_log10(
         limits = c(
@@ -448,7 +448,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
 
   # y coordinates
   if ((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-      type_risk == "Crude proportions") {
+    type_risk == "Crude proportions") {
     myplot <- myplot +
       scale_y_log10(
         limits = c(y_min, y_max),
@@ -510,7 +510,7 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
   }
 
   df_br_status$treatment <- factor(df_br_status$treatment,
-                                   levels = c(unique(df_br_status$treatment))
+    levels = c(unique(df_br_status$treatment))
   )
 
   # set a color for each treatment
@@ -525,8 +525,8 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
   if (filter != "None") {
     my_colors <- rep(chartcolors, each = length(levels(as.factor(data$Category))))
     names(my_colors) <- c(t(outer(levels(as.factor(data$Trt1)),
-                                  levels(as.factor(data$Category)), paste,
-                                  sep = " : "
+      levels(as.factor(data$Category)), paste,
+      sep = " : "
     )))
   } else {
     my_colors <- chartcolors
