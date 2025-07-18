@@ -242,7 +242,7 @@ check_feature <- function(data, feature, plots, func, na_check, values,
     )
   }
   # check if the feature has the right type
-  else if (!func(data[[feature]])) {# nolint
+  else if (!func(data[[feature]])) { # nolint
     typestr <- gsub("is.|\\(\\)", "", deparse(substitute(func())))
     error_msg <- glue(
       "<li><span>Feature <b>{feature}</b> must be of type ",
@@ -367,14 +367,14 @@ check_feature_string <- function(data, feature, plots, func, na_check, values,
     )
   }
   # check if the feature is not empty
-  else if (sum(is.na(data[feature])) == nrow(data)) {# nolint
+  else if (sum(is.na(data[feature])) == nrow(data)) { # nolint
     error_msg <- glue(
       "Feature {feature} is empty : errors ",
       "occur in {toString(plots)} plot(s); {add_msg}"
     )
   }
   # check if the feature has the right type
-  else if (!func(data[[feature]])) {# nolint
+  else if (!func(data[[feature]])) { # nolint
     typestr <- gsub("is.|\\(\\)", "", deparse(substitute(func())))
     error_msg <- glue(
       "Feature {feature} must be of type ",
