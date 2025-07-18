@@ -210,10 +210,12 @@ check_effects_table <- function(df) {
 #' @param func function to check data type
 #' @param na_check (`logical`) check if the feature has missing values
 #' @param values (`vector`) check if the feature contains specified values
-#' @param check_same (`logical`) check if the feature has the same value across all rows
+#' @param check_same (`logical`) check if the feature has the same value across
+#'  all rows
 #' @param check_range (`vector`) check if the feature is in the specified range
 #' @param check_positive (`logical`) check if the feature is positive
-#' @param check_unique (`vector`) check if unique values of a feature is associated with unique values of linked features
+#' @param check_unique (`vector`) check if unique values of a feature is
+#'  associated with unique values of linked features
 #' @return error message(s), if any
 #' @details DETAILS
 #' @rdname check_feature
@@ -234,7 +236,6 @@ check_feature <- function(data, feature, plots, func, na_check, values,
       "</b> plot(s)</span></li>"
     )
   }
-  # check if the feature is not empty
   else if (sum(is.na(data[feature])) == nrow(data)) {
     error_msg <- glue(
       "<li><span>Feature <b>{feature}</b> is empty : errors ",
@@ -341,10 +342,12 @@ check_feature <- function(data, feature, plots, func, na_check, values,
 #' @param func function to check data type
 #' @param na_check (`logical`) check if the feature has missing values
 #' @param values (`vector`) check if the feature contains specified values
-#' @param check_same (`logical`) check if the feature has the same value across all rows
+#' @param check_same (`logical`) check if the feature has the same value across
+#'  all rows
 #' @param check_range (`vector`) check if the feature is in the specified range
 #' @param check_positive (`logical`) check if the feature is positive
-#' @param check_unique (`vector`) check if unique values of a feature is associated with unique values of linked features
+#' @param check_unique (`vector`) check if unique values of a feature is
+#'  associated with unique values of linked features
 #' @param add_msg (`character`) added error message for empty feature
 #' @return error message(s), if any
 #' @details DETAILS

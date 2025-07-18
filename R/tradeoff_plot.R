@@ -2,60 +2,157 @@
 #'
 #' Generate trade-off plot
 #' @param data (`data.frame`) input dataset
-#' The following variables are required columns. Note that the variables `Grouped_Outcome`, `Statistics`, and `Outcome_Status` are not required for generating a trade-off plot, but are listed as required columns because they are key for generating a value tree, which is a starting point for all subsequent benefit-risk assessments.
-#'  1) Factor: A character vector containing whether an outcome is a "Benefit" or a "Risk"
-#'  2) Grouped_Outcome: A character vector containing the name of grouped outcomes, e.g., Infections
-#'  3) Outcome: A character vector containing the name of outcomes, e.g., Herpes viral infections, upper respiratory tract infections
-#'  4) Statistics: A character vector containing the summary statistics of outcomes, e.g., %, mean change from baseline
-#'  5) Type: A character vector containing whether an outcome is a "Binary" or a "Continuous" variable
-#'  6) Outcome_Status: A character vector containing whether an outcome is an "Identified" or a "Potential" outcome
-#'  7) Filter: A character vector containing the filter for subgroup data, should be "None" if no filtre is applicable. Example: None; Sex.
-#'  8) Category: A character vector containing  the category for filtering subgroup data, should be "All" if no filter is applicable. Example: All; Male, Female.
+#' The following variables are required columns. Note that the variables
+#' `Grouped_Outcome`, `Statistics`, and `Outcome_Status` are not required for
+#'  generating a trade-off plot, but are listed as required columns because
+#'  they are key for generating a value tree, which is a starting point for all
+#'  subsequent benefit-risk assessments.
+#'  1) Factor: A character vector containing whether an outcome is a "Benefit"
+#'  or a "Risk"
+#'  2) Grouped_Outcome: A character vector containing the name of grouped
+#'  outcomes, e.g., Infections
+#'  3) Outcome: A character vector containing the name of outcomes, e.g.,
+#'  Herpes viral infections, upper respiratory tract infections
+#'  4) Statistics: A character vector containing the summary statistics of
+#'  outcomes, e.g., %, mean change from baseline
+#'  5) Type: A character vector containing whether an outcome is a "Binary" or
+#'  a "Continuous" variable
+#'  6) Outcome_Status: A character vector containing whether an outcome is an
+#'  "Identified" or a "Potential" outcome
+#'  7) Filter: A character vector containing the filter for subgroup data,
+#'  should be "None" if no filtre is applicable. Example: None; Sex.
+#'  8) Category: A character vector containing  the category for filtering
+#'  subgroup data, should be "All" if no filter is applicable.
+#'  Example: All; Male, Female.
 #'  9) Trt1: A character vector containing the name of active treatments
 #'  10) Trt2: A character vector containing controlled term "Placebo"
-#'  11) Drug_Status: A character vector containing whether a treatment is an "Approved" or a "Test" drug
-#' The following variables are situational columns - Filled in only for the specific summary statistic related to the row outcome (ex. proportion):
-#'  12) Rate_Type: A numeric vector containing whether an AE rate is "EventRate" or "IncRate". Required for risk outcomes displayed in exposure-adjusted event rate or incidence rate.
-#'  13) Prop1: A numeric vector containing the proportion in active treatment. Required for binary outcomes displayed in proportions; can be populated by nSub1/N1 if both nSub1 and N1 are provided.
-#'  14) IncRate1: A numeric vector containing the exposure-adjusted incidence rate per 100 PYs in active treatment. Required for risk outcomes displayed in exposure-adjusted incidence rates; can be populated by nSub1/PYAR1*100 if both nSub1 and PYAR1 are provided.
-#'  15) EventRate1: A numeric vector containing the exposure-adjusted event rate per 100 PYs in active treatment. Required for risk outcomes displayed in exposure-adjusted event rates; can be populated by nEvent1/PEY1*100 if both nEvent1 and PEY1 are provided.
-#'  16) Mean1: A numeric vector containing the mean in active treatment. Required for continuous outcomes.
-#'  17) Prop2: A numeric vector containing the proportion in comparator treatment. Required for binary outcomes displayed in proportions; can be populated by nSub2/N2 if both nSub1 and N1 are provided.
-#'  18) IncRate2: A numeric vector containing the exposure-adjusted incidence rate per 100 PYs in comparator treatment. Required for risk outcomes displayed in exposure-adjusted incidence rates; can be populated by nSub2/PYAR2*100 if both nSub1 and PYAR1 are provided.
-#'  19) EventRate2: A numeric vector containing the exposure-adjusted event rate per 100 PYs in comparator treatment. Required for risk outcomes displayed in exposure-adjusted event rates; can be populated by nEvent2/PEY2*100 if both nEvent1 and PEY1 are provided.
-#'  20) Mean2: A numeric vector containing the mean in comparator treatment. Required for continuous outcomes.
-#' The following variables are optional columns - Can be either hand entered or calculated by the package (ex. confidence intervals):
-#'  21) N1: An integer vector containing the total number of subjects in active treatment. Required when needing to calculate confidence intervals within the package for proportions.
-#'  22) 100PYAR1: A numeric vector containing 100 patient-years at risk in active treatment. Required when needing to calculate confidence intervals within the app for exposure-adjusted incidence rates.
-#'  23) 100PEY1: A vector containing 100 patient-years of exposure in active treatment. Required when needing to calculate confidence intervals within the app for exposure-adjusted event rates.
-#'  24) Sd1: A numeric vector containing the standard deviation in active treatment. Required when needing to calculate confidence intervals within the app for continuous outcomes; can be populated by Se1/SQRT(N1) if Se1 and N1 are provided.
-#'  25) N2: An integer vector containing the total number of subjects in comparator treatment. Required when needing to calculate confidence intervals within the package for proportions.
-#'  26) 100PYAR2: A numeric vector containing 100 patient-years at risk in comparator treatment. Required when needing to calculate confidence intervals within the app for exposure-adjusted incidence rates.
-#'  27) 100PEY2: A numeric vector containing 100 patient-years of exposure in comparator treatment. Required when needing to calculate confidence intervals within the app for exposure-adjusted event rates.
-#'  28) Sd2: A numeric vector containing the standard deviation in comparator treatment. Required when needing to calculate confidence intervals within the app for continuous outcomes; can be populated by Se2/SQRT(N2) if Se2 and N2 are provided.
-#'  29) Diff_LowerCI: A numeric vector containing the lower confidence interval for difference in proportions and continuous outcomes. Required when using supplied confidence intervals for difference in proportions and continuous outcomes.
-#'  30) Diff_UpperCI: A numeric vector containing the upper confidence interval for difference in proportions and continuous outcomes. Required when using supplied confidence intervals for difference in proportions and continuous outcomes.
-#'  31) Diff_IncRate_LowerCI: A numeric vector containing the lower confidence interval for difference in exposure-adjusted incidence rates. Required when using supplied confidence intervals for difference in exposure-adjusted incidence rates.
-#'  32) Diff_IncRate_UpperCI: A numeric vector containing the upper confidence interval for difference in exposure-adjusted incidence rates. Required when using supplied confidence intervals for difference in exposure-adjusted incidence rates.
-#'  33) Diff_EventRate_LowerCI: A numeric vector containing the lower confidence interval for difference in exposure-adjusted event rates. Required when using supplied confidence intervals for difference in exposure-adjusted event rates.
-#'  34) Diff_EventRate_UpperCI: A numeric vector containing the upper confidence interval for difference in exposure-adjusted event rates. Required when using supplied confidence intervals for difference in exposure-adjusted event rates.
-#'  35) RelRisk_LowerCI: A numeric vector containing the lower confidence interval for relative risk of binary outcomes. Required when using supplied confidence intervals for relative risk of binary outcomes.
-#'  36) RelRisk_UpperCI: A numeric vector containing the upper confidence interval for relative risk of binary outcomes. Required when using supplied confidence intervals for relative risk of binary outcomes.
-#'  37) OddsRatio_LowerCI: A numeric vector containing the lower confidence interval for odds ratio of binary outcomes. Required when using supplied confidence intervals for odds ratio of binary outcomes.
-#'  38) OddsRatio_UpperCI: A numeric vector containing the upper confidence interval for odds ratio of binary outcomes. Required when using supplied confidence intervals for odds ratio of binary outcomes.
-#' The following variables are supplementary columns - Used to calculate other columns are not required by the package(ex. number of subjects with events):
-#'  39) nSub1: An integer vector containing the number of subjects with events in active treatment. Not required; can be used to calculate Prop1 by nSub1/N1.
-#'  40) Dur1: A numeric vector containing the duration of treatment in active treatment. Not required; can be used to estimate 100PYAR1 and 100PEY1.
-#'  41) nEvent1: An integer vector containing the number of events in active treatment. Not required; can be used to calculate EventRate1 by nEvent1/100PEY1.
-#'  42) Se1: A numeric vector containing the standard error in active treatment. Not required; can be used to calculate Sd1 by Se1*SQRT(N1).
-#'  43) nSub2: An integer vector containing the number of subjects with events in comparator treatment. Not required; can be used to calculate Prop2 by nSub2/N2.
-#'  44) Dur2: A numeric vector containing the duration of treatment in comparator treatment. Not required; can be used to estimate 100PYAR2 and 100PEY2.
-#'  45) nEvent2: An integer vector containing the number of events in comparator treatment. Not required; can be used to calculate EventRate2 by nEvent2/100PEY2.
-#'  46) Se2: A numeric vector containing the standard error in comparator treatment. Not required; can be used to calculate Sd2 by Se2*SQRT(N2).
-#' The following variables are documentation columns - Record the data source (ex. Study xyz, Table 1.2.3, date):
+#'  11) Drug_Status: A character vector containing whether a treatment is an
+#'  "Approved" or a "Test" drug
+#' The following variables are situational columns - Filled in only for the
+#' specific summary statistic related to the row outcome (ex. proportion):
+#'  12) Rate_Type: A numeric vector containing whether an AE rate is "EventRate"
+#'  or "IncRate". Required for risk outcomes displayed in exposure-adjusted
+#'  event rate or incidence rate.
+#'  13) Prop1: A numeric vector containing the proportion in active treatment.
+#'  Required for binary outcomes displayed in proportions; can be populated by
+#'  nSub1/N1 if both nSub1 and N1 are provided.
+#'  14) IncRate1: A numeric vector containing the exposure-adjusted incidence
+#'  rate per 100 PYs in active treatment. Required for risk outcomes displayed
+#'  in exposure-adjusted incidence rates; can be populated by nSub1/PYAR1*100
+#'  if both nSub1 and PYAR1 are provided.
+#'  15) EventRate1: A numeric vector containing the exposure-adjusted event rate
+#'  per 100 PYs in active treatment. Required for risk outcomes displayed in
+#'  exposure-adjusted event rates; can be populated by nEvent1/PEY1*100 if both
+#'  nEvent1 and PEY1 are provided.
+#'  16) Mean1: A numeric vector containing the mean in active treatment.
+#'  Required for continuous outcomes.
+#'  17) Prop2: A numeric vector containing the proportion in comparator
+#'  treatment. Required for binary outcomes displayed in proportions;
+#'  can be populated by nSub2/N2 if both nSub1 and N1 are provided.
+#'  18) IncRate2: A numeric vector containing the exposure-adjusted incidence
+#'  rate per 100 PYs in comparator treatment. Required for risk outcomes
+#'  displayed in exposure-adjusted incidence rates; can be populated by
+#'  nSub2/PYAR2*100 if both nSub1 and PYAR1 are provided.
+#'  19) EventRate2: A numeric vector containing the exposure-adjusted event rate
+#'  per 100 PYs in comparator treatment. Required for risk outcomes displayed in
+#'  exposure-adjusted event rates; can be populated by nEvent2/PEY2*100 if both
+#'  nEvent1 and PEY1 are provided.
+#'  20) Mean2: A numeric vector containing the mean in comparator treatment.
+#'  Required for continuous outcomes.
+#' The following variables are optional columns - Can be either hand entered or
+#' calculated by the package (ex. confidence intervals):
+#'  21) N1: An integer vector containing the total number of subjects in active
+#'  treatment. Required when needing to calculate confidence intervals within
+#'  the package for proportions.
+#'  22) 100PYAR1: A numeric vector containing 100 patient-years at risk in
+#'  active treatment. Required when needing to calculate confidence intervals
+#'  within the app for exposure-adjusted incidence rates.
+#'  23) 100PEY1: A vector containing 100 patient-years of exposure in active
+#'  treatment. Required when needing to calculate confidence intervals within
+#'  the app for exposure-adjusted event rates.
+#'  24) Sd1: A numeric vector containing the standard deviation in active
+#'  treatment. Required when needing to calculate confidence intervals within
+#'  the app for continuous outcomes; can be populated by Se1/SQRT(N1) if Se1 and
+#'  N1 are provided.
+#'  25) N2: An integer vector containing the total number of subjects in
+#'  comparator treatment. Required when needing to calculate confidence
+#'  intervals within the package for proportions.
+#'  26) 100PYAR2: A numeric vector containing 100 patient-years at risk in
+#'  comparator treatment. Required when needing to calculate confidence
+#'  intervals within the app for exposure-adjusted incidence rates.
+#'  27) 100PEY2: A numeric vector containing 100 patient-years of exposure in
+#'  comparator treatment. Required when needing to calculate confidence
+#'  intervals within the app for exposure-adjusted event rates.
+#'  28) Sd2: A numeric vector containing the standard deviation in comparator
+#'  treatment. Required when needing to calculate confidence intervals within
+#'  the app for continuous outcomes; can be populated by Se2/SQRT(N2) if Se2 and
+#'  N2 are provided.
+#'  29) Diff_LowerCI: A numeric vector containing the lower confidence interval
+#'  for difference in proportions and continuous outcomes. Required when using
+#'  supplied confidence intervals for difference in proportions and continuous
+#'  outcomes.
+#'  30) Diff_UpperCI: A numeric vector containing the upper confidence interval
+#'  for difference in proportions and continuous outcomes. Required when using
+#'  supplied confidence intervals for difference in proportions and continuous
+#'  outcomes.
+#'  31) Diff_IncRate_LowerCI: A numeric vector containing the lower confidence
+#'  interval for difference in exposure-adjusted incidence rates. Required when
+#'  using supplied confidence intervals for difference in exposure-adjusted
+#'  incidence rates.
+#'  32) Diff_IncRate_UpperCI: A numeric vector containing the upper confidence
+#'  interval for difference in exposure-adjusted incidence rates. Required when
+#'  using supplied confidence intervals for difference in exposure-adjusted
+#'  incidence rates.
+#'  33) Diff_EventRate_LowerCI: A numeric vector containing the lower confidence
+#'  interval for difference in exposure-adjusted event rates. Required when
+#'  using supplied confidence intervals for difference in exposure-adjusted
+#'  event rates.
+#'  34) Diff_EventRate_UpperCI: A numeric vector containing the upper confidence
+#'  interval for difference in exposure-adjusted event rates. Required when
+#'  using supplied confidence intervals for difference in exposure-adjusted
+#'  event rates.
+#'  35) RelRisk_LowerCI: A numeric vector containing the lower confidence
+#'  interval for relative risk of binary outcomes. Required when using supplied
+#'  confidence intervals for relative risk of binary outcomes.
+#'  36) RelRisk_UpperCI: A numeric vector containing the upper confidence
+#'  interval for relative risk of binary outcomes. Required when using supplied
+#'  confidence intervals for relative risk of binary outcomes.
+#'  37) OddsRatio_LowerCI: A numeric vector containing the lower confidence
+#'  interval for odds ratio of binary outcomes. Required when using supplied
+#'  confidence intervals for odds ratio of binary outcomes.
+#'  38) OddsRatio_UpperCI: A numeric vector containing the upper confidence
+#'  interval for odds ratio of binary outcomes. Required when using supplied
+#'  confidence intervals for odds ratio of binary outcomes.
+#' The following variables are supplementary columns - Used to calculate other
+#' columns are not required by the package(ex. number of subjects with events):
+#'  39) nSub1: An integer vector containing the number of subjects with events
+#'  in active treatment. Not required; can be used to calculate Prop1 by
+#'  nSub1/N1.
+#'  40) Dur1: A numeric vector containing the duration of treatment in active
+#'  treatment. Not required; can be used to estimate 100PYAR1 and 100PEY1.
+#'  41) nEvent1: An integer vector containing the number of events in active
+#'  treatment. Not required; can be used to calculate EventRate1 by
+#'  nEvent1/100PEY1.
+#'  42) Se1: A numeric vector containing the standard error in active treatment.
+#'  Not required; can be used to calculate Sd1 by Se1*SQRT(N1).
+#'  43) nSub2: An integer vector containing the number of subjects with events
+#'  in comparator treatment. Not required; can be used to calculate Prop2 by
+#'  nSub2/N2.
+#'  44) Dur2: A numeric vector containing the duration of treatment in
+#'  comparator treatment. Not required; can be used to estimate 100PYAR2 and
+#'  100PEY2.
+#'  45) nEvent2: An integer vector containing the number of events in comparator
+#'  treatment. Not required; can be used to calculate EventRate2 by
+#'  nEvent2/100PEY2.
+#'  46) Se2: A numeric vector containing the standard error in comparator
+#'  treatment. Not required; can be used to calculate Sd2 by Se2*SQRT(N2).
+#' The following variables are documentation columns - Record the data source
+#' (ex. Study xyz, Table 1.2.3, date):
 #'  47) MCDA_Weight: A numeric vector containing the MCDA weight
-#'  48) Population: A character vector containing the population for the analysis (e.g., ITT, Safety Set)
-#'  49) Data_Source: A character vector containing the source of data (e.g., Reference CSR Table xxx)
+#'  48) Population: A character vector containing the population for the
+#'  analysis (e.g., ITT, Safety Set)
+#'  49) Data_Source: A character vector containing the source of data (e.g.,
+#'  Reference CSR Table xxx)
 #'  50) Quality: A character vector containing the quality of data
 #'  51) Notes: A character vector containing notes
 #' @param filter (`character`) selected filter
@@ -152,8 +249,8 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     x_max <- relmax(brx_max, type_scale = "Fixed")
 
     # log10 scale doesn't work when x_min is 0
-    if ((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-      unique(df_br$benefit_Type) == "Binary" & x_min == 0) {
+    if ((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+      unique(df_br$benefit_Type) == "Binary" && x_min == 0) {
       x_min <- 0.01
       x_max <- max(0.01, x_max)
     }
@@ -165,17 +262,18 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     y_max <- relmax(bry_max, type_scale = "Fixed")
 
     # log10 scale doesn't work when y_min is 0
-    if ((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-      type_risk == "Crude proportions" & y_min == 0) {
+    if ((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+      type_risk == "Crude proportions" && y_min == 0) {
       y_min <- 0.01
       y_max <- max(y_max, 0.01)
     }
 
-    if (unique(df_br$benefit_Type) == "Binary" & type_graph == "Absolute risk") {
-      if (brx_min >= 0 & bry_min >= 0) {
+    if (unique(df_br$benefit_Type) == "Binary" &&
+        type_graph == "Absolute risk"){
+      if (brx_min >= 0 && bry_min >= 0) {
         x_min <- 0
         x_max <- 1
-      } else if (brx_max <= 0 & bry_max <= 0) {
+      } else if (brx_max <= 0 && bry_max <= 0) {
         x_min <- -1
         x_max <- 0
       } else {
@@ -184,11 +282,11 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
       }
     }
 
-    if (type_risk == "Crude proportions" & type_graph == "Absolute risk") {
-      if (brx_min >= 0 & bry_min >= 0) {
+    if (type_risk == "Crude proportions" && type_graph == "Absolute risk") {
+      if (brx_min >= 0 && bry_min >= 0) {
         y_min <- 0
         y_max <- 1
-      } else if (brx_max <= 0 & bry_max <= 0) {
+      } else if (brx_max <= 0 && bry_max <= 0) {
         y_min <- -1
         y_max <- 0
       } else {
@@ -210,20 +308,20 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
       ifelse(!is.na(upper_y), "",
         "please enter a numeric number for upper limit y axis; "
       ),
-      ifelse((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-        unique(df_br$benefit_Type) == "Binary" & lower_x <= 0,
+      ifelse((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+        unique(df_br$benefit_Type) == "Binary" && lower_x <= 0,
       "please enter a positive value for lower limit x axis; ",
       ""
       ),
-      ifelse((type_graph == "Relative risk" | type_graph == "Odds ratio") &
-        type_risk == "Crude proportions" & lower_y <= 0,
+      ifelse((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+        type_risk == "Crude proportions" && lower_y <= 0,
       "please enter a positive value for lower limit y axis; ",
       ""
       ),
-      ifelse((!is.na(lower_x)) & (!is.na(upper_x)) & (lower_x < upper_x), "",
+      ifelse((!is.na(lower_x)) && (!is.na(upper_x)) && (lower_x < upper_x), "",
         "the lower limit x axis should be less than upper limit x axis; "
       ),
-      ifelse((!is.na(lower_y)) & (!is.na(upper_y)) & (lower_y < upper_y), "",
+      ifelse((!is.na(lower_y)) && (!is.na(upper_y)) && (lower_y < upper_y), "",
         "the lower limit y axis should be less than upper limit y axis"
       )
     )
@@ -326,8 +424,8 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     my_warning <- "At least one of the benefit and risk threshold values you entered to set up segmented line or smooth curve is outside of the axis limits. Please make corrections by revising the values or resetting the axis limits using free scale."
 
     error_msg <- paste0(
-      ifelse(min(x_curve) < x_min | max(x_curve) > x_max |
-        min(y_curve) < y_min | max(y_curve) > y_max,
+      ifelse(min(x_curve) < x_min || max(x_curve) > x_max ||
+        min(y_curve) < y_min || max(y_curve) > y_max,
       my_warning, ""
       )
     )
@@ -348,7 +446,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
 
     df_curve <- data.frame(x_curve, y_curve)
     df_curve <- df_curve %>%
-      filter(!is.na(x_curve) & !is.na(y_curve))
+      filter(!is.na(x_curve) && !is.na(y_curve))
 
     if (threshold == "Segmented line") {
       # display the threshold as a segmented line
@@ -423,16 +521,18 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   # labels
   if (!is.na(mar)) {
     myplot <- myplot +
-      geom_text(aes(label = "MAR", x = x_max, y = mar), size = control_fonts()$p * 0.35, hjust = -0.15)
+      geom_text(aes(label = "MAR", x = x_max, y = mar), size = control_fonts()$p
+                * 0.35, hjust = -0.15)
   }
   if (!is.na(mab)) {
     myplot <- myplot +
-      geom_text(aes(label = "MAB", x = mab, y = y_max), size = control_fonts()$p * 0.35, vjust = -0.3)
+      geom_text(aes(label = "MAB", x = mab, y = y_max), size = control_fonts()$p
+                * 0.35, vjust = -0.3)
   }
   myplot <- myplot + xlab(benefit) + ylab(risk)
 
   # x coordinates - the 0.03 part is to leave room to display the "MAR" label
-  if ((type_graph == "Relative risk" | type_graph == "Odds ratio") &
+  if ((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
     unique(df_br$benefit_Type) == "Binary") {
     myplot <- myplot +
       scale_x_log10(
@@ -447,7 +547,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   }
 
   # y coordinates
-  if ((type_graph == "Relative risk" | type_graph == "Odds ratio") &
+  if ((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
     type_risk == "Crude proportions") {
     myplot <- myplot +
       scale_y_log10(
@@ -523,7 +623,8 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
   }
 
   if (filter != "None") {
-    my_colors <- rep(chartcolors, each = length(levels(as.factor(data$Category))))
+    my_colors <- rep(chartcolors,
+                     each =length(levels(as.factor(data$Category))))
     names(my_colors) <- c(t(outer(levels(as.factor(data$Trt1)),
       levels(as.factor(data$Category)), paste,
       sep = " : "
@@ -541,7 +642,8 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
   )
 
   # set a shape for each category
-  my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[1:length(levels(as.factor(data$Category)))]
+  my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[1:length(
+    levels(as.factor(data$Category)))]
   names(my_shapes) <- c(levels(as.factor(data$Category)))
 
   # map the shape with the different category
@@ -621,15 +723,6 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
         show.legend = FALSE
       ) +
       col_scale +
-
-      # make each point filled with white points
-      # geom_point(
-      #   aes_string(x = "benefit", y = "risk", shape = "treatment"),
-      #   data = df_br_status,
-      #   colour = "white",
-      #   size = 2,
-      #   show.legend = TRUE
-      # ) +
       shape_scale
   }
 }
@@ -663,7 +756,7 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
   error_msg <- paste0(
     check_feature_string(
       data = data, feature = "Outcome", plots = "tradeoff",
-      func = is.character, na_check = T,
+      func = is.character, na_check = TRUE,
       check_unique = c(
         "Factor", "Grouped_Outcome",
         "Statistics", "Outcome_Status",
@@ -673,12 +766,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
     check_feature_string(
       data = data, feature = "Factor",
       plots = "tradeoff",
-      func = is.character, na_check = T,
+      func = is.character, na_check = TRUE,
       values = c("Benefit", "Risk")
     ),
     check_feature_string(
       data = data, feature = "Filter", plots = "tradeoff",
-      func = is.character, na_check = T
+      func = is.character, na_check = TRUE
     ),
     check_feature_string(
       data = data, feature = "Drug_Status",
@@ -688,22 +781,22 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
     check_feature_string(
       data = data, feature = "Category",
       plots = "tradeoff",
-      func = is.character, na_check = T
+      func = is.character, na_check = TRUE
     ),
     check_feature_string(
       data = data, feature = "Trt1",
       plots = "tradeoff", func = is.character,
-      na_check = T
+      na_check = TRUE
     ),
     check_feature_string(
       data = data, feature = "Trt2",
       plots = "tradeoff",
-      func = is.character, na_check = T,
-      check_same = T
+      func = is.character, na_check = TRUE,
+      check_same = TRUE
     ),
     check_feature_string(
       data = data, feature = "Type", plots = "tradeoff",
-      func = is.character, na_check = T,
+      func = is.character, na_check = TRUE,
       values = c("Binary", "Continuous")
     )
   )
@@ -718,7 +811,7 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
       filter(Filter == "None")
   } else {
     df_filter <- data %>%
-      filter(Filter == filter & Category %in% category)
+      filter(Filter == filter && Category %in% category)
   }
 
   validate(
@@ -950,16 +1043,16 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
             feature = "EventRate1",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "EventRate", ],
             feature = "EventRate2",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "EventRate", ],
@@ -986,16 +1079,16 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
             feature = "IncRate1",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "IncRate", ],
             feature = "IncRate2",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "IncRate", ],
@@ -1047,22 +1140,22 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
         check_feature_string(
           data = df_benefit, feature = "N1",
           plots = "tradeoff",
-          func = is.integer, check_positive = T
+          func = is.integer, check_positive = TRUE
         ),
         check_feature_string(
           data = df_benefit, feature = "N2",
           plots = "tradeoff",
-          func = is.integer, check_positive = T
+          func = is.integer, check_positive = TRUE
         ),
         check_feature_string(
           data = df_benefit, feature = "Sd1",
           plots = "tradeoff",
-          func = is.numeric, check_positive = T
+          func = is.numeric, check_positive = TRUE
         ),
         check_feature_string(
           data = df_benefit, feature = "Sd2",
           plots = "tradeoff",
-          func = is.numeric, check_positive = T
+          func = is.numeric, check_positive = TRUE
         )
       )
 
@@ -1108,12 +1201,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
         check_feature_string(
           data = df_benefit, feature = "N1",
           plots = "tradeoff",
-          func = is.integer, check_positive = T
+          func = is.integer, check_positive = TRUE
         ),
         check_feature_string(
           data = df_benefit, feature = "N2",
           plots = "tradeoff",
-          func = is.integer, check_positive = T
+          func = is.integer, check_positive = TRUE
         )
       )
 
@@ -1149,12 +1242,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
         check_feature_string(
           data = df_risk, feature = "N1",
           plots = "tradeoff",
-          func = is.integer, check_positive = T
+          func = is.integer, check_positive = TRUE
         ),
         check_feature_string(
           data = df_risk, feature = "N2",
           plots = "tradeoff",
-          func = is.integer, check_positive = T
+          func = is.integer, check_positive = TRUE
         )
       )
 
@@ -1195,32 +1288,32 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
             feature = "EventRate1",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "EventRate", ],
             feature = "EventRate2",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "EventRate", ],
             feature = "100PEY1",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "EventRate", ],
             feature = "100PEY2",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           )
         )
         validate(need(error_msg == "", error_msg))
@@ -1233,32 +1326,32 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
             feature = "IncRate1",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "IncRate", ],
             feature = "IncRate2",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "IncRate", ],
             feature = "100PYAR1",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "IncRate", ],
             feature = "100PYAR2",
             plots = "tradeoff",
             func = is.numeric,
-            na_check = T,
-            check_positive = T
+            na_check = TRUE,
+            check_positive = TRUE
           )
         )
         validate(need(error_msg == "", error_msg))
