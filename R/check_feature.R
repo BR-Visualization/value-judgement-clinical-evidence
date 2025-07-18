@@ -235,8 +235,7 @@ check_feature <- function(data, feature, plots, func, na_check, values,
       "effect table : errors might occur in <b>{toString(plots)}",
       "</b> plot(s)</span></li>"
     )
-  }
-  else if (sum(is.na(data[feature])) == nrow(data)) {
+  } else if (sum(is.na(data[feature])) == nrow(data)) {
     error_msg <- glue(
       "<li><span>Feature <b>{feature}</b> is empty : errors ",
       "might occur in <b>{toString(plots)}</b> plot(s)</span></li>"
