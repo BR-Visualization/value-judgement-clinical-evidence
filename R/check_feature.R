@@ -14,17 +14,17 @@ check_effects_table <- function(df) {
     check_feature(
       data = df, feature = "Factor",
       plots = c("value_tree", "forest", "contour", "tradeoff"),
-      func = is.character, na_check = T,
+      func = is.character, na_check = TRUE,
       values = c("Benefit", "Risk")
     ),
     check_feature(
       data = df, feature = "Grouped_Outcome", plots = "value_tree",
-      func = is.character, na_check = T
+      func = is.character, na_check = TRUE
     ),
     check_feature(
       data = df, feature = "Outcome",
       plots = c("value_tree", "forest", "tradeoff", "contour"),
-      func = is.character, na_check = T,
+      func = is.character, na_check = TRUE,
       check_unique = c(
         "Factor", "Grouped_Outcome",
         "Statistics", "Outcome_Status",
@@ -33,27 +33,27 @@ check_effects_table <- function(df) {
     ),
     check_feature(
       data = df, feature = "Statistics", plots = "value_tree",
-      func = is.character, na_check = T
+      func = is.character, na_check = TRUE
     ),
     check_feature(
       data = df, feature = "Outcome_Status", plots = "value_tree",
-      is.character, na_check = T,
+      is.character, na_check = TRUE,
       values = c("Identified", "Potential")
     ),
     check_feature(
       data = df, feature = "Filter",
       plots = c("forest", "contour", "tradeoff"),
-      func = is.character, na_check = T
+      func = is.character, na_check = TRUE
     ),
     check_feature(
       data = df, feature = "Category",
       plots = c("forest", "contour", "tradeoff"),
-      func = is.character, na_check = T
+      func = is.character, na_check = TRUE
     ),
     check_feature(
       data = df, feature = "Type",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.character, na_check = T,
+      func = is.character, na_check = TRUE,
       values = c("Binary", "Continuous")
     ),
     check_feature(
@@ -84,73 +84,73 @@ check_effects_table <- function(df) {
     check_feature(
       data = df, feature = "N1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.integer, check_positive = T
+      func = is.integer, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "N2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.integer, check_positive = T
+      func = is.integer, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "100PYAR1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "100PYAR2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "IncRate1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "IncRate2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "100PEY1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "100PEY2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "EventRate1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "EventRate2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "Sd1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "Sd2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = T
+      func = is.numeric, check_positive = TRUE
     ),
     check_feature(
       data = df, feature = "Trt1",
       plots = c("contour", "forest", "tradeoff"),
       func = is.character,
-      na_check = T
+      na_check = TRUE
     ),
     check_feature(
       data = df, feature = "Trt2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.character, na_check = T, check_same = T
+      func = is.character, na_check = TRUE, check_same = TRUE
     ),
     check_feature(
       data = df, feature = "Diff_LowerCI",
@@ -252,7 +252,7 @@ check_feature <- function(data, feature, plots, func, na_check, values,
   } else {
     # check the content of the feature
     # check if the feature has missing values
-    if (!missing(na_check) && na_check == T) {
+    if (!missing(na_check) && na_check == TRUE) {
       if (sum(is.na(data[feature])) > 0) {
         error_msg <- glue(
           "<li><span>Feature <b>{feature}</b> has missing values",
@@ -272,7 +272,7 @@ check_feature <- function(data, feature, plots, func, na_check, values,
         ))
       }
     }
-    if (!missing(check_same) && check_same == T) {
+    if (!missing(check_same) && check_same == TRUE) {
       if (!(length(unique(data[[feature]])) == 1)) {
         error_msg <- paste(error_msg, glue(
           "<li><span>Feature <b>{feature}</b>",
@@ -295,7 +295,7 @@ check_feature <- function(data, feature, plots, func, na_check, values,
         ))
       }
     }
-    if (!missing(check_positive) && check_positive == T) {
+    if (!missing(check_positive) && check_positive == TRUE) {
       feature_with_no_na <- as.numeric(na.omit(data[[feature]]))
       if (!(all(feature_with_no_na >= 0))) {
         error_msg <- paste(error_msg, glue(
@@ -382,7 +382,7 @@ check_feature_string <- function(data, feature, plots, func, na_check, values,
   } else {
     # check the content of the feature
     # check if the feature has missing values
-    if (!missing(na_check) && na_check == T) {
+    if (!missing(na_check) && na_check == TRUE) {
       if (sum(is.na(data[feature])) > 0) {
         error_msg <- glue(
           "Feature {feature} has missing values",
@@ -401,7 +401,7 @@ check_feature_string <- function(data, feature, plots, func, na_check, values,
         ))
       }
     }
-    if (!missing(check_same) && check_same == T) {
+    if (!missing(check_same) && check_same == TRUE) {
       if (!(length(unique(data[[feature]])) == 1)) {
         error_msg <- paste(error_msg, glue(
           "Feature {feature}",
@@ -422,7 +422,7 @@ check_feature_string <- function(data, feature, plots, func, na_check, values,
         ))
       }
     }
-    if (!missing(check_positive) && check_positive == T) {
+    if (!missing(check_positive) && check_positive == TRUE) {
       feature_with_no_na <- as.numeric(na.omit(data[[feature]]))
       if (!(all(feature_with_no_na >= 0))) {
         error_msg <- paste(error_msg, glue(
