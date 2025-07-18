@@ -269,7 +269,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     }
 
     if (unique(df_br$benefit_Type) == "Binary" &&
-        type_graph == "Absolute risk"){
+      type_graph == "Absolute risk") {
       if (brx_min >= 0 && bry_min >= 0) {
         x_min <- 0
         x_max <- 1
@@ -522,12 +522,12 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   if (!is.na(mar)) {
     myplot <- myplot +
       geom_text(aes(label = "MAR", x = x_max, y = mar), size = control_fonts()$p
-                * 0.35, hjust = -0.15)
+        * 0.35, hjust = -0.15)
   }
   if (!is.na(mab)) {
     myplot <- myplot +
       geom_text(aes(label = "MAB", x = mab, y = y_max), size = control_fonts()$p
-                * 0.35, vjust = -0.3)
+        * 0.35, vjust = -0.3)
   }
   myplot <- myplot + xlab(benefit) + ylab(risk)
 
@@ -624,7 +624,8 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
 
   if (filter != "None") {
     my_colors <- rep(chartcolors,
-                     each =length(levels(as.factor(data$Category))))
+      each = length(levels(as.factor(data$Category)))
+    )
     names(my_colors) <- c(t(outer(levels(as.factor(data$Trt1)),
       levels(as.factor(data$Category)), paste,
       sep = " : "
@@ -643,7 +644,8 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
 
   # set a shape for each category
   my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[1:length(
-    levels(as.factor(data$Category)))]
+    levels(as.factor(data$Category))
+  )]
   names(my_shapes) <- c(levels(as.factor(data$Category)))
 
   # map the shape with the different category
