@@ -17,7 +17,7 @@
 #'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
 #'   cl = 0.95
 #' )
-calculate_diff_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nolint
+calculate_diff_bin <- function(prop1, prop2, N1, N2, cl = 0.95) { # nolint
   zscore <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   diff <- prop1 - prop2
@@ -54,7 +54,7 @@ calculate_diff_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nolint
 #'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
 #'   cl = 0.95
 #' )
-calculate_log_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nolint
+calculate_log_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) { # nolint
   zscore <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   diff <- log(prop1 / prop2)
@@ -97,7 +97,7 @@ calculate_log_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nolin
 #'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
 #'   cl = 0.95
 #' )
-calculate_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nolint
+calculate_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) { # nolint
   zscore <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   validate(need(
@@ -143,7 +143,7 @@ calculate_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nolint
 #'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
 #'   cl = 0.95
 #' )
-calculate_log_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nolint
+calculate_log_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) { # nolint
   zscore <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   diff <- log((prop1 * (1 - prop2)) / (prop2 * (1 - prop1)))
@@ -187,7 +187,7 @@ calculate_log_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nol
 #'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
 #'   cl = 0.95
 #' )
-calculate_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nolint
+calculate_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) { # nolint
   zscore <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   validate(need(
@@ -240,7 +240,7 @@ calculate_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {# nolint
 #'   mean1 = 0.6, mean2 = 0.5, sd1 = 0.1, sd2 = 0.3,
 #'   N1 = 400, N2 = 500, cl = 0.95
 #' )
-calculate_diff_con <- function(mean1, mean2, sd1, sd2, N1, N2, cl = 0.95) {# nolint
+calculate_diff_con <- function(mean1, mean2, sd1, sd2, N1, N2, cl = 0.95) { # nolint
   tscore <- qt(0.5 + cl / 2, N1 + N2 - 2)
   # Calculating the different elements
   diff <- mean1 - mean2
