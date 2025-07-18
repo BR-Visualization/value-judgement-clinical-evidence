@@ -32,13 +32,15 @@ either \code{forest}, \code{tradeoff}, \code{contour}, \code{value_tree}}
 
 \item{values}{(\code{vector}) check if the feature contains specified values}
 
-\item{check_same}{(\code{logical}) check if the feature has the same value across all rows}
+\item{check_same}{(\code{logical}) check if the feature has the same value across
+all rows}
 
 \item{check_range}{(\code{vector}) check if the feature is in the specified range}
 
 \item{check_positive}{(\code{logical}) check if the feature is positive}
 
-\item{check_unique}{(\code{vector}) check if unique values of a feature is associated with unique values of linked features}
+\item{check_unique}{(\code{vector}) check if unique values of a feature is
+associated with unique values of linked features}
 }
 \value{
 error message(s), if any
