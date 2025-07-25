@@ -34,11 +34,16 @@ Suggests:
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Imports: 
+    colorBlindness,
     dplyr,
+    ggExtra,
     ggplot2,
     ggtext,
+    glue,
+    magrittr,
     patchwork,
-    rlang
+    rlang,
+    shiny
 Depends: 
     R (>= 3.5)
 LazyData: true
