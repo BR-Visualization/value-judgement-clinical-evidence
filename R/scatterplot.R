@@ -119,7 +119,8 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, type = "histogram",
       show.legend = TRUE
     ) +
     scale_shape_manual(values = 17, name = NULL) +
-    stat_ellipse(type = "norm", level = 0.95, color = colfun()$fig11_colors[1], linewidth = 0.5) +
+    stat_ellipse(type = "norm", level = 0.95, color = colfun()$fig11_colors[1],
+                 linewidth = 0.5) +
 
     scale_y_continuous(limits = c(min1 - 0.1, max1 + 0.1)) +
     scale_x_continuous(limits = c(min1 - 0.1, max1 + 0.1)) +
@@ -128,8 +129,10 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, type = "histogram",
     geom_vline(xintercept = 0, size = 1) +
     geom_abline(intercept = 0, slope = 1, linetype = 2, size = 1) +
 
-    geom_hline(yintercept = MAR, size = 1, linetype = 2, colour = "darkorange3") +
-    geom_vline(xintercept = MAB, size = 1, linetype = 2, colour = "darkorange3") +
+    geom_hline(yintercept = MAR, size = 1, linetype = 2,
+               colour = "darkorange3") +
+    geom_vline(xintercept = MAB, size = 1, linetype = 2,
+               colour = "darkorange3") +
 
     annotate(
       "ribbon",
@@ -153,8 +156,11 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, type = "histogram",
       fill = "gray", alpha = 0.3
     ) +
 
-    annotate("text", x = min(diff1, diff2) - 0.1, y = MAR + 0.01, label =  "MAR", color = colfun()$fig11_colors[3], size = 9*0.35, vjust = -0.25) +
-    annotate("text", x = MAB, y = min(diff1, diff2) - 0.1, label =  "MAB", color = colfun()$fig11_colors[3], size = 9*0.35, hjust = -0.25) +
+    annotate("text", x = min(diff1, diff2) - 0.1, y = MAR + 0.01,
+             label =  "MAR", color = colfun()$fig11_colors[3], size = 9*0.35,
+             vjust = -0.25) +
+    annotate("text", x = MAB, y = min(diff1, diff2) - 0.1, label =  "MAB",
+             color = colfun()$fig11_colors[3], size = 9*0.35, hjust = -0.25) +
 
     labs(y = paste("Predicted Incremental", outcome[2], " ")) +
     labs(x = paste("Predicted Incremental", outcome[1], " ")) +
@@ -173,7 +179,9 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, type = "histogram",
       "text",
       x = max1*0.9,
       y = max1*0.55,
-      label = paste0("Corr.==", sprintf("%1.1f", 100*stats::cor(diff1, diff2)), "*\'%\'"),
+      label = paste0("Corr.==",
+                     sprintf("%1.1f",
+                             100*stats::cor(diff1, diff2)), "*\'%\'"),
       parse = TRUE,
       color = colfun()$fig11_colors[3],
       size = 9 * 0.35,
@@ -205,7 +213,10 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, type = "histogram",
       plot.margin = margin(20, 0, 0, 0)
     )
 
-    scatter <- ggExtra::ggMarginal(scatter, type = type, color = colfun()$fig11_colors[1], fill = "white")
+    scatter <- ggExtra::ggMarginal(scatter,
+                                   type = type,
+                                   color = colfun()$fig11_colors[1],
+                                   fill = "white")
     scatter
 
 }

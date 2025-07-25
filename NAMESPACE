@@ -2,6 +2,13 @@
 
 export(add_exprs)
 export(br_charts_theme)
+export(calculate_diff_bin)
+export(calculate_diff_con)
+export(calculate_diff_rates)
+export(calculate_log_odds_ratio_bin)
+export(calculate_log_rel_risk_bin)
+export(calculate_odds_ratio_bin)
+export(calculate_rel_risk_bin)
 export(check_effects_table)
 export(check_feature)
 export(check_feature_string)
