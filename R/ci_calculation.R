@@ -90,6 +90,8 @@ calculate_log_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) { # noli
 #' @param N2 (`numeric`)\cr Total number of subjects in comparator treatment
 #' @param cl (`numeric`)\cr confidence level
 #'
+#' @importFrom shiny validate
+#' @importFrom shiny need
 #' @export
 #'
 #' @examples
