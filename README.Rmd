@@ -128,7 +128,8 @@ gensurv_combined(
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
-<details>Click to view sample code</summary>
+<details>
+<summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval=FALSE}
 library(brpubVJCE)
 

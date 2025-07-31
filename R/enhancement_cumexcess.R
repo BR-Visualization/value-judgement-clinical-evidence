@@ -679,7 +679,7 @@ gensurv_table <- function(df_table,
 #' observational period (this is a non-numerical input).
 #' 5) outcome: A vector containing whether the outcome is a "Benefit" or "Risk".
 #' 6) eff_diff_lbl: A vector containing the label for effect difference.
-#' @param df_table A dataframe with 6 variables named the following:
+#' @param df_table A dataframe with 5 variables named the following:
 #' 1) obsv_duration: A variable that specifies the duration of the
 #' observational period (numerical).
 #' 2) n: A vector containing a number of subjects who experienced an event

@@ -575,10 +575,10 @@ relmax <- function(rmax, type_scale) {
 #' @param dpi Resolution in dots per inch (default: 600).
 #' @param web_suffix If TRUE, also saves a low-res version with "_web" suffix
 #' (default: FALSE).
-#' @param ... Other arguments passed on to the graphics device function,
-#' as specified by device.
 #' @param bgcol Background color. If NULL, uses the plot.background fill value
 #' from the plot theme.
+#' @param ... Other arguments passed on to the graphics device function,
+#' as specified by device.
 #' @param wdth width of plot
 #' @param hght height of plot
 #' @param unts units of plot
