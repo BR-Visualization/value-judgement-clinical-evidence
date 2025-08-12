@@ -123,9 +123,9 @@ gensurv_plot <- function(
   obsv_dur <- unique(df_outcome$obsv_duration)
   min1 <- min((df_outcome$diff) * base_subjects)
   num_break <- ifelse(((min1 * (-2)) %% 6 == 0), 6,
-    ifelse(((min1 * (-2)) %% 4 == 0), 4,
-      ifelse(((min1 * (-2)) %% 5 == 0), 5, 7)
-    )
+                      ifelse(((min1 * (-2)) %% 4 == 0), 4,
+                             ifelse(((min1 * (-2)) %% 5 == 0), 5, 7)
+                      )
   )
 
   actual_min <- (min1 %% (-num_break)) + (min1)
@@ -197,7 +197,7 @@ gensurv_plot <- function(
   )
 
   legend_data$color_group <- factor(legend_data$color_group,
-    levels = legend_levels
+                                    levels = legend_levels
   )
 
   plot1 <- ggplot() +
@@ -210,15 +210,15 @@ gensurv_plot <- function(
       size = 1
     ) +
     annotate("text",
-      x = -0.5, y = ifelse(mar > mab, mab - adjustment,
-        mab + adjustment
-      ), color = "#0571b0",
-      label = "MAB", size = 3
+             x = -0.5, y = ifelse(mar > mab, mab - adjustment,
+                                  mab + adjustment
+             ), color = "#0571b0",
+             label = "MAB", size = 3
     ) +
     annotate("text",
-      x = (.95 * obsv_dur),
-      y = ifelse(mar > mab, mar + adjustment, mar - adjustment),
-      color = "#ca0020", label = "MAR", size = 3
+             x = (.95 * obsv_dur),
+             y = ifelse(mar > mab, mar + adjustment, mar - adjustment),
+             color = "#ca0020", label = "MAR", size = 3
     ) +
     geom_ribbon(
       data = df_ben %>% filter(diff * base_subjects >= mab),
@@ -492,7 +492,7 @@ gensurv_table <- function(df_table,
     ) %>%
     mutate(effect = forcats::fct_reorder(
       as.factor(paste(effect, outcome,
-        sep = " "
+                      sep = " "
       )), y,
       .na_rm = FALSE
     ))
@@ -679,7 +679,7 @@ gensurv_table <- function(df_table,
 #' observational period (this is a non-numerical input).
 #' 5) outcome: A vector containing whether the outcome is a "Benefit" or "Risk".
 #' 6) eff_diff_lbl: A vector containing the label for effect difference.
-#' @param df_table A dataframe with 5 variables named the following:
+#' @param df_table A dataframe with 6 variables named the following:
 #' 1) obsv_duration: A variable that specifies the duration of the
 #' observational period (numerical).
 #' 2) n: A vector containing a number of subjects who experienced an event
