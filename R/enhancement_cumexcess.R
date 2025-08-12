@@ -123,9 +123,9 @@ gensurv_plot <- function(
   obsv_dur <- unique(df_outcome$obsv_duration)
   min1 <- min((df_outcome$diff) * base_subjects)
   num_break <- ifelse(((min1 * (-2)) %% 6 == 0), 6,
-                      ifelse(((min1 * (-2)) %% 4 == 0), 4,
-                             ifelse(((min1 * (-2)) %% 5 == 0), 5, 7)
-                      )
+    ifelse(((min1 * (-2)) %% 4 == 0), 4,
+      ifelse(((min1 * (-2)) %% 5 == 0), 5, 7)
+    )
   )
 
   actual_min <- (min1 %% (-num_break)) + (min1)
@@ -197,7 +197,7 @@ gensurv_plot <- function(
   )
 
   legend_data$color_group <- factor(legend_data$color_group,
-                                    levels = legend_levels
+    levels = legend_levels
   )
 
   plot1 <- ggplot() +
@@ -210,15 +210,15 @@ gensurv_plot <- function(
       size = 1
     ) +
     annotate("text",
-             x = -0.5, y = ifelse(mar > mab, mab - adjustment,
-                                  mab + adjustment
-             ), color = "#0571b0",
-             label = "MAB", size = 3
+      x = -0.5, y = ifelse(mar > mab, mab - adjustment,
+        mab + adjustment
+      ), color = "#0571b0",
+      label = "MAB", size = 3
     ) +
     annotate("text",
-             x = (.95 * obsv_dur),
-             y = ifelse(mar > mab, mar + adjustment, mar - adjustment),
-             color = "#ca0020", label = "MAR", size = 3
+      x = (.95 * obsv_dur),
+      y = ifelse(mar > mab, mar + adjustment, mar - adjustment),
+      color = "#ca0020", label = "MAR", size = 3
     ) +
     geom_ribbon(
       data = df_ben %>% filter(diff * base_subjects >= mab),
@@ -492,7 +492,7 @@ gensurv_table <- function(df_table,
     ) %>%
     mutate(effect = forcats::fct_reorder(
       as.factor(paste(effect, outcome,
-                      sep = " "
+        sep = " "
       )), y,
       .na_rm = FALSE
     ))
