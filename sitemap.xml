@@ -9,12 +9,26 @@
 <url><loc>https://pkgdown.r-lib.org/authors.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/index.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/news/index.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/add_exprs.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/br_charts_theme.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/brdata.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/colfun.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/control_fonts.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/create_forest_dot_plot.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/cumexcess.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/effects_table.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/forest_dot_plot_imports.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/gensurv.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/gensurv_combined.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/gensurv_plot.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/gensurv_table.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/ggsave_custom.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/index.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/labs_bold.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/prepare_br_calculated_ci.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/prepare_br_supplied_ci.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/prepare_forest_dot_data.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/relmax.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/relmin.html</loc></url>
 </urlset>
 
