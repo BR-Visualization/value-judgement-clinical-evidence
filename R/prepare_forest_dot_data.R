@@ -80,10 +80,10 @@ prepare_forest_dot_data <- function(data,
   # Check which columns are available
   has_binary_cols <- all(c("Prop1", "Prop2") %in% names(filtered_data))
   has_continuous_cols <- all(c("Mean1", "Mean2", "Sd1", "Sd2") %in% names(filtered_data))
-  
+
   # Calculate treatment differences and confidence intervals
   result <- filtered_data
-  
+
   # Calculate Diff column
   if (has_continuous_cols) {
     result <- result %>%
@@ -95,7 +95,7 @@ prepare_forest_dot_data <- function(data,
         )
       )
   }
-  
+
   if (has_binary_cols) {
     result <- result %>%
       mutate(
@@ -107,7 +107,7 @@ prepare_forest_dot_data <- function(data,
         )
       )
   }
-  
+
   # Calculate SE_diff column
   if (has_continuous_cols) {
     result <- result %>%
@@ -118,7 +118,7 @@ prepare_forest_dot_data <- function(data,
         )
       )
   }
-  
+
   if (has_binary_cols) {
     result <- result %>%
       mutate(
@@ -130,7 +130,7 @@ prepare_forest_dot_data <- function(data,
         )
       )
   }
-  
+
   # Calculate confidence intervals and other columns
   result %>%
     mutate(
