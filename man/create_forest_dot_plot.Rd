@@ -82,7 +82,10 @@ dotforest_4pub <- create_forest_dot_plot(prepared_data,
 )
 
 \dontrun{
-ggsave_custom("inst/img/dotforest.png", imgpath = "./", inplot = dotforest_4pub, dpi = 300)
+ggsave_custom("inst/img/dotforest.png",
+  imgpath = "./",
+  inplot = dotforest_4pub, dpi = 300
+)
 }
 
 # Custom thresholds with explicit directions
@@ -94,8 +97,9 @@ create_forest_dot_plot(prepared_data,
 )
 
 # AXIS REVERSAL: Benefit outcomes with direction "less"
-# When benefit outcomes have clinical meaningful difference direction = "less",
-# the x-axis reverses (positive left, negative right) and green shading
+# When benefit outcomes have clinical meaningful difference
+# direction = "less", the x-axis reverses (positive left, negative right)
+# and green shading
 # extends towards negative values (decreasing x direction)
 create_forest_dot_plot(prepared_data,
   outcomes_with_thresholds = list(
@@ -104,8 +108,10 @@ create_forest_dot_plot(prepared_data,
   )
 )
 
-# Example: Lower cholesterol levels are better (benefit with negative direction)
+# Example: Lower cholesterol levels are better (benefit with negative
+# direction)
 # Treatment difference: Drug A - Placebo = -20 mg/dL (Drug A better)
-# Clinical threshold: -15 mg/dL with direction "less" (values < -15 are meaningful)
+# Clinical threshold: -15 mg/dL with direction "less" (values < -15 are
+# meaningful)
 # Result: X-axis reverses, green shading extends towards negative values
 }
