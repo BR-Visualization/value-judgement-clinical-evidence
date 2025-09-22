@@ -16,7 +16,12 @@ missing features
 Check if data contains required features to run a specific plot
 }
 \details{
-DETAILS
+This function verifies whether the input dataset (\code{df})
+contains all the necessary features required to generate a specific plot.
+It checks for the existence of necessary features as well as the types
+and values of features and display log messages if any feature does not
+conform to the defined rules. This ensures that the dataset is suitable for
+the intended visualization.
 }
 \examples{
 check_effects_table(brdata)
