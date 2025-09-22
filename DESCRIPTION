@@ -42,9 +42,16 @@ Imports:
     magrittr,
     patchwork,
     remotes,
-    rlang,
     scales,
     shiny
+    rlang,
+    cowplot,
+    zoo,
+    simsurv,
+    stats,
+    ggrepel,
+    forcats,
+    reshape2
 Depends: 
     R (>= 3.5)
 LazyData: true
