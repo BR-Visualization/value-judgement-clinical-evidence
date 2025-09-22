@@ -46,5 +46,7 @@ the selected benefit (respectively risk) outcome
 Prepare data for the tradeoff plot
 }
 \details{
-DETAILS
+This function processes the input dataset for trade-off plot
+based on the selected benefit and risk outcomes, the specified
+filters, confidence interval methods, and display types.
 }

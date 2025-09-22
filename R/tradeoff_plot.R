@@ -739,7 +739,9 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
 #' (Absolute risk, Relative risk, Odds ratio)
 #' @return df_br (`data.frame`) benefit/risk metrics for all treatment given
 #' the selected benefit (respectively risk) outcome
-#' @details DETAILS
+#' @details This function processes the input dataset for trade-off plot
+#' based on the selected benefit and risk outcomes, the specified
+#' filters, confidence interval methods, and display types.
 #' @rdname prepare_tradeoff_data
 #' @import shiny
 #' @export
