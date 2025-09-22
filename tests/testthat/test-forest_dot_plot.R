@@ -50,7 +50,8 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
   testthat::expect_s3_class(plot, "patchwork")
 })
 
-testthat::test_that("create_forest_dot_plot reverses axis for benefit + direction less", {
+testthat::test_that(
+  "create_forest_dot_plot reverses axis for benefit + direction less", {
   # Test data for benefit outcomes
   test_data_benefit <- data.frame(
     Outcome = c("Benefit 1", "Benefit 2"),

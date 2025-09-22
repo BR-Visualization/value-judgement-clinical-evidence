@@ -81,7 +81,10 @@ library(rlang)
 #' )
 #'
 #' \dontrun{
-#' ggsave_custom("inst/img/dotforest.png", imgpath = "./", inplot = dotforest_4pub, dpi = 300)
+#' ggsave_custom("inst/img/dotforest.png",
+#'   imgpath = "./",
+#'   inplot = dotforest_4pub, dpi = 300
+#' )
 #' }
 #'
 #' # Custom thresholds with explicit directions
@@ -93,8 +96,9 @@ library(rlang)
 #' )
 #'
 #' # AXIS REVERSAL: Benefit outcomes with direction "less"
-#' # When benefit outcomes have clinical meaningful difference direction = "less",
-#' # the x-axis reverses (positive left, negative right) and green shading
+#' # When benefit outcomes have clinical meaningful difference
+#' # direction = "less", the x-axis reverses (positive left, negative right)
+#' # and green shading
 #' # extends towards negative values (decreasing x direction)
 #' create_forest_dot_plot(prepared_data,
 #'   outcomes_with_thresholds = list(
@@ -103,9 +107,11 @@ library(rlang)
 #'   )
 #' )
 #'
-#' # Example: Lower cholesterol levels are better (benefit with negative direction)
+#' # Example: Lower cholesterol levels are better (benefit with negative
+#' # direction)
 #' # Treatment difference: Drug A - Placebo = -20 mg/dL (Drug A better)
-#' # Clinical threshold: -15 mg/dL with direction "less" (values < -15 are meaningful)
+#' # Clinical threshold: -15 mg/dL with direction "less" (values < -15 are
+#' # meaningful)
 #' # Result: X-axis reverses, green shading extends towards negative values
 create_forest_dot_plot <- function(
     data,
@@ -296,14 +302,14 @@ create_forest_dot_plot <- function(
 
         # Prepare data for shaded regions
         # Create a lookup for outcomes that need reverse axis
-        benefit_outcomes_needing_reverse <- type_data$Outcome[
+        benefit_outcomes_reverse <- type_data$Outcome[
           type_data$Factor == "Benefit"
         ]
 
         shade_data <- thresholds_with_treatment %>%
           dplyr::mutate(
             # Check if axis should be reversed for this outcome
-            outcome_needs_reverse = Outcome %in% benefit_outcomes_needing_reverse &
+            outcome_needs_reverse = Outcome %in% benefit_outcomes_reverse &
               Direction == "less",
             # Adjust shading based on axis direction
             xmin = dplyr::case_when(
@@ -319,7 +325,8 @@ create_forest_dot_plot <- function(
               # Standard axis
               Direction == "greater" & !outcome_needs_reverse ~ Inf,
               Direction == "less" & !outcome_needs_reverse ~ Threshold,
-              # Reversed axis (benefit + direction "less") - shade towards negative
+              # Reversed axis (benefit + direction "less") - shade towards
+              # negative
               Direction == "greater" & outcome_needs_reverse ~ Threshold,
               Direction == "less" & outcome_needs_reverse ~ Threshold,
               TRUE ~ Inf
@@ -328,8 +335,9 @@ create_forest_dot_plot <- function(
             ymax = as.numeric(factor(Outcome, levels = y_levels)) + 0.4,
             # Keep benefit areas green, risk areas red
             FillGroup = dplyr::case_when(
-              # For benefit outcomes, the clinically meaningful area should be green
-              Outcome %in% benefit_outcomes_needing_reverse ~ "Benefit",
+              # For benefit outcomes, the clinically meaningful area should be
+              # green
+              Outcome %in% benefit_outcomes_reverse ~ "Benefit",
               # For risk outcomes, the clinically meaningful area should be red
               Outcome %in% (type_data$Outcome[type_data$Factor == "Risk"]) ~
                 "Risk",
@@ -429,7 +437,8 @@ create_forest_dot_plot <- function(
       }
 
       # Determine if we need to reverse the axis
-      # Reverse when: Benefit outcome AND (clinical meaningful direction is "less" OR threshold is negative)
+      # Reverse when: Benefit outcome AND (clinical meaningful direction is
+      # "less" OR threshold is negative)
       should_reverse_axis <- FALSE
       if (show_thresholds && nrow(clin_thresholds) > 0) {
         should_reverse_axis <- factor == "Benefit" &&
