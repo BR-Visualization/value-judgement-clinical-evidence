@@ -732,8 +732,6 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
 #' @param risk (`character`) selected risk outcome
 #' @param ci_method (`character`) selected method to display
 #' confidence intervals
-#' @param ci_method (`character`) selected method to display
-#' confidence intervals
 #' @param cl (`numeric`) confidence level
 #' @param type_risk (`character`) selected way to display risk outcomes
 #' (crude proportions, Exposure-adjusted rates (per 100 PYs))
