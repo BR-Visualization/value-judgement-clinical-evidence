@@ -269,7 +269,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     }
 
     if (unique(df_br$benefit_Type) == "Binary" &&
-        type_graph == "Absolute risk") {
+      type_graph == "Absolute risk") {
       if (brx_min >= 0 && bry_min >= 0) {
         x_min <- 0
         x_max <- 1
@@ -421,7 +421,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     x_curve <- c(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10)
     y_curve <- c(r1, r2, r3, r4, r5, r6, r7, r8, r9, r10)
 
-    my_warning <- "At least one of the benefit and risk threshold values you entered to set up segmented line or smooth curve is outside of the axis limits. Please make corrections by revising the values or resetting the axis limits using free scale."# nolint
+    my_warning <- "At least one of the benefit and risk threshold values you entered to set up segmented line or smooth curve is outside of the axis limits. Please make corrections by revising the values or resetting the axis limits using free scale." # nolint
 
     error_msg <- paste0(
       ifelse(min(x_curve) < x_min || max(x_curve) > x_max ||
@@ -522,12 +522,12 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   if (!is.na(mar)) {
     myplot <- myplot +
       geom_text(aes(label = "MAR", x = x_max, y = mar), size = control_fonts()$p
-                * 0.35, hjust = -0.15)
+        * 0.35, hjust = -0.15)
   }
   if (!is.na(mab)) {
     myplot <- myplot +
       geom_text(aes(label = "MAB", x = mab, y = y_max), size = control_fonts()$p
-                * 0.35, vjust = -0.3)
+        * 0.35, vjust = -0.3)
   }
   myplot <- myplot + xlab(benefit) + ylab(risk)
 
@@ -618,7 +618,8 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
 
   if (filter != "None") {
     my_colors <- rep(chartcolors,
-                     each = length(levels(as.factor(data$Category))))
+      each = length(levels(as.factor(data$Category)))
+    )
     names(my_colors) <- c(t(outer(levels(as.factor(data$Trt1)),
       levels(as.factor(data$Category)), paste,
       sep = " : "
@@ -637,7 +638,8 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
 
   # set a shape for each category
   my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[seq_along(length(
-    levels(as.factor(data$Category))))]
+    levels(as.factor(data$Category))
+  ))]
   names(my_shapes) <- c(levels(as.factor(data$Category)))
 
   # map the shape with the different category
@@ -728,8 +730,6 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
 #' @param category (`character`) selected category
 #' @param benefit (`character`) selected benefit outcome
 #' @param risk (`character`) selected risk outcome
-#' @param ci_method (`character`) selected method to display
-#' confidence intervals
 #' @param ci_method (`character`) selected method to display
 #' confidence intervals
 #' @param cl (`numeric`) confidence level
@@ -857,12 +857,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
         check_feature_string(
           data = df_benefit, feature = "Diff_LowerCI",
           plots = "tradeoff", func = is.numeric,
-          add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+          add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
         ),
         check_feature_string(
           data = df_benefit, feature = "Diff_UpperCI",
           plots = "tradeoff", func = is.numeric,
-          add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+          add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
         )
       )
 
@@ -897,12 +897,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
           check_feature_string(
             data = df_benefit, feature = "Diff_LowerCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
             data = df_benefit, feature = "Diff_UpperCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
 
@@ -916,12 +916,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
           check_feature_string(
             data = df_benefit, feature = "RelRisk_LowerCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
             data = df_benefit, feature = "RelRisk_UpperCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
 
@@ -935,12 +935,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
           check_feature_string(
             data = df_benefit, feature = "OddsRatio_LowerCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
             data = df_benefit, feature = "OddsRatio_UpperCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
 
@@ -961,12 +961,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
           check_feature_string(
             data = df_risk, feature = "Diff_LowerCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
             data = df_risk, feature = "Diff_UpperCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
 
@@ -981,12 +981,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
           check_feature_string(
             data = df_risk, feature = "RelRisk_LowerCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
             data = df_risk, feature = "RelRisk_UpperCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
 
@@ -1000,12 +1000,12 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
           check_feature_string(
             data = df_risk, feature = "OddsRatio_LowerCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
             data = df_risk, feature = "OddsRatio_UpperCI",
             plots = "tradeoff", func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
 
@@ -1055,14 +1055,14 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
             feature = "Diff_EventRate_LowerCI",
             plots = "tradeoff",
             func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "EventRate", ],
             feature = "Diff_EventRate_UpperCI",
             plots = "tradeoff",
             func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
         validate(need(error_msg == "", error_msg))
@@ -1091,14 +1091,14 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
             feature = "Diff_IncRate_LowerCI",
             plots = "tradeoff",
             func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
             data = df_risk[df_risk$Rate_Type == "IncRate", ],
             feature = "Diff_IncRate_UpperCI",
             plots = "tradeoff",
             func = is.numeric,
-            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';"# nolint
+            add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
         validate(need(error_msg == "", error_msg))
