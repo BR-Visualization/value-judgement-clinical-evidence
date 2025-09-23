@@ -2,9 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{prepare_br_supplied_ci}
 \alias{prepare_br_supplied_ci}
-\title{Prepare data analysis for binary and continuous outcomes with Supplied
-interval confidence
-identifies whether the dataframe is for Benefit or Risk analysis}
+\title{Prepare data for binary and continuous outcomes with Supplied
+confidence intervals}
 \usage{
 prepare_br_supplied_ci(df, colname, metric_name, func)
 }
@@ -26,10 +25,6 @@ either \code{Diff}, \code{RelRisk}, \code{OddsRatio}, \code{Diff_Rates}}
 data frame for specified type of analysis
 }
 \description{
-Prepare data analysis for binary and continuous outcomes with Supplied
-interval confidence
-identifies whether the dataframe is for Benefit or Risk analysis
-}
-\details{
-DETAILS
+Prepare data for binary and continuous outcomes with Supplied
+confidence intervals
 }
