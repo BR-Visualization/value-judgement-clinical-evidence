@@ -3,7 +3,7 @@ pkgdown: 2.1.3
 pkgdown_sha: ~
 articles:
   brpubVJCE: brpubVJCE.html
-last_built: 2025-09-09T06:55Z
+last_built: 2025-09-23T08:59Z
 urls:
   reference: https://pkgdown.r-lib.org/reference
   article: https://pkgdown.r-lib.org/articles
