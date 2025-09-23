@@ -43,7 +43,7 @@ Imports:
     patchwork,
     remotes,
     scales,
-    shiny
+    shiny,
     rlang,
     cowplot,
     zoo,
