@@ -222,7 +222,6 @@ check_effects_table <- function(df) {
 #' @param check_unique (`vector`) check if unique values of a feature is
 #'  associated with unique values of linked features
 #' @return error message(s), if any
-#' @details DETAILS
 #' @rdname check_feature
 #' @import glue
 #' @importFrom shiny tag
@@ -354,7 +353,6 @@ check_feature <- function(data, feature, plots, func, na_check, values,
 #'  associated with unique values of linked features
 #' @param add_msg (`character`) added error message for empty feature
 #' @return error message(s), if any
-#' @details DETAILS
 #' @rdname check_feature_string
 #' @importFrom shiny tags
 #' @export
