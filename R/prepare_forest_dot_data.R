@@ -85,49 +85,65 @@ prepare_forest_dot_data <- function(data,
   # Calculate treatment differences and confidence intervals
   result <- filtered_data
 
-  # Calculate Diff column
+  # Calculate Diff column - handle both new and existing columns safely
+  # Initialize Diff column if it doesn't exist
+  if (!"Diff" %in% names(result)) {
+    result$Diff <- NA_real_
+  }
+  
+  # Calculate Diff for continuous data if available
   if (has_continuous_cols) {
     result <- result %>%
       mutate(
         Diff = case_when(
+          !is.na(Diff) ~ Diff, # Preserve existing values
           Type == "Continuous" & Factor == "Benefit" ~ Mean1 - Mean2,
           Type == "Continuous" & Factor == "Risk" ~ Mean2 - Mean1,
-          TRUE ~ NA_real_
+          TRUE ~ Diff
         )
       )
   }
-
+  
+  # Calculate Diff for binary data if available
   if (has_binary_cols) {
     result <- result %>%
       mutate(
         Diff = case_when(
-          !is.na(Diff) ~ Diff, # Keep existing values
+          !is.na(Diff) ~ Diff, # Preserve existing values
           Type == "Binary" & Factor == "Benefit" ~ Prop1 - Prop2,
           Type == "Binary" & Factor == "Risk" ~ Prop2 - Prop1,
-          TRUE ~ NA_real_
+          TRUE ~ Diff
         )
       )
   }
 
-  # Calculate SE_diff column
+  # Calculate SE_diff column - handle both new and existing columns safely
+  # Initialize SE_diff column if it doesn't exist
+  if (!"SE_diff" %in% names(result)) {
+    result$SE_diff <- NA_real_
+  }
+  
+  # Calculate SE_diff for continuous data if available
   if (has_continuous_cols) {
     result <- result %>%
       mutate(
         SE_diff = case_when(
+          !is.na(SE_diff) ~ SE_diff, # Preserve existing values
           Type == "Continuous" ~ sqrt((Sd1^2 / N1) + (Sd2^2 / N2)),
-          TRUE ~ NA_real_
+          TRUE ~ SE_diff
         )
       )
   }
-
+  
+  # Calculate SE_diff for binary data if available
   if (has_binary_cols) {
     result <- result %>%
       mutate(
         SE_diff = case_when(
-          !is.na(SE_diff) ~ SE_diff, # Keep existing values
+          !is.na(SE_diff) ~ SE_diff, # Preserve existing values
           Type == "Binary" ~ sqrt((Prop1 * (1 - Prop1) / N1) +
             (Prop2 * (1 - Prop2) / N2)),
-          TRUE ~ NA_real_
+          TRUE ~ SE_diff
         )
       )
   }
