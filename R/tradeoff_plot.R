@@ -235,48 +235,47 @@
 #' }
 #'
 generate_tradeoff_plot <- function(
-  data,
-  filter,
-  category,
-  benefit,
-  risk,
-  type_risk,
-  type_graph,
-  ci,
-  ci_method,
-  cl,
-  mab,
-  mar,
-  threshold,
-  ratio,
-  b1,
-  b2,
-  b3,
-  b4,
-  b5,
-  b6,
-  b7,
-  b8,
-  b9,
-  b10,
-  r1,
-  r2,
-  r3,
-  r4,
-  r5,
-  r6,
-  r7,
-  r8,
-  r9,
-  r10,
-  testdrug,
-  type_scale,
-  lower_x,
-  upper_x,
-  lower_y,
-  upper_y,
-  chartcolors
-) {
+    data,
+    filter,
+    category,
+    benefit,
+    risk,
+    type_risk,
+    type_graph,
+    ci,
+    ci_method,
+    cl,
+    mab,
+    mar,
+    threshold,
+    ratio,
+    b1,
+    b2,
+    b3,
+    b4,
+    b5,
+    b6,
+    b7,
+    b8,
+    b9,
+    b10,
+    r1,
+    r2,
+    r3,
+    r4,
+    r5,
+    r6,
+    r7,
+    r8,
+    r9,
+    r10,
+    testdrug,
+    type_scale,
+    lower_x,
+    upper_x,
+    lower_y,
+    upper_y,
+    chartcolors) {
   # preparing data for the tradeoff plot
   df_br <- prepare_tradeoff_data(
     data,
@@ -731,14 +730,13 @@ generate_tradeoff_plot <- function(
 #' @rdname prepare_tradeoff_plot
 #' @export
 prepare_tradeoff_plot <- function(
-  myplot,
-  data,
-  df_br,
-  drug_status,
-  filter,
-  ci,
-  chartcolors
-) {
+    myplot,
+    data,
+    df_br,
+    drug_status,
+    filter,
+    ci,
+    chartcolors) {
   # get all the treatments that comply with the status to display
   if (filter != "None") {
     df_br_status <- df_br %>%
@@ -913,16 +911,15 @@ prepare_tradeoff_plot <- function(
 #' @import shiny
 #' @export
 prepare_tradeoff_data <- function(
-  data,
-  filter,
-  category,
-  benefit,
-  risk,
-  ci_method,
-  cl,
-  type_risk,
-  type_graph
-) {
+    data,
+    filter,
+    category,
+    benefit,
+    risk,
+    ci_method,
+    cl,
+    type_risk,
+    type_graph) {
   # control the data quality before plotting the tradeoff plot
 
   error_msg <- paste0(
