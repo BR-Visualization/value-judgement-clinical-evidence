@@ -317,7 +317,9 @@ create_forest_dot_plot <- function(
               Direction == "greater" & !outcome_needs_reverse ~ Threshold,
               Direction == "less" & !outcome_needs_reverse ~ -Inf,
               # Reversed axis (benefit + direction "less")
+              # For "greater" on reversed axis, shade from -Inf to threshold
               Direction == "greater" & outcome_needs_reverse ~ -Inf,
+              # For "less" on reversed axis, shade from -Inf to threshold
               Direction == "less" & outcome_needs_reverse ~ -Inf,
               TRUE ~ -Inf
             ),
@@ -325,9 +327,10 @@ create_forest_dot_plot <- function(
               # Standard axis
               Direction == "greater" & !outcome_needs_reverse ~ Inf,
               Direction == "less" & !outcome_needs_reverse ~ Threshold,
-              # Reversed axis (benefit + direction "less") - shade towards
-              # negative
-              Direction == "greater" & outcome_needs_reverse ~ Threshold,
+              # Reversed axis (benefit + direction "less")
+              # For "greater" on reversed axis, shade to +Inf (but this shouldn't happen for benefit outcomes)
+              Direction == "greater" & outcome_needs_reverse ~ Inf,
+              # For "less" on reversed axis, shade to threshold (meaningful region)
               Direction == "less" & outcome_needs_reverse ~ Threshold,
               TRUE ~ Inf
             ),
