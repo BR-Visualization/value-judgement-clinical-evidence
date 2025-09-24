@@ -186,11 +186,17 @@
 #'
 #' @return a ggplot object
 #' @import shiny
+#' @importFrom scales label_number
 #' @export
 
 #' @examples
+#' \dontrun{
+#' # Filter data for a specific treatment to ensure unique outcome combinations
+#' library(dplyr)
+#' effects_table_filtered <- effects_table %>% filter(Trt1 == "Drug A")
+#'
 #' generate_tradeoff_plot(
-#'   data = effects_table, filter = "None", category = "All",
+#'   data = effects_table_filtered, filter = "None", category = "All",
 #'   benefit = "Benefit 1", risk = "Risk 1",
 #'   type_risk = "Crude proportions", type_graph = "Absolute risk",
 #'   ci = "Yes", ci_method = "Calculated", cl = 0.95,
@@ -226,18 +232,62 @@
 #'   upper_y = 0.5,
 #'   chartcolors = colfun()$fig7_colors
 #' )
+#' }
 #'
-generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
-                                   type_risk, type_graph, ci, ci_method, cl,
-                                   mab, mar, threshold, ratio, b1, b2, b3, b4,
-                                   b5, b6, b7, b8, b9, b10, r1, r2, r3, r4, r5,
-                                   r6, r7, r8, r9, r10, testdrug, type_scale,
-                                   lower_x, upper_x, lower_y, upper_y,
-                                   chartcolors) {
+generate_tradeoff_plot <- function(
+  data,
+  filter,
+  category,
+  benefit,
+  risk,
+  type_risk,
+  type_graph,
+  ci,
+  ci_method,
+  cl,
+  mab,
+  mar,
+  threshold,
+  ratio,
+  b1,
+  b2,
+  b3,
+  b4,
+  b5,
+  b6,
+  b7,
+  b8,
+  b9,
+  b10,
+  r1,
+  r2,
+  r3,
+  r4,
+  r5,
+  r6,
+  r7,
+  r8,
+  r9,
+  r10,
+  testdrug,
+  type_scale,
+  lower_x,
+  upper_x,
+  lower_y,
+  upper_y,
+  chartcolors
+) {
   # preparing data for the tradeoff plot
   df_br <- prepare_tradeoff_data(
-    data, filter, category, benefit, risk,
-    ci_method, cl, type_risk, type_graph
+    data,
+    filter,
+    category,
+    benefit,
+    risk,
+    ci_method,
+    cl,
+    type_risk,
+    type_graph
   )
 
   # set the axis limits for the benefit/risk outcomes
@@ -249,8 +299,11 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     x_max <- relmax(brx_max, type_scale = "Fixed")
 
     # log10 scale doesn't work when x_min is 0
-    if ((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
-      unique(df_br$benefit_Type) == "Binary" && x_min == 0) {
+    if (
+      (type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+        unique(df_br$benefit_Type) == "Binary" &&
+        x_min == 0
+    ) {
       x_min <- 0.01
       x_max <- max(0.01, x_max)
     }
@@ -262,14 +315,19 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     y_max <- relmax(bry_max, type_scale = "Fixed")
 
     # log10 scale doesn't work when y_min is 0
-    if ((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
-      type_risk == "Crude proportions" && y_min == 0) {
+    if (
+      (type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+        type_risk == "Crude proportions" &&
+        y_min == 0
+    ) {
       y_min <- 0.01
       y_max <- max(y_max, 0.01)
     }
 
-    if (unique(df_br$benefit_Type) == "Binary" &&
-      type_graph == "Absolute risk") {
+    if (
+      unique(df_br$benefit_Type) == "Binary" &&
+        type_graph == "Absolute risk"
+    ) {
       if (brx_min >= 0 && bry_min >= 0) {
         x_min <- 0
         x_max <- 1
@@ -296,32 +354,48 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     }
   } else if (type_scale == "Free") {
     error_msg <- paste0(
-      ifelse(!is.na(lower_x), "",
+      ifelse(
+        !is.na(lower_x),
+        "",
         "please enter a numeric number for lower limit x axis; "
       ),
-      ifelse(!is.na(upper_x), "",
+      ifelse(
+        !is.na(upper_x),
+        "",
         "please enter a numeric number for upper limit x axis; "
       ),
-      ifelse(!is.na(lower_y), "",
+      ifelse(
+        !is.na(lower_y),
+        "",
         "please enter a numeric number for lower limit y axis; "
       ),
-      ifelse(!is.na(upper_y), "",
+      ifelse(
+        !is.na(upper_y),
+        "",
         "please enter a numeric number for upper limit y axis; "
       ),
-      ifelse((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
-        unique(df_br$benefit_Type) == "Binary" && lower_x <= 0,
-      "please enter a positive value for lower limit x axis; ",
-      ""
+      ifelse(
+        (type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+          unique(df_br$benefit_Type) == "Binary" &&
+          lower_x <= 0,
+        "please enter a positive value for lower limit x axis; ",
+        ""
       ),
-      ifelse((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
-        type_risk == "Crude proportions" && lower_y <= 0,
-      "please enter a positive value for lower limit y axis; ",
-      ""
+      ifelse(
+        (type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+          type_risk == "Crude proportions" &&
+          lower_y <= 0,
+        "please enter a positive value for lower limit y axis; ",
+        ""
       ),
-      ifelse((!is.na(lower_x)) && (!is.na(upper_x)) && (lower_x < upper_x), "",
+      ifelse(
+        (!is.na(lower_x)) && (!is.na(upper_x)) && (lower_x < upper_x),
+        "",
         "the lower limit x axis should be less than upper limit x axis; "
       ),
-      ifelse((!is.na(lower_y)) && (!is.na(upper_y)) && (lower_y < upper_y), "",
+      ifelse(
+        (!is.na(lower_y)) && (!is.na(upper_y)) && (lower_y < upper_y),
+        "",
         "the lower limit y axis should be less than upper limit y axis"
       )
     )
@@ -370,16 +444,26 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   # quadrants
   if (!is.na(mab)) {
     myplot <- myplot +
-      annotate("rect",
-        xmin = x_min, xmax = mab, ymin = y_min,
-        ymax = y_max, fill = "grey", alpha = 0.7
+      annotate(
+        "rect",
+        xmin = x_min,
+        xmax = mab,
+        ymin = y_min,
+        ymax = y_max,
+        fill = "grey",
+        alpha = 0.7
       )
   }
   if (!is.na(mar)) {
     myplot <- myplot +
-      annotate("rect",
-        xmin = x_min, xmax = x_max, ymin = mar,
-        ymax = y_max, fill = "grey", alpha = 0.7
+      annotate(
+        "rect",
+        xmin = x_min,
+        xmax = x_max,
+        ymin = mar,
+        ymax = y_max,
+        fill = "grey",
+        alpha = 0.7
       )
   }
 
@@ -409,13 +493,18 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     df_line <- data.frame(x_line, y_line)
 
     myplot <- myplot +
-      geom_line(aes(x = x_line, y = y_line),
+      geom_line(
+        aes(x = x_line, y = y_line),
         data = df_line,
-        linetype = 1, size = 1.2, colour = "maroon4"
+        linetype = 1,
+        size = 1.2,
+        colour = "maroon4"
       ) +
-      geom_ribbon(aes(x = x_line, ymin = y_line, ymax = y_max),
+      geom_ribbon(
+        aes(x = x_line, ymin = y_line, ymax = y_max),
         data = df_line,
-        fill = "grey", alpha = 0.7
+        fill = "grey",
+        alpha = 0.7
       )
   } else {
     x_curve <- c(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10)
@@ -424,9 +513,13 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     my_warning <- "At least one of the benefit and risk threshold values you entered to set up segmented line or smooth curve is outside of the axis limits. Please make corrections by revising the values or resetting the axis limits using free scale." # nolint
 
     error_msg <- paste0(
-      ifelse(min(x_curve) < x_min || max(x_curve) > x_max ||
-        min(y_curve) < y_min || max(y_curve) > y_max,
-      my_warning, ""
+      ifelse(
+        min(x_curve) < x_min ||
+          max(x_curve) > x_max ||
+          min(y_curve) < y_min ||
+          max(y_curve) > y_max,
+        my_warning,
+        ""
       )
     )
 
@@ -451,31 +544,49 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     if (threshold == "Segmented line") {
       # display the threshold as a segmented line
       myplot <- myplot +
-        geom_line(aes(x = x_curve, y = y_curve),
+        geom_line(
+          aes(x = x_curve, y = y_curve),
           data = df_curve,
-          linetype = 1, size = 1.2, colour = "maroon4"
+          linetype = 1,
+          size = 1.2,
+          colour = "maroon4"
         ) +
-        geom_point(aes(x = x_curve, y = y_curve), df_curve,
-          colour = "black", size = 2, shape = 15
+        geom_point(
+          aes(x = x_curve, y = y_curve),
+          df_curve,
+          colour = "black",
+          size = 2,
+          shape = 15
         ) +
-        geom_ribbon(aes(x = x_curve, ymin = y_curve, ymax = y_max),
-          data = df_curve, fill = "grey", alpha = 0.7
+        geom_ribbon(
+          aes(x = x_curve, ymin = y_curve, ymax = y_max),
+          data = df_curve,
+          fill = "grey",
+          alpha = 0.7
         )
     } else if (threshold == "Smooth curve") {
       # display the threshold as a smooth curve
       new_df_curve <- expand.grid(x_curve = seq(x_min, x_max, by = 0.01))
-      new_df_curve$y_curve <- stats::predict(stats::loess(y_curve ~ x_curve),
+      new_df_curve$y_curve <- stats::predict(
+        stats::loess(y_curve ~ x_curve),
         data = df_curve,
         newdata = new_df_curve
       )
       myplot <- myplot +
-        geom_smooth(aes(x = x_curve, y = y_curve),
-          data = df_curve, se = FALSE,
-          linetype = 1, size = 1.2, colour = "maroon4"
-        ) +
-        geom_point(aes(x = x_curve, y = y_curve),
+        geom_smooth(
+          aes(x = x_curve, y = y_curve),
           data = df_curve,
-          colour = "black", size = 2, shape = 15
+          se = FALSE,
+          linetype = 1,
+          size = 1.2,
+          colour = "maroon4"
+        ) +
+        geom_point(
+          aes(x = x_curve, y = y_curve),
+          data = df_curve,
+          colour = "black",
+          size = 2,
+          shape = 15
         ) +
         geom_ribbon(
           aes(
@@ -483,7 +594,8 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
             ymin = y_curve,
             ymax = y_max
           ),
-          data = new_df_curve, fill = "grey",
+          data = new_df_curve,
+          fill = "grey",
           alpha = 0.7
         )
     }
@@ -492,52 +604,77 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   # create segments for both minimal acceptable risk and minimal acceptable
   if (!is.na(mab)) {
     myplot <- myplot +
-      geom_segment(aes(x = mab, xend = mab, y = y_min, yend = y_max),
-        linetype = 2, colour = "darkorange3", size = 1.2
+      geom_segment(
+        aes(x = mab, xend = mab, y = y_min, yend = y_max),
+        linetype = 2,
+        colour = "darkorange3",
+        size = 1.2
       )
   }
   if (!is.na(mar)) {
     myplot <- myplot +
-      geom_segment(aes(x = x_min, xend = x_max, y = mar, yend = mar),
-        linetype = 2, colour = "darkorange3", size = 1.2
+      geom_segment(
+        aes(x = x_min, xend = x_max, y = mar, yend = mar),
+        linetype = 2,
+        colour = "darkorange3",
+        size = 1.2
       )
   }
 
   # create segments for graph margins
   myplot <- myplot +
-    geom_segment(aes(x = x_min, xend = x_max, y = y_max, yend = y_max),
-      linetype = 2, colour = "darkorange3", size = 1.2
+    geom_segment(
+      aes(x = x_min, xend = x_max, y = y_max, yend = y_max),
+      linetype = 2,
+      colour = "darkorange3",
+      size = 1.2
     ) +
-    geom_segment(aes(x = x_max, xend = x_max, y = y_min, yend = y_max),
-      linetype = 2, colour = "darkorange3", size = 1.2
+    geom_segment(
+      aes(x = x_max, xend = x_max, y = y_min, yend = y_max),
+      linetype = 2,
+      colour = "darkorange3",
+      size = 1.2
     ) +
-    geom_segment(aes(x = x_min, xend = x_min, y = y_min, yend = y_max),
-      linetype = 1, size = 1
+    geom_segment(
+      aes(x = x_min, xend = x_min, y = y_min, yend = y_max),
+      linetype = 1,
+      size = 1
     ) +
-    geom_segment(aes(x = x_min, xend = x_max, y = y_min, yend = y_min),
-      linetype = 1, size = 1
+    geom_segment(
+      aes(x = x_min, xend = x_max, y = y_min, yend = y_min),
+      linetype = 1,
+      size = 1
     )
 
   # labels
   if (!is.na(mar)) {
     myplot <- myplot +
-      geom_text(aes(label = "MAR", x = x_max, y = mar), size = control_fonts()$p
-        * 0.35, hjust = -0.15)
+      geom_text(
+        aes(label = "MAR", x = x_max, y = mar),
+        size = control_fonts()$p * 0.35,
+        hjust = -0.15
+      )
   }
   if (!is.na(mab)) {
     myplot <- myplot +
-      geom_text(aes(label = "MAB", x = mab, y = y_max), size = control_fonts()$p
-        * 0.35, vjust = -0.3)
+      geom_text(
+        aes(label = "MAB", x = mab, y = y_max),
+        size = control_fonts()$p * 0.35,
+        vjust = -0.3
+      )
   }
   myplot <- myplot + xlab(benefit) + ylab(risk)
 
   # x coordinates - the 0.03 part is to leave room to display the "MAR" label
-  if ((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
-    unique(df_br$benefit_Type) == "Binary") {
+  if (
+    (type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+      unique(df_br$benefit_Type) == "Binary"
+  ) {
     myplot <- myplot +
       scale_x_log10(
         limits = c(
-          x_min, x_max * (10^(0.03 * (log10(x_max) - log10(x_min))))
+          x_min,
+          x_max * (10^(0.03 * (log10(x_max) - log10(x_min))))
         ),
         labels = scales::label_number(accuracy = 0.01)
       )
@@ -547,8 +684,10 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   }
 
   # y coordinates
-  if ((type_graph == "Relative risk" || type_graph == "Odds ratio") &&
-    type_risk == "Crude proportions") {
+  if (
+    (type_graph == "Relative risk" || type_graph == "Odds ratio") &&
+      type_risk == "Crude proportions"
+  ) {
     myplot <- myplot +
       scale_y_log10(
         limits = c(y_min, y_max),
@@ -591,8 +730,15 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
 #'
 #' @rdname prepare_tradeoff_plot
 #' @export
-prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
-                                  chartcolors) {
+prepare_tradeoff_plot <- function(
+  myplot,
+  data,
+  df_br,
+  drug_status,
+  filter,
+  ci,
+  chartcolors
+) {
   # get all the treatments that comply with the status to display
   if (filter != "None") {
     df_br_status <- df_br %>%
@@ -603,7 +749,8 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
       filter(Drug_Status %in% drug_status)
   }
 
-  df_br_status$treatment <- factor(df_br_status$treatment,
+  df_br_status$treatment <- factor(
+    df_br_status$treatment,
     levels = c(unique(df_br_status$treatment))
   )
 
@@ -617,11 +764,14 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
   }
 
   if (filter != "None") {
-    my_colors <- rep(chartcolors,
+    my_colors <- rep(
+      chartcolors,
       each = length(levels(as.factor(data$Category)))
     )
-    names(my_colors) <- c(t(outer(levels(as.factor(data$Trt1)),
-      levels(as.factor(data$Category)), paste,
+    names(my_colors) <- c(t(outer(
+      levels(as.factor(data$Trt1)),
+      levels(as.factor(data$Category)),
+      paste,
       sep = " : "
     )))
   } else {
@@ -657,7 +807,9 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
     myplot +
       geom_point(
         aes_string(
-          x = "benefit", y = "risk", colour = "treatment",
+          x = "benefit",
+          y = "risk",
+          colour = "treatment",
           shape = "treatment"
         ),
         data = df_br_status,
@@ -673,7 +825,10 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
     myplot +
       geom_point(
         aes_string(
-          x = "benefit", y = "risk", colour = "treatment", shape = "treatment"
+          x = "benefit",
+          y = "risk",
+          colour = "treatment",
+          shape = "treatment"
         ),
         data = df_br_status,
         size = 3,
@@ -684,8 +839,11 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
       # metrics
       geom_segment(
         aes_string(
-          x = "benefit_lowerCI", xend = "benefit",
-          y = "risk", yend = "risk", colour = "treatment"
+          x = "benefit_lowerCI",
+          xend = "benefit",
+          y = "risk",
+          yend = "risk",
+          colour = "treatment"
         ),
         data = df_br_status,
         size = 1,
@@ -693,8 +851,11 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
       ) +
       geom_segment(
         aes_string(
-          x = "benefit_upperCI", xend = "benefit",
-          y = "risk", yend = "risk", colour = "treatment"
+          x = "benefit_upperCI",
+          xend = "benefit",
+          y = "risk",
+          yend = "risk",
+          colour = "treatment"
         ),
         data = df_br_status,
         size = 1,
@@ -702,8 +863,11 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
       ) +
       geom_segment(
         aes_string(
-          x = "benefit", xend = "benefit",
-          y = "risk_lowerCI", yend = "risk", colour = "treatment"
+          x = "benefit",
+          xend = "benefit",
+          y = "risk_lowerCI",
+          yend = "risk",
+          colour = "treatment"
         ),
         data = df_br_status,
         size = 1,
@@ -711,8 +875,11 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
       ) +
       geom_segment(
         aes_string(
-          x = "benefit", xend = "benefit",
-          y = "risk_upperCI", yend = "risk", colour = "treatment"
+          x = "benefit",
+          xend = "benefit",
+          y = "risk_upperCI",
+          yend = "risk",
+          colour = "treatment"
         ),
         data = df_br_status,
         size = 1,
@@ -745,60 +912,89 @@ prepare_tradeoff_plot <- function(myplot, data, df_br, drug_status, filter, ci,
 #' @rdname prepare_tradeoff_data
 #' @import shiny
 #' @export
-prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
-                                  ci_method, cl, type_risk, type_graph) {
+prepare_tradeoff_data <- function(
+  data,
+  filter,
+  category,
+  benefit,
+  risk,
+  ci_method,
+  cl,
+  type_risk,
+  type_graph
+) {
   # control the data quality before plotting the tradeoff plot
 
   error_msg <- paste0(
     check_feature_string(
-      data = data, feature = "Outcome", plots = "tradeoff",
-      func = is.character, na_check = TRUE,
+      data = data,
+      feature = "Outcome",
+      plots = "tradeoff",
+      func = is.character,
+      na_check = TRUE,
       check_unique = c(
-        "Factor", "Grouped_Outcome",
-        "Statistics", "Outcome_Status",
+        "Factor",
+        "Grouped_Outcome",
+        "Statistics",
+        "Outcome_Status",
         "Type"
       )
     ),
     check_feature_string(
-      data = data, feature = "Factor",
+      data = data,
+      feature = "Factor",
       plots = "tradeoff",
-      func = is.character, na_check = TRUE,
+      func = is.character,
+      na_check = TRUE,
       values = c("Benefit", "Risk")
     ),
     check_feature_string(
-      data = data, feature = "Filter", plots = "tradeoff",
-      func = is.character, na_check = TRUE
-    ),
-    check_feature_string(
-      data = data, feature = "Drug_Status",
+      data = data,
+      feature = "Filter",
       plots = "tradeoff",
-      func = is.character, values = c("Approved", "Test")
-    ),
-    check_feature_string(
-      data = data, feature = "Category",
-      plots = "tradeoff",
-      func = is.character, na_check = TRUE
-    ),
-    check_feature_string(
-      data = data, feature = "Trt1",
-      plots = "tradeoff", func = is.character,
+      func = is.character,
       na_check = TRUE
     ),
     check_feature_string(
-      data = data, feature = "Trt2",
+      data = data,
+      feature = "Drug_Status",
       plots = "tradeoff",
-      func = is.character, na_check = TRUE,
+      func = is.character,
+      values = c("Approved", "Test")
+    ),
+    check_feature_string(
+      data = data,
+      feature = "Category",
+      plots = "tradeoff",
+      func = is.character,
+      na_check = TRUE
+    ),
+    check_feature_string(
+      data = data,
+      feature = "Trt1",
+      plots = "tradeoff",
+      func = is.character,
+      na_check = TRUE
+    ),
+    check_feature_string(
+      data = data,
+      feature = "Trt2",
+      plots = "tradeoff",
+      func = is.character,
+      na_check = TRUE,
       check_same = TRUE
     ),
     check_feature_string(
-      data = data, feature = "Type", plots = "tradeoff",
-      func = is.character, na_check = TRUE,
+      data = data,
+      feature = "Type",
+      plots = "tradeoff",
+      func = is.character,
+      na_check = TRUE,
       values = c("Binary", "Continuous")
     )
   )
 
   validate(need(error_msg == "", error_msg))
-
 
   # subset the data based on a selected filter/category if applicable
 
@@ -816,7 +1012,6 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
       "filtered effects table is empty"
     )
   )
-
 
   # subset data based on the selected benefit outcome
   df_benefit <- df_filter[df_filter$Outcome == benefit, ]
@@ -845,23 +1040,29 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
     if (df_benefit$Type[1] == "Continuous") {
       error_msg <- paste0(
         check_feature_string(
-          data = df_benefit, feature = "Mean1",
+          data = df_benefit,
+          feature = "Mean1",
           plots = "tradeoff",
           func = is.numeric
         ),
         check_feature_string(
-          data = df_benefit, feature = "Mean2",
+          data = df_benefit,
+          feature = "Mean2",
           plots = "tradeoff",
           func = is.numeric
         ),
         check_feature_string(
-          data = df_benefit, feature = "Diff_LowerCI",
-          plots = "tradeoff", func = is.numeric,
+          data = df_benefit,
+          feature = "Diff_LowerCI",
+          plots = "tradeoff",
+          func = is.numeric,
           add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
         ),
         check_feature_string(
-          data = df_benefit, feature = "Diff_UpperCI",
-          plots = "tradeoff", func = is.numeric,
+          data = df_benefit,
+          feature = "Diff_UpperCI",
+          plots = "tradeoff",
+          func = is.numeric,
           add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
         )
       )
@@ -871,7 +1072,10 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
       # derive mean difference and get the associated confidence intervals
       # for continuous benefit outcome
       df_benefit <- prepare_br_supplied_ci(
-        df_benefit, "Mean", "Diff", function(x, y) x - y
+        df_benefit,
+        "Mean",
+        "Diff",
+        function(x, y) x - y
       )
     } else if (df_benefit$Type[1] == "Binary") {
       # derive probability metrics (Absolute Risk, Relative Risk and Odds ratio
@@ -879,13 +1083,17 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
 
       error_msg <- paste0(
         check_feature_string(
-          data = df_benefit, feature = "Prop1",
-          plots = "tradeoff", func = is.numeric,
+          data = df_benefit,
+          feature = "Prop1",
+          plots = "tradeoff",
+          func = is.numeric,
           check_range = c(0, 1)
         ),
         check_feature_string(
-          data = df_benefit, feature = "Prop2",
-          plots = "tradeoff", func = is.numeric,
+          data = df_benefit,
+          feature = "Prop2",
+          plots = "tradeoff",
+          func = is.numeric,
           check_range = c(0, 1)
         )
       )
@@ -895,13 +1103,17 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
       if (type_graph == "Absolute risk") {
         error_msg <- paste0(
           check_feature_string(
-            data = df_benefit, feature = "Diff_LowerCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_benefit,
+            feature = "Diff_LowerCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
-            data = df_benefit, feature = "Diff_UpperCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_benefit,
+            feature = "Diff_UpperCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
@@ -909,18 +1121,25 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
         validate(need(error_msg == "", error_msg))
 
         df_benefit <- prepare_br_supplied_ci(
-          df_benefit, "Prop", "Diff", function(x, y) x - y
+          df_benefit,
+          "Prop",
+          "Diff",
+          function(x, y) x - y
         )
       } else if (type_graph == "Relative risk") {
         error_msg <- paste0(
           check_feature_string(
-            data = df_benefit, feature = "RelRisk_LowerCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_benefit,
+            feature = "RelRisk_LowerCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
-            data = df_benefit, feature = "RelRisk_UpperCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_benefit,
+            feature = "RelRisk_UpperCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
@@ -928,18 +1147,25 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
         validate(need(error_msg == "", error_msg))
 
         df_benefit <- prepare_br_supplied_ci(
-          df_benefit, "Prop", "RelRisk", function(x, y) x / y
+          df_benefit,
+          "Prop",
+          "RelRisk",
+          function(x, y) x / y
         )
       } else if (type_graph == "Odds ratio") {
         error_msg <- paste0(
           check_feature_string(
-            data = df_benefit, feature = "OddsRatio_LowerCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_benefit,
+            feature = "OddsRatio_LowerCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
-            data = df_benefit, feature = "OddsRatio_UpperCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_benefit,
+            feature = "OddsRatio_UpperCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
@@ -947,7 +1173,10 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
         validate(need(error_msg == "", error_msg))
 
         df_benefit <- prepare_br_supplied_ci(
-          df_benefit, "Prop", "OddsRatio", function(x, y) {
+          df_benefit,
+          "Prop",
+          "OddsRatio",
+          function(x, y) {
             (x * (1 - y)) / (y * (1 - x))
           }
         )
@@ -959,33 +1188,43 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
       if (type_graph == "Absolute risk") {
         error_msg <- paste0(
           check_feature_string(
-            data = df_risk, feature = "Diff_LowerCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_risk,
+            feature = "Diff_LowerCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
-            data = df_risk, feature = "Diff_UpperCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_risk,
+            feature = "Diff_UpperCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
 
         validate(need(error_msg == "", error_msg))
 
-
         df_risk <- prepare_br_supplied_ci(
-          df_risk, "Prop", "Diff", function(x, y) x - y
+          df_risk,
+          "Prop",
+          "Diff",
+          function(x, y) x - y
         )
       } else if (type_graph == "Relative risk") {
         error_msg <- paste0(
           check_feature_string(
-            data = df_risk, feature = "RelRisk_LowerCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_risk,
+            feature = "RelRisk_LowerCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
-            data = df_risk, feature = "RelRisk_UpperCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_risk,
+            feature = "RelRisk_UpperCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
@@ -993,18 +1232,25 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
         validate(need(error_msg == "", error_msg))
 
         df_risk <- prepare_br_supplied_ci(
-          df_risk, "Prop", "RelRisk", function(x, y) x / y
+          df_risk,
+          "Prop",
+          "RelRisk",
+          function(x, y) x / y
         )
       } else if (type_graph == "Odds ratio") {
         error_msg <- paste0(
           check_feature_string(
-            data = df_risk, feature = "OddsRatio_LowerCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_risk,
+            feature = "OddsRatio_LowerCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           ),
           check_feature_string(
-            data = df_risk, feature = "OddsRatio_UpperCI",
-            plots = "tradeoff", func = is.numeric,
+            data = df_risk,
+            feature = "OddsRatio_UpperCI",
+            plots = "tradeoff",
+            func = is.numeric,
             add_msg = "Consider switching the option for 'Use confidence intervals' to 'Calculated';" # nolint
           )
         )
@@ -1012,7 +1258,10 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
         validate(need(error_msg == "", error_msg))
 
         df_risk <- prepare_br_supplied_ci(
-          df_risk, "Prop", "OddsRatio", function(x, y) {
+          df_risk,
+          "Prop",
+          "OddsRatio",
+          function(x, y) {
             (x * (1 - y)) / (y * (1 - x))
           }
         )
@@ -1106,12 +1355,18 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
 
       df_event_rate_risk <- df_risk[df_risk$Rate_Type == "EventRate", ]
       df_event_rate_risk <- prepare_br_supplied_ci(
-        df_event_rate_risk, "EventRate", "Diff_EventRate", function(x, y) x - y
+        df_event_rate_risk,
+        "EventRate",
+        "Diff_EventRate",
+        function(x, y) x - y
       )
 
       df_inc_rate_risk <- df_risk[df_risk$Rate_Type == "IncRate", ]
       df_inc_rate_risk <- prepare_br_supplied_ci(
-        df_inc_rate_risk, "IncRate", "Diff_IncRate", function(x, y) x - y
+        df_inc_rate_risk,
+        "IncRate",
+        "Diff_IncRate",
+        function(x, y) x - y
       )
 
       df_risk <- rbind(df_event_rate_risk, df_inc_rate_risk)
@@ -1124,34 +1379,44 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
 
       error_msg <- paste0(
         check_feature_string(
-          data = df_benefit, feature = "Mean1",
+          data = df_benefit,
+          feature = "Mean1",
           plots = "tradeoff",
           func = is.numeric
         ),
         check_feature_string(
-          data = df_benefit, feature = "Mean2",
+          data = df_benefit,
+          feature = "Mean2",
           plots = "tradeoff",
           func = is.numeric
         ),
         check_feature_string(
-          data = df_benefit, feature = "N1",
+          data = df_benefit,
+          feature = "N1",
           plots = "tradeoff",
-          func = is.integer, check_positive = TRUE
+          func = is.integer,
+          check_positive = TRUE
         ),
         check_feature_string(
-          data = df_benefit, feature = "N2",
+          data = df_benefit,
+          feature = "N2",
           plots = "tradeoff",
-          func = is.integer, check_positive = TRUE
+          func = is.integer,
+          check_positive = TRUE
         ),
         check_feature_string(
-          data = df_benefit, feature = "Sd1",
+          data = df_benefit,
+          feature = "Sd1",
           plots = "tradeoff",
-          func = is.numeric, check_positive = TRUE
+          func = is.numeric,
+          check_positive = TRUE
         ),
         check_feature_string(
-          data = df_benefit, feature = "Sd2",
+          data = df_benefit,
+          feature = "Sd2",
           plots = "tradeoff",
-          func = is.numeric, check_positive = TRUE
+          func = is.numeric,
+          check_positive = TRUE
         )
       )
 
@@ -1182,27 +1447,34 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
       # for binary benefit outcome) and calculate the associate confidence
       # intervals
 
-
       error_msg <- paste0(
         check_feature_string(
-          data = df_benefit, feature = "Prop1",
-          plots = "tradeoff", func = is.numeric,
+          data = df_benefit,
+          feature = "Prop1",
+          plots = "tradeoff",
+          func = is.numeric,
           check_range = c(0, 1)
         ),
         check_feature_string(
-          data = df_benefit, feature = "Prop2",
-          plots = "tradeoff", func = is.numeric,
+          data = df_benefit,
+          feature = "Prop2",
+          plots = "tradeoff",
+          func = is.numeric,
           check_range = c(0, 1)
         ),
         check_feature_string(
-          data = df_benefit, feature = "N1",
+          data = df_benefit,
+          feature = "N1",
           plots = "tradeoff",
-          func = is.integer, check_positive = TRUE
+          func = is.integer,
+          check_positive = TRUE
         ),
         check_feature_string(
-          data = df_benefit, feature = "N2",
+          data = df_benefit,
+          feature = "N2",
           plots = "tradeoff",
-          func = is.integer, check_positive = TRUE
+          func = is.integer,
+          check_positive = TRUE
         )
       )
 
@@ -1210,15 +1482,27 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
 
       if (type_graph == "Absolute risk") {
         df_benefit <- prepare_br_calculated_ci(
-          df_benefit, "Prop", "N", cl, calculate_diff_bin
+          df_benefit,
+          "Prop",
+          "N",
+          cl,
+          calculate_diff_bin
         )
       } else if (type_graph == "Relative risk") {
         df_benefit <- prepare_br_calculated_ci(
-          df_benefit, "Prop", "N", cl, calculate_rel_risk_bin
+          df_benefit,
+          "Prop",
+          "N",
+          cl,
+          calculate_rel_risk_bin
         )
       } else if (type_graph == "Odds ratio") {
         df_benefit <- prepare_br_calculated_ci(
-          df_benefit, "Prop", "N", cl, calculate_odds_ratio_bin
+          df_benefit,
+          "Prop",
+          "N",
+          cl,
+          calculate_odds_ratio_bin
         )
       }
     }
@@ -1226,24 +1510,32 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
     if (type_risk == "Crude proportions") {
       error_msg <- paste0(
         check_feature_string(
-          data = df_risk, feature = "Prop1",
-          plots = "tradeoff", func = is.numeric,
+          data = df_risk,
+          feature = "Prop1",
+          plots = "tradeoff",
+          func = is.numeric,
           check_range = c(0, 1)
         ),
         check_feature_string(
-          data = df_risk, feature = "Prop2",
-          plots = "tradeoff", func = is.numeric,
+          data = df_risk,
+          feature = "Prop2",
+          plots = "tradeoff",
+          func = is.numeric,
           check_range = c(0, 1)
         ),
         check_feature_string(
-          data = df_risk, feature = "N1",
+          data = df_risk,
+          feature = "N1",
           plots = "tradeoff",
-          func = is.integer, check_positive = TRUE
+          func = is.integer,
+          check_positive = TRUE
         ),
         check_feature_string(
-          data = df_risk, feature = "N2",
+          data = df_risk,
+          feature = "N2",
           plots = "tradeoff",
-          func = is.integer, check_positive = TRUE
+          func = is.integer,
+          check_positive = TRUE
         )
       )
 
@@ -1251,15 +1543,27 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
 
       if (type_graph == "Absolute risk") {
         df_risk <- prepare_br_calculated_ci(
-          df_risk, "Prop", "N", cl, calculate_diff_bin
+          df_risk,
+          "Prop",
+          "N",
+          cl,
+          calculate_diff_bin
         )
       } else if (type_graph == "Relative risk") {
         df_risk <- prepare_br_calculated_ci(
-          df_risk, "Prop", "N", cl, calculate_rel_risk_bin
+          df_risk,
+          "Prop",
+          "N",
+          cl,
+          calculate_rel_risk_bin
         )
       } else if (type_graph == "Odds ratio") {
         df_risk <- prepare_br_calculated_ci(
-          df_risk, "Prop", "N", cl, calculate_odds_ratio_bin
+          df_risk,
+          "Prop",
+          "N",
+          cl,
+          calculate_odds_ratio_bin
         )
       }
     } else if (type_risk == "Exposure-adjusted rates (per 100 PYs)") {
@@ -1355,12 +1659,20 @@ prepare_tradeoff_data <- function(data, filter, category, benefit, risk,
 
       df_event_rate_risk <- df_risk[df_risk$Rate_Type == "EventRate", ]
       df_event_rate_risk <- prepare_br_calculated_ci(
-        df_event_rate_risk, "EventRate", "100PEY", cl, calculate_diff_rates
+        df_event_rate_risk,
+        "EventRate",
+        "100PEY",
+        cl,
+        calculate_diff_rates
       )
 
       df_inc_rate_risk <- df_risk[df_risk$Rate_Type == "IncRate", ]
       df_inc_rate_risk <- prepare_br_calculated_ci(
-        df_inc_rate_risk, "IncRate", "100PYAR", cl, calculate_diff_rates
+        df_inc_rate_risk,
+        "IncRate",
+        "100PYAR",
+        cl,
+        calculate_diff_rates
       )
 
       df_risk <- rbind(df_event_rate_risk, df_inc_rate_risk)

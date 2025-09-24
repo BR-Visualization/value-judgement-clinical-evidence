@@ -44,7 +44,7 @@ You can install the development version of brpubVJCE from [GitHub](https://githu
 
 ### Recommended Installation
 
-```{r}
+```{r, eval=FALSE}
 # Install using pak (recommended)
 install.packages("pak")
 pak::pak("BR-Visualization/brpubVJCE")
@@ -52,7 +52,7 @@ pak::pak("BR-Visualization/brpubVJCE")
 
 ### Alternative Installation  
 
-```{r}
+```{r, eval=FALSE}
 # Install using remotes
 install.packages("remotes")
 remotes::install_github("BR-Visualization/brpubVJCE")
@@ -65,8 +65,15 @@ remotes::install_github("BR-Visualization/brpubVJCE")
 library(brpubVJCE)
 
 # Prepare the data and create the visualization
+prepared_data <- prepare_forest_dot_data(effects_table)
 result_plot <- create_forest_dot_plot(
-  prepare_forest_dot_data(effects_table)
+  prepared_data,
+  outcomes_with_thresholds = list(
+    "Benefit 1" = 0.10,
+    "Benefit 2" = -20,
+    "Risk 1" = -0.05,
+    "Risk 2" = -0.07
+  )
 )
 
 # Display the plot

@@ -1,7 +1,6 @@
 #' Function for colors
 #'
 #' @return figure colors
-#' @import colorBlindness
 #' @export
 #'
 colfun <- function() {
@@ -346,8 +345,9 @@ br_charts_theme <- function(base_family = "",
   ) + ggplot2::theme(...)
 }
 
-#' Prepare data for binary and continuous outcomes with Supplied
-#' confidence intervals
+#' Prepare data analysis for binary and continuous outcomes with Supplied
+#' interval confidence
+#' identifies whether the dataframe is for Benefit or Risk analysis
 #' @param df (`data.frame`) dataset
 #' either `df_benefit` (selected benefit)
 #' or `df_risk` (select risk).
@@ -358,6 +358,7 @@ br_charts_theme <- function(base_family = "",
 #' either `Diff`, `RelRisk`, `OddsRatio`, `Diff_Rates`
 #' @param func (`function`) function used to calculate metrics (or BR points)
 #' @return data frame for specified type of analysis
+#' @details DETAILS
 #' @rdname prepare_br_supplied_ci
 #' @export
 
@@ -383,8 +384,9 @@ prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
   output
 }
 
-#' Prepare data for binary and continuous outcomes with Calculated
-#' confidence intervals
+#' Prepare data analysis for binary and continuous outcomes with Calculated
+#' interval confidence
+#' identifies whether the dataframe is for Benefit or Risk analysis
 #' @param df (`data.frame`) dataset
 #' either `df_benefit` (selected benefit)
 #' or `df_risk` (select risk).
@@ -395,6 +397,7 @@ prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
 #' @param func (`function`) function used to calculate metrics (or BR points)
 #' @param cl (`numeric`) confidence level
 #' @return data frame for specified type of analysis
+#' @details DETAILS
 #' @rdname prepare_br_calculated_ci
 #' @export
 
@@ -452,7 +455,6 @@ add_exprs <- function(...) {
 #' with string in (`nonbold`) and returns a `dataframe`.
 #'
 #' @import magrittr dplyr
-#' @importFrom glue glue
 #'
 #' @seealso `?plotmath`.
 #'
@@ -485,14 +487,15 @@ labs_bold <- function(cond, bold, nonbold) {
   }
 
   # Writing a message that will be displayed in the log
-  message(glue('[{format(Sys.time(),"%F %T")}] > Dataout object from
+  message(glue::glue('[{format(Sys.time(),"%F %T")}] > Dataout object from
                the labs_bold function is created'))
 
   # Returning the dataout object
   gout
 }
 
-#' Derive minimum boundary value for axis to include all values
+#' Derive minimum boundary value for axis
+#' Derive boundary value to include all values
 #'
 #' @param rmin (`numeric`) number to evaluate
 #' @param type_scale (`character`) selected scale display type
@@ -525,7 +528,8 @@ relmin <- function(rmin, type_scale) {
   }
 }
 
-#' Derive maximum boundary value for axis to include all values
+#' Derive maximum boundary value for axis
+#' Derive boundary value to include all values
 #'
 #' @param rmax (`numeric`) number to evaluate
 #' @param type_scale (`character`) selected scale display type
