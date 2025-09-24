@@ -33,16 +33,16 @@ You can install the development version of brpubVJCE from
 install.packages("pak")
 #> The following package(s) will be installed:
 #> - pak [0.9.0]
-#> These packages will be installed into "C:/Users/aemab/AppData/Local/R/cache/R/renv/library/brpubVJCE-f8740ab8/windows/R-4.5/x86_64-w64-mingw32".
+#> These packages will be installed into "~/Library/Caches/org.R-project.R/R/renv/library/brpubVJCE-83577553/macos/R-4.5/aarch64-apple-darwin20".
 #> 
 #> # Installing packages --------------------------------------------------------
 #> - Installing pak ...                            OK [linked from cache]
-#> Successfully installed 1 package in 19 milliseconds.
+#> Successfully installed 1 package in 3.4 milliseconds.
 pak::pak("BR-Visualization/brpubVJCE")
 #> ℹ Loading metadata database✔ Loading metadata database ... done
 #>  
 #> ℹ No downloads are needed
-#> ✔ 1 pkg + 43 deps: kept 36 [7.8s]
+#> ✔ 1 pkg + 53 deps: kept 40 [1m 20.9s]
 ```
 
 ### Alternative Installation
@@ -50,17 +50,7 @@ pak::pak("BR-Visualization/brpubVJCE")
 ``` r
 # Install using remotes
 install.packages("remotes")
-#> The following package(s) will be installed:
-#> - remotes [2.5.0]
-#> These packages will be installed into "C:/Users/aemab/AppData/Local/R/cache/R/renv/library/brpubVJCE-f8740ab8/windows/R-4.5/x86_64-w64-mingw32".
-#> 
-#> # Installing packages --------------------------------------------------------
-#> - Installing remotes ...                        OK [linked from cache]
-#> Successfully installed 1 package in 17 milliseconds.
 remotes::install_github("BR-Visualization/brpubVJCE")
-#> Using GitHub PAT from the git credential store.
-#> Skipping install of 'brpubVJCE' from a github remote, the SHA1 (3d136d27) has not changed since last install.
-#>   Use `force = TRUE` to force installation
 ```
 
 ## Figure - Dot-Forest Plot
@@ -131,6 +121,8 @@ Click to learn more
 </details>
 
 <details>
+
+<summary>
 
 Click to view sample code
 </summary>
