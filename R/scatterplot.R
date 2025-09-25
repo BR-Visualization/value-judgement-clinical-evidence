@@ -130,19 +130,19 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
       show.legend = TRUE
     ) +
     scale_shape_manual(values = 17, name = NULL) +
-
     scale_y_continuous(limits = c(min1 - 0.1, max1 + 0.1)) +
     scale_x_continuous(limits = c(min1 - 0.1, max1 + 0.1)) +
-
     geom_hline(yintercept = 0, size = 1) +
     geom_vline(xintercept = 0, size = 1) +
     geom_abline(intercept = 0, slope = 1, linetype = 2, size = 1) +
-
-    geom_hline(yintercept = MAR, size = 1, linetype = 2,
-               colour = "darkorange3") +
-    geom_vline(xintercept = MAB, size = 1, linetype = 2,
-               colour = "darkorange3") +
-
+    geom_hline(
+      yintercept = MAR, size = 1, linetype = 2,
+      colour = "darkorange3"
+    ) +
+    geom_vline(
+      xintercept = MAB, size = 1, linetype = 2,
+      colour = "darkorange3"
+    ) +
     annotate(
       "ribbon",
       x = c(-Inf, MAB),
@@ -164,16 +164,17 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
       ymax = Inf,
       fill = "gray", alpha = 0.3
     ) +
-
-    annotate("text", x = min(diff1, diff2) - 0.1, y = MAR + 0.01,
-             label =  "MAR", color = colfun()$fig11_colors[3], size = 9*0.35,
-             vjust = -0.25) +
-    annotate("text", x = MAB, y = min(diff1, diff2) - 0.1, label =  "MAB",
-             color = colfun()$fig11_colors[3], size = 9*0.35, hjust = -0.25) +
-
+    annotate("text",
+      x = min(diff1, diff2) - 0.1, y = MAR + 0.01,
+      label = "MAR", color = colfun()$fig11_colors[3], size = 9 * 0.35,
+      vjust = -0.25
+    ) +
+    annotate("text",
+      x = MAB, y = min(diff1, diff2) - 0.1, label = "MAB",
+      color = colfun()$fig11_colors[3], size = 9 * 0.35, hjust = -0.25
+    ) +
     labs(y = paste("Predicted Incremental", outcome[2], " ")) +
     labs(x = paste("Predicted Incremental", outcome[1], " ")) +
-
     annotate(
       "text",
       x = max1 * 0.9,
@@ -186,28 +187,29 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
     ) +
     annotate(
       "text",
-      x = max1*0.9,
-      y = max1*0.55,
-      label = paste0("Corr.==",
-                     sprintf("%1.1f",
-                             100*stats::cor(diff1, diff2)), "*\'%\'"),
+      x = max1 * 0.9,
+      y = max1 * 0.55,
+      label = paste0(
+        "Corr.==",
+        sprintf(
+          "%1.1f",
+          100 * stats::cor(diff1, diff2)
+        ), "*\'%\'"
+      ),
       parse = TRUE,
       color = colfun()$fig11_colors[3],
       size = 9 * 0.35,
-      fontface = "bold") +
-
-    coord_fixed(5.3 / 5) +
-
-    annotate("text",
-             x = 0.85 * max1,
-             y = 0.89 * max1,
-             label = "Benefit = Risk",
-             color = fig_colors[3], size = 9 * 0.35, vjust = 0,
-             angle = 45
+      fontface = "bold"
     ) +
-
+    coord_fixed(5.3 / 5) +
+    annotate("text",
+      x = 0.85 * max1,
+      y = 0.89 * max1,
+      label = "Benefit = Risk",
+      color = fig_colors[3], size = 9 * 0.35, vjust = 0,
+      angle = 45
+    ) +
     br_charts_theme() +
-
     theme(
       axis.line.x = element_blank(),
       axis.line.y = element_blank(),
@@ -222,21 +224,22 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
       plot.margin = margin(20, 0, 0, 0)
     )
 
-    if (!is.null(ellipse_type)){
-      scatter <- scatter + stat_ellipse(type = ellipse_type,
-                                        level = ellipse_level,
-                                        color = colfun()$fig11_colors[1],
-                                        linewidth = 0.5)
+  if (!is.null(ellipse_type)) {
+    scatter <- scatter + stat_ellipse(
+      type = ellipse_type,
+      level = ellipse_level,
+      color = colfun()$fig11_colors[1],
+      linewidth = 0.5
+    )
+  }
 
-    }
-
-    if (!is.null(marginal_type)){
+  if (!is.null(marginal_type)) {
     scatter <- ggExtra::ggMarginal(scatter,
-                                   type = marginal_type,
-                                   color = colfun()$fig11_colors[1],
-                                   fill = "white")
-    }
+      type = marginal_type,
+      color = colfun()$fig11_colors[1],
+      fill = "white"
+    )
+  }
 
-    scatter
-
+  scatter
 }
