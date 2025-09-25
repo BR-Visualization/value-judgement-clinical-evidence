@@ -2,8 +2,12 @@
 % Please edit documentation in R/utils.R
 \name{relmax}
 \alias{relmax}
+<<<<<<< HEAD
 \title{Derive maximum boundary value for axis
 Derive boundary value to include all values}
+=======
+\title{Derive maximum boundary value for axis to include all values}
+>>>>>>> main
 \usage{
 relmax(rmax, type_scale)
 }
@@ -16,8 +20,12 @@ relmax(rmax, type_scale)
 numeric
 }
 \description{
+<<<<<<< HEAD
 Derive maximum boundary value for axis
 Derive boundary value to include all values
+=======
+Derive maximum boundary value for axis to include all values
+>>>>>>> main
 }
 \examples{
 relmax(0.5, "Free")

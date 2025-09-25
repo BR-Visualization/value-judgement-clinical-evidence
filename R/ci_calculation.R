@@ -255,7 +255,7 @@ calculate_diff_con <- function(mean1, mean2, sd1, sd2, N1, N2, cl = 0.95) { # no
   df <- data.frame(diff, se, lower, upper)
 
   # Writing a message that will be displayed in the log
-  message(glue('[{format(Sys.time(),"%F %T")}] > CI for treatment difference in continuous outcomes is calculated'))# nolint
+  message(glue('[{format(Sys.time(),"%F %T")}] > CI for treatment difference in continuous outcomes is calculated')) # nolint
 
   # Returning the df object
   df
