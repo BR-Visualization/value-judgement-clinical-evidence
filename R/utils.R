@@ -346,9 +346,8 @@ br_charts_theme <- function(base_family = "",
   ) + ggplot2::theme(...)
 }
 
-#' Prepare data analysis for binary and continuous outcomes with Supplied
-#' interval confidence
-#' identifies whether the dataframe is for Benefit or Risk analysis
+#' Prepare data for binary and continuous outcomes with Supplied
+#' confidence intervals
 #' @param df (`data.frame`) dataset
 #' either `df_benefit` (selected benefit)
 #' or `df_risk` (select risk).
@@ -359,7 +358,6 @@ br_charts_theme <- function(base_family = "",
 #' either `Diff`, `RelRisk`, `OddsRatio`, `Diff_Rates`
 #' @param func (`function`) function used to calculate metrics (or BR points)
 #' @return data frame for specified type of analysis
-#' @details DETAILS
 #' @rdname prepare_br_supplied_ci
 #' @export
 
@@ -385,9 +383,8 @@ prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
   output
 }
 
-#' Prepare data analysis for binary and continuous outcomes with Calculated
-#' interval confidence
-#' identifies whether the dataframe is for Benefit or Risk analysis
+#' Prepare data for binary and continuous outcomes with Calculated
+#' confidence intervals
 #' @param df (`data.frame`) dataset
 #' either `df_benefit` (selected benefit)
 #' or `df_risk` (select risk).
@@ -398,7 +395,6 @@ prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
 #' @param func (`function`) function used to calculate metrics (or BR points)
 #' @param cl (`numeric`) confidence level
 #' @return data frame for specified type of analysis
-#' @details DETAILS
 #' @rdname prepare_br_calculated_ci
 #' @export
 
@@ -496,8 +492,7 @@ labs_bold <- function(cond, bold, nonbold) {
   gout
 }
 
-#' Derive minimum boundary value for axis
-#' Derive boundary value to include all values
+#' Derive minimum boundary value for axis to include all values
 #'
 #' @param rmin (`numeric`) number to evaluate
 #' @param type_scale (`character`) selected scale display type
@@ -530,8 +525,7 @@ relmin <- function(rmin, type_scale) {
   }
 }
 
-#' Derive maximum boundary value for axis
-#' Derive boundary value to include all values
+#' Derive maximum boundary value for axis to include all values
 #'
 #' @param rmax (`numeric`) number to evaluate
 #' @param type_scale (`character`) selected scale display type
@@ -564,34 +558,27 @@ relmax <- function(rmax, type_scale) {
   }
 }
 
-#' Custom Wrapper for ggsave with Sensible Defaults
+#' Wrapper to ggsave: Save a ggplot (or other grid object) with sensible
+#' defaults
 #'
-#' @description
-#' Save a ggplot or patchwork object with cleaner defaults (BRAP Journal style).
+#' Adds customized defaults to ggsave for the BRAP Journal requirements
 #'
-#' @param save_name File name (e.g. 'plot.png', 'plot.pdf') to save.
-#' @param inplot Plot object. If NULL, saves the last displayed plot.
-#' @param imgpath Directory path where the plot is saved (default: current
-#'   directory).
-#' @param wdth Width of the plot in units (default: 7).
-#' @param hght Height of the plot in units (default: 4.1).
-#' @param unts Units for width/height (default: "in").
-#' @param bgcol Background color (default: "white").
+#' @param save_name File name to create on disk.
+#' @param inplot 	Plot to save, defaults to last plot displayed.
+#' @param imgpath Path of the directory to save plot to: path
+#' @param bgcol Background color. If NULL, uses the plot.background fill value
+#' from the plot theme.
 #' @param dpi Resolution in dots per inch (default: 600).
 #' @param web_suffix If TRUE, also saves a low-res version with "_web" suffix
-#'   (default: FALSE).
-#' @param ... Additional arguments passed to `ggsave()`.
-#'
-#' @return Invisibly returns full file path to saved image.
-#'
-#' @examples
-#' # Example usage:
-#' dotforest <- create_forest_dot_plot(
-#'   prepare_forest_dot_data(effects_table)
-#' )
-#' ggsave_custom("dotforest.png", imgpath = tempdir(), inplot = dotforest)
+#' (default: FALSE).
+#' @param ... Other arguments passed on to the graphics device function,
+#' as specified by device.
+#' @param wdth width of plot
+#' @param hght height of plot
+#' @param unts units of plot
 #'
 #' @export
+#'
 ggsave_custom <- function(save_name,
                           inplot = NULL,
                           imgpath = ".",

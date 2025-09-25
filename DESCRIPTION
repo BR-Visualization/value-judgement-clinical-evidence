@@ -44,6 +44,17 @@ Imports:
     patchwork,
     rlang,
     shiny
+    remotes,
+    scales,
+    shiny,
+    rlang,
+    cowplot,
+    zoo,
+    simsurv,
+    stats,
+    ggrepel,
+    forcats,
+    reshape2
 Depends: 
     R (>= 3.5)
 LazyData: true

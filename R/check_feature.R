@@ -1,7 +1,12 @@
 #' Check if data contains required features to run a specific plot
 #' @param df (`data.frame`) dataset - effect table
 #' @return missing features
-#' @details DETAILS
+#' @details This function verifies whether the input dataset (\code{df})
+#' contains all the necessary features required to generate a specific plot.
+#' It checks for the existence of necessary features as well as the types
+#' and values of features and display log messages if any feature does not
+#' conform to the defined rules. This ensures that the dataset is suitable for
+#' the intended visualization.
 #' @rdname check_effects_tables
 #' @importFrom shiny tags
 #' @export
@@ -217,7 +222,6 @@ check_effects_table <- function(df) {
 #' @param check_unique (`vector`) check if unique values of a feature is
 #'  associated with unique values of linked features
 #' @return error message(s), if any
-#' @details DETAILS
 #' @rdname check_feature
 #' @import glue
 #' @importFrom shiny tag
@@ -349,7 +353,6 @@ check_feature <- function(data, feature, plots, func, na_check, values,
 #'  associated with unique values of linked features
 #' @param add_msg (`character`) added error message for empty feature
 #' @return error message(s), if any
-#' @details DETAILS
 #' @rdname check_feature_string
 #' @importFrom shiny tags
 #' @export

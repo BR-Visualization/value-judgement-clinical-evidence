@@ -2,9 +2,14 @@
 % Please edit documentation in R/utils.R
 \name{prepare_br_calculated_ci}
 \alias{prepare_br_calculated_ci}
+<<<<<<< HEAD
 \title{Prepare data analysis for binary and continuous outcomes with Calculated
 interval confidence
 identifies whether the dataframe is for Benefit or Risk analysis}
+=======
+\title{Prepare data for binary and continuous outcomes with Calculated
+confidence intervals}
+>>>>>>> main
 \usage{
 prepare_br_calculated_ci(df, colname1, colname2, cl = 0.95, func)
 }
@@ -27,10 +32,15 @@ either \code{nPat}, \code{Py}}
 data frame for specified type of analysis
 }
 \description{
+<<<<<<< HEAD
 Prepare data analysis for binary and continuous outcomes with Calculated
 interval confidence
 identifies whether the dataframe is for Benefit or Risk analysis
 }
 \details{
 DETAILS
+=======
+Prepare data for binary and continuous outcomes with Calculated
+confidence intervals
+>>>>>>> main
 }
