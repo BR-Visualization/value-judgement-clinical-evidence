@@ -8,9 +8,18 @@
 #' outcome corresponds to `diff1` and the second to `diff2`.
 #' @param MAB A numerical value that specifies the mimimum acceptable benefit.
 #' @param MAR A numerical value that specifies the maximum acceptable risk.
-#' @param type Type of marginal plot to show. One of: density, histogram,
-#' boxplot, violin, densigram (a 'densigram' is when a density plot is overlaid
-#' on a histogram). By default, histogram is displayed.
+#' @param ellipse_type Type of confidence ellipse. The default "t" assumes a
+#' multivariate t-distribution, and "norm" assumes a multivariate normal
+#' distribution. "euclid" draws a circle with the radius equal to level,
+#' representing the euclidean distance from the center. If ellipse_type = NULL,
+#' the confidence ellipse will not be showed.
+#' @param ellipse_level The confidence level at which to draw an ellipse
+#' (default is 0.95). If type = "euclid", the radius of the circle to be drawn.
+#' @param marginal_type Type of marginal plot to show. One of: density,
+#' histogram, boxplot, violin, densigram (a 'densigram' is when a density plot
+#' is overlaid on a histogram). If marginal_type = NULL, the marginal plot will
+#' not be showed.
+#' By default, densigram is displayed.
 #' @param fig_colors Allows user to change colors of the figure (defaults are
 #' provided). Must be a vector of length 3, with the first color corresponding
 #' to the scatter plot points, the second corresponding to the overall mean, and
@@ -25,7 +34,9 @@
 #' outcome <- c("Benefit", "Risk")
 #' scatter_plot(scatterplot, outcome, MAB = 0.2, MAR = 0.6)
 #'
-scatter_plot <- function(df_diff, outcome, MAB, MAR, type = "histogram",
+scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
+                         ellipse_level = 0.95,
+                         marginal_type = "densigram",
                          fig_colors = colfun()$fig11_colors) {
   mdiff1 <- mdiff2 <- label <- NULL
 
@@ -119,8 +130,6 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, type = "histogram",
       show.legend = TRUE
     ) +
     scale_shape_manual(values = 17, name = NULL) +
-    stat_ellipse(type = "norm", level = 0.95, color = colfun()$fig11_colors[1],
-                 linewidth = 0.5) +
 
     scale_y_continuous(limits = c(min1 - 0.1, max1 + 0.1)) +
     scale_x_continuous(limits = c(min1 - 0.1, max1 + 0.1)) +
@@ -213,10 +222,21 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, type = "histogram",
       plot.margin = margin(20, 0, 0, 0)
     )
 
+    if (!is.null(ellipse_type)){
+      scatter <- scatter + stat_ellipse(type = ellipse_type,
+                                        level = ellipse_level,
+                                        color = colfun()$fig11_colors[1],
+                                        linewidth = 0.5)
+
+    }
+
+    if (!is.null(marginal_type)){
     scatter <- ggExtra::ggMarginal(scatter,
-                                   type = type,
+                                   type = marginal_type,
                                    color = colfun()$fig11_colors[1],
                                    fill = "white")
+    }
+
     scatter
 
 }

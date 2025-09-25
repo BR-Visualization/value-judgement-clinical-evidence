@@ -9,7 +9,9 @@ scatter_plot(
   outcome,
   MAB,
   MAR,
-  type = "histogram",
+  ellipse_type = "t",
+  ellipse_level = 0.95,
+  marginal_type = "densigram",
   fig_colors = colfun()$fig11_colors
 )
 }
@@ -26,9 +28,20 @@ outcome corresponds to \code{diff1} and the second to \code{diff2}.}
 
 \item{MAR}{A numerical value that specifies the maximum acceptable risk.}
 
-\item{type}{Type of marginal plot to show. One of: density, histogram,
-boxplot, violin, densigram (a 'densigram' is when a density plot is overlaid
-on a histogram). By default, histogram is displayed.}
+\item{ellipse_type}{Type of confidence ellipse. The default "t" assumes a
+multivariate t-distribution, and "norm" assumes a multivariate normal
+distribution. "euclid" draws a circle with the radius equal to level,
+representing the euclidean distance from the center. If ellipse_type = NULL,
+the confidence ellipse will not be showed.}
+
+\item{ellipse_level}{The confidence level at which to draw an ellipse
+(default is 0.95). If type = "euclid", the radius of the circle to be drawn.}
+
+\item{marginal_type}{Type of marginal plot to show. One of: density,
+histogram, boxplot, violin, densigram (a 'densigram' is when a density plot
+is overlaid on a histogram). If marginal_type = NULL, the marginal plot will
+not be showed.
+By default, densigram is displayed.}
 
 \item{fig_colors}{Allows user to change colors of the figure (defaults are
 provided). Must be a vector of length 3, with the first color corresponding
