@@ -7,8 +7,8 @@
 scatter_plot(
   df_diff,
   outcome,
-  MAB,
-  MAR,
+  mab,
+  mar,
   ellipse_type = "t",
   ellipse_level = 0.95,
   marginal_type = "densigram",
@@ -24,9 +24,9 @@ for a specified outcome.}
 associated with the difference in active and control effects, where the first
 outcome corresponds to \code{diff1} and the second to \code{diff2}.}
 
-\item{MAB}{A numerical value that specifies the mimimum acceptable benefit.}
+\item{mab}{A numerical value that specifies the mimimum acceptable benefit.}
 
-\item{MAR}{A numerical value that specifies the maximum acceptable risk.}
+\item{mar}{A numerical value that specifies the maximum acceptable risk.}
 
 \item{ellipse_type}{Type of confidence ellipse. The default "t" assumes a
 multivariate t-distribution, and "norm" assumes a multivariate normal
@@ -56,6 +56,6 @@ Create a scatterplot from a given dataframe.
 }
 \examples{
 outcome <- c("Benefit", "Risk")
-scatter_plot(scatterplot, outcome, MAB = 0.2, MAR = 0.6)
+scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
 
 }
