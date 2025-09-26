@@ -2,12 +2,7 @@
 % Please edit documentation in R/utils.R
 \name{relmin}
 \alias{relmin}
-<<<<<<< HEAD
-\title{Derive minimum boundary value for axis
-Derive boundary value to include all values}
-=======
 \title{Derive minimum boundary value for axis to include all values}
->>>>>>> main
 \usage{
 relmin(rmin, type_scale)
 }
@@ -20,12 +15,7 @@ relmin(rmin, type_scale)
 numeric
 }
 \description{
-<<<<<<< HEAD
-Derive minimum boundary value for axis
-Derive boundary value to include all values
-=======
 Derive minimum boundary value for axis to include all values
->>>>>>> main
 }
 \examples{
 relmin(0.5, "Free")
