@@ -2,7 +2,8 @@
 % Please edit documentation in R/utils.R
 \name{ggsave_custom}
 \alias{ggsave_custom}
-\title{Custom Wrapper for ggsave with Sensible Defaults}
+\title{Wrapper to ggsave: Save a ggplot (or other grid object) with sensible
+defaults}
 \usage{
 ggsave_custom(
   save_name,
@@ -18,39 +19,29 @@ ggsave_custom(
 )
 }
 \arguments{
-\item{save_name}{File name (e.g. 'plot.png', 'plot.pdf') to save.}
+\item{save_name}{File name to create on disk.}
 
-\item{inplot}{Plot object. If NULL, saves the last displayed plot.}
+\item{inplot}{Plot to save, defaults to last plot displayed.}
 
-\item{imgpath}{Directory path where the plot is saved (default: current
-directory).}
+\item{imgpath}{Path of the directory to save plot to: path}
 
-\item{wdth}{Width of the plot in units (default: 7).}
+\item{wdth}{width of plot}
 
-\item{hght}{Height of the plot in units (default: 4.1).}
+\item{hght}{height of plot}
 
-\item{unts}{Units for width/height (default: "in").}
+\item{unts}{units of plot}
 
-\item{bgcol}{Background color (default: "white").}
+\item{bgcol}{Background color. If NULL, uses the plot.background fill value
+from the plot theme.}
 
 \item{dpi}{Resolution in dots per inch (default: 600).}
 
 \item{web_suffix}{If TRUE, also saves a low-res version with "_web" suffix
 (default: FALSE).}
 
-\item{...}{Additional arguments passed to \code{ggsave()}.}
-}
-\value{
-Invisibly returns full file path to saved image.
+\item{...}{Other arguments passed on to the graphics device function,
+as specified by device.}
 }
 \description{
-Save a ggplot or patchwork object with cleaner defaults (BRAP Journal style).
-}
-\examples{
-# Example usage:
-dotforest <- create_forest_dot_plot(
-  prepare_forest_dot_data(effects_table)
-)
-ggsave_custom("dotforest.png", imgpath = tempdir(), inplot = dotforest)
-
+Adds customized defaults to ggsave for the BRAP Journal requirements
 }
