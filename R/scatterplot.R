@@ -6,8 +6,8 @@
 #' @param outcome A vector of two strings that describes the two outcomes
 #' associated with the difference in active and control effects, where the first
 #' outcome corresponds to `diff1` and the second to `diff2`.
-#' @param MAB A numerical value that specifies the mimimum acceptable benefit.
-#' @param MAR A numerical value that specifies the maximum acceptable risk.
+#' @param mab A numerical value that specifies the mimimum acceptable benefit.
+#' @param mar A numerical value that specifies the maximum acceptable risk.
 #' @param ellipse_type Type of confidence ellipse. The default "t" assumes a
 #' multivariate t-distribution, and "norm" assumes a multivariate normal
 #' distribution. "euclid" draws a circle with the radius equal to level,
@@ -33,9 +33,9 @@
 #'
 #' @examples
 #' outcome <- c("Benefit", "Risk")
-#' scatter_plot(scatterplot, outcome, MAB = 0.2, MAR = 0.6)
+#' scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
 #'
-scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
+scatter_plot <- function(df_diff, outcome, mab, mar, ellipse_type = "t",
                          ellipse_level = 0.95,
                          marginal_type = "densigram",
                          fig_colors = colfun()$fig11_colors) {
@@ -97,7 +97,7 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
   diffratio <- diff1 - diff2
 
   # calculate probability of ratio being in NE and below threshold=1
-  good <- ifelse(diff1 > MAB & diff2 < MAR & diffratio > 0, 1, 0)
+  good <- ifelse(diff1 > mab & diff2 < mar & diffratio > 0, 1, 0)
   prob_good <- sum(good) / length(diffratio)
 
   dfdiff <- data.frame(diff1, diff2, diffratio)
@@ -137,16 +137,16 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
     geom_vline(xintercept = 0, size = 1) +
     geom_abline(intercept = 0, slope = 1, linetype = 2, size = 1) +
     geom_hline(
-      yintercept = MAR, size = 1, linetype = 2,
+      yintercept = mar, size = 1, linetype = 2,
       colour = "darkorange3"
     ) +
     geom_vline(
-      xintercept = MAB, size = 1, linetype = 2,
+      xintercept = mab, size = 1, linetype = 2,
       colour = "darkorange3"
     ) +
     annotate(
       "ribbon",
-      x = c(-Inf, MAB),
+      x = c(-Inf, mab),
       ymin = -Inf,
       ymax = Inf,
       fill = "gray", alpha = 0.3
@@ -154,7 +154,7 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
     annotate(
       "ribbon",
       x = c(-Inf, Inf),
-      ymin = MAR,
+      ymin = mar,
       ymax = Inf,
       fill = "gray", alpha = 0.3
     ) +
@@ -166,12 +166,12 @@ scatter_plot <- function(df_diff, outcome, MAB, MAR, ellipse_type = "t",
       fill = "gray", alpha = 0.3
     ) +
     annotate("text",
-      x = min(diff1, diff2) - 0.1, y = MAR + 0.01,
+      x = min(diff1, diff2) - 0.1, y = mar + 0.01,
       label = "MAR", color = colfun()$fig11_colors[3], size = 9 * 0.35,
       vjust = -0.25
     ) +
     annotate("text",
-      x = MAB, y = min(diff1, diff2) - 0.1, label = "MAB",
+      x = mab, y = min(diff1, diff2) - 0.1, label = "MAB",
       color = colfun()$fig11_colors[3], size = 9 * 0.35, hjust = -0.25
     ) +
     labs(y = paste("Predicted Incremental", outcome[2], " ")) +
