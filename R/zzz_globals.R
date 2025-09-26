@@ -1,15 +1,11 @@
 utils::globalVariables(c(
   "Factor",
   "Type",
-  "Category",
-  "category",
+  "x",
   "Outcome",
-  "Drug_Status",
   "Treatment",
-  "treatment",
   "Direction",
   "Threshold",
-  "x",
   "xmin",
   "xmax",
   "ymin",
@@ -25,5 +21,9 @@ utils::globalVariables(c(
   "Sd2",
   "SE_diff",
   "N1",
-  "N2"
+  "N2",
+  "Drug_Status",
+  "treatment",
+  "category",
+  "Category"
 ))
