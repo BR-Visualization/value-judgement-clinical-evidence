@@ -335,7 +335,7 @@ gensurv_plot <- function(
         face = "plain",
         color = fig_colors[1],
         hjust = 0,
-        vjust = -7,
+        vjust = -12,
         margin = ggplot2::margin(
           t = -1,
           unit = "pt"
@@ -343,6 +343,7 @@ gensurv_plot <- function(
       ),
       plot.subtitle = element_text(
         color = fig_colors[2], size = 10,
+        vjust = 0,
         hjust = 1
       ),
       plot.margin = margin(14.506, 30, 14.506, 14.506),
