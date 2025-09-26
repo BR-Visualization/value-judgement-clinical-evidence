@@ -28,7 +28,8 @@
 #'
 #' @return A scatterplot.
 #' @export
-#' @import ggplot2 ggExtra MASS
+#' @import ggplot2
+#' @importFrom ggExtra ggMarginal
 #'
 #' @examples
 #' outcome <- c("Benefit", "Risk")
