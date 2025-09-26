@@ -28,7 +28,7 @@
 #'
 #' @return A scatterplot.
 #' @export
-#' @import ggplot2 ggExtra
+#' @import ggplot2 ggExtra MASS
 #'
 #' @examples
 #' outcome <- c("Benefit", "Risk")
