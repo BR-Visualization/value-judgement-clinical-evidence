@@ -52,9 +52,3 @@ error message(s), if any
 intermediate function used to display log messages
 check if a specific feature exist in the data
 }
-<<<<<<< HEAD
-\details{
-DETAILS
-}
-=======
->>>>>>> main
