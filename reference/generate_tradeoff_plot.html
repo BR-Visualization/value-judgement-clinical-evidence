@@ -337,8 +337,13 @@ as the number of treatments</p></dd>
 
     <div class="section level2">
     <h2 id="ref-examples">Examples<a class="anchor" aria-label="anchor" href="#ref-examples"></a></h2>
-    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="fu">generate_tradeoff_plot</span><span class="op">(</span></span></span>
-<span class="r-in"><span>  data <span class="op">=</span> <span class="va">effects_table</span>, filter <span class="op">=</span> <span class="st">"None"</span>, category <span class="op">=</span> <span class="st">"All"</span>,</span></span>
+    <div class="sourceCode"><pre class="sourceCode r"><code><span class="r-in"><span><span class="kw">if</span> <span class="op">(</span><span class="cn">FALSE</span><span class="op">)</span> <span class="op">{</span> <span class="co"># \dontrun{</span></span></span>
+<span class="r-in"><span><span class="co"># Filter data for a specific treatment to ensure unique outcome combinations</span></span></span>
+<span class="r-in"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://dplyr.tidyverse.org" class="external-link">dplyr</a></span><span class="op">)</span></span></span>
+<span class="r-in"><span><span class="va">effects_table_filtered</span> <span class="op">&lt;-</span> <span class="va">effects_table</span> <span class="op"><a href="https://magrittr.tidyverse.org/reference/pipe.html" class="external-link">%&gt;%</a></span> <span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Trt1</span> <span class="op">==</span> <span class="st">"Drug A"</span><span class="op">)</span></span></span>
+<span class="r-in"><span></span></span>
+<span class="r-in"><span><span class="fu">generate_tradeoff_plot</span><span class="op">(</span></span></span>
+<span class="r-in"><span>  data <span class="op">=</span> <span class="va">effects_table_filtered</span>, filter <span class="op">=</span> <span class="st">"None"</span>, category <span class="op">=</span> <span class="st">"All"</span>,</span></span>
 <span class="r-in"><span>  benefit <span class="op">=</span> <span class="st">"Benefit 1"</span>, risk <span class="op">=</span> <span class="st">"Risk 1"</span>,</span></span>
 <span class="r-in"><span>  type_risk <span class="op">=</span> <span class="st">"Crude proportions"</span>, type_graph <span class="op">=</span> <span class="st">"Absolute risk"</span>,</span></span>
 <span class="r-in"><span>  ci <span class="op">=</span> <span class="st">"Yes"</span>, ci_method <span class="op">=</span> <span class="st">"Calculated"</span>, cl <span class="op">=</span> <span class="fl">0.95</span>,</span></span>
@@ -374,31 +379,7 @@ as the number of treatments</p></dd>
 <span class="r-in"><span>  upper_y <span class="op">=</span> <span class="fl">0.5</span>,</span></span>
 <span class="r-in"><span>  chartcolors <span class="op">=</span> <span class="fu"><a href="colfun.html">colfun</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">fig7_colors</span></span></span>
 <span class="r-in"><span><span class="op">)</span></span></span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2025-09-26 17:33:39] &gt;</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> absolute risk CI for binary outcomes is calculated and saved</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2025-09-26 17:33:39] &gt;</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> absolute risk CI for binary outcomes is calculated and saved</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2025-09-26 17:33:39] &gt; prepare tradeoff data</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2025-09-26 17:33:39] &gt; prepare trade-off plot</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>`aes_string()` was deprecated in ggplot2 3.0.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use tidy evaluation idioms with `aes()`.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> See also `vignette("ggplot2-in-packages")` for more information.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">brpubVJCE</span> package.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue to the authors.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use `linewidth` instead.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">brpubVJCE</span> package.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue to the authors.</span>
-<span class="r-msg co"><span class="r-pr">#&gt;</span> [2025-09-26 17:33:39] &gt; update final trade-off plot</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use the `linewidth` argument instead.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">brpubVJCE</span> package.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue to the authors.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span class="warning">Warning: </span>The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> Please use the `linewidth` argument instead.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span> <span style="color: #00BBBB;">ℹ</span> The deprecated feature was likely used in the <span style="color: #0000BB;">brpubVJCE</span> package.</span>
-<span class="r-wrn co"><span class="r-pr">#&gt;</span>   Please report the issue to the authors.</span>
-<span class="r-plt img"><img src="generate_tradeoff_plot-1.png" alt="" width="700" height="433"></span>
+<span class="r-in"><span><span class="op">}</span> <span class="co"># }</span></span></span>
 <span class="r-in"><span></span></span>
 </code></pre></div>
     </div>
