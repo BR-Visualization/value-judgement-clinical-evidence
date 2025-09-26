@@ -16,6 +16,12 @@ library(rlang)
 #' treatment effects, confidence intervals, and optional clinical
 #' thresholds.
 #'
+#' **AXIS REVERSAL**: For benefit outcomes with clinical meaningful
+#' difference direction = "less", the x-axis automatically reverses
+#' (positive values on left, negative on right) and green shading
+#' extends towards decreasing x values. This handles cases where
+#' lower values indicate better outcomes (e.g., cholesterol reduction).
+#'
 #' @param data A data frame prepared using `prepare_forest_dot_data()`
 #'   or with matching structure.
 #' @param outcomes_with_thresholds Either NULL (uses all available outcomes
@@ -65,13 +71,21 @@ library(rlang)
 #' )
 #'
 #' # Custom thresholds with automatic direction detection
-#' create_forest_dot_plot(prepared_data,
+#' dotforest_4pub <- create_forest_dot_plot(prepared_data,
 #'   outcomes_with_thresholds = list(
 #'     "Benefit 1" = 0.10,
-#'     "Benefit 2" = 0.08,
-#'     "Risk 1" = -0.05
+#'     "Benefit 2" = -20,
+#'     "Risk 1" = -0.05,
+#'     "Risk 2" = -0.07
 #'   )
 #' )
+#'
+#' \dontrun{
+#' ggsave_custom("inst/img/dotforest.png",
+#'   imgpath = "./",
+#'   inplot = dotforest_4pub, dpi = 300
+#' )
+#' }
 #'
 #' # Custom thresholds with explicit directions
 #' create_forest_dot_plot(prepared_data,
@@ -80,6 +94,25 @@ library(rlang)
 #'     "Risk 1" = list(threshold = -0.05, direction = "less")
 #'   )
 #' )
+#'
+#' # AXIS REVERSAL: Benefit outcomes with direction "less"
+#' # When benefit outcomes have clinical meaningful difference
+#' # direction = "less", the x-axis reverses (positive left, negative right)
+#' # and green shading
+#' # extends towards negative values (decreasing x direction)
+#' create_forest_dot_plot(prepared_data,
+#'   outcomes_with_thresholds = list(
+#'     "Benefit 1" = list(threshold = -0.15, direction = "less"),
+#'     "Benefit 2" = list(threshold = -0.10, direction = "less")
+#'   )
+#' )
+#'
+#' # Example: Lower cholesterol levels are better (benefit with negative
+#' # direction)
+#' # Treatment difference: Drug A - Placebo = -20 mg/dL (Drug A better)
+#' # Clinical threshold: -15 mg/dL with direction "less" (values < -15 are
+#' # meaningful)
+#' # Result: X-axis reverses, green shading extends towards negative values
 create_forest_dot_plot <- function(
     data,
     outcomes_with_thresholds = NULL,
@@ -268,16 +301,54 @@ create_forest_dot_plot <- function(
           dplyr::mutate(Treatment = "Clinical Threshold")
 
         # Prepare data for shaded regions
+        # Create a lookup for outcomes that need reverse axis
+        benefit_outcomes_reverse <- type_data$Outcome[
+          type_data$Factor == "Benefit"
+        ]
+
         shade_data <- thresholds_with_treatment %>%
           dplyr::mutate(
-            xmin = dplyr::if_else(Direction == "greater", Threshold, -Inf),
-            xmax = dplyr::if_else(Direction == "greater", Inf, Threshold),
+            # Check if axis should be reversed for this outcome
+            outcome_needs_reverse = Outcome %in% benefit_outcomes_reverse &
+              Direction == "less",
+            # Adjust shading based on axis direction
+            xmin = dplyr::case_when(
+              # Standard axis
+              Direction == "greater" & !outcome_needs_reverse ~ Threshold,
+              Direction == "less" & !outcome_needs_reverse ~ -Inf,
+              # Reversed axis (benefit + direction "less")
+              # For "greater" on reversed axis, shade from -Inf to threshold
+              Direction == "greater" & outcome_needs_reverse ~ -Inf,
+              # For "less" on reversed axis, shade from -Inf to threshold
+              Direction == "less" & outcome_needs_reverse ~ -Inf,
+              TRUE ~ -Inf
+            ),
+            xmax = dplyr::case_when(
+              # Standard axis
+              Direction == "greater" & !outcome_needs_reverse ~ Inf,
+              Direction == "less" & !outcome_needs_reverse ~ Threshold,
+              # Reversed axis (benefit + direction "less")
+              # For "greater" on reversed axis, shade to +Inf
+              # (but this shouldn't happen for benefit outcomes)
+              Direction == "greater" & outcome_needs_reverse ~ Inf,
+              # For "less" on reversed axis, shade to threshold
+              # (meaningful region)
+              Direction == "less" & outcome_needs_reverse ~ Threshold,
+              TRUE ~ Inf
+            ),
             ymin = as.numeric(factor(Outcome, levels = y_levels)) - 0.4,
             ymax = as.numeric(factor(Outcome, levels = y_levels)) + 0.4,
-            FillGroup = dplyr::if_else(
-              Direction == "greater",
-              "Benefit",
-              "Risk"
+            # Keep benefit areas green, risk areas red
+            FillGroup = dplyr::case_when(
+              # For benefit outcomes, the clinically meaningful area should be
+              # green
+              Outcome %in% benefit_outcomes_reverse ~ "Benefit",
+              # For risk outcomes, the clinically meaningful area should be red
+              Outcome %in% (type_data$Outcome[type_data$Factor == "Risk"]) ~
+                "Risk",
+              # Fallback to direction-based logic
+              Direction == "greater" ~ "Benefit",
+              TRUE ~ "Risk"
             )
           )
       } else {
@@ -370,10 +441,24 @@ create_forest_dot_plot <- function(
         x_max <- 1
       }
 
-      x_range <- max(abs(x_min), abs(x_max))
-      x_lim <- c(-x_range, x_range)
+      # Determine if we need to reverse the axis
+      # Reverse when: Benefit outcome AND (clinical meaningful direction is
+      # "less" OR threshold is negative)
+      should_reverse_axis <- FALSE
+      if (show_thresholds && nrow(clin_thresholds) > 0) {
+        should_reverse_axis <- factor == "Benefit" &&
+          any(
+            clin_thresholds$Outcome %in%
+              type_data$Outcome &
+              (clin_thresholds$Direction == "less" |
+                clin_thresholds$Threshold < 0)
+          )
+      }
 
-      # Set up x-axis breaks for forest plot
+      x_range <- max(abs(x_min), abs(x_max))
+
+      # Set up x-axis limits and breaks
+      x_lim <- c(-x_range, x_range)
       forest_breaks <- pretty(x_lim, n = 5)
       # Ensure forest_upper_limit is included as a tick if specified
       if (!is.null(forest_upper_limit)) {
@@ -639,12 +724,35 @@ create_forest_dot_plot <- function(
         forest_plot <- forest_plot + shape_scale
       }
 
+      # Apply coordinate system
+      if (should_reverse_axis) {
+        # For reversed axis, coordinate limits should also be reversed
+        forest_plot <- forest_plot +
+          coord_cartesian(xlim = rev(x_lim), clip = "off")
+      } else {
+        forest_plot <- forest_plot +
+          coord_cartesian(xlim = x_lim, clip = "off")
+      }
+
+      # Apply the appropriate x-axis scale
+      if (should_reverse_axis) {
+        # Use scale_x_reverse to reverse the axis: 60, 40, 20, 0, -20, -40, -60
+        # For reversed axis, limits should be in reverse order (high, low)
+        forest_plot <- forest_plot +
+          scale_x_reverse(limits = rev(x_lim), breaks = forest_breaks)
+      } else {
+        # Use normal scale: -60, -40, -20, 0, 20, 40, 60
+        forest_plot <- forest_plot +
+          scale_x_continuous(limits = x_lim, breaks = forest_breaks)
+      }
+
       forest_plot <- forest_plot +
-        coord_cartesian(xlim = x_lim, clip = "off") +
-        scale_x_continuous(limits = x_lim, breaks = forest_breaks) +
         # Add x-axis label for last plot
         labs(
           x = if (is_last_plot) {
+            # Labels should remain consistent regardless of axis reversal
+            # Left side (negative values) always favours treatment2
+            # Right side (positive values) always favours treatment1
             paste0(
               "<br>",
               "<span style='color:black;font-weight:bold;'>",

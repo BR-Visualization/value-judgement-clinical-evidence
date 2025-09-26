@@ -34,19 +34,11 @@ Suggests:
     testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Imports: 
-    colorBlindness,
     dplyr,
     ggExtra,
     ggplot2,
     ggtext,
-    glue,
-    magrittr,
     patchwork,
-    rlang,
-    shiny,
-    remotes,
-    scales,
-    shiny,
     rlang,
     cowplot,
     zoo,
@@ -55,7 +47,12 @@ Imports:
     ggrepel,
     forcats,
     reshape2,
-    MASS
+    colorBlindness,
+    glue,
+    ggtext,
+    magrittr,
+    shiny,
+    scales
 Depends: 
     R (>= 3.5)
 LazyData: true
