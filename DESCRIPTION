@@ -54,7 +54,8 @@ Imports:
     stats,
     ggrepel,
     forcats,
-    reshape2
+    reshape2,
+    MASS
 Depends: 
     R (>= 3.5)
 LazyData: true
