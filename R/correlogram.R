@@ -40,8 +40,10 @@
 #' @examples
 #' create_correlogram(corr)
 create_correlogram <- function(df,
-                               br = c("Benefit", "Benefit", "Benefit", "Risk",
-                                      "Risk", "Risk"),
+                               br = c(
+                                 "Benefit", "Benefit", "Benefit", "Risk",
+                                 "Risk", "Risk"
+                               ),
                                diagonal = FALSE,
                                method = "square",
                                type_c = "lower",
@@ -69,7 +71,7 @@ create_correlogram <- function(df,
     })
   }
 
-  if (any(! (br %in% c("Benefit", "Risk")))) {
+  if (any(!(br %in% c("Benefit", "Risk")))) {
     error_message <- "You can only label variables as 'Benefit' or 'Risk'."
     stop(error_message)
   }
@@ -158,20 +160,20 @@ create_correlogram <- function(df,
                     # attribute.
                     mat[i, j] <- cor(rank(df[, i]), df[, j]),
                     ifelse(type == "ob",
-                           # calculates glass rank biserial correlation with an ordinal
-                           # variable as the x attribute and binary variable as the y
-                           # attribute.
-                           mat[i, j] <- enframe(wilcoxonRG(table(
-                             df[, j], df[, i]
-                           )))[1, 2],
-                           ifelse(type == "bo",
-                                  # calculates glass rank biserial correlation with a binary
-                                  # variable as the x attribute and an ordinal variable as
-                                  # the y attribute.
-                                  mat[i, j] <- enframe(wilcoxonRG(table(
-                                    df[, i], df[, j]
-                                  )))[1, 2]
-                           )
+                      # calculates glass rank biserial correlation with an ordinal
+                      # variable as the x attribute and binary variable as the y
+                      # attribute.
+                      mat[i, j] <- enframe(wilcoxonRG(table(
+                        df[, j], df[, i]
+                      )))[1, 2],
+                      ifelse(type == "bo",
+                        # calculates glass rank biserial correlation with a binary
+                        # variable as the x attribute and an ordinal variable as
+                        # the y attribute.
+                        mat[i, j] <- enframe(wilcoxonRG(table(
+                          df[, i], df[, j]
+                        )))[1, 2]
+                      )
                     )
                   )
                 )
@@ -190,10 +192,10 @@ create_correlogram <- function(df,
     mutate(
       x0 = as.numeric(factor(Var1, levels = colnames(mat))),
       y0 = as.numeric(factor(Var2, levels = colnames(mat))),
-      angle = ifelse(Cor >= 0, pi/4, -pi/4),
-      a = 0.4,                   # semi-major axis (width)
+      angle = ifelse(Cor >= 0, pi / 4, -pi / 4),
+      a = 0.4, # semi-major axis (width)
       b = 0.4 * (1 - abs(Cor)),
-      label = round(Cor, 2)# flatten ellipse for stronger correlations
+      label = round(Cor, 2) # flatten ellipse for stronger correlations
     )
 
   if (type_c == "lower") {
@@ -218,7 +220,7 @@ create_correlogram <- function(df,
       labels = str_wrap(colnames(mat), width = 7)
     ) +
     theme_minimal() +
-    labs(x=NULL,y=NULL) +
+    labs(x = NULL, y = NULL) +
     theme(
       axis.text.x = element_text(
         angle = 0, hjust = 0.5, size = rel(1.2),
