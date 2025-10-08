@@ -31,18 +31,7 @@ You can install the development version of brpubVJCE from
 ``` r
 # Install using pak (recommended)
 install.packages("pak")
-#> The following package(s) will be installed:
-#> - pak [0.9.0]
-#> These packages will be installed into "~/Library/Caches/org.R-project.R/R/renv/library/brpubVJCE-83577553/macos/R-4.5/aarch64-apple-darwin20".
-#> 
-#> # Installing packages --------------------------------------------------------
-#> - Installing pak ...                            OK [linked from cache]
-#> Successfully installed 1 package in 3.4 milliseconds.
 pak::pak("BR-Visualization/brpubVJCE")
-#> ℹ Loading metadata database✔ Loading metadata database ... done
-#>  
-#> ℹ No downloads are needed
-#> ✔ 1 pkg + 53 deps: kept 40 [1m 20.9s]
 ```
 
 ### Alternative Installation
@@ -141,6 +130,43 @@ gensurv_combined(
   mab = 15,
   mcd = 22
 )
+```
+
+</details>
+
+## Figure - Correlogram
+
+<img src="man/figures/README-correlogram-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?create_correlogram` for detailed function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+
+create_correlogram(corr)
 ```
 
 </details>
