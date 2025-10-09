@@ -4,9 +4,11 @@
 #' inputted as continuous, binary, or ordinal variables.
 #' Note: Binary variables must have a value of 0 or 1.
 #' Note: Ordinal variables must be formatted as factors.
+#' @param br An character vector labeling each variable in df as a
+#' "Benefit" or "Risk".
 #' @param fig_colors Allows the user to change the colors of the figure
-#' (defaults are provided). Must be vector of length 3, with color corresponding
-#' to strength of correlation.
+#' (defaults are provided). Must be vector of length 2, with the first color
+#' corresponding to benefits, the second to risks.
 #' @param diagonal Allows user to choose to view the correlogram with diagonal
 #' entries. Default is FALSE.
 #' @param type_c Allows user to revise the display. Default is "lower".
@@ -38,10 +40,14 @@
 #' @examples
 #' create_correlogram(corr)
 create_correlogram <- function(df,
+                               br = c(
+                                 "Benefit", "Benefit", "Benefit", "Risk",
+                                 "Risk", "Risk"
+                               ),
                                diagonal = FALSE,
                                method = "square",
                                type_c = "lower",
-                               fig_colors = colfun()$fig10_colors) {
+                               fig_colors = c("#0571b0", "#ca0020")) {
   classes <- numeric()
   shortcs <- numeric()
 
@@ -64,6 +70,19 @@ create_correlogram <- function(df,
       ifelse(is.na(x), NA, x)
     })
   }
+
+  if (any(!(br %in% c("Benefit", "Risk")))) {
+    error_message <- "You can only label variables as 'Benefit' or 'Risk'."
+    stop(error_message)
+  }
+
+  if (length(br) != ncol(df)) {
+    error_message <- "You must label all your variables as either
+    a 'Benefit' or 'Risk'."
+    stop(error_message)
+  }
+
+  names(br) <- colnames(df)
 
   for (i in seq_along(df)) {
     column_dat <- df[[i]][!is.na(df[[i]])]
@@ -166,40 +185,50 @@ create_correlogram <- function(df,
     }
   }
 
-  fig <-
-    ggcorrplot(
-      mat,
-      type = type_c,
-      outline.color = "grey",
-      show.diag = diagonal,
-      method = method,
-      colors = fig_colors,
-      ggtheme = br_charts_theme(),
-      tl.cex = 9
+  corr_df <- as.data.frame(as.table(as.matrix(mat))) %>%
+    dplyr::rename(Var1 = Var1, Var2 = Var2, Cor = Freq)
+
+  corr_df <- corr_df %>%
+    mutate(
+      x0 = as.numeric(factor(Var1, levels = colnames(mat))),
+      y0 = as.numeric(factor(Var2, levels = colnames(mat))),
+      angle = ifelse(Cor >= 0, pi / 4, -pi / 4),
+      a = 0.4, # semi-major axis (width)
+      b = 0.4 * (1 - abs(Cor)),
+      label = round(Cor, 2) # flatten ellipse for stronger correlations
     )
 
-  build1 <- ggplot_build(fig)
-  labels1 <- build1$layout$panel_params[[1]]$x$get_labels()
-  labels2 <- build1$layout$panel_params[[1]]$y$get_labels()
+  if (type_c == "lower") {
+    corr_df <- corr_df %>% filter(x0 >= y0)
+  }
 
-  fig <- fig + scale_x_discrete(
-    labels = str_wrap(labels1, width = 7)
-  ) +
-    scale_y_discrete(
-      labels = str_wrap(labels2, width = 7)
+  if (diagonal == FALSE) {
+    corr_df <- corr_df %>% filter(x0 != y0)
+  }
+
+  label_colors_horizontal <- ifelse(br[unique(corr_df$Var1)] == "Benefit", fig_colors[1], fig_colors[2])
+  label_colors_vertical <- ifelse(br[unique(corr_df$Var2)] == "Benefit", fig_colors[1], fig_colors[2])
+
+  fig <- ggplot(corr_df, aes(x0 = x0, y0 = y0, a = a, b = b, angle = angle)) +
+    coord_fixed() +
+    scale_x_continuous(
+      breaks = 1:ncol(mat),
+      labels = str_wrap(colnames(mat), width = 7)
     ) +
+    scale_y_continuous(
+      breaks = 1:ncol(mat),
+      labels = str_wrap(colnames(mat), width = 7)
+    ) +
+    theme_minimal() +
+    labs(x = NULL, y = NULL) +
     theme(
       axis.text.x = element_text(
-        angle = 0,
-        hjust = 0.5,
-        size = rel(1.2),
-        color = "black"
+        angle = 0, hjust = 0.5, size = rel(1.2),
+        color = label_colors_horizontal
       ),
       axis.text.y = element_text(
-        angle = 0,
-        hjust = 0.5,
-        size = rel(1.2),
-        color = "black"
+        angle = 0, hjust = 0.5, size = rel(1.2),
+        color = label_colors_vertical
       ),
       plot.margin = margin(0, 0, 0, 0, unit = "cm"),
       legend.position = "top",
@@ -214,6 +243,10 @@ create_correlogram <- function(df,
       axis.line.y = element_blank(),
       axis.ticks.x = element_blank(),
       axis.ticks.y = element_blank(),
-    )
+      panel.grid.minor = element_blank()
+    ) +
+    ggforce::geom_ellipse(color = "black", fill = "white") +
+    geom_text(aes(x = x0, y = y0, label = label), size = 3)
+
   fig
 }
