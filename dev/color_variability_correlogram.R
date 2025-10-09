@@ -7,16 +7,17 @@ library(brpubVJCE)
 library(ggplot2)
 library(dplyr)
 library(RColorBrewer)
+library(patchwork)
 
 # =============================================================================
 # Approach 4: Color Represents Variability + Legend
 # =============================================================================
 
 create_color_variability_correlogram <- function(df,
-                                                show_upper = FALSE,
-                                                show_diag = FALSE,
-                                                show_coeff = TRUE,
-                                                variability_colors = NULL) {
+                                                 show_upper = FALSE,
+                                                 show_diag = FALSE,
+                                                 show_coeff = TRUE,
+                                                 variability_colors = NULL) {
 
   # Default color palette for variability (low to high)
   if (is.null(variability_colors)) {
@@ -44,9 +45,9 @@ create_color_variability_correlogram <- function(df,
 
   # Create discrete variability categories for legend
   var_categories <- cut(var_normalized,
-                       breaks = breaks_norm,
-                       labels = c("Very Low", "Low", "Medium", "High", "Very High"),
-                       include.lowest = TRUE)
+                        breaks = breaks_norm,
+                        labels = c("Very Low", "Low", "Medium", "High", "Very High"),
+                        include.lowest = TRUE)
 
   # Create plotting data
   cor_data <- expand.grid(x = 1:n_vars, y = 1:n_vars)
@@ -56,38 +57,67 @@ create_color_variability_correlogram <- function(df,
   cor_data$avg_var <- (cor_data$var_x + cor_data$var_y) / 2
 
   # Map average variability to colors
-  cor_data$var_category <- cut(cor_data$avg_var,
-                              breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1.0),
-                              labels = c("Very Low", "Low", "Medium", "High", "Very High"),
-                              include.lowest = TRUE)
+  cor_data$var_category <-  cut(cor_data$avg_var,
+                                breaks = c(0, 0.2, 0.4, 0.6, 0.8, 1.0),
+                                labels = c("Very Low", "Low", "Medium", "High", "Very High"),
+                                include.lowest = TRUE)
 
   # Filter based on display options
   if (!show_upper) cor_data <- cor_data[cor_data$x >= cor_data$y, ]
-  if (!show_diag) cor_data <- cor_data[cor_data$x != cor_data$y, ]
+  if (!show_diag) cor_data <-  cor_data[cor_data$x != cor_data$y, ]
 
-  # Add variable names
-  var_names <- colnames(df)
+  # Add variable names with text wrapping for overflow
+  wrap_text <- function(text, width = 12) {
+    sapply(text, function(x) {
+      if (nchar(x) <= width) {
+        return(x)
+      } else {
+        # Split long text into multiple lines
+        words <- strsplit(x, "\\s+")[[1]]
+        if (length(words) == 1) {
+          # Single long word - break it
+          return(paste(substr(x, 1, width), substr(x, width+1, nchar(x)), sep = "\n"))
+        } else {
+          # Multiple words - wrap intelligently
+          lines <- character(0)
+          current_line <- ""
+          for (word in words) {
+            if (nchar(paste(current_line, word)) <= width) {
+              current_line <- if (current_line == "") word else paste(current_line, word)
+            } else {
+              lines <- c(lines, current_line)
+              current_line <- word
+            }
+          }
+          if (current_line != "") lines <- c(lines, current_line)
+          return(paste(lines, collapse = "\n"))
+        }
+      }
+    }, USE.NAMES = FALSE)
+  }
+
+  var_names <- wrap_text(colnames(df))
 
   # Create base plot
   p <- ggplot(cor_data, aes(x = x, y = y)) +
-    scale_x_continuous(breaks = 1:n_vars, labels = var_names) +
-    scale_y_continuous(breaks = 1:n_vars, labels = var_names) +
-    coord_fixed() +
+    scale_x_continuous(breaks = 2:n_vars, labels = var_names[-1], expand = c(0, 0.5)) +
+    scale_y_continuous(breaks = 1:n_vars, labels = var_names, expand = c(0, 0.5)) +
+    coord_fixed(clip = "off") +
     br_charts_theme() +
     theme(
-      axis.title = element_blank(),
-      axis.text.x = element_text(angle = 45, hjust = 1, vjust = 1, size = rel(1.2), color = "black"),
-      axis.text.y = element_text(angle = 0, hjust = 0.5, size = rel(1.2), color = "black"),
-      plot.margin = margin(0, 0, 0, 0, unit = "cm"),
+      axis.title.x = element_blank(),
+      axis.title.y = element_blank(),
+      axis.text.x = element_text(angle = 0, hjust = 0, vjust = 1, size = rel(0.8), color = "black", margin = margin(t = 2, b = 5)),
+      axis.text.y = element_text(hjust = 0, size = rel(0.8), color = "black"),  # Left-aligned y-axis labels
+      plot.margin = margin(15, 0, 0, 0, unit = "pt"),  # Reduced bottom margin
+      panel.spacing = unit(0, "pt"),
       panel.grid.major = element_line(color = "lightgray", linewidth = 0.3),
       panel.grid.minor = element_blank(),
       axis.line.x = element_blank(),
       axis.line.y = element_blank(),
       axis.ticks.x = element_blank(),
       axis.ticks.y = element_blank(),
-      legend.position = "top",
-      legend.title = element_text(size = rel(1.1), face = "bold"),
-      legend.text = element_text(size = rel(1.0))
+      legend.position = "none"  # Remove legend from main plot
     )
 
   # Add ellipses with color representing variability
@@ -121,7 +151,7 @@ create_color_variability_correlogram <- function(df,
     max_x_extent <- max(abs(rotated_x))
     max_y_extent <- max(abs(rotated_y))
     scale_factor <- min(1, max_radius / max(max_x_extent, max_y_extent))
-    rotated_x <- rotated_x * scale_factor
+    rotated_x <-  rotated_x * scale_factor
     rotated_y <- rotated_y * scale_factor
 
     final_x <- rotated_x + row$x
@@ -131,8 +161,8 @@ create_color_variability_correlogram <- function(df,
 
     # Add ellipse with variability-based color (no border)
     p <- p + geom_polygon(data = ellipse_data, aes(x = x, y = y),
-                         fill = fill_color, color = NA, alpha = 0.8,
-                         inherit.aes = FALSE)
+                          fill = fill_color, color = NA, alpha = 0.8,
+                          inherit.aes = FALSE)
   }
 
   # Create legend labels with actual ranges
@@ -144,43 +174,66 @@ create_color_variability_correlogram <- function(df,
     sprintf("Very High\n(%.1f-%.1f)", breaks_actual[5], breaks_actual[6])
   )
 
-  # Create dummy data for legend
+  # Create dummy data for legend positioned within plot bounds
   legend_data <- data.frame(
-    x = rep(-1, 5),  # Outside plot area
-    y = rep(-1, 5),  # Outside plot area
+    x = rep(1, 5),  # Position within existing plot area
+    y = rep(1, 5),  # Position within existing plot area
     var_category = factor(c("Very Low", "Low", "Medium", "High", "Very High"),
-                         levels = c("Very Low", "Low", "Medium", "High", "Very High"))
+                          levels = c("Very Low", "Low", "Medium", "High", "Very High"))
   )
 
-  # Add invisible points for legend
-  p <- p + geom_point(data = legend_data,
-                     aes(x = x, y = y, fill = var_category),
-                     shape = 22, size = 4, color = "black", alpha = 0,
-                     show.legend = TRUE) +
+  # Create separate legend plot
+  legend_plot <- ggplot(legend_data, aes(x = x, y = y, fill = var_category)) +
+    geom_point(shape = 22, size = 4, color = "black", alpha = 1) +
     scale_fill_manual(
-      name = "Outcome Variability (Standard Deviation)",
+      name = "Standard Deviation: ",
       values = setNames(variability_colors, c("Very Low", "Low", "Medium", "High", "Very High")),
       labels = legend_labels,
       guide = guide_legend(
         override.aes = list(
           shape = 22,
-          size = 4,
+          size = 2.5,  # Smaller symbols
           color = "black",
           alpha = 1
         ),
-        nrow = 1  # Display legend horizontally
+        nrow = 1,
+        title.position = "left",  # Title on the left
+        title.hjust = 0.5,
+        spacing.x = unit(0.1, "cm"),  # Tighter horizontal spacing
+        spacing.y = unit(0, "pt"),
+        label.position = "bottom",
+        keywidth = unit(0.6, "lines"),  # Narrower key boxes
+        keyheight = unit(0.6, "lines")
       )
+    ) +
+    theme_void() +
+    theme(
+      legend.position = "bottom",
+      legend.title = element_text(size = rel(0.7), face = "bold", hjust = 0.5, margin = margin(r = 3)),  # Small right margin
+      legend.text = element_text(size = rel(0.6), hjust = 0.5, margin = margin(t = 1)),  # Smaller text
+      legend.box.spacing = unit(0, "pt"),
+      legend.margin = margin(0, 0, 0, 0),  # No margins
+      legend.spacing.x = unit(0.05, "cm"),  # Minimal spacing between items
+      plot.margin = margin(0, 0, 0, 0)
     )
+
+  # Extract just the legend
+  legend_only <- cowplot::get_legend(legend_plot)
 
   # Add correlation coefficients
   if (show_coeff) {
     text_data <- cor_data[abs(cor_data$correlation) >= 0.01, ]
     p <- p + geom_text(data = text_data,
-                      aes(x = x, y = y, label = round(correlation, 2)),
-                      color = "black", size = 3.5, fontface = "bold")
+                       aes(x = x, y = y, label = round(correlation, 2)),
+                       color = "black", size = 2, fontface = "bold") +
+      theme(legend.position = "none")
   }
 
-  return(p)
+  # Combine main plot with separate legend using patchwork
+  combined_plot <- wrap_elements(legend_only) / p +
+    plot_layout(heights = c(0.5, 10))  # Reduced legend height for tighter spacing
+
+  return(combined_plot)
 }
 
 # =============================================================================
@@ -208,12 +261,12 @@ clinical_data <- data.frame(
 
 # Add some correlations between outcomes
 clinical_data$`Secondary Efficacy` <- 0.6 * scale(clinical_data$`Primary Efficacy`)[,1] +
-                                     0.8 * scale(clinical_data$`Secondary Efficacy`)[,1]
+  0.8 * scale(clinical_data$`Secondary Efficacy`)[,1]
 clinical_data$`Secondary Efficacy` <- clinical_data$`Secondary Efficacy` * 12 + 45
 
 clinical_data$`Quality of Life` <- 0.4 * scale(clinical_data$`Primary Efficacy`)[,1] +
-                                  -0.3 * scale(clinical_data$`Patient Reported Pain`)[,1] +
-                                   0.9 * scale(clinical_data$`Quality of Life`)[,1]
+  -0.3 * scale(clinical_data$`Patient Reported Pain`)[,1] +
+  0.9 * scale(clinical_data$`Quality of Life`)[,1]
 clinical_data$`Quality of Life` <- clinical_data$`Quality of Life` * 15 + 60
 
 # Show variability statistics
@@ -244,6 +297,8 @@ color_variability_plot <- create_color_variability_correlogram(
 )
 
 print(color_variability_plot)
+
+ggsave_custom("color_variability_plot.png", imgpath = "./", inplot = color_variability_plot, dpi = 300)
 
 cat("\n=== ADVANTAGES OF COLOR APPROACH ===\n")
 cat("✓ Immediate visual identification of unreliable outcomes\n")
