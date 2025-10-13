@@ -112,3 +112,12 @@ ggsave_custom("inst/img/cumulative_excess_plot.png",
   unts = "in", # Single column width
   dpi = 600 # Higher DPI for publication quality
 )
+
+ggsave_custom("inst/img/correlogram_plot.png",
+              imgpath = "./",
+              inplot = create_correlogram(corr),
+              wdth = 7,
+              hght = 7,
+              unts = "in", # Single column width
+              dpi = 600 # Higher DPI for publication quality
+)
