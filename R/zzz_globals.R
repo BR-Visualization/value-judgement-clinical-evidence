@@ -21,5 +21,9 @@ utils::globalVariables(c(
   "Sd2",
   "SE_diff",
   "N1",
-  "N2"
+  "N2",
+  "Drug_Status",
+  "treatment",
+  "category",
+  "Category"
 ))
