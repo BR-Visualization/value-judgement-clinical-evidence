@@ -1,5 +1,5 @@
 ---
-title: "MCDA Benefit-Risk Analysis: Comprehensive Guide"
+title: "MCDA Benefit-Risk Analysis: Guide"
 author: "BR Visualization Team"
 date: "`r Sys.Date()`"
 output:
