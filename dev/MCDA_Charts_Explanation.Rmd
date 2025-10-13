@@ -7,7 +7,7 @@ output:
     toc: true
     toc_float: true
     toc_depth: 3
-    code_folding: show
+    code_folding: hide
     theme: flatly
 ---
 
@@ -54,7 +54,7 @@ This guide covers two complementary visualizations:
 # 2. Setup and Dependencies
 
 ```{r libraries}
-library(MCDA)
+# library(MCDA)
 library(ggplot2)
 library(dplyr)
 library(reshape2)
@@ -548,6 +548,141 @@ The original publication reports Drug A=71 (rank 1) and Drug D=69 (rank 2). Howe
 
 For transparency, this document presents the actual calculated scores. Users should verify weights align with their stakeholder preferences.
 
+## 6.4 Create Waterfall Chart
+```{r waterfall}
+waterfall_data <- contrib_long %>%
+  mutate(
+    Criteria = factor(Criteria, 
+                      levels = c("Primary_Efficacy", "Secondary_Efficacy", 
+                                 "Quality_of_Life", "Recurring_AE", "Rare_SAE"))
+  ) %>%
+  arrange(Treatment, Criteria) %>%
+  group_by(Treatment) %>%
+  mutate(
+    Contribution_pct = Contribution * 100,
+    end = cumsum(Contribution_pct),
+    start = lag(end, default = 0),
+    id = 7 - row_number(),  # Reverse the order (6, 5, 4, 3, 2)
+    Criteria_label = case_when(
+      Criteria == "Primary_Efficacy" ~ "Primary Efficacy",
+      Criteria == "Secondary_Efficacy" ~ "Secondary Efficacy",
+      Criteria == "Quality_of_Life" ~ "Quality of Life",
+      Criteria == "Recurring_AE" ~ "Recurring AE",
+      Criteria == "Rare_SAE" ~ "Rare SAE"
+    )
+  ) %>%
+  ungroup()
+
+# Add total bars using contrib_df
+totals <- contrib_df %>%
+  select(Treatment, Total_Score) %>%
+  mutate(
+    Criteria = factor("Total", levels = c("Primary_Efficacy", "Secondary_Efficacy", 
+                                          "Quality_of_Life", "Recurring_AE", "Rare_SAE", "Total")),
+    Criteria_label = "Total Score",
+    Contribution_pct = Total_Score,
+    start = 0,
+    end = Total_Score,
+    id = 1  # Place total at top (position 1)
+  )
+
+# Combine data
+waterfall_complete <- bind_rows(waterfall_data, totals) %>%
+  mutate(
+    Criteria = factor(Criteria, 
+                      levels = c("Primary_Efficacy", "Secondary_Efficacy", 
+                                 "Quality_of_Life", "Recurring_AE", "Rare_SAE", "Total")),
+    Criteria_label = factor(Criteria_label,
+                            levels = c("Primary Efficacy", "Secondary Efficacy",
+                                       "Quality of Life", "Recurring AE", "Rare SAE", "Total Score")),
+    Treatment = factor(Treatment, levels = c("Drug A", "Drug B", "Drug C", "Drug D"))
+  )
+
+# Create connector lines data
+connector_lines <- waterfall_data %>%
+  arrange(Treatment, desc(id)) %>%
+  group_by(Treatment) %>%
+  mutate(
+    next_start = lead(start),
+    next_id = lead(id)
+  ) %>%
+  filter(!is.na(next_start)) %>%
+  ungroup()
+
+# Add connectors from Rare SAE to Total Score
+rare_to_total <- waterfall_data %>%
+  filter(Criteria == "Rare_SAE") %>%
+  left_join(totals %>% select(Treatment, total_end = end, total_id = id), 
+            by = "Treatment") %>%
+  mutate(
+    next_start = 0,
+    next_id = total_id
+  ) %>%
+  select(Treatment, Criteria, end, id, next_start, next_id)
+
+# Combine all connector lines
+all_connectors <- bind_rows(connector_lines, rare_to_total)
+
+# Create horizontal waterfall chart with criteria on y-axis
+p_waterfall <- ggplot(waterfall_complete, 
+                      aes(y = id, fill = Criteria, 
+                          ymin = id - 0.45, ymax = id + 0.45,
+                          xmin = start, xmax = end)) +
+  geom_rect(alpha = 0.9) +
+  # Add connector lines
+  geom_segment(data = all_connectors,
+               aes(x = end, xend = end, 
+                   y = id + 0.45, yend = next_id - 0.45),
+               linetype = "dotted", color = "gray40", linewidth = 0.5,
+               inherit.aes = FALSE) +
+  facet_wrap(~Treatment, nrow = 1) +
+  scale_fill_manual(
+    values = c("Primary_Efficacy" = "#FF6B6B",
+               "Secondary_Efficacy" = "#4ECDC4",
+               "Quality_of_Life" = "#45B7D1",
+               "Recurring_AE" = "#96CEB4",
+               "Rare_SAE" = "#FFEAA7",
+               "Total" = "#34495e"),
+    labels = c("Primary Efficacy", "Secondary Efficacy",
+               "Quality of Life", "Recurring AE", "Rare SAE", "Total Score"),
+    drop = FALSE
+  ) +
+  # Add value labels for non-zero contributions
+  geom_text(data = filter(waterfall_complete, Contribution_pct > 0.5, Criteria != "Total"),
+            aes(x = (start + end) / 2, y = id, 
+                label = sprintf("%.1f", Contribution_pct)),
+            inherit.aes = FALSE, size = 3.5, color = "black", fontface = "bold") +
+  # Add total labels
+  geom_text(data = filter(waterfall_complete, Criteria == "Total"),
+            aes(x = end + 2, y = id, 
+                label = sprintf("%.1f", Contribution_pct)),
+            inherit.aes = FALSE, size = 4, fontface = "bold", hjust = 0) +
+  # Add criteria labels on y-axis
+  scale_y_continuous(
+    breaks = 1:6,
+    labels = c("Total\nScore", "Rare\nSAE", "Recurring\nAE", "Quality\nof Life",
+               "Secondary\nEfficacy", "Primary\nEfficacy"),
+    expand = expansion(mult = c(0.02, 0.02))
+  ) +
+  scale_x_continuous(expand = expansion(mult = c(0.02, 0.15))) +
+  labs(title = "Figure 8: MCDA Waterfall Chart - Treatment Differences (vs Placebo)",
+       subtitle = "Each bar shows cumulative contribution of criteria to total weighted score difference",
+       x = "Cumulative Weighted Score Difference", y = NULL) +
+  theme_minimal() +
+  theme(
+    legend.position = "none",  # Remove legend since y-axis shows criteria
+    plot.title = element_text(size = 14, face = "bold"),
+    axis.text.y = element_text(size = 9, hjust = 1),
+    panel.grid.major.y = element_blank(),
+    panel.grid.minor.y = element_blank(),
+    strip.text = element_text(size = 11, face = "bold"),
+    strip.background = element_rect(fill = "gray90", color = NA)
+  )
+
+print(p_waterfall)
+```
+
+
 ---
 
 # 7. Figure 9: Benefit-Risk Map
@@ -776,9 +911,13 @@ Different groups may have different preferences:
 **Do NOT use MCDA when**:
 
 ❌ Single outcome dominates (use simple effect plot)
+
 ❌ Clear benefit with minimal risk (use dot-forest plot)
+
 ❌ Stakeholder preferences unknown (conduct preference study first)
+
 ❌ Data quality insufficient (address uncertainty first)
+
 ❌ Only 2 options (simpler comparison methods suffice)
 
 ## 10.2 Implementation Checklist
@@ -806,7 +945,7 @@ Different groups may have different preferences:
 
 ## 11.2 Software Tools
 
-- **R packages**: MCDA, ggplot2, dplyr, reshape2, gridExtra
+- **R packages**: ggplot2, dplyr, reshape2, gridExtra
 - **Commercial**: HiView3, Hiview3
 - **Web-based**: EVIDEM, BRAT
 
