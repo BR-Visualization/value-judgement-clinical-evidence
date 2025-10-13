@@ -6,10 +6,11 @@
 \usage{
 create_correlogram(
   df,
+  br = c("Benefit", "Benefit", "Benefit", "Risk", "Risk", "Risk"),
   diagonal = FALSE,
   method = "square",
   type_c = "lower",
-  fig_colors = colfun()$fig10_colors
+  fig_colors = c("#0571b0", "#ca0020")
 )
 }
 \arguments{
@@ -17,6 +18,9 @@ create_correlogram(
 inputted as continuous, binary, or ordinal variables.
 Note: Binary variables must have a value of 0 or 1.
 Note: Ordinal variables must be formatted as factors.}
+
+\item{br}{An character vector labeling each variable in df as a
+"Benefit" or "Risk".}
 
 \item{diagonal}{Allows user to choose to view the correlogram with diagonal
 entries. Default is FALSE.}
@@ -27,8 +31,8 @@ correlogram. Default is "square".}
 \item{type_c}{Allows user to revise the display. Default is "lower".}
 
 \item{fig_colors}{Allows the user to change the colors of the figure
-(defaults are provided). Must be vector of length 3, with color corresponding
-to strength of correlation.}
+(defaults are provided). Must be vector of length 2, with the first color
+corresponding to benefits, the second to risks.}
 }
 \value{
 A correlogram.
