@@ -222,10 +222,11 @@ create_fig7b <- function() {
 }
 
 # ============================================================================
-# 4. FIGURE 8: STACKED BAR CHART
+# 4. FIGURE 8: STACKED BAR CHART WITH WEIGHTS
 # ============================================================================
 
 create_fig8_stacked <- function() {
+  # Create stacked bar chart
   p_stacked <- ggplot(contrib_long, aes(x = Treatment, y = Contribution * 100, fill = Criteria)) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(
@@ -237,17 +238,53 @@ create_fig8_stacked <- function() {
       labels = c("Primary Efficacy", "Secondary Efficacy",
                  "Quality of Life", "Recurring AE", "Rare SAE")
     ) +
-    labs(title = "Figure 8: MCDA Weighted Scores by Treatment",
-         subtitle = "Stacked contributions show how each criterion drives overall score",
+    labs(title = "Treatment Scores",
          x = "Treatment", y = "Weighted Contribution") +
     theme_minimal() +
-    theme(legend.position = "right",
-          plot.title = element_text(size = 14, face = "bold")) +
+    theme(legend.position = "none",
+          plot.title = element_text(size = 12, face = "bold")) +
     geom_text(data = contrib_df,
               aes(x = Treatment, y = Total_Score + 2, label = round(Total_Score, 1)),
               inherit.aes = FALSE, vjust = 0, size = 5, fontface = "bold")
 
-  return(p_stacked)
+  # Create weights bar chart
+  weights_chart_df <- data.frame(
+    Criteria = factor(c("Primary Efficacy", "Secondary Efficacy", "Quality of Life",
+                        "Recurring AE", "Rare SAE"),
+                      levels = rev(c("Primary Efficacy", "Secondary Efficacy",
+                                     "Quality of Life", "Recurring AE", "Rare SAE"))),
+    Weight = weights_pub * 100,
+    Criteria_var = factor(c("Primary_Efficacy", "Secondary_Efficacy", "Quality_of_Life",
+                            "Recurring_AE", "Rare_SAE"),
+                          levels = rev(c("Primary_Efficacy", "Secondary_Efficacy",
+                                         "Quality_of_Life", "Recurring_AE", "Rare_SAE")))
+  )
+
+  p_weights_chart <- ggplot(weights_chart_df, aes(x = Weight, y = Criteria, fill = Criteria_var)) +
+    geom_bar(stat = "identity", width = 0.7) +
+    scale_fill_manual(
+      values = c("Primary_Efficacy" = "#FF6B6B",
+                 "Secondary_Efficacy" = "#4ECDC4",
+                 "Quality_of_Life" = "#45B7D1",
+                 "Recurring_AE" = "#96CEB4",
+                 "Rare_SAE" = "#FFEAA7")
+    ) +
+    labs(title = "Criterion Weights",
+         x = "Weight (%)", y = NULL) +
+    theme_minimal() +
+    theme(legend.position = "none",
+          plot.title = element_text(size = 12, face = "bold"),
+          axis.text.y = element_text(size = 10)) +
+    geom_text(aes(label = sprintf("%.1f%%", Weight)), hjust = -0.1, size = 3.5) +
+    xlim(0, max(weights_chart_df$Weight) * 1.15)
+
+  # Combine both plots
+  library(grid)
+  combined_plot <- grid.arrange(p_stacked, p_weights_chart, ncol = 2, widths = c(2.5, 1),
+               top = textGrob("Figure 8: MCDA Weighted Scores by Treatment",
+                             gp = gpar(fontsize = 14, fontface = "bold")))
+
+  return(combined_plot)
 }
 
 # ============================================================================
@@ -377,6 +414,17 @@ create_fig8_waterfall <- function() {
 # ============================================================================
 
 create_fig9 <- function() {
+  # Calculate benefit and risk category weights
+  benefit_criteria <- c("Primary_Efficacy", "Secondary_Efficacy", "Quality_of_Life")
+  risk_criteria <- c("Recurring_AE", "Rare_SAE")
+  
+  benefit_weights <- weights_pub[benefit_criteria]
+  risk_weights <- weights_pub[risk_criteria]
+  
+  total_benefit_weight <- sum(benefit_weights) * 100  # 40.1%
+  total_risk_weight <- sum(risk_weights) * 100        # 59.9%
+  
+  # Create benefit-risk map data
   br_map_df <- data.frame(
     Treatment = c("Drug A", "Drug B", "Drug C", "Drug D"),
     Benefits = c(98, 34, 68, 24),
@@ -384,22 +432,36 @@ create_fig9 <- function() {
     Label = c("1", "2", "3", "4")
   )
 
+  # Find the two outermost points
+  max_y_point <- br_map_df[which.max(br_map_df$Risks), ]  # Drug D at (24, 98)
+  max_x_point <- br_map_df[which.max(br_map_df$Benefits), ]  # Drug A at (98, 52)
+  
+  # Create frontier polygon: (0, 0) -> (0, 98) -> Drug D (24, 98) -> Drug A (98, 52) -> (98, 0) -> back to origin
+  frontier_polygon <- data.frame(
+    x = c(0, 0, max_y_point$Benefits, max_x_point$Benefits, max(br_map_df$Benefits), 0),
+    y = c(0, max(br_map_df$Risks), max_y_point$Risks, max_x_point$Risks, 0, 0)
+  )
+
   p_brmap <- ggplot(br_map_df, aes(x = Benefits, y = Risks, color = Treatment)) +
-    annotate("rect", xmin = 70, xmax = 100, ymin = 70, ymax = 100,
-             fill = "lightgreen", alpha = 0.3) +
-    annotate("text", x = 85, y = 85, label = "Preferred\nRegion",
-             color = "darkgreen", fontface = "bold", size = 5) +
+    # Shaded frontier region under the two outermost points
+    geom_polygon(data = frontier_polygon, aes(x = x, y = y),
+                 inherit.aes = FALSE, fill = "lightgreen", alpha = 0.3) +
     geom_point(size = 8, alpha = 0.8) +
     geom_text(aes(label = Label), color = "black", size = 5, fontface = "bold") +
-    scale_color_manual(values = c("Drug A" = "#FF6B6B", "Drug B" = "#4ECDC4",
-                                  "Drug C" = "#45B7D1", "Drug D" = "#96CEB4")) +
+    scale_color_manual(
+      values = c("Drug A" = "#FF6B6B", "Drug B" = "#4ECDC4",
+                 "Drug C" = "#45B7D1", "Drug D" = "#96CEB4"),
+      labels = c("Drug A (1)", "Drug B (2)", "Drug C (3)", "Drug D (4)")
+    ) +
     xlim(0, 100) + ylim(0, 100) +
     labs(title = "Figure 9: Benefit-Risk Map",
          subtitle = "Higher is better on both axes (treatment differences vs placebo)",
-         x = "Benefits →", y = "Risks →") +
+         x = "Benefits →",
+         y = "Risks →") +
     theme_minimal() +
     theme(panel.grid.major = element_line(color = "lightgray"),
-          plot.title = element_text(size = 14, face = "bold"))
+          plot.title = element_text(size = 14, face = "bold"),
+          legend.position = "right")
 
   return(p_brmap)
 }
@@ -424,7 +486,7 @@ ggsave("dev/figure_7b_mcda_walkthrough.jpeg", fig7b, width = 14, height = 5, dpi
 
 cat("Generating Figure 8 (Stacked Bar)...\n")
 fig8_stacked <- create_fig8_stacked()
-ggsave("dev/figure_8_stacked_bar.jpeg", fig8_stacked, width = 10, height = 7, dpi = 300)
+ggsave("dev/figure_8_stacked_bar.jpeg", fig8_stacked, width = 14, height = 7, dpi = 300)
 
 cat("Generating Figure 8 (Waterfall)...\n")
 fig8_waterfall <- create_fig8_waterfall()
