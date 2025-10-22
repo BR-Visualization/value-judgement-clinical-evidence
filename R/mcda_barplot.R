@@ -30,8 +30,9 @@
 #' str(mcda_data)
 #' # Each row contains raw values on original scales
 prepare_mcda_data <- function(
-    source_data,
-    placebo_name = "Placebo") {
+  source_data,
+  placebo_name = "Placebo"
+) {
   # Filter for identified outcomes only, Category == 'All'
   identified <- source_data[
     source_data$Outcome_Status == "Identified" &
