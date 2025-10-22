@@ -547,7 +547,13 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
     stop(paste0("Comparison drug '", comparison_drug, "' not found in data. Available treatments: ", paste(unique(data$Treatment), collapse = ", ")))
   }
 
-  # Create performance matrix
+  # Create two matrices:
+  # 1. raw_diff_matrix: actual raw differences (Drug - Placebo) for display
+  # 2. perf_matrix: performance-oriented differences for normalization
+  raw_diff_matrix <- matrix(NA, nrow = nrow(treatments), ncol = length(all_criteria))
+  colnames(raw_diff_matrix) <- criteria_internal
+  rownames(raw_diff_matrix) <- treatments$Treatment
+  
   perf_matrix <- matrix(NA, nrow = nrow(treatments), ncol = length(all_criteria))
   colnames(perf_matrix) <- criteria_internal
   rownames(perf_matrix) <- treatments$Treatment
@@ -555,6 +561,9 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   for (i in seq_along(all_criteria)) {
     criterion <- all_criteria[i]
     criterion_int <- criteria_internal[i]
+    
+    # Always calculate raw difference as Drug - Placebo for display
+    raw_diff_matrix[, criterion_int] <- as.numeric(treatments[[criterion]]) - as.numeric(placebo_row[[criterion]])
     
     # Get the favorable direction for this criterion
     fav_dir <- favorable_direction[criterion]
@@ -564,8 +573,8 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
       # drug - placebo: positive = drug better than placebo
       perf_matrix[, criterion_int] <- as.numeric(treatments[[criterion]]) - as.numeric(placebo_row[[criterion]])
     } else {
-      # Lower is better: negative difference means improvement, so flip the sign
-      # placebo - drug: positive = drug better than placebo (lower value)
+      # Lower is better: negative raw difference means improvement, so flip the sign
+      # placebo - drug: positive performance = drug better than placebo (lower value)
       perf_matrix[, criterion_int] <- as.numeric(placebo_row[[criterion]]) - as.numeric(treatments[[criterion]])
     }
   }
@@ -603,10 +612,10 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
 
   x_max <- 100
 
-  # Get raw treatment differences for the comparison drug (before normalization)
-  drug_idx <- which(rownames(perf_matrix) == comparison_drug)
+  # Get raw treatment differences for the comparison drug (actual Drug - Placebo)
+  drug_idx <- which(rownames(raw_diff_matrix) == comparison_drug)
   if (length(drug_idx) == 0) drug_idx <- 1
-  raw_diff_values <- perf_matrix[drug_idx, ]
+  raw_diff_values <- raw_diff_matrix[drug_idx, ]
 
   # Panel 1: Raw Treatment Differences
   raw_diff_df <- data.frame(
