@@ -433,7 +433,7 @@ create_mcda_barplot_comparison <- function(data = NULL,
 #'   contributions, or NULL if data is not provided.
 #' @export
 #' @import ggplot2
-#' @importFrom gridExtra grid.arrange
+#' @importFrom gridExtra arrangeGrob
 #' @importFrom grid textGrob gpar
 #'
 #' @examples
@@ -463,7 +463,7 @@ create_mcda_barplot_comparison <- function(data = NULL,
 #'   `Risk 1` = 0.30,
 #'   `Risk 2` = 0.10
 #' )
-#' 
+#'
 #' # Specify that Benefit 2 is "lower is better" (e.g., symptom severity)
 #' favorable_dir <- c(
 #'   `Benefit 1` = "higher",
@@ -472,7 +472,7 @@ create_mcda_barplot_comparison <- function(data = NULL,
 #'   `Risk 1` = "lower",
 #'   `Risk 2` = "lower"
 #' )
-#' 
+#'
 #' barplot_walk_a <- create_mcda_barplot_walkthrough(
 #'   data = mcda_data,
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
@@ -514,7 +514,7 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
     n_criteria <- length(all_criteria)
     weights <- setNames(rep(1 / n_criteria, n_criteria), all_criteria)
   }
-  
+
   # Default favorable direction if not provided
   # Benefits: higher is better by default
   # Risks: lower is better by default
@@ -553,7 +553,7 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   raw_diff_matrix <- matrix(NA, nrow = nrow(treatments), ncol = length(all_criteria))
   colnames(raw_diff_matrix) <- criteria_internal
   rownames(raw_diff_matrix) <- treatments$Treatment
-  
+
   perf_matrix <- matrix(NA, nrow = nrow(treatments), ncol = length(all_criteria))
   colnames(perf_matrix) <- criteria_internal
   rownames(perf_matrix) <- treatments$Treatment
@@ -561,13 +561,13 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   for (i in seq_along(all_criteria)) {
     criterion <- all_criteria[i]
     criterion_int <- criteria_internal[i]
-    
+
     # Always calculate raw difference as Drug - Placebo for display
     raw_diff_matrix[, criterion_int] <- as.numeric(treatments[[criterion]]) - as.numeric(placebo_row[[criterion]])
-    
+
     # Get the favorable direction for this criterion
     fav_dir <- favorable_direction[criterion]
-    
+
     if (fav_dir == "higher") {
       # Higher is better: positive difference means improvement
       # drug - placebo: positive = drug better than placebo
@@ -726,7 +726,14 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
 
   # Combine panels - now 4 panels
   # Order: Treatment Difference -> Normalized Value -> Weight -> Benefit-Risk
-  combined_plot <- gridExtra::grid.arrange(p_raw_diff, p_values, p_weights, p_weighted,
+  # Use arrangeGrob instead of grid.arrange to avoid creating Rplots.pdf
+  # Suppress device creation by ensuring a null device exists
+  if (length(grDevices::dev.list()) == 0) {
+    grDevices::pdf(NULL)
+    on.exit(grDevices::dev.off(), add = TRUE)
+  }
+  
+  combined_plot <- gridExtra::arrangeGrob(p_raw_diff, p_values, p_weights, p_weighted,
     ncol = 4,
     widths = c(1.2, 1, 1, 1)
   )
