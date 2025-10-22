@@ -114,13 +114,14 @@ library(rlang)
 #' # meaningful)
 #' # Result: X-axis reverses, green shading extends towards negative values
 create_forest_dot_plot <- function(
-    data,
-    outcomes_with_thresholds = NULL,
-    treatment1 = "Drug A",
-    treatment2 = "Placebo",
-    filter_value = "None",
-    precalculated_stats = FALSE,
-    forest_upper_limit = NULL) {
+  data,
+  outcomes_with_thresholds = NULL,
+  treatment1 = "Drug A",
+  treatment2 = "Placebo",
+  filter_value = "None",
+  precalculated_stats = FALSE,
+  forest_upper_limit = NULL
+) {
   # Define arrow symbols to avoid issues with LaTeX documentation
   # Use UTF-8 encoded Unicode arrows for proper display in all contexts
   left_arrow <- "\u2190" # ← (leftwards arrow)
