@@ -25,5 +25,19 @@ utils::globalVariables(c(
   "Drug_Status",
   "treatment",
   "category",
-  "Category"
+  "Category",
+  "Var1",
+  "Var2",
+  "Freq",
+  "Cor",
+  "x0",
+  "y0",
+  "a",
+  "b",
+  "angle",
+  "label",
+  "Value",
+  "Criterion",
+  "Weight",
+  "Contribution"
 ))

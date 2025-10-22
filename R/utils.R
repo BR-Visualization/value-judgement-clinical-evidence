@@ -452,7 +452,8 @@ add_exprs <- function(...) {
 #' @details The function bold text in variable (`bold`) and concatenates it
 #' with string in (`nonbold`) and returns a `dataframe`.
 #'
-#' @import magrittr dplyr
+#' @import magrittr
+#' @importFrom dplyr %>% mutate if_else arrange
 #'
 #' @seealso `?plotmath`.
 #'

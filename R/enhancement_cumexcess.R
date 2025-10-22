@@ -34,11 +34,11 @@
 #'
 #' @return A cumulative excess plot.
 #' @export
-#' @import cowplot
 #' @import ggplot2
 #' @import zoo
 #' @import simsurv
-#' @import dplyr
+#' @importFrom cowplot ggdraw draw_label plot_grid draw_plot
+#' @importFrom dplyr filter case_when mutate slice distinct
 #' @importFrom stats sd
 #' @importFrom ggrepel geom_label_repel
 #' @importFrom forcats fct_reorder
@@ -55,17 +55,16 @@
 #'   mcd = 20
 #' )
 gensurv_plot <- function(
-  df_outcome,
-  base_subjects,
-  visits,
-  fig_colors = c("#0571b0", "#ca0020"),
-  titlename = NULL, ben_name = "Primary Efficacy",
-  risk_name = "Recurring AE",
-  legend_position = c(-0.03, 1.15),
-  mar,
-  mab,
-  mcd
-) {
+    df_outcome,
+    base_subjects,
+    visits,
+    fig_colors = c("#0571b0", "#ca0020"),
+    titlename = NULL, ben_name = "Primary Efficacy",
+    risk_name = "Recurring AE",
+    legend_position = c(-0.03, 1.15),
+    mar,
+    mab,
+    mcd) {
   outcome <- active <- control <- sd_diff <- lower_ci <- upper_ci <- NULL
   eventtime <- obsv_duration <- obsv_unit <- eff_diff_lbl <- color_group <- NULL
 
@@ -852,8 +851,7 @@ gensurv_combined <- function(df_plot,
 #' @examples
 #' gensurv(111, 2000, 1000, 36, .005, .0048, "Weeks")
 gensurv <- function(
-  seed, n1, n2, obsv_duration, lambda1, lambda2, unit = "Months"
-) {
+    seed, n1, n2, obsv_duration, lambda1, lambda2, unit = "Months") {
   diff_sim <- NULL
   stopifnot(is.numeric(seed))
   stopifnot(is.numeric(n1))

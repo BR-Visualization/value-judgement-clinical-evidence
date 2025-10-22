@@ -39,7 +39,7 @@ for (i in seq(1, 10)) {
       replace = TRUE
     )))
 }
-corr1 <- select(corr1, -c(subject_id))
+corr1 <- dplyr::select(corr1, -c(subject_id))
 
 # testing create_correlogram for ggplot object
 
@@ -108,9 +108,9 @@ df_attribs <- data.frame(
 
 # testing the accuracy of continuous correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "c")
+df_attribs1 <- df_attribs %>% dplyr::filter(shortc == "c")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 %>% dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -144,9 +144,9 @@ test_that("create_correlogram() correctly calculates correlations for continuous
 
 # testing the accuracy of binary correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "b")
+df_attribs1 <- df_attribs %>% dplyr::filter(shortc == "b")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 %>% dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -189,9 +189,9 @@ test_that("create_correlogram() correctly calculates correlations for binary
 
 # testing the accuracy of binary/continuous correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "c" | shortc == "b")
+df_attribs1 <- df_attribs %>% dplyr::filter(shortc == "c" | shortc == "b")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 %>% dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -269,9 +269,9 @@ test_that(
 
 # testing the accuracy of ordinal correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "o")
+df_attribs1 <- df_attribs %>% dplyr::filter(shortc == "o")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 %>% dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -302,9 +302,9 @@ test_that("create_correlogram() correctly calculates correlations for ordinal
 
 # testing the accuracy of continuous/ordinal correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "c" | shortc == "o")
+df_attribs1 <- df_attribs %>% dplyr::filter(shortc == "c" | shortc == "o")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 %>% dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -374,9 +374,9 @@ test_that(
 
 # testing the accuracy of ordinal/binary correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "o" | shortc == "b")
+df_attribs1 <- df_attribs %>% dplyr::filter(shortc == "o" | shortc == "b")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 %>% dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
