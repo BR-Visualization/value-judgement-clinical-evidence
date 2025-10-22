@@ -187,7 +187,23 @@ create_mcda_barplot_comparison <- function(data = NULL,
   placebo_row <- data[data$Treatment == placebo_name, ]
   drug_row <- data[data$Treatment == comparison_drug, ]
 
+  # Check if comparison_drug exists
+  if (nrow(drug_row) == 0) {
+    stop(paste0("Comparison drug '", comparison_drug, "' not found in data. Available treatments: ", paste(unique(data$Treatment), collapse = ", ")))
+  }
+  
+  # Check if placebo exists
+  if (nrow(placebo_row) == 0) {
+    stop(paste0("Placebo '", placebo_name, "' not found in data. Available treatments: ", paste(unique(data$Treatment), collapse = ", ")))
+  }
+
   all_criteria <- c(benefit_criteria, risk_criteria)
+  
+  # Verify all criteria columns exist in data
+  missing_cols <- setdiff(all_criteria, colnames(data))
+  if (length(missing_cols) > 0) {
+    stop(paste0("The following criteria columns are not found in data: ", paste(missing_cols, collapse = ", "), ". Available columns: ", paste(setdiff(colnames(data), "Treatment"), collapse = ", ")))
+  }
 
   # Create values for each panel
   placebo_values <- unlist(placebo_row[, all_criteria, drop = FALSE])
@@ -484,10 +500,26 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   }
 
   criteria_internal <- all_criteria
+  
+  # Verify all criteria columns exist in data
+  missing_cols <- setdiff(all_criteria, colnames(data))
+  if (length(missing_cols) > 0) {
+    stop(paste0("The following criteria columns are not found in data: ", paste(missing_cols, collapse = ", "), ". Available columns: ", paste(setdiff(colnames(data), "Treatment"), collapse = ", ")))
+  }
 
   # Calculate treatment differences
   placebo_row <- data[data$Treatment == placebo_name, ]
   treatments <- data[data$Treatment != placebo_name, ]
+  
+  # Check if placebo exists
+  if (nrow(placebo_row) == 0) {
+    stop(paste0("Placebo '", placebo_name, "' not found in data. Available treatments: ", paste(unique(data$Treatment), collapse = ", ")))
+  }
+  
+  # Check if comparison_drug exists
+  if (!(comparison_drug %in% treatments$Treatment)) {
+    stop(paste0("Comparison drug '", comparison_drug, "' not found in data. Available treatments: ", paste(unique(data$Treatment), collapse = ", ")))
+  }
 
   # Create performance matrix
   perf_matrix <- matrix(NA, nrow = nrow(treatments), ncol = length(all_criteria))
