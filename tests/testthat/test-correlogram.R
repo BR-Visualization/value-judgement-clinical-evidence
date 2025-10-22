@@ -59,7 +59,11 @@ missing data", {
 
 test_that("create_correlogram() will return a ggplot object with
 missing data", {
-  expect_true(inherits(create_correlogram(corr2), "ggplot"))
+  expect_warning(
+    result <- create_correlogram(corr2),
+    "you have a missing value"
+  )
+  expect_true(inherits(result, "ggplot"))
 })
 
 # testing create_correlogram must have more than one variable
