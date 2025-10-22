@@ -11,6 +11,7 @@ create_mcda_barplot_walkthrough(
   benefit_criteria = NULL,
   risk_criteria = NULL,
   weights = NULL,
+  favorable_direction = NULL,
   fig_colors = c("#0571b0", "#ca0020")
 )
 }
@@ -31,6 +32,11 @@ calculation for. Default is "Drug A".}
 
 \item{weights}{Named numeric vector of criterion weights. Must sum to 1.
 If NULL, uses equal weights.}
+
+\item{favorable_direction}{Named character vector specifying the favorable direction
+for each criterion. Values should be either "higher" or "lower". If NULL, defaults to
+"higher" for benefits and "lower" for risks. Use this to specify outcomes like
+"Benefit 2" where lower values are better (e.g., symptom severity, days to recovery).}
 
 \item{fig_colors}{A vector of length 2 specifying colors for benefits and risks.
 Default is c("#0571b0", "#ca0020").}
@@ -70,12 +76,23 @@ weights <- c(
   `Risk 1` = 0.30,
   `Risk 2` = 0.10
 )
+
+# Specify that Benefit 2 is "lower is better" (e.g., symptom severity)
+favorable_dir <- c(
+  `Benefit 1` = "higher",
+  `Benefit 2` = "lower",
+  `Benefit 3` = "higher",
+  `Risk 1` = "lower",
+  `Risk 2` = "lower"
+)
+
 barplot_walk_a <- create_mcda_barplot_walkthrough(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
-  weights = weights
+  weights = weights,
+  favorable_direction = favorable_dir
 )
 ggsave(
   "inst/img/barplot_mcda_walkthrough_drug_a.png",
