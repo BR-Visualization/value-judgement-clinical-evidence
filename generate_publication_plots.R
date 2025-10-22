@@ -121,3 +121,47 @@ ggsave_custom("inst/img/correlogram_plot.png",
               unts = "in", # Single column width
               dpi = 600 # Higher DPI for publication quality
 )
+
+mcda_data <- prepare_mcda_data(effects_table)
+
+barplot_comp_a <- create_mcda_barplot_comparison(
+  data = mcda_data,
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  comparison_drug = "Drug A"
+)
+
+ggsave_custom("inst/img/barplot_mcda_comparison_drug_a.png",
+              imgpath = "./",
+              inplot = barplot_comp_a,
+              wdth = 12,
+              hght = 6,
+              unts = "in", # Single column width
+              dpi = 600 # Higher DPI for publication quality
+)
+
+
+weights <- c(
+  `Benefit 1` = 0.30,
+  `Benefit 2` = 0.20,
+  `Benefit 3` = 0.10,
+  `Risk 1` = 0.30,
+  `Risk 2` = 0.10
+)
+
+barplot_walk_a <- create_mcda_barplot_walkthrough(
+  data = mcda_data,
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  comparison_drug = "Drug A",
+  weights = weights
+)
+
+ggsave_custom("inst/img/barplot_mcda_walkthrough_drug_a.png",
+              imgpath = "./",
+              inplot = barplot_walk_a,
+              wdth = 12,
+              hght = 6,
+              unts = "in", # Single column width
+              dpi = 600 # Higher DPI for publication quality
+)
