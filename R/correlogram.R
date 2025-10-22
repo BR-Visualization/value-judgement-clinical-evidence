@@ -229,10 +229,14 @@ create_correlogram <- function(df,
   label_colors_horizontal <- ifelse(br[colnames(mat)] == "Benefit", fig_colors[1], fig_colors[2])
   label_colors_vertical <- ifelse(br[colnames(mat)] == "Benefit", fig_colors[1], fig_colors[2])
 
-  labels_x_markdown <- paste0("<span style='color:", label_colors_horizontal, "'>",
-                               str_wrap(colnames(mat), width = 7), "</span>")
-  labels_y_markdown <- paste0("<span style='color:", label_colors_vertical, "'>",
-                               str_wrap(colnames(mat), width = 7), "</span>")
+  labels_x_markdown <- paste0(
+    "<span style='color:", label_colors_horizontal, "'>",
+    str_wrap(colnames(mat), width = 7), "</span>"
+  )
+  labels_y_markdown <- paste0(
+    "<span style='color:", label_colors_vertical, "'>",
+    str_wrap(colnames(mat), width = 7), "</span>"
+  )
 
   fig <- ggplot(corr_df, aes(x0 = x0, y0 = y0, a = a, b = b, angle = angle)) +
     coord_fixed() +
