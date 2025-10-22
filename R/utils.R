@@ -195,7 +195,6 @@ br_charts_theme <- function(base_family = "",
 
   # Change ggplot theme ---------------------------
   ggplot2::theme(
-
     # Elements in the first block are not used directly,
     # but are inherited by others
     line = ggplot2::element_line(
@@ -400,7 +399,6 @@ prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
 #' @details DETAILS
 #' @rdname prepare_br_calculated_ci
 #' @export
-
 
 
 prepare_br_calculated_ci <- function(df, colname1, colname2, cl = 0.95, func) {

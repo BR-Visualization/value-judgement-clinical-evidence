@@ -154,6 +154,33 @@ gensurv_combined(
 ```
 </details>
 
+## Figure - Correlogram
+
+```{r correlogram, fig.width=12, fig.height=8, message = FALSE, echo = FALSE, warning = FALSE}
+library(brpubVJCE)
+
+create_correlogram(corr)
+```
+
+<details>
+<summary>Click to learn more</summary>
+**Getting Help**
+
+- Documentation: Use `?create_correlogram` for detailed function help
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+</details>
+
+<details>
+<summary>Click to view sample code</summary>
+```{r, echo = TRUE, eval=FALSE}
+library(brpubVJCE)
+
+create_correlogram(corr)
+```
+</details>
+
 ## Citation
 
 If you use this package in your research, please cite:
