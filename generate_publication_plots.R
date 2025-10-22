@@ -149,12 +149,23 @@ weights <- c(
   `Risk 2` = 0.10
 )
 
+# Specify favorable direction for each criterion
+# Benefit 2 is "lower is better" (e.g., symptom severity, days to recovery)
+favorable_direction <- c(
+  `Benefit 1` = "higher",
+  `Benefit 2` = "lower",
+  `Benefit 3` = "higher",
+  `Risk 1` = "lower",
+  `Risk 2` = "lower"
+)
+
 barplot_walk_a <- create_mcda_barplot_walkthrough(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
-  weights = weights
+  weights = weights,
+  favorable_direction = favorable_direction
 )
 
 ggsave_custom("inst/img/barplot_mcda_walkthrough_drug_a.png",

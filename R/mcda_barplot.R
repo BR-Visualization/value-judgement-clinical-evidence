@@ -421,6 +421,10 @@ create_mcda_barplot_comparison <- function(data = NULL,
 #' @param risk_criteria Character vector of risk criterion names (column names in data).
 #' @param weights Named numeric vector of criterion weights. Must sum to 1.
 #'   If NULL, uses equal weights.
+#' @param favorable_direction Named character vector specifying the favorable direction
+#'   for each criterion. Values should be either "higher" or "lower". If NULL, defaults to
+#'   "higher" for benefits and "lower" for risks. Use this to specify outcomes like
+#'   "Benefit 2" where lower values are better (e.g., symptom severity, days to recovery).
 #' @param fig_colors A vector of length 2 specifying colors for benefits and risks.
 #'   Default is c("#0571b0", "#ca0020").
 #'
@@ -459,12 +463,23 @@ create_mcda_barplot_comparison <- function(data = NULL,
 #'   `Risk 1` = 0.30,
 #'   `Risk 2` = 0.10
 #' )
+#' 
+#' # Specify that Benefit 2 is "lower is better" (e.g., symptom severity)
+#' favorable_dir <- c(
+#'   `Benefit 1` = "higher",
+#'   `Benefit 2` = "lower",
+#'   `Benefit 3` = "higher",
+#'   `Risk 1` = "lower",
+#'   `Risk 2` = "lower"
+#' )
+#' 
 #' barplot_walk_a <- create_mcda_barplot_walkthrough(
 #'   data = mcda_data,
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
 #'   risk_criteria = c("Risk 1", "Risk 2"),
 #'   comparison_drug = "Drug A",
-#'   weights = weights
+#'   weights = weights,
+#'   favorable_direction = favorable_dir
 #' )
 #' ggsave(
 #'   "inst/img/barplot_mcda_walkthrough_drug_a.png",
@@ -480,6 +495,7 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
                                             benefit_criteria = NULL,
                                             risk_criteria = NULL,
                                             weights = NULL,
+                                            favorable_direction = NULL,
                                             fig_colors = c("#0571b0", "#ca0020")) {
   # Check if data is provided
   if (is.null(data)) {
@@ -497,6 +513,16 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   if (is.null(weights)) {
     n_criteria <- length(all_criteria)
     weights <- setNames(rep(1 / n_criteria, n_criteria), all_criteria)
+  }
+  
+  # Default favorable direction if not provided
+  # Benefits: higher is better by default
+  # Risks: lower is better by default
+  if (is.null(favorable_direction)) {
+    favorable_direction <- setNames(
+      c(rep("higher", length(benefit_criteria)), rep("lower", length(risk_criteria))),
+      all_criteria
+    )
   }
 
   criteria_internal <- all_criteria
@@ -529,12 +555,17 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   for (i in seq_along(all_criteria)) {
     criterion <- all_criteria[i]
     criterion_int <- criteria_internal[i]
-
-    if (criterion %in% benefit_criteria) {
-      # Benefits: higher is better, so drug - placebo
+    
+    # Get the favorable direction for this criterion
+    fav_dir <- favorable_direction[criterion]
+    
+    if (fav_dir == "higher") {
+      # Higher is better: positive difference means improvement
+      # drug - placebo: positive = drug better than placebo
       perf_matrix[, criterion_int] <- as.numeric(treatments[[criterion]]) - as.numeric(placebo_row[[criterion]])
     } else {
-      # Risks: lower is better, so placebo - drug
+      # Lower is better: negative difference means improvement, so flip the sign
+      # placebo - drug: positive = drug better than placebo (lower value)
       perf_matrix[, criterion_int] <- as.numeric(placebo_row[[criterion]]) - as.numeric(treatments[[criterion]])
     }
   }
