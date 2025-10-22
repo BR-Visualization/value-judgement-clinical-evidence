@@ -609,20 +609,28 @@ ggsave_custom <- function(save_name,
     # For grid objects, open device, draw, and close properly
     # Record current device to restore later
     current_dev <- grDevices::dev.cur()
-    
+
     switch(ext,
-      png = grDevices::png(filename = file_path, width = wdth, height = hght,
-                          units = unts, res = dpi, bg = bgcol, ...),
-      pdf = grDevices::pdf(file = file_path, width = wdth, height = hght,
-                          bg = bgcol, ...),
-      jpeg = grDevices::jpeg(filename = file_path, width = wdth, height = hght,
-                            units = unts, res = dpi, bg = bgcol, ...),
-      grDevices::png(filename = file_path, width = wdth, height = hght,
-                    units = unts, res = dpi, bg = bgcol, ...)
+      png = grDevices::png(
+        filename = file_path, width = wdth, height = hght,
+        units = unts, res = dpi, bg = bgcol, ...
+      ),
+      pdf = grDevices::pdf(
+        file = file_path, width = wdth, height = hght,
+        bg = bgcol, ...
+      ),
+      jpeg = grDevices::jpeg(
+        filename = file_path, width = wdth, height = hght,
+        units = unts, res = dpi, bg = bgcol, ...
+      ),
+      grDevices::png(
+        filename = file_path, width = wdth, height = hght,
+        units = unts, res = dpi, bg = bgcol, ...
+      )
     )
     grid::grid.draw(inplot)
     invisible(grDevices::dev.off())
-    
+
     # Restore previous device if it wasn't null device
     if (current_dev > 1) {
       grDevices::dev.set(current_dev)
@@ -653,20 +661,28 @@ ggsave_custom <- function(save_name,
     )
     if (is_grob) {
       current_dev <- grDevices::dev.cur()
-      
+
       switch(ext,
-        png = grDevices::png(filename = web_path, width = wdth, height = hght,
-                            units = unts, res = 120, bg = bgcol, ...),
-        pdf = grDevices::pdf(file = web_path, width = wdth, height = hght,
-                            bg = bgcol, ...),
-        jpeg = grDevices::jpeg(filename = web_path, width = wdth, height = hght,
-                              units = unts, res = 120, bg = bgcol, ...),
-        grDevices::png(filename = web_path, width = wdth, height = hght,
-                      units = unts, res = 120, bg = bgcol, ...)
+        png = grDevices::png(
+          filename = web_path, width = wdth, height = hght,
+          units = unts, res = 120, bg = bgcol, ...
+        ),
+        pdf = grDevices::pdf(
+          file = web_path, width = wdth, height = hght,
+          bg = bgcol, ...
+        ),
+        jpeg = grDevices::jpeg(
+          filename = web_path, width = wdth, height = hght,
+          units = unts, res = 120, bg = bgcol, ...
+        ),
+        grDevices::png(
+          filename = web_path, width = wdth, height = hght,
+          units = unts, res = 120, bg = bgcol, ...
+        )
       )
       grid::grid.draw(inplot)
       invisible(grDevices::dev.off())
-      
+
       if (current_dev > 1) {
         grDevices::dev.set(current_dev)
       }

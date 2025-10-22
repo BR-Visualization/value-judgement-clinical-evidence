@@ -340,14 +340,14 @@ test_that("create_mcda_barplot_walkthrough handles custom colors", {
 
 test_that("create_mcda_barplot_walkthrough handles favorable_direction parameter", {
   mcda_data <- create_sample_mcda_data()
-  
+
   # Specify that Benefit 2 is "lower is better"
   favorable_dir <- c(
     `Benefit 1` = "higher",
     `Benefit 2` = "lower",
     `Risk 1` = "lower"
   )
-  
+
   result <- create_mcda_barplot_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2"),
@@ -355,13 +355,13 @@ test_that("create_mcda_barplot_walkthrough handles favorable_direction parameter
     comparison_drug = "Drug A",
     favorable_direction = favorable_dir
   )
-  
+
   expect_true(inherits(result, "gtable"))
 })
 
 test_that("create_mcda_barplot_walkthrough uses default favorable_direction", {
   mcda_data <- create_sample_mcda_data()
-  
+
   # Without specifying favorable_direction, should use defaults
   # (higher for benefits, lower for risks)
   result <- create_mcda_barplot_walkthrough(
@@ -370,7 +370,7 @@ test_that("create_mcda_barplot_walkthrough uses default favorable_direction", {
     risk_criteria = c("Risk 1"),
     comparison_drug = "Drug A"
   )
-  
+
   expect_true(inherits(result, "gtable"))
 })
 
