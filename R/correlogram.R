@@ -20,11 +20,12 @@
 #' @import ltm
 #' @import tibble
 #' @import rcompanion
-#' @import cowplot
 #' @import ggcorrplot
 #' @import stringr
 #' @importFrom ggtext element_markdown
 #' @importFrom ggforce geom_ellipse
+#' @importFrom stats cor
+#' @importFrom dplyr rename filter mutate
 #'
 #' @details
 #' Different correlation coefficients are calculated based on the nature of the
@@ -78,11 +79,11 @@ create_correlogram <- function(df,
     # Try to extract Benefit/Risk from column names
     detected_br <- sapply(colnames(df), function(name) {
       if (grepl("Benefit", name, ignore.case = TRUE)) {
-        return("Benefit")
+        "Benefit"
       } else if (grepl("Risk", name, ignore.case = TRUE)) {
-        return("Risk")
+        "Risk"
       } else {
-        return(NA)
+        NA
       }
     })
 
@@ -241,11 +242,11 @@ create_correlogram <- function(df,
   fig <- ggplot(corr_df, aes(x0 = x0, y0 = y0, a = a, b = b, angle = angle)) +
     coord_fixed() +
     scale_x_continuous(
-      breaks = 1:ncol(mat),
+      breaks = seq_len(ncol(mat)),
       labels = labels_x_markdown
     ) +
     scale_y_continuous(
-      breaks = 1:ncol(mat),
+      breaks = seq_len(ncol(mat)),
       labels = labels_y_markdown
     ) +
     theme_minimal() +

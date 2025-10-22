@@ -226,6 +226,7 @@ check_effects_table <- function(df) {
 #' @import glue
 #' @importFrom shiny tag
 #' @importFrom stats na.omit
+#' @importFrom dplyr select group_by summarise_all n_distinct
 #' @export
 #'
 check_feature <- function(data, feature, plots, func, na_check, values,
