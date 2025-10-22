@@ -59,7 +59,8 @@ Imports:
     tibble,
     rcompanion,
     ggcorrplot,
-    stringr
+    stringr,
+    ggforce
 Depends: 
     R (>= 3.5)
 LazyData: true

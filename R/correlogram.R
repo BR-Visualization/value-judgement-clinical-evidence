@@ -23,6 +23,8 @@
 #' @import cowplot
 #' @import ggcorrplot
 #' @import stringr
+#' @importFrom ggtext element_markdown
+#' @importFrom ggforce geom_ellipse
 #'
 #' @details
 #' Different correlation coefficients are calculated based on the nature of the
@@ -71,14 +73,31 @@ create_correlogram <- function(df,
     })
   }
 
-  if (any(!(br %in% c("Benefit", "Risk")))) {
-    error_message <- "You can only label variables as 'Benefit' or 'Risk'."
-    stop(error_message)
+  # Auto-detect br from column names if br doesn't match the number of columns
+  if (length(br) != ncol(df)) {
+    # Try to extract Benefit/Risk from column names
+    detected_br <- sapply(colnames(df), function(name) {
+      if (grepl("Benefit", name, ignore.case = TRUE)) {
+        return("Benefit")
+      } else if (grepl("Risk", name, ignore.case = TRUE)) {
+        return("Risk")
+      } else {
+        return(NA)
+      }
+    })
+
+    # If we successfully detected labels for all columns, use them
+    if (!any(is.na(detected_br))) {
+      br <- unname(detected_br)
+    } else {
+      error_message <- "You must label all your variables as either
+    a 'Benefit' or 'Risk'."
+      stop(error_message)
+    }
   }
 
-  if (length(br) != ncol(df)) {
-    error_message <- "You must label all your variables as either
-    a 'Benefit' or 'Risk'."
+  if (any(!(br %in% c("Benefit", "Risk")))) {
+    error_message <- "You can only label variables as 'Benefit' or 'Risk'."
     stop(error_message)
   }
 
@@ -206,29 +225,33 @@ create_correlogram <- function(df,
     corr_df <- corr_df %>% filter(x0 != y0)
   }
 
-  label_colors_horizontal <- ifelse(br[unique(corr_df$Var1)] == "Benefit", fig_colors[1], fig_colors[2])
-  label_colors_vertical <- ifelse(br[unique(corr_df$Var2)] == "Benefit", fig_colors[1], fig_colors[2])
+  # Create markdown-formatted labels with colors
+  label_colors_horizontal <- ifelse(br[colnames(mat)] == "Benefit", fig_colors[1], fig_colors[2])
+  label_colors_vertical <- ifelse(br[colnames(mat)] == "Benefit", fig_colors[1], fig_colors[2])
+
+  labels_x_markdown <- paste0("<span style='color:", label_colors_horizontal, "'>",
+                               str_wrap(colnames(mat), width = 7), "</span>")
+  labels_y_markdown <- paste0("<span style='color:", label_colors_vertical, "'>",
+                               str_wrap(colnames(mat), width = 7), "</span>")
 
   fig <- ggplot(corr_df, aes(x0 = x0, y0 = y0, a = a, b = b, angle = angle)) +
     coord_fixed() +
     scale_x_continuous(
       breaks = 1:ncol(mat),
-      labels = str_wrap(colnames(mat), width = 7)
+      labels = labels_x_markdown
     ) +
     scale_y_continuous(
       breaks = 1:ncol(mat),
-      labels = str_wrap(colnames(mat), width = 7)
+      labels = labels_y_markdown
     ) +
     theme_minimal() +
     labs(x = NULL, y = NULL) +
     theme(
-      axis.text.x = element_text(
-        angle = 0, hjust = 0.5, size = rel(1.2),
-        color = label_colors_horizontal
+      axis.text.x = ggtext::element_markdown(
+        angle = 0, hjust = 0.5, size = rel(1.2)
       ),
-      axis.text.y = element_text(
-        angle = 0, hjust = 0.5, size = rel(1.2),
-        color = label_colors_vertical
+      axis.text.y = ggtext::element_markdown(
+        angle = 0, hjust = 0.5, size = rel(1.2)
       ),
       plot.margin = margin(0, 0, 0, 0, unit = "cm"),
       legend.position = "top",
