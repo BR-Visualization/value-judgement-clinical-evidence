@@ -135,7 +135,7 @@ ggsave_custom("inst/img/barplot_mcda_comparison_drug_a.png",
               imgpath = "./",
               inplot = barplot_comp_a,
               wdth = 12,
-              hght = 6,
+              hght = 8,
               unts = "in", # Single column width
               dpi = 600 # Higher DPI for publication quality
 )
