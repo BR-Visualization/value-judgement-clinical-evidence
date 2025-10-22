@@ -19,21 +19,21 @@ create_sample_mcda_data <- function() {
 test_that("prepare_mcda_data returns correct structure", {
   # Load the actual effects_table data
   data("effects_table", package = "brpubVJCE")
-  
+
   result <- prepare_mcda_data(effects_table)
-  
+
   # Check that result is a data frame
   expect_true(is.data.frame(result))
-  
+
   # Check that Treatment column exists
   expect_true("Treatment" %in% colnames(result))
-  
+
   # Check that Placebo is the first row
   expect_equal(result$Treatment[1], "Placebo")
-  
+
   # Check that we have multiple rows (placebo + drugs)
   expect_true(nrow(result) > 1)
-  
+
   # Check that all outcome columns are numeric (except Treatment)
   numeric_cols <- colnames(result)[colnames(result) != "Treatment"]
   expect_true(all(sapply(result[numeric_cols], is.numeric)))
@@ -41,9 +41,9 @@ test_that("prepare_mcda_data returns correct structure", {
 
 test_that("prepare_mcda_data handles custom placebo name", {
   data("effects_table", package = "brpubVJCE")
-  
+
   result <- prepare_mcda_data(effects_table, placebo_name = "Control")
-  
+
   expect_equal(result$Treatment[1], "Control")
 })
 
@@ -58,7 +58,7 @@ test_that("create_mcda_barplot_comparison validates data parameter", {
 
 test_that("create_mcda_barplot_comparison validates criteria parameters", {
   mcda_data <- create_sample_mcda_data()
-  
+
   expect_error(
     create_mcda_barplot_comparison(
       data = mcda_data,
@@ -67,7 +67,7 @@ test_that("create_mcda_barplot_comparison validates criteria parameters", {
     ),
     "Both benefit_criteria and risk_criteria must be specified"
   )
-  
+
   expect_error(
     create_mcda_barplot_comparison(
       data = mcda_data,
@@ -80,7 +80,7 @@ test_that("create_mcda_barplot_comparison validates criteria parameters", {
 
 test_that("create_mcda_barplot_comparison validates treatment existence", {
   mcda_data <- create_sample_mcda_data()
-  
+
   # Test with non-existent comparison drug
   expect_error(
     create_mcda_barplot_comparison(
@@ -91,7 +91,7 @@ test_that("create_mcda_barplot_comparison validates treatment existence", {
     ),
     "Comparison drug 'Drug Z' not found in data"
   )
-  
+
   # Test with non-existent placebo
   expect_error(
     create_mcda_barplot_comparison(
@@ -107,7 +107,7 @@ test_that("create_mcda_barplot_comparison validates treatment existence", {
 
 test_that("create_mcda_barplot_comparison validates criteria columns", {
   mcda_data <- create_sample_mcda_data()
-  
+
   expect_error(
     create_mcda_barplot_comparison(
       data = mcda_data,
@@ -121,21 +121,21 @@ test_that("create_mcda_barplot_comparison validates criteria columns", {
 
 test_that("create_mcda_barplot_comparison returns patchwork object", {
   mcda_data <- create_sample_mcda_data()
-  
+
   result <- create_mcda_barplot_comparison(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
     risk_criteria = c("Risk 1", "Risk 2"),
     comparison_drug = "Drug A"
   )
-  
+
   # Check that result is a patchwork object
   expect_true(inherits(result, "patchwork"))
 })
 
 test_that("create_mcda_barplot_comparison works with different drugs", {
   mcda_data <- create_sample_mcda_data()
-  
+
   # Test with Drug A
   result_a <- create_mcda_barplot_comparison(
     data = mcda_data,
@@ -144,7 +144,7 @@ test_that("create_mcda_barplot_comparison works with different drugs", {
     comparison_drug = "Drug A"
   )
   expect_true(inherits(result_a, "patchwork"))
-  
+
   # Test with Drug B
   result_b <- create_mcda_barplot_comparison(
     data = mcda_data,
@@ -157,7 +157,7 @@ test_that("create_mcda_barplot_comparison works with different drugs", {
 
 test_that("create_mcda_barplot_comparison handles custom colors", {
   mcda_data <- create_sample_mcda_data()
-  
+
   result <- create_mcda_barplot_comparison(
     data = mcda_data,
     benefit_criteria = c("Benefit 1"),
@@ -165,7 +165,7 @@ test_that("create_mcda_barplot_comparison handles custom colors", {
     comparison_drug = "Drug A",
     fig_colors = c("#FF0000", "#0000FF")
   )
-  
+
   expect_true(inherits(result, "patchwork"))
 })
 
@@ -180,7 +180,7 @@ test_that("create_mcda_barplot_walkthrough validates data parameter", {
 
 test_that("create_mcda_barplot_walkthrough validates criteria parameters", {
   mcda_data <- create_sample_mcda_data()
-  
+
   expect_error(
     create_mcda_barplot_walkthrough(
       data = mcda_data,
@@ -193,7 +193,7 @@ test_that("create_mcda_barplot_walkthrough validates criteria parameters", {
 
 test_that("create_mcda_barplot_walkthrough validates treatment existence", {
   mcda_data <- create_sample_mcda_data()
-  
+
   # Test with non-existent comparison drug
   expect_error(
     create_mcda_barplot_walkthrough(
@@ -204,7 +204,7 @@ test_that("create_mcda_barplot_walkthrough validates treatment existence", {
     ),
     "Comparison drug 'Drug Z' not found in data"
   )
-  
+
   # Test with non-existent placebo
   expect_error(
     create_mcda_barplot_walkthrough(
@@ -220,7 +220,7 @@ test_that("create_mcda_barplot_walkthrough validates treatment existence", {
 
 test_that("create_mcda_barplot_walkthrough validates criteria columns", {
   mcda_data <- create_sample_mcda_data()
-  
+
   expect_error(
     create_mcda_barplot_walkthrough(
       data = mcda_data,
@@ -234,40 +234,40 @@ test_that("create_mcda_barplot_walkthrough validates criteria columns", {
 
 test_that("create_mcda_barplot_walkthrough returns gtable object", {
   mcda_data <- create_sample_mcda_data()
-  
+
   result <- create_mcda_barplot_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
     risk_criteria = c("Risk 1", "Risk 2"),
     comparison_drug = "Drug A"
   )
-  
+
   # gridExtra::grid.arrange returns a gtable object
   expect_true(inherits(result, "gtable"))
 })
 
 test_that("create_mcda_barplot_walkthrough uses default equal weights", {
   mcda_data <- create_sample_mcda_data()
-  
+
   result <- create_mcda_barplot_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2"),
     risk_criteria = c("Risk 1"),
     comparison_drug = "Drug A"
   )
-  
+
   expect_true(inherits(result, "gtable"))
 })
 
 test_that("create_mcda_barplot_walkthrough accepts custom weights", {
   mcda_data <- create_sample_mcda_data()
-  
+
   weights <- c(
     `Benefit 1` = 0.30,
     `Benefit 2` = 0.30,
     `Risk 1` = 0.40
   )
-  
+
   result <- create_mcda_barplot_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2"),
@@ -275,13 +275,13 @@ test_that("create_mcda_barplot_walkthrough accepts custom weights", {
     comparison_drug = "Drug A",
     weights = weights
   )
-  
+
   expect_true(inherits(result, "gtable"))
 })
 
 test_that("create_mcda_barplot_walkthrough validates weight sum", {
   mcda_data <- create_sample_mcda_data()
-  
+
   # Weights that sum to 1 should work
   weights <- c(
     `Benefit 1` = 0.25,
@@ -290,7 +290,7 @@ test_that("create_mcda_barplot_walkthrough validates weight sum", {
     `Risk 1` = 0.15,
     `Risk 2` = 0.10
   )
-  
+
   result <- create_mcda_barplot_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
@@ -298,13 +298,13 @@ test_that("create_mcda_barplot_walkthrough validates weight sum", {
     comparison_drug = "Drug A",
     weights = weights
   )
-  
+
   expect_true(inherits(result, "gtable"))
 })
 
 test_that("create_mcda_barplot_walkthrough works with different drugs", {
   mcda_data <- create_sample_mcda_data()
-  
+
   # Test with Drug A
   result_a <- create_mcda_barplot_walkthrough(
     data = mcda_data,
@@ -313,7 +313,7 @@ test_that("create_mcda_barplot_walkthrough works with different drugs", {
     comparison_drug = "Drug A"
   )
   expect_true(inherits(result_a, "gtable"))
-  
+
   # Test with Drug B
   result_b <- create_mcda_barplot_walkthrough(
     data = mcda_data,
@@ -326,7 +326,7 @@ test_that("create_mcda_barplot_walkthrough works with different drugs", {
 
 test_that("create_mcda_barplot_walkthrough handles custom colors", {
   mcda_data <- create_sample_mcda_data()
-  
+
   result <- create_mcda_barplot_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1"),
@@ -334,22 +334,22 @@ test_that("create_mcda_barplot_walkthrough handles custom colors", {
     comparison_drug = "Drug A",
     fig_colors = c("#00FF00", "#FF00FF")
   )
-  
+
   expect_true(inherits(result, "gtable"))
 })
 
 # Integration tests with actual effects_table data
 test_that("Integration: Full workflow with effects_table", {
   data("effects_table", package = "brpubVJCE")
-  
+
   # Step 1: Prepare data
   mcda_data <- prepare_mcda_data(effects_table)
   expect_true(is.data.frame(mcda_data))
-  
+
   # Step 2: Get available criteria
   criteria_cols <- setdiff(colnames(mcda_data), "Treatment")
   expect_true(length(criteria_cols) > 0)
-  
+
   # Step 3: Assume first 3 are benefits, rest are risks (or adjust based on actual data)
   # For the test, we'll use the actual column names
   if (length(criteria_cols) >= 3) {
@@ -359,10 +359,10 @@ test_that("Integration: Full workflow with effects_table", {
     } else {
       criteria_cols[1] # Use first as both if not enough columns
     }
-    
+
     # Get available drugs
     drugs <- setdiff(mcda_data$Treatment, "Placebo")
-    
+
     if (length(drugs) > 0) {
       # Step 4: Create comparison plot
       result_comp <- create_mcda_barplot_comparison(
@@ -372,7 +372,7 @@ test_that("Integration: Full workflow with effects_table", {
         comparison_drug = drugs[1]
       )
       expect_true(inherits(result_comp, "patchwork"))
-      
+
       # Step 5: Create walkthrough plot
       result_walk <- create_mcda_barplot_walkthrough(
         data = mcda_data,
