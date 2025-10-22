@@ -732,7 +732,7 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
     grDevices::pdf(NULL)
     on.exit(grDevices::dev.off(), add = TRUE)
   }
-  
+
   combined_plot <- gridExtra::arrangeGrob(p_raw_diff, p_values, p_weights, p_weighted,
     ncol = 4,
     widths = c(1.2, 1, 1, 1)
