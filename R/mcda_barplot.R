@@ -320,10 +320,10 @@ create_mcda_barplot_comparison <- function(data = NULL,
       geom_col(width = 0.7) +
       geom_vline(xintercept = 0, linetype = "solid", color = "black") +
       scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
-      scale_x_continuous(limits = raw_lim, breaks = raw_breaks, expand = c(0, 0)) +
+      scale_x_continuous(limits = raw_lim, breaks = raw_breaks, expand = c(0.02, 0)) +
       labs(
         title = if (is_first) placebo_name else NULL,
-        x = if (is_last) "Value" else "",
+        x = NULL,
         y = criterion
       ) +
       theme_minimal() +
@@ -335,10 +335,13 @@ create_mcda_barplot_comparison <- function(data = NULL,
         axis.title.y = element_text(size = 11, face = "bold", angle = 0, vjust = 0.5, hjust = 1),
         axis.title.x = if (is_last) element_text(size = 10, face = "bold") else element_blank(),
         axis.ticks.y = element_blank(),
+        axis.ticks.x = element_line(color = "grey92"),
         panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank()
+        panel.grid.minor.y = element_blank(),
+        plot.margin = margin(5, 15, 5, 5)
       ) +
-      geom_text(aes(label = Value), hjust = -0.1, size = 3)
+      geom_text(aes(label = Value), hjust = -0.1, size = 3) +
+      coord_cartesian(clip = "off")
 
     # Plot 2: Drug A
     plot_drug <- ggplot(
@@ -348,10 +351,10 @@ create_mcda_barplot_comparison <- function(data = NULL,
       geom_col(width = 0.7) +
       geom_vline(xintercept = 0, linetype = "solid", color = "black") +
       scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
-      scale_x_continuous(limits = raw_lim, breaks = raw_breaks, expand = c(0, 0)) +
+      scale_x_continuous(limits = raw_lim, breaks = raw_breaks, expand = c(0.02, 0)) +
       labs(
         title = if (is_first) comparison_drug else NULL,
-        x = if (is_last) "Value" else "",
+        x = NULL,
         y = ""
       ) +
       theme_minimal() +
@@ -362,10 +365,13 @@ create_mcda_barplot_comparison <- function(data = NULL,
         axis.text.x = element_text(size = 9),
         axis.title.x = if (is_last) element_text(size = 10, face = "bold") else element_blank(),
         axis.ticks.y = element_blank(),
+        axis.ticks.x = element_line(color = "grey92"),
         panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank()
+        panel.grid.minor.y = element_blank(),
+        plot.margin = margin(5, 15, 5, 5)
       ) +
-      geom_text(aes(label = Value), hjust = -0.1, size = 3)
+      geom_text(aes(label = Value), hjust = -0.1, size = 3) +
+      coord_cartesian(clip = "off")
 
     # Plot 3: Treatment Difference
     plot_diff <- ggplot(
@@ -375,12 +381,12 @@ create_mcda_barplot_comparison <- function(data = NULL,
       geom_col(width = 0.7) +
       geom_vline(xintercept = 0, linetype = "solid", color = "black") +
       scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
+      scale_x_continuous(limits = diff_lim, expand = c(0.02, 0)) +
       labs(
         title = if (is_first) "Treatment Difference" else NULL,
-        x = if (is_last) "Value" else "",
+        x = NULL,
         y = ""
       ) +
-      xlim(diff_lim) +
       theme_minimal() +
       theme(
         legend.position = "none",
@@ -389,21 +395,28 @@ create_mcda_barplot_comparison <- function(data = NULL,
         axis.text.x = element_text(size = 9),
         axis.title.x = if (is_last) element_text(size = 10, face = "bold") else element_blank(),
         axis.ticks.y = element_blank(),
+        axis.ticks.x = element_line(color = "grey92"),
         panel.grid.major.y = element_blank(),
-        panel.grid.minor.y = element_blank()
+        panel.grid.minor.y = element_blank(),
+        plot.margin = margin(5, 15, 5, 5)
       ) +
       geom_text(aes(label = Value),
         hjust = ifelse(diff_values[i] < 0, 1.2, -0.1),
         size = 3
-      )
+      ) +
+      coord_cartesian(clip = "off")
 
     # Combine the three plots horizontally for this outcome
-    outcome_row <- patchwork::wrap_plots(plot_placebo, plot_drug, plot_diff, ncol = 3, widths = c(1.2, 1, 1))
+    outcome_row <- patchwork::wrap_plots(plot_placebo, plot_drug, plot_diff, ncol = 3, widths = c(1.2, 1, 1)) &
+      theme(
+        plot.background = element_rect(color = "grey92", fill = NA, linewidth = 0.5)
+      )
     outcome_plots[[criterion]] <- outcome_row
   }
 
   # Combine all outcome rows vertically using patchwork
-  combined <- patchwork::wrap_plots(outcome_plots, ncol = 1)
+  combined <- patchwork::wrap_plots(outcome_plots, ncol = 1) +
+    patchwork::plot_layout(guides = "collect")
 
   return(combined)
 }
@@ -631,23 +644,26 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   p_raw_diff <- ggplot(raw_diff_df, aes(x = Value, y = Criterion, fill = Type)) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
+    scale_x_continuous(limits = diff_lim, expand = c(0.02, 0)) +
     labs(
       title = "Treatment Difference",
       subtitle = paste0(comparison_drug, " vs ", placebo_name),
       x = NULL, y = NULL
     ) +
-    xlim(diff_lim) +
     theme_minimal() +
     theme(
       axis.text.y = element_text(size = 10),
+      axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = 10, hjust = 0.5)
+      plot.subtitle = element_text(size = 10, hjust = 0.5),
+      plot.margin = margin(5, 15, 5, 5)
     ) +
     geom_text(aes(label = Value),
       hjust = ifelse(raw_diff_values < 0, 1.2, -0.1),
       size = 3
-    )
+    ) +
+    coord_cartesian(clip = "off")
 
   # Panel 2: Weights
   weights_df_plot <- data.frame(
@@ -659,16 +675,19 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   p_weights <- ggplot(weights_df_plot, aes(x = Weight, y = Criterion, fill = Type)) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
+    scale_x_continuous(limits = c(0, x_max), expand = c(0.02, 0)) +
     labs(title = "Weight", subtitle = "Importance (%)", x = NULL, y = NULL) +
-    xlim(0, x_max) +
     theme_minimal() +
     theme(
       axis.text.y = element_blank(),
+      axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
       plot.title = element_text(size = 12, face = "bold", hjust = 0),
-      plot.subtitle = element_text(size = 10, hjust = 0)
+      plot.subtitle = element_text(size = 10, hjust = 0),
+      plot.margin = margin(5, 15, 5, 5)
     ) +
-    geom_text(aes(label = Weight), hjust = -0.1, size = 3)
+    geom_text(aes(label = Weight), hjust = -0.1, size = 3) +
+    coord_cartesian(clip = "off")
 
   # Panel 3: Drug Normalized Values
   drug_values_df <- data.frame(
@@ -680,14 +699,16 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   p_values <- ggplot(drug_values_df, aes(x = Value, y = Criterion, fill = Type)) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
+    scale_x_continuous(limits = c(0, x_max), expand = c(0.02, 0)) +
     labs(title = "Normalized Value", subtitle = "0-100 scale (%)", x = NULL, y = NULL) +
-    xlim(0, x_max) +
     theme_minimal() +
     theme(
       axis.text.y = element_blank(),
+      axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = 10, hjust = 0.5)
+      plot.subtitle = element_text(size = 10, hjust = 0.5),
+      plot.margin = margin(5, 15, 5, 5)
     ) +
     geom_text(
       aes(
@@ -697,7 +718,8 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
       ),
       size = 3
     ) +
-    scale_color_identity()
+    scale_color_identity() +
+    coord_cartesian(clip = "off")
 
   # Panel 4: Weighted Contributions
   drug_contrib_df <- data.frame(
@@ -709,31 +731,33 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   p_weighted <- ggplot(drug_contrib_df, aes(x = Contribution, y = Criterion, fill = Type)) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
+    scale_x_continuous(limits = c(0, x_max), expand = c(0.02, 0)) +
     labs(
       title = "Benefit-Risk",
       subtitle = sprintf("Total = %.1f", drug_total),
       x = NULL, y = NULL
     ) +
-    xlim(0, x_max) +
     theme_minimal() +
     theme(
       axis.text.y = element_blank(),
+      axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
       plot.title = element_text(size = 12, face = "bold", hjust = 0),
-      plot.subtitle = element_text(size = 10, hjust = 0)
+      plot.subtitle = element_text(size = 10, hjust = 0),
+      plot.margin = margin(5, 15, 5, 5)
     ) +
-    geom_text(aes(label = sprintf("%.1f", Contribution)), hjust = -0.1, size = 3)
+    geom_text(aes(label = sprintf("%.1f", Contribution)), hjust = -0.1, size = 3) +
+    coord_cartesian(clip = "off")
+
+  # Add borders to individual panels
+  p_raw_diff <- p_raw_diff + theme(plot.background = element_rect(color = "grey92", fill = NA, linewidth = 0.5))
+  p_values <- p_values + theme(plot.background = element_rect(color = "grey92", fill = NA, linewidth = 0.5))
+  p_weights <- p_weights + theme(plot.background = element_rect(color = "grey92", fill = NA, linewidth = 0.5))
+  p_weighted <- p_weighted + theme(plot.background = element_rect(color = "grey92", fill = NA, linewidth = 0.5))
 
   # Combine panels - now 4 panels
   # Order: Treatment Difference -> Normalized Value -> Weight -> Benefit-Risk
-  # Use arrangeGrob instead of grid.arrange to avoid creating Rplots.pdf
-  # Suppress device creation by ensuring a null device exists
-  if (length(grDevices::dev.list()) == 0) {
-    grDevices::pdf(NULL)
-    on.exit(grDevices::dev.off(), add = TRUE)
-  }
-
-  combined_plot <- gridExtra::arrangeGrob(p_raw_diff, p_values, p_weights, p_weighted,
+  combined_plot <- patchwork::wrap_plots(p_raw_diff, p_values, p_weights, p_weighted,
     ncol = 4,
     widths = c(1.2, 1, 1, 1)
   )
