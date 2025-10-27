@@ -122,7 +122,16 @@ ggsave_custom("inst/img/correlogram_plot.png",
               dpi = 600 # Higher DPI for publication quality
 )
 
+# ============================================================================
+# MCDA Barplots
+# ============================================================================
+
+# Prepare MCDA data from effects table
 mcda_data <- prepare_mcda_data(effects_table)
+
+# --------------------------------------------------------------------------
+# MCDA Comparison Plot: Shows Placebo | Drug | Treatment Difference
+# --------------------------------------------------------------------------
 
 barplot_comp_a <- create_mcda_barplot_comparison(
   data = mcda_data,
@@ -140,7 +149,42 @@ ggsave_custom("inst/img/barplot_mcda_comparison_drug_a.png",
               dpi = 600 # Higher DPI for publication quality
 )
 
+# --------------------------------------------------------------------------
+# MCDA Walkthrough Plot: Clinical Threshold-Based Normalization
+# Shows 4 panels: Raw Difference | Normalized Difference | Weights | Benefit-Risk
+# --------------------------------------------------------------------------
 
+# Define clinical scales based on clinical guidelines, MCID, or regulatory precedents
+# These fixed scales ensure stability and interpretability
+clinical_scales <- list(
+  `Benefit 1` = list(
+    min = 0,      # No efficacy (unacceptable)
+    max = 1,      # 100% efficacy (maximum expected)
+    direction = "increasing"
+  ),
+  `Benefit 2` = list(
+    min = 0,      # No symptoms (best outcome)
+    max = 100,    # Severe symptoms (worst outcome)
+    direction = "decreasing"  # Lower is better
+  ),
+  `Benefit 3` = list(
+    min = 0,      # No improvement
+    max = 100,    # Maximum improvement
+    direction = "increasing"
+  ),
+  `Risk 1` = list(
+    min = 0,      # No adverse events (ideal)
+    max = 0.5,    # 50% AE rate (unacceptable threshold)
+    direction = "decreasing"
+  ),
+  `Risk 2` = list(
+    min = 0,      # No serious adverse events (ideal)
+    max = 0.15,   # 15% SAE rate (concerning threshold)
+    direction = "decreasing"
+  )
+)
+
+# Define weights from stakeholder elicitation
 weights <- c(
   `Benefit 1` = 0.30,
   `Benefit 2` = 0.20,
@@ -150,7 +194,9 @@ weights <- c(
 )
 
 # Specify favorable direction for each criterion
-# Benefit 2 is "lower is better" (e.g., symptom severity, days to recovery)
+# Note: This is different from clinical_scales$direction
+# favorable_direction is used for computing performance-oriented differences
+# Benefit 2 is "lower is better" (e.g., symptom severity)
 favorable_direction <- c(
   `Benefit 1` = "higher",
   `Benefit 2` = "lower",
@@ -159,20 +205,22 @@ favorable_direction <- c(
   `Risk 2` = "lower"
 )
 
+# Create MCDA walkthrough using clinical threshold-based normalization
 barplot_walk_a <- create_mcda_barplot_walkthrough(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
   weights = weights,
-  favorable_direction = favorable_direction
+  favorable_direction = favorable_direction,
+  clinical_scales = clinical_scales  # Use clinical thresholds, not data-driven normalization
 )
 
 ggsave_custom("inst/img/barplot_mcda_walkthrough_drug_a.png",
               imgpath = "./",
               inplot = barplot_walk_a,
-              wdth = 12,
+              wdth = 14,  # Increased width for 4 panels
               hght = 6,
-              unts = "in", # Single column width
+              unts = "in",
               dpi = 600 # Higher DPI for publication quality
 )
