@@ -12,6 +12,7 @@ create_mcda_barplot_walkthrough(
   risk_criteria = NULL,
   weights = NULL,
   favorable_direction = NULL,
+  clinical_scales = NULL,
   fig_colors = c("#0571b0", "#ca0020")
 )
 }
@@ -38,13 +39,24 @@ for each criterion. Values should be either "higher" or "lower". If NULL, defaul
 "higher" for benefits and "lower" for risks. Use this to specify outcomes like
 "Benefit 2" where lower values are better (e.g., symptom severity, days to recovery).}
 
+\item{clinical_scales}{List defining clinical reference levels for each criterion.
+Each element should be a list with: min (lower threshold), max (upper threshold),
+direction ("increasing" for higher is better, "decreasing" for lower is better),
+and optionally allow_extrapolation (default TRUE). If NULL, uses data-driven
+normalization (not recommended per FDA/EMA guidance). Example:
+\code{list(`Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
+             `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"))}
+Based on FDA/EMA best practices and PROTECT framework.}
+
 \item{fig_colors}{A vector of length 2 specifying colors for benefits and risks.
 Default is c("#0571b0", "#ca0020").}
 }
 \value{
 A grid arrangement of four panels showing: (1) Treatment Difference
-(Drug - Placebo), (2) Weights, (3) Normalized values, and (4) Weighted
-contributions, or NULL if data is not provided.
+(raw values: Drug - Placebo), (2) Normalized Difference (on 0-100 scale:
+Drug normalized - Placebo normalized), (3) Weights, and (4) Weighted
+contributions (Benefit-Risk scores), or NULL if data is not provided.
+Negative values in panels 2 and 4 indicate the drug performs worse than placebo.
 }
 \description{
 Create MCDA Bar Chart: Calculation Walkthrough
@@ -67,7 +79,7 @@ barplot_walk <- create_mcda_barplot_walkthrough(
   comparison_drug = "Drug B"
 )
 
-# With custom weights for Drug A
+# With custom weights and clinical scales for Drug A
 \dontrun{
 weights <- c(
   `Benefit 1` = 0.30,
@@ -86,13 +98,44 @@ favorable_dir <- c(
   `Risk 2` = "lower"
 )
 
+# Define clinical scales based on clinical guidelines, MCID, or regulatory precedents
+# These fixed scales ensure stability and interpretability
+clinical_scales <- list(
+  `Benefit 1` = list(
+    min = 0,      # No benefit (unacceptable)
+    max = 1,      # Maximum expected benefit
+    direction = "increasing"
+  ),
+  `Benefit 2` = list(
+    min = 0,      # Best outcome (no symptoms)
+    max = 100,    # Worst outcome (severe symptoms)
+    direction = "decreasing"  # Lower is better
+  ),
+  `Benefit 3` = list(
+    min = 0,      # No improvement
+    max = 100,    # Maximum improvement
+    direction = "increasing"
+  ),
+  `Risk 1` = list(
+    min = 0,      # No adverse events (ideal)
+    max = 0.5,    # 50\% rate (unacceptable threshold)
+    direction = "decreasing"
+  ),
+  `Risk 2` = list(
+    min = 0,      # No adverse events (ideal)
+    max = 0.3,    # 30\% rate (concerning threshold)
+    direction = "decreasing"
+  )
+)
+
 barplot_walk_a <- create_mcda_barplot_walkthrough(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
   weights = weights,
-  favorable_direction = favorable_dir
+  favorable_direction = favorable_dir,
+  clinical_scales = clinical_scales
 )
 ggsave(
   "inst/img/barplot_mcda_walkthrough_drug_a.png",
