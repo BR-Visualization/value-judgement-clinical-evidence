@@ -500,28 +500,28 @@ create_mcda_barplot_comparison <- function(data = NULL,
 #' # These fixed scales ensure stability and interpretability
 #' clinical_scales <- list(
 #'   `Benefit 1` = list(
-#'     min = 0,      # No benefit (unacceptable)
-#'     max = 1,      # Maximum expected benefit
+#'     min = 0, # No benefit (unacceptable)
+#'     max = 1, # Maximum expected benefit
 #'     direction = "increasing"
 #'   ),
 #'   `Benefit 2` = list(
-#'     min = 0,      # Best outcome (no symptoms)
-#'     max = 100,    # Worst outcome (severe symptoms)
-#'     direction = "decreasing"  # Lower is better
+#'     min = 0, # Best outcome (no symptoms)
+#'     max = 100, # Worst outcome (severe symptoms)
+#'     direction = "decreasing" # Lower is better
 #'   ),
 #'   `Benefit 3` = list(
-#'     min = 0,      # No improvement
-#'     max = 100,    # Maximum improvement
+#'     min = 0, # No improvement
+#'     max = 100, # Maximum improvement
 #'     direction = "increasing"
 #'   ),
 #'   `Risk 1` = list(
-#'     min = 0,      # No adverse events (ideal)
-#'     max = 0.5,    # 50% rate (unacceptable threshold)
+#'     min = 0, # No adverse events (ideal)
+#'     max = 0.5, # 50% rate (unacceptable threshold)
 #'     direction = "decreasing"
 #'   ),
 #'   `Risk 2` = list(
-#'     min = 0,      # No adverse events (ideal)
-#'     max = 0.3,    # 30% rate (concerning threshold)
+#'     min = 0, # No adverse events (ideal)
+#'     max = 0.3, # 30% rate (concerning threshold)
 #'     direction = "decreasing"
 #'   )
 #' )
