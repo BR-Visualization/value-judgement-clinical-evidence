@@ -72,45 +72,72 @@
 #'   time_units = "Weeks"
 #' )
 #' }
-create_time_to_event_scatter <- function(data,
-                                          vary_by = "benefit",
-                                          time_units = "Days",
-                                          add_marginals = TRUE,
-                                          fig_colors = NULL) {
-
+create_time_to_event_scatter <- function(
+  data,
+  vary_by = "benefit",
+  time_units = "Days",
+  add_marginals = TRUE,
+  fig_colors = NULL
+) {
   # Validate inputs
   if (!vary_by %in% c("benefit", "risk")) {
     stop("vary_by must be either 'benefit' or 'risk'")
   }
 
-  required_cols <- c("subject_id", "time_to_benefit", "benefit_type",
-                     "time_to_risk", "risk_type")
+  required_cols <- c(
+    "subject_id",
+    "time_to_benefit",
+    "benefit_type",
+    "time_to_risk",
+    "risk_type"
+  )
   missing_cols <- setdiff(required_cols, colnames(data))
   if (length(missing_cols) > 0) {
-    stop(paste0("Missing required columns: ", paste(missing_cols, collapse = ", ")))
+    stop(paste0(
+      "Missing required columns: ",
+      paste(missing_cols, collapse = ", ")
+    ))
   }
 
   # Check if censoring indicators exist
-  has_censoring <- all(c("benefit_observed", "risk_observed") %in% colnames(data))
+  has_censoring <- all(
+    c("benefit_observed", "risk_observed") %in% colnames(data)
+  )
 
   # Keep all subjects, including those with censored observations
   if (has_censoring) {
-    data_clean <- data[complete.cases(data[, c("time_to_benefit", "time_to_risk")]), ]
+    data_clean <- data[
+      complete.cases(data[, c("time_to_benefit", "time_to_risk")]),
+    ]
 
     # Create censoring status for plotting
-    data_clean$censoring_status <- with(data_clean,
-      ifelse(benefit_observed == 1 & risk_observed == 1, "Both observed",
-      ifelse(benefit_observed == 0 & risk_observed == 1, "Benefit censored",
-      ifelse(benefit_observed == 1 & risk_observed == 0, "Risk censored",
-             "Both censored")))
+    data_clean$censoring_status <- with(
+      data_clean,
+      ifelse(
+        benefit_observed == 1 & risk_observed == 1,
+        "Both observed",
+        ifelse(
+          benefit_observed == 0 & risk_observed == 1,
+          "Benefit censored",
+          ifelse(
+            benefit_observed == 1 & risk_observed == 0,
+            "Risk censored",
+            "Both censored"
+          )
+        )
+      )
     )
 
     n_total_original <- nrow(data)
-    n_both_observed <- sum(data_clean$benefit_observed == 1 & data_clean$risk_observed == 1)
+    n_both_observed <- sum(
+      data_clean$benefit_observed == 1 & data_clean$risk_observed == 1
+    )
     n_censored <- nrow(data_clean) - n_both_observed
   } else {
     # If no censoring indicators, just remove missing values
-    data_clean <- data[complete.cases(data[, c("time_to_benefit", "time_to_risk")]), ]
+    data_clean <- data[
+      complete.cases(data[, c("time_to_benefit", "time_to_risk")]),
+    ]
     data_clean$censoring_status <- "Both observed"
     n_total_original <- nrow(data)
     n_both_observed <- nrow(data_clean)
@@ -139,7 +166,10 @@ create_time_to_event_scatter <- function(data,
   # Calculate summary statistics (among those with both observed)
   both_obs_idx <- data_clean$censoring_status == "Both observed"
   n_total <- nrow(data_clean)
-  n_benefit_first <- sum(data_clean$time_to_benefit[both_obs_idx] < data_clean$time_to_risk[both_obs_idx])
+  n_benefit_first <- sum(
+    data_clean$time_to_benefit[both_obs_idx] <
+      data_clean$time_to_risk[both_obs_idx]
+  )
   pct_benefit_first <- 100 * n_benefit_first / sum(both_obs_idx)
 
   # Calculate mean times (among those with both observed)
@@ -147,72 +177,170 @@ create_time_to_event_scatter <- function(data,
   mean_risk <- mean(data_clean$time_to_risk[both_obs_idx], na.rm = TRUE)
 
   # Determine axis limits (square plot)
-  max_time <- max(c(data_clean$time_to_benefit, data_clean$time_to_risk), na.rm = TRUE)
+  max_time <- max(
+    c(data_clean$time_to_benefit, data_clean$time_to_risk),
+    na.rm = TRUE
+  )
   axis_limit <- max_time * 1.05
 
   # Create the scatter plot
-  p <- ggplot(data_clean, aes(x = time_to_benefit, y = time_to_risk,
-                               color = group, shape = group)) +
+  p <- ggplot(
+    data_clean,
+    aes(x = time_to_benefit, y = time_to_risk, color = group, shape = group)
+  ) +
     # Unity line (y=x)
-    geom_abline(intercept = 0, slope = 1, linetype = "solid",
-                color = "black", linewidth = 0.8) +
+    geom_abline(
+      intercept = 0,
+      slope = 1,
+      linetype = "solid",
+      color = "black",
+      linewidth = 0.8
+    ) +
     # Shaded regions
-    annotate("ribbon", x = c(0, axis_limit),
-             ymin = c(0, axis_limit), ymax = axis_limit,
-             fill = "#0571b0", alpha = 0.1) +  # Above line: benefit first (favorable)
-    annotate("ribbon", x = c(0, axis_limit),
-             ymin = 0, ymax = c(0, axis_limit),
-             fill = "#ca0020", alpha = 0.1) +  # Below line: risk first (unfavorable)
+    annotate(
+      "ribbon",
+      x = c(0, axis_limit),
+      ymin = c(0, axis_limit),
+      ymax = axis_limit,
+      fill = "#0571b0",
+      alpha = 0.1
+    ) + # Above line: benefit first (favorable)
+    annotate(
+      "ribbon",
+      x = c(0, axis_limit),
+      ymin = 0,
+      ymax = c(0, axis_limit),
+      fill = "#ca0020",
+      alpha = 0.1
+    ) + # Below line: risk first (unfavorable)
     # Data points - both observed (filled shapes)
-    geom_point(data = data_clean[data_clean$censoring_status == "Both observed", ],
-               size = 2.5, alpha = 0.7) +
+    geom_point(
+      data = data_clean[data_clean$censoring_status == "Both observed", ],
+      size = 2.5,
+      alpha = 0.7
+    ) +
     # Censored points (open shapes with tick marks)
-    geom_point(data = data_clean[data_clean$censoring_status != "Both observed", ],
-               size = 2.5, alpha = 0.5, shape = 1) +  # Open circles
+    geom_point(
+      data = data_clean[data_clean$censoring_status != "Both observed", ],
+      size = 2.5,
+      alpha = 0.5,
+      shape = 1
+    ) + # Open circles
     # Add tick marks for censored observations
-    geom_point(data = data_clean[data_clean$censoring_status == "Benefit censored", ],
-               aes(x = time_to_benefit), shape = 3, size = 2, color = "black", alpha = 0.7) +
-    geom_point(data = data_clean[data_clean$censoring_status == "Risk censored", ],
-               aes(y = time_to_risk), shape = 3, size = 2, color = "black", alpha = 0.7) +
-    geom_point(data = data_clean[data_clean$censoring_status == "Both censored", ],
-               shape = 3, size = 2, color = "black", alpha = 0.7) +
+    geom_point(
+      data = data_clean[data_clean$censoring_status == "Benefit censored", ],
+      aes(x = time_to_benefit),
+      shape = 3,
+      size = 2,
+      color = "black",
+      alpha = 0.7
+    ) +
+    geom_point(
+      data = data_clean[data_clean$censoring_status == "Risk censored", ],
+      aes(y = time_to_risk),
+      shape = 3,
+      size = 2,
+      color = "black",
+      alpha = 0.7
+    ) +
+    geom_point(
+      data = data_clean[data_clean$censoring_status == "Both censored", ],
+      shape = 3,
+      size = 2,
+      color = "black",
+      alpha = 0.7
+    ) +
     # Mean point (diamond) - only for both observed
-    annotate("point", x = mean_benefit, y = mean_risk,
-             color = "black", shape = 18, size = 5) +
+    annotate(
+      "point",
+      x = mean_benefit,
+      y = mean_risk,
+      color = "black",
+      shape = 18,
+      size = 5
+    ) +
     # Scales
     scale_x_continuous(limits = c(0, axis_limit), expand = c(0.02, 0)) +
     scale_y_continuous(limits = c(0, axis_limit), expand = c(0.02, 0)) +
     scale_color_manual(values = fig_colors, name = group_label) +
-    scale_shape_manual(values = rep(c(16, 17, 15, 18), length.out = length(unique(data_clean$group))),
-                       name = group_label) +
+    scale_shape_manual(
+      values = rep(
+        c(16, 17, 15, 18),
+        length.out = length(unique(data_clean$group))
+      ),
+      name = group_label
+    ) +
     # Labels
     labs(
       x = paste0("Time to First Benefit (", time_units, ")"),
       y = paste0("Time to First Risk (", time_units, ")"),
       title = "Time-to-Event: Benefit vs Risk",
       subtitle = if (has_censoring && n_censored > 0) {
-        paste0(n_both_observed, "/", n_total, " subjects with both events (",
-               sprintf("%.1f%%", pct_benefit_first), " benefit first); ",
-               n_censored, " censored (open circles + ticks)")
+        paste0(
+          n_both_observed,
+          "/",
+          n_total,
+          " subjects with both events (",
+          sprintf("%.1f%%", pct_benefit_first),
+          " benefit first); ",
+          n_censored,
+          " censored (open circles + ticks)"
+        )
       } else {
-        paste0(sprintf("%.1f%%", pct_benefit_first),
-               " (", n_benefit_first, "/", n_total, ") experienced benefit before risk")
+        paste0(
+          sprintf("%.1f%%", pct_benefit_first),
+          " (",
+          n_benefit_first,
+          "/",
+          n_total,
+          ") experienced benefit before risk"
+        )
       }
     ) +
     # Annotations
-    annotate("text", x = axis_limit * 0.95, y = axis_limit * 0.98,
-             label = "y = x",
-             angle = 45, vjust = 0, hjust = 1,
-             size = 3, color = "black", fontface = "italic") +
-    annotate("text", x = axis_limit * 0.75, y = axis_limit * 0.25,
-             label = "Risk Occurred\nBefore Benefit",
-             size = 3.5, color = "#ca0020", alpha = 0.8, fontface = "bold") +
-    annotate("text", x = axis_limit * 0.25, y = axis_limit * 0.75,
-             label = "Benefit Occurred\nBefore Risk",
-             size = 3.5, color = "#0571b0", alpha = 0.8, fontface = "bold") +
-    annotate("text", x = mean_benefit, y = mean_risk,
-             label = sprintf("Mean\n(%.1f, %.1f)", mean_benefit, mean_risk),
-             hjust = 0.5, vjust = 1.5, size = 2.8, color = "black", fontface = "bold") +
+    annotate(
+      "text",
+      x = axis_limit * 0.95,
+      y = axis_limit * 0.98,
+      label = "Benefit = Risk",
+      angle = 45,
+      vjust = 0,
+      hjust = 1,
+      size = 3,
+      color = "black",
+      fontface = "italic"
+    ) +
+    annotate(
+      "text",
+      x = axis_limit * 0.75,
+      y = axis_limit * 0.25,
+      label = "Risk Occurred\nBefore Benefit",
+      size = 3.5,
+      color = "#ca0020",
+      alpha = 0.8,
+      fontface = "bold"
+    ) +
+    annotate(
+      "text",
+      x = axis_limit * 0.25,
+      y = axis_limit * 0.75,
+      label = "Benefit Occurred\nBefore Risk",
+      size = 3.5,
+      color = "#0571b0",
+      alpha = 0.8,
+      fontface = "bold"
+    ) +
+    annotate(
+      "text",
+      x = mean_benefit,
+      y = mean_risk,
+      label = sprintf("Mean\n(%.1f, %.1f)", mean_benefit, mean_risk),
+      hjust = 0.5,
+      vjust = 1.5,
+      size = 2.8,
+      color = "black",
+      fontface = "bold"
+    ) +
     # Theme
     coord_fixed() +
     theme_minimal() +
@@ -230,9 +358,14 @@ create_time_to_event_scatter <- function(data,
 
   # Add marginal plots if requested
   if (add_marginals) {
-    p <- ggExtra::ggMarginal(p, type = "density",
-                              groupColour = TRUE, groupFill = TRUE,
-                              alpha = 0.3, size = 5)
+    p <- ggExtra::ggMarginal(
+      p,
+      type = "density",
+      groupColour = TRUE,
+      groupFill = TRUE,
+      alpha = 0.3,
+      size = 5
+    )
   }
 
   return(p)

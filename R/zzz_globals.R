@@ -39,5 +39,9 @@ utils::globalVariables(c(
   "Value",
   "Criterion",
   "Weight",
-  "Contribution"
+  "Contribution",
+  "group",
+  "time_to_benefit",
+  "time_to_risk",
+  "n_total_original"
 ))

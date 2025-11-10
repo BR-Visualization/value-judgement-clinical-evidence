@@ -30,8 +30,10 @@ testthat::test_that("prepare_forest_dot_data computes CIs correctly", {
   )
 
   testthat::expect_equal(nrow(result), 4)
-  testthat::expect_true(all(c("Diff", "Diff_LowerCI", "Diff_UpperCI") %in%
-    names(result)))
+  testthat::expect_true(all(
+    c("Diff", "Diff_LowerCI", "Diff_UpperCI") %in%
+      names(result)
+  ))
 })
 
 testthat::test_that("prepare_forest_dot_data handles binary data", {
@@ -79,9 +81,7 @@ testthat::test_that("prepare_forest_dot_data validates precalculated data", {
   bad_data <- test_data_bin[, -which(names(test_data_bin) == "Prop1")]
 
   testthat::expect_error(
-    brpubVJCE::prepare_forest_dot_data(bad_data,
-      precalculated_stats = TRUE
-    ),
+    brpubVJCE::prepare_forest_dot_data(bad_data, precalculated_stats = TRUE),
     "Missing required precalculated columns"
   )
 })
@@ -108,12 +108,17 @@ testthat::test_that("prepare_forest_dot_data works with precalculated stats", {
     stringsAsFactors = FALSE
   )
 
-  result <- brpubVJCE::prepare_forest_dot_data(test_data,
+  result <- brpubVJCE::prepare_forest_dot_data(
+    test_data,
     precalculated_stats = TRUE
   )
   testthat::expect_equal(nrow(result), 2)
-  testthat::expect_true(all(c(
-    "Diff", "Diff_LowerCI",
-    "Diff_UpperCI"
-  ) %in% names(result)))
+  testthat::expect_true(all(
+    c(
+      "Diff",
+      "Diff_LowerCI",
+      "Diff_UpperCI"
+    ) %in%
+      names(result)
+  ))
 })

@@ -15,6 +15,17 @@ create_sample_mcda_data <- function() {
   )
 }
 
+# Create sample clinical scales for testing
+create_sample_clinical_scales <- function() {
+  list(
+    `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
+    `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
+    `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
+    `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
+    `Risk 2` = list(min = 0, max = 0.05, direction = "decreasing")
+  )
+}
+
 # Test prepare_mcda_data function
 test_that("prepare_mcda_data returns correct structure", {
   # Load the actual effects_table data
@@ -80,6 +91,7 @@ test_that("create_mcda_barplot_comparison validates criteria parameters", {
 
 test_that("create_mcda_barplot_comparison validates treatment existence", {
   mcda_data <- create_sample_mcda_data()
+  clinical_scales <- create_sample_clinical_scales()
 
   # Test with non-existent comparison drug
   expect_error(
@@ -87,7 +99,8 @@ test_that("create_mcda_barplot_comparison validates treatment existence", {
       data = mcda_data,
       benefit_criteria = c("Benefit 1", "Benefit 2"),
       risk_criteria = c("Risk 1", "Risk 2"),
-      comparison_drug = "Drug Z"
+      comparison_drug = "Drug Z",
+      clinical_scales = clinical_scales
     ),
     "Comparison drug 'Drug Z' not found in data"
   )
@@ -99,7 +112,8 @@ test_that("create_mcda_barplot_comparison validates treatment existence", {
       benefit_criteria = c("Benefit 1", "Benefit 2"),
       risk_criteria = c("Risk 1", "Risk 2"),
       placebo_name = "Control",
-      comparison_drug = "Drug A"
+      comparison_drug = "Drug A",
+      clinical_scales = clinical_scales
     ),
     "Placebo 'Control' not found in data"
   )
@@ -107,13 +121,15 @@ test_that("create_mcda_barplot_comparison validates treatment existence", {
 
 test_that("create_mcda_barplot_comparison validates criteria columns", {
   mcda_data <- create_sample_mcda_data()
+  clinical_scales <- create_sample_clinical_scales()
 
   expect_error(
     create_mcda_barplot_comparison(
       data = mcda_data,
       benefit_criteria = c("Nonexistent Benefit"),
       risk_criteria = c("Risk 1", "Risk 2"),
-      comparison_drug = "Drug A"
+      comparison_drug = "Drug A",
+      clinical_scales = clinical_scales
     ),
     "The following criteria columns are not found in data"
   )
@@ -121,12 +137,14 @@ test_that("create_mcda_barplot_comparison validates criteria columns", {
 
 test_that("create_mcda_barplot_comparison returns patchwork object", {
   mcda_data <- create_sample_mcda_data()
+  clinical_scales <- create_sample_clinical_scales()
 
   result <- create_mcda_barplot_comparison(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
     risk_criteria = c("Risk 1", "Risk 2"),
-    comparison_drug = "Drug A"
+    comparison_drug = "Drug A",
+    clinical_scales = clinical_scales
   )
 
   # Check that result is a patchwork object
@@ -135,13 +153,15 @@ test_that("create_mcda_barplot_comparison returns patchwork object", {
 
 test_that("create_mcda_barplot_comparison works with different drugs", {
   mcda_data <- create_sample_mcda_data()
+  clinical_scales <- create_sample_clinical_scales()
 
   # Test with Drug A
   result_a <- create_mcda_barplot_comparison(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2"),
     risk_criteria = c("Risk 1"),
-    comparison_drug = "Drug A"
+    comparison_drug = "Drug A",
+    clinical_scales = clinical_scales
   )
   expect_true(inherits(result_a, "patchwork"))
 
@@ -150,20 +170,23 @@ test_that("create_mcda_barplot_comparison works with different drugs", {
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2"),
     risk_criteria = c("Risk 1"),
-    comparison_drug = "Drug B"
+    comparison_drug = "Drug B",
+    clinical_scales = clinical_scales
   )
   expect_true(inherits(result_b, "patchwork"))
 })
 
 test_that("create_mcda_barplot_comparison handles custom colors", {
   mcda_data <- create_sample_mcda_data()
+  clinical_scales <- create_sample_clinical_scales()
 
   result <- create_mcda_barplot_comparison(
     data = mcda_data,
     benefit_criteria = c("Benefit 1"),
     risk_criteria = c("Risk 1"),
     comparison_drug = "Drug A",
-    fig_colors = c("#FF0000", "#0000FF")
+    fig_colors = c("#FF0000", "#0000FF"),
+    clinical_scales = clinical_scales
   )
 
   expect_true(inherits(result, "patchwork"))
@@ -232,7 +255,7 @@ test_that("create_mcda_barplot_walkthrough validates criteria columns", {
   )
 })
 
-test_that("create_mcda_barplot_walkthrough returns gtable object", {
+test_that("create_mcda_barplot_walkthrough returns patchwork object", {
   mcda_data <- create_sample_mcda_data()
 
   result <- create_mcda_barplot_walkthrough(
@@ -242,8 +265,8 @@ test_that("create_mcda_barplot_walkthrough returns gtable object", {
     comparison_drug = "Drug A"
   )
 
-  # gridExtra::grid.arrange returns a gtable object
-  expect_true(inherits(result, "gtable"))
+  # patchwork returns a patchwork object
+  expect_true(inherits(result, "patchwork"))
 })
 
 test_that("create_mcda_barplot_walkthrough uses default equal weights", {
@@ -256,7 +279,7 @@ test_that("create_mcda_barplot_walkthrough uses default equal weights", {
     comparison_drug = "Drug A"
   )
 
-  expect_true(inherits(result, "gtable"))
+  expect_true(inherits(result, "patchwork"))
 })
 
 test_that("create_mcda_barplot_walkthrough accepts custom weights", {
@@ -276,7 +299,7 @@ test_that("create_mcda_barplot_walkthrough accepts custom weights", {
     weights = weights
   )
 
-  expect_true(inherits(result, "gtable"))
+  expect_true(inherits(result, "patchwork"))
 })
 
 test_that("create_mcda_barplot_walkthrough validates weight sum", {
@@ -299,7 +322,7 @@ test_that("create_mcda_barplot_walkthrough validates weight sum", {
     weights = weights
   )
 
-  expect_true(inherits(result, "gtable"))
+  expect_true(inherits(result, "patchwork"))
 })
 
 test_that("create_mcda_barplot_walkthrough works with different drugs", {
@@ -312,7 +335,7 @@ test_that("create_mcda_barplot_walkthrough works with different drugs", {
     risk_criteria = c("Risk 1"),
     comparison_drug = "Drug A"
   )
-  expect_true(inherits(result_a, "gtable"))
+  expect_true(inherits(result_a, "patchwork"))
 
   # Test with Drug B
   result_b <- create_mcda_barplot_walkthrough(
@@ -321,7 +344,7 @@ test_that("create_mcda_barplot_walkthrough works with different drugs", {
     risk_criteria = c("Risk 1"),
     comparison_drug = "Drug B"
   )
-  expect_true(inherits(result_b, "gtable"))
+  expect_true(inherits(result_b, "patchwork"))
 })
 
 test_that("create_mcda_barplot_walkthrough handles custom colors", {
@@ -335,29 +358,35 @@ test_that("create_mcda_barplot_walkthrough handles custom colors", {
     fig_colors = c("#00FF00", "#FF00FF")
   )
 
-  expect_true(inherits(result, "gtable"))
+  expect_true(inherits(result, "patchwork"))
 })
 
-test_that("create_mcda_barplot_walkthrough handles favorable_direction parameter", {
-  mcda_data <- create_sample_mcda_data()
+test_that(
+  paste0(
+    "create_mcda_barplot_walkthrough ",
+    "handles favorable_direction parameter"
+  ),
+  {
+    mcda_data <- create_sample_mcda_data()
 
-  # Specify that Benefit 2 is "lower is better"
-  favorable_dir <- c(
-    `Benefit 1` = "higher",
-    `Benefit 2` = "lower",
-    `Risk 1` = "lower"
-  )
+    # Specify that Benefit 2 is "lower is better"
+    favorable_dir <- c(
+      `Benefit 1` = "higher",
+      `Benefit 2` = "lower",
+      `Risk 1` = "lower"
+    )
 
-  result <- create_mcda_barplot_walkthrough(
-    data = mcda_data,
-    benefit_criteria = c("Benefit 1", "Benefit 2"),
-    risk_criteria = c("Risk 1"),
-    comparison_drug = "Drug A",
-    favorable_direction = favorable_dir
-  )
+    result <- create_mcda_barplot_walkthrough(
+      data = mcda_data,
+      benefit_criteria = c("Benefit 1", "Benefit 2"),
+      risk_criteria = c("Risk 1"),
+      comparison_drug = "Drug A",
+      favorable_direction = favorable_dir
+    )
 
-  expect_true(inherits(result, "gtable"))
-})
+    expect_true(inherits(result, "patchwork"))
+  }
+)
 
 test_that("create_mcda_barplot_walkthrough uses default favorable_direction", {
   mcda_data <- create_sample_mcda_data()
@@ -371,7 +400,7 @@ test_that("create_mcda_barplot_walkthrough uses default favorable_direction", {
     comparison_drug = "Drug A"
   )
 
-  expect_true(inherits(result, "gtable"))
+  expect_true(inherits(result, "patchwork"))
 })
 
 # Integration tests with actual effects_table data
@@ -386,14 +415,25 @@ test_that("Integration: Full workflow with effects_table", {
   criteria_cols <- setdiff(colnames(mcda_data), "Treatment")
   expect_true(length(criteria_cols) > 0)
 
-  # Step 3: Assume first 3 are benefits, rest are risks (or adjust based on actual data)
+  # Step 3: Assume first 3 are benefits, rest are risks (or adjust based on
+  #         actual data)
   # For the test, we'll use the actual column names
   if (length(criteria_cols) >= 3) {
-    benefit_criteria <- criteria_cols[1:min(3, length(criteria_cols))]
+    benefit_criteria <- criteria_cols[seq_len(min(3, length(criteria_cols)))]
     risk_criteria <- if (length(criteria_cols) > 3) {
       criteria_cols[(length(benefit_criteria) + 1):length(criteria_cols)]
     } else {
       criteria_cols[1] # Use first as both if not enough columns
+    }
+
+    # Create clinical scales for all criteria
+    clinical_scales <- list()
+    for (crit in criteria_cols) {
+      clinical_scales[[crit]] <- list(
+        min = 0,
+        max = 1,
+        direction = if (crit %in% benefit_criteria) "increasing" else "decreasing"
+      )
     }
 
     # Get available drugs
@@ -405,7 +445,8 @@ test_that("Integration: Full workflow with effects_table", {
         data = mcda_data,
         benefit_criteria = benefit_criteria,
         risk_criteria = risk_criteria,
-        comparison_drug = drugs[1]
+        comparison_drug = drugs[1],
+        clinical_scales = clinical_scales
       )
       expect_true(inherits(result_comp, "patchwork"))
 
@@ -416,7 +457,7 @@ test_that("Integration: Full workflow with effects_table", {
         risk_criteria = risk_criteria,
         comparison_drug = drugs[1]
       )
-      expect_true(inherits(result_walk, "gtable"))
+      expect_true(inherits(result_walk, "patchwork"))
     }
   }
 })

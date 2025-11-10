@@ -59,7 +59,8 @@ gensurv_plot <- function(
   base_subjects,
   visits,
   fig_colors = c("#0571b0", "#ca0020"),
-  titlename = NULL, ben_name = "Primary Efficacy",
+  titlename = NULL,
+  ben_name = "Primary Efficacy",
   risk_name = "Recurring AE",
   legend_position = c(-0.03, 1.15),
   mar,
@@ -70,21 +71,33 @@ gensurv_plot <- function(
   eventtime <- obsv_duration <- obsv_unit <- eff_diff_lbl <- color_group <- NULL
 
   all_columns <- c(
-    "obsv_duration", "eventtime", "diff", "obsv_unit",
-    "outcome", "eff_diff_lbl"
+    "obsv_duration",
+    "eventtime",
+    "diff",
+    "obsv_unit",
+    "outcome",
+    "eff_diff_lbl"
   )
   nonexistent_columns <- setdiff(all_columns, colnames(df_outcome))
 
   if (length(nonexistent_columns) > 0) {
-    error_message <- paste0("You are missing a required variable in your
-                            dataframe:", nonexistent_columns)
+    error_message <- paste0(
+      "You are missing a required variable in your
+                            dataframe:",
+      nonexistent_columns
+    )
     stop(error_message)
   }
 
-  df_outcome %>% select(
-    eventtime, diff, obsv_duration, obsv_unit, outcome,
-    eff_diff_lbl
-  )
+  df_outcome %>%
+    select(
+      eventtime,
+      diff,
+      obsv_duration,
+      obsv_unit,
+      outcome,
+      eff_diff_lbl
+    )
 
   if (any(is.na(df_outcome))) {
     warning(paste(
@@ -104,8 +117,11 @@ gensurv_plot <- function(
   bmax <- mean1 + (3 * std1)
   error_rows <- which(!(df_ben$diff > bmin) | !(df_ben$diff < bmax))
   if (!all(df_ben$diff > bmin) && !all(df_ben$diff < bmax)) {
-    stop(paste("Custom error message: there is an outlier in your benefit data
-    in rows", error_rows))
+    stop(paste(
+      "Custom error message: there is an outlier in your benefit data
+    in rows",
+      error_rows
+    ))
   }
 
   df_risk <- df_outcome %>% dplyr::filter(outcome == "Risk")
@@ -115,16 +131,23 @@ gensurv_plot <- function(
   rmax <- mean2 + (3 * std2)
   error_rows <- which(!(df_risk$diff > rmin) | !(df_risk$diff < rmax))
   if (!all(df_risk$diff > rmin) && !all(df_risk$diff < rmax)) {
-    stop(paste("Custom error message: there is an outlier in your risk data
-               in rows", error_rows))
+    stop(paste(
+      "Custom error message: there is an outlier in your risk data
+               in rows",
+      error_rows
+    ))
   }
 
   stopifnot(all(df_outcome$outcome == "Benefit" | df_outcome$outcome == "Risk"))
 
   obsv_dur <- unique(df_outcome$obsv_duration)
   min1 <- min((df_outcome$diff) * base_subjects)
-  num_break <- ifelse(((min1 * (-2)) %% 6 == 0), 6,
-    ifelse(((min1 * (-2)) %% 4 == 0), 4,
+  num_break <- ifelse(
+    ((min1 * (-2)) %% 6 == 0),
+    6,
+    ifelse(
+      ((min1 * (-2)) %% 4 == 0),
+      4,
       ifelse(((min1 * (-2)) %% 5 == 0), 5, 7)
     )
   )
@@ -133,10 +156,12 @@ gensurv_plot <- function(
   max1 <- max((df_outcome$diff) * base_subjects)
 
   breaks2 <- pretty(range(actual_min, max1), n = num_break)
-  mytitle <- cowplot::ggdraw() + cowplot::draw_label(
-    titlename,
-    fontface = "bold", size = 12
-  )
+  mytitle <- cowplot::ggdraw() +
+    cowplot::draw_label(
+      titlename,
+      fontface = "bold",
+      size = 12
+    )
 
   window_size <- 5
 
@@ -161,13 +186,15 @@ gensurv_plot <- function(
   plot_temp <- ggplot() +
     geom_line(
       aes(
-        x = df_ben$eventtime, y = df_ben$diff * base_subjects,
+        x = df_ben$eventtime,
+        y = df_ben$diff * base_subjects,
         color = "Benefit"
       )
     ) +
     geom_line(
       aes(
-        x = df_risk$eventtime, y = df_risk$diff * base_subjects,
+        x = df_risk$eventtime,
+        y = df_risk$diff * base_subjects,
         color = "Risk"
       )
     ) +
@@ -197,34 +224,45 @@ gensurv_plot <- function(
     )
   )
 
-  legend_data$color_group <- factor(legend_data$color_group,
+  legend_data$color_group <- factor(
+    legend_data$color_group,
     levels = legend_levels
   )
 
   plot1 <- ggplot() +
     geom_hline(
-      yintercept = mab, color = "#0571b0", linetype = "dashed",
+      yintercept = mab,
+      color = "#0571b0",
+      linetype = "dashed",
       size = 1
     ) +
     geom_hline(
-      yintercept = mar, color = "#ca0020", linetype = "dashed",
+      yintercept = mar,
+      color = "#ca0020",
+      linetype = "dashed",
       size = 1
     ) +
-    annotate("text",
-      x = -0.5, y = ifelse(mar > mab, mab - adjustment,
-        mab + adjustment
-      ), color = "#0571b0",
-      label = "MAB", size = 3
+    annotate(
+      "text",
+      x = -0.5,
+      y = ifelse(mar > mab, mab - adjustment, mab + adjustment),
+      color = "#0571b0",
+      label = "MAB",
+      size = 3
     ) +
-    annotate("text",
+    annotate(
+      "text",
       x = (.95 * obsv_dur),
       y = ifelse(mar > mab, mar + adjustment, mar - adjustment),
-      color = "#ca0020", label = "MAR", size = 3
+      color = "#ca0020",
+      label = "MAR",
+      size = 3
     ) +
     geom_ribbon(
       data = df_ben %>% filter(diff * base_subjects >= mab),
       aes(
-        x = eventtime, ymin = lower_ci * base_subjects,
+        x = eventtime,
+        ymin = lower_ci * base_subjects,
         ymax = upper_ci * base_subjects
       ),
       fill = "#0571b0",
@@ -233,7 +271,8 @@ gensurv_plot <- function(
     geom_ribbon(
       data = df_ben %>% filter(diff * base_subjects < mab),
       aes(
-        x = eventtime, ymin = lower_ci * base_subjects,
+        x = eventtime,
+        ymin = lower_ci * base_subjects,
         ymax = upper_ci * base_subjects
       ),
       fill = "#504D4E",
@@ -242,7 +281,8 @@ gensurv_plot <- function(
     geom_ribbon(
       data = df_risk %>% filter(diff * base_subjects <= mar),
       aes(
-        x = eventtime, ymin = lower_ci * base_subjects,
+        x = eventtime,
+        ymin = lower_ci * base_subjects,
         ymax = upper_ci * base_subjects
       ),
       fill = "#ca0020",
@@ -251,16 +291,21 @@ gensurv_plot <- function(
     geom_ribbon(
       data = df_risk %>% filter(diff * base_subjects > mar),
       aes(
-        x = eventtime, ymin = lower_ci * base_subjects,
+        x = eventtime,
+        ymin = lower_ci * base_subjects,
         ymax = upper_ci * base_subjects
       ),
       fill = "#504D4E",
       alpha = 0.2
     ) +
     geom_text(
-      data = df_ben %>% filter(abs(diff * base_subjects - mcd) == min(
-        abs(diff * base_subjects - mcd)
-      )) %>%
+      data = df_ben %>%
+        filter(
+          abs(diff * base_subjects - mcd) ==
+            min(
+              abs(diff * base_subjects - mcd)
+            )
+        ) %>%
         slice(1),
       aes(x = eventtime, y = diff * base_subjects, label = "MCD"),
       color = "black",
@@ -270,7 +315,8 @@ gensurv_plot <- function(
     geom_line(
       data = legend_data,
       aes(x = eventtime, y = diff, color = color_group),
-      size = 0, alpha = 0
+      size = 0,
+      alpha = 0
     ) +
     scale_color_manual(
       name = "",
@@ -299,11 +345,10 @@ gensurv_plot <- function(
     ) +
     geom_hline(yintercept = 0, color = "grey") +
     coord_cartesian(
-      ylim =
-        c(
-          (actual_min - adjustment),
-          max(breaks2)
-        )
+      ylim = c(
+        (actual_min - adjustment),
+        max(breaks2)
+      )
     ) +
     scale_x_continuous(
       limits = c(-1.5, obsv_dur),
@@ -343,7 +388,8 @@ gensurv_plot <- function(
         )
       ),
       plot.subtitle = element_text(
-        color = fig_colors[2], size = 10,
+        color = fig_colors[2],
+        size = 10,
         vjust = 0,
         hjust = 1
       ),
@@ -361,9 +407,11 @@ gensurv_plot <- function(
       data = df_ben %>%
         filter(diff * base_subjects >= mab),
       aes(
-        x = eventtime, y = diff * base_subjects,
+        x = eventtime,
+        y = diff * base_subjects,
         color = "Benefit_Acceptable"
-      ), size = 0.5
+      ),
+      size = 0.5
     ) +
     geom_line(
       data = df_risk %>%
@@ -379,12 +427,17 @@ gensurv_plot <- function(
     ) +
     geom_point(
       data = df_ben %>%
-        filter(abs(diff * base_subjects - mcd) == min(
-          abs(diff * base_subjects - mcd)
-        )) %>%
+        filter(
+          abs(diff * base_subjects - mcd) ==
+            min(
+              abs(diff * base_subjects - mcd)
+            )
+        ) %>%
         slice(1),
       aes(x = eventtime, y = diff * base_subjects),
-      shape = 23, fill = "black", size = 2
+      shape = 23,
+      fill = "black",
+      size = 2
     )
 
   plot1 <- ggdraw() +
@@ -429,22 +482,32 @@ gensurv_plot <- function(
 #' @export
 #' @examples
 #' gensurv_table(cumexcess, 100, 6)
-gensurv_table <- function(df_table,
-                          base_subjects,
-                          visits,
-                          fig_colors = c("#0571b0", "#ca0020")) {
+gensurv_table <- function(
+  df_table,
+  base_subjects,
+  visits,
+  fig_colors = c("#0571b0", "#ca0020")
+) {
   effect <- outcome <- visit <- y <- color_ctrl_var <- z <- NULL
   eff_code <- eventtime <- obsv_duration <- subjects <- NULL
 
   if (!is.null(df_table$eventtime)) {
     all_columns <- c(
-      "obsv_duration", "n", "effect", "outcome", "eff_code",
-      "eventtime", "subjects"
+      "obsv_duration",
+      "n",
+      "effect",
+      "outcome",
+      "eff_code",
+      "eventtime",
+      "subjects"
     )
     nonexistent_columns <- setdiff(all_columns, colnames(df_table))
     if (length(nonexistent_columns) > 0) {
-      error_message <- paste0("You are missing a required variable in your
-                              dataframe:", nonexistent_columns)
+      error_message <- paste0(
+        "You are missing a required variable in your
+                              dataframe:",
+        nonexistent_columns
+      )
       stop(error_message)
     } else {
       df_table <- df_table %>%
@@ -452,13 +515,20 @@ gensurv_table <- function(df_table,
     }
   } else {
     all_columns <- c(
-      "obsv_duration", "n", "effect", "outcome", "eff_code",
+      "obsv_duration",
+      "n",
+      "effect",
+      "outcome",
+      "eff_code",
       "subjects"
     )
     nonexistent_columns <- setdiff(all_columns, colnames(df_table))
     if (length(nonexistent_columns) > 0) {
-      error_message <- paste0("You are missing a required variable in your
-                              dataframe:", nonexistent_columns)
+      error_message <- paste0(
+        "You are missing a required variable in your
+                              dataframe:",
+        nonexistent_columns
+      )
       stop(error_message)
     } else {
       df_table <- df_table %>%
@@ -492,12 +562,13 @@ gensurv_table <- function(df_table,
         eff_code == 0 & outcome == "Risk" ~ fig_colors[2]
       )
     ) %>%
-    mutate(effect = forcats::fct_reorder(
-      as.factor(paste(effect, outcome,
-        sep = " "
-      )), y,
-      .na_rm = FALSE
-    ))
+    mutate(
+      effect = forcats::fct_reorder(
+        as.factor(paste(effect, outcome, sep = " ")),
+        y,
+        .na_rm = FALSE
+      )
+    )
 
   df_table1 <- df_table1 %>%
     mutate(
@@ -535,7 +606,6 @@ gensurv_table <- function(df_table,
     breaks = seq(0, len, visits),
     labels = NULL
   )
-
 
   if (any(is.na(df_table))) {
     df_table3 <- na.omit(df_table1)
@@ -582,10 +652,12 @@ gensurv_table <- function(df_table,
     )
 
   df_table2 <- df_table %>%
-    mutate(z = dplyr::case_when(
-      eff_code == 0 ~ 1,
-      eff_code == 1 ~ 2
-    ))
+    mutate(
+      z = dplyr::case_when(
+        eff_code == 0 ~ 1,
+        eff_code == 1 ~ 2
+      )
+    )
 
   df_table2 <- df_table2 %>%
     mutate(
@@ -729,71 +801,99 @@ gensurv_table <- function(df_table,
 #'   mar = 30, mab = 10, mcd = 15
 #' )
 #'
-gensurv_combined <- function(df_plot,
-                             df_table,
-                             subjects_pt,
-                             visits_pt,
-                             fig_colors_pt = c("#0571b0", "#ca0020"),
-                             titlename_p =
-                               "Cumulative Excess # of Subjects w/ Events
+gensurv_combined <- function(
+  df_plot,
+  df_table,
+  subjects_pt,
+  visits_pt,
+  fig_colors_pt = c("#0571b0", "#ca0020"),
+  titlename_p = "Cumulative Excess # of Subjects w/ Events
                              (per 1000 Subjects)",
-                             mar,
-                             mab,
-                             mcd,
-                             rel_adjust = .12,
-                             rel_heights_table = c(1, 0.4),
-                             ben_name_p = "Primary Efficacy",
-                             risk_name_p = "Recurring AE",
-                             legend_position_p = c(-0.03, 1.15)) {
+  mar,
+  mab,
+  mcd,
+  rel_adjust = .12,
+  rel_heights_table = c(1, 0.4),
+  ben_name_p = "Primary Efficacy",
+  risk_name_p = "Recurring AE",
+  legend_position_p = c(-0.03, 1.15)
+) {
   if (!is.null(df_table$eventtime)) {
     all_columns <- c(
-      "obsv_duration", "n", "effect", "outcome", "eff_code",
-      "eventtime", "subjects"
-    )
-    nonexistent_columns <- setdiff(all_columns, colnames(df_table))
-    if (length(nonexistent_columns) > 0) {
-      error_message <- paste0("You are missing a required variable in your
-                              table dataframe:", nonexistent_columns)
-      stop(error_message)
-    }
-  } else {
-    all_columns <- c(
-      "obsv_duration", "n", "effect", "outcome", "eff_code",
+      "obsv_duration",
+      "n",
+      "effect",
+      "outcome",
+      "eff_code",
+      "eventtime",
       "subjects"
     )
     nonexistent_columns <- setdiff(all_columns, colnames(df_table))
     if (length(nonexistent_columns) > 0) {
-      error_message <- paste0("You are missing a required variable in your
-                              table dataframe:", nonexistent_columns)
+      error_message <- paste0(
+        "You are missing a required variable in your
+                              table dataframe:",
+        nonexistent_columns
+      )
+      stop(error_message)
+    }
+  } else {
+    all_columns <- c(
+      "obsv_duration",
+      "n",
+      "effect",
+      "outcome",
+      "eff_code",
+      "subjects"
+    )
+    nonexistent_columns <- setdiff(all_columns, colnames(df_table))
+    if (length(nonexistent_columns) > 0) {
+      error_message <- paste0(
+        "You are missing a required variable in your
+                              table dataframe:",
+        nonexistent_columns
+      )
       stop(error_message)
     }
   }
 
   all_columns <- c(
-    "obsv_duration", "eventtime", "diff", "obsv_unit",
-    "outcome", "eff_diff_lbl"
+    "obsv_duration",
+    "eventtime",
+    "diff",
+    "obsv_unit",
+    "outcome",
+    "eff_diff_lbl"
   )
   nonexistent_columns <- setdiff(all_columns, colnames(df_plot))
   if (length(nonexistent_columns) > 0) {
-    error_message <- paste0("You are missing a required variable in your
-                            plot dataframe:", nonexistent_columns)
+    error_message <- paste0(
+      "You are missing a required variable in your
+                            plot dataframe:",
+      nonexistent_columns
+    )
     stop(error_message)
   }
 
   plot <- gensurv_plot(
-    df_plot, subjects_pt, visits_pt,
+    df_plot,
+    subjects_pt,
+    visits_pt,
     fig_colors = fig_colors_pt,
-    ben_name = ben_name_p, risk_name = risk_name_p,
+    ben_name = ben_name_p,
+    risk_name = risk_name_p,
     legend_position = legend_position_p,
     mab = mab,
     mar = mar,
     mcd = mcd
   )
 
-  mytitle <- cowplot::ggdraw() + cowplot::draw_label(
-    titlename_p,
-    fontface = "bold", size = 12
-  )
+  mytitle <- cowplot::ggdraw() +
+    cowplot::draw_label(
+      titlename_p,
+      fontface = "bold",
+      size = 12
+    )
 
   plot <- cowplot::plot_grid(
     mytitle,
@@ -805,7 +905,9 @@ gensurv_combined <- function(df_plot,
   )
 
   table <- gensurv_table(
-    df_table, subjects_pt, visits_pt,
+    df_table,
+    subjects_pt,
+    visits_pt,
     fig_colors = fig_colors_pt
   )
 
@@ -852,7 +954,13 @@ gensurv_combined <- function(df_plot,
 #' @examples
 #' gensurv(111, 2000, 1000, 36, .005, .0048, "Weeks")
 gensurv <- function(
-  seed, n1, n2, obsv_duration, lambda1, lambda2, unit = "Months"
+  seed,
+  n1,
+  n2,
+  obsv_duration,
+  lambda1,
+  lambda2,
+  unit = "Months"
 ) {
   diff_sim <- NULL
   stopifnot(is.numeric(seed))
@@ -885,7 +993,8 @@ gensurv <- function(
     df_sim$diff_sim[t] <- sum(
       sim1$eventtime < eventtime_sim[t] & sim1$status == 1
     ) /
-      n1 - sum(sim2$eventtime < eventtime_sim[t] & sim2$status == 1) / n2
+      n1 -
+      sum(sim2$eventtime < eventtime_sim[t] & sim2$status == 1) / n2
   }
   df_sim %>%
     mutate(obsv_duration = obsv_duration, obsv_unit = unit) %>%

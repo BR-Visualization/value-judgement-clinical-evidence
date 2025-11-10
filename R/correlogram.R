@@ -42,15 +42,21 @@
 #'
 #' @examples
 #' create_correlogram(corr)
-create_correlogram <- function(df,
-                               br = c(
-                                 "Benefit", "Benefit", "Benefit", "Risk",
-                                 "Risk", "Risk"
-                               ),
-                               diagonal = FALSE,
-                               method = "square",
-                               type_c = "lower",
-                               fig_colors = c("#0571b0", "#ca0020")) {
+create_correlogram <- function(
+  df,
+  br = c(
+    "Benefit",
+    "Benefit",
+    "Benefit",
+    "Risk",
+    "Risk",
+    "Risk"
+  ),
+  diagonal = FALSE,
+  method = "square",
+  type_c = "lower",
+  fig_colors = c("#0571b0", "#ca0020")
+) {
   classes <- numeric()
   shortcs <- numeric()
 
@@ -66,7 +72,8 @@ create_correlogram <- function(df,
     miss_vars <- colnames(df)[colSums(is.na(df) > 0)]
     warning(paste(
       "you have a missing value in row(s)",
-      which(rowSums(is.na(df)) > 0), "and column(s)",
+      which(rowSums(is.na(df)) > 0),
+      "and column(s)",
       which(colSums(is.na(df)) > 0)
     ))
     df[miss_vars] <- lapply(df[miss_vars], function(x) {
@@ -112,12 +119,16 @@ create_correlogram <- function(df,
       ifelse(
         all(is.numeric(column_dat)),
         c(classes[i] <- "continuous", shortcs[i] <- "c"),
-        ifelse(all(is.factor(column_dat)), c(
-          classes[i] <- "ordinal",
-          shortcs[i] <- "o"
-        ),
-        stop("Please review your dataframe inputs to ensure correct
-                formatting.")
+        ifelse(
+          all(is.factor(column_dat)),
+          c(
+            classes[i] <- "ordinal",
+            shortcs[i] <- "o"
+          ),
+          stop(
+            "Please review your dataframe inputs to ensure correct
+                formatting."
+          )
         )
       )
     )
@@ -179,19 +190,23 @@ create_correlogram <- function(df,
                     # as the x attribute and continuous variable as the y
                     # attribute.
                     mat[i, j] <- cor(rank(df[, i]), df[, j]),
-                    ifelse(type == "ob",
+                    ifelse(
+                      type == "ob",
                       # calculates glass rank biserial correlation with an ordinal
                       # variable as the x attribute and binary variable as the y
                       # attribute.
                       mat[i, j] <- enframe(wilcoxonRG(table(
-                        df[, j], df[, i]
+                        df[, j],
+                        df[, i]
                       )))[1, 2],
-                      ifelse(type == "bo",
+                      ifelse(
+                        type == "bo",
                         # calculates glass rank biserial correlation with a binary
                         # variable as the x attribute and an ordinal variable as
                         # the y attribute.
                         mat[i, j] <- enframe(wilcoxonRG(table(
-                          df[, i], df[, j]
+                          df[, i],
+                          df[, j]
                         )))[1, 2]
                       )
                     )
@@ -227,16 +242,30 @@ create_correlogram <- function(df,
   }
 
   # Create markdown-formatted labels with colors
-  label_colors_horizontal <- ifelse(br[colnames(mat)] == "Benefit", fig_colors[1], fig_colors[2])
-  label_colors_vertical <- ifelse(br[colnames(mat)] == "Benefit", fig_colors[1], fig_colors[2])
+  label_colors_horizontal <- ifelse(
+    br[colnames(mat)] == "Benefit",
+    fig_colors[1],
+    fig_colors[2]
+  )
+  label_colors_vertical <- ifelse(
+    br[colnames(mat)] == "Benefit",
+    fig_colors[1],
+    fig_colors[2]
+  )
 
   labels_x_markdown <- paste0(
-    "<span style='color:", label_colors_horizontal, "'>",
-    str_wrap(colnames(mat), width = 7), "</span>"
+    "<span style='color:",
+    label_colors_horizontal,
+    "'>",
+    str_wrap(colnames(mat), width = 7),
+    "</span>"
   )
   labels_y_markdown <- paste0(
-    "<span style='color:", label_colors_vertical, "'>",
-    str_wrap(colnames(mat), width = 7), "</span>"
+    "<span style='color:",
+    label_colors_vertical,
+    "'>",
+    str_wrap(colnames(mat), width = 7),
+    "</span>"
   )
 
   fig <- ggplot(corr_df, aes(x0 = x0, y0 = y0, a = a, b = b, angle = angle)) +
@@ -253,17 +282,22 @@ create_correlogram <- function(df,
     labs(x = NULL, y = NULL) +
     theme(
       axis.text.x = ggtext::element_markdown(
-        angle = 0, hjust = 0.5, size = rel(1.2)
+        angle = 0,
+        hjust = 0.5,
+        size = rel(1.2)
       ),
       axis.text.y = ggtext::element_markdown(
-        angle = 0, hjust = 0.5, size = rel(1.2)
+        angle = 0,
+        hjust = 0.5,
+        size = rel(1.2)
       ),
       plot.margin = margin(0, 0, 0, 0, unit = "cm"),
       legend.position = "top",
       legend.title = element_blank(),
       legend.text = element_text(
         size = rel(1.2),
-        margin = margin(t = 7), color = "black"
+        margin = margin(t = 7),
+        color = "black"
       ),
       legend.key.width = unit(1, "null"),
       legend.key.height = unit(0.35, "cm"),

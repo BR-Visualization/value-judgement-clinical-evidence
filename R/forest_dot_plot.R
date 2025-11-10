@@ -310,7 +310,8 @@ create_forest_dot_plot <- function(
         shade_data <- thresholds_with_treatment %>%
           dplyr::mutate(
             # Check if axis should be reversed for this outcome
-            outcome_needs_reverse = Outcome %in% benefit_outcomes_reverse &
+            outcome_needs_reverse = Outcome %in%
+              benefit_outcomes_reverse &
               Direction == "less",
             # Adjust shading based on axis direction
             xmin = dplyr::case_when(

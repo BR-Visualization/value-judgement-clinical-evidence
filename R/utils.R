@@ -106,10 +106,12 @@ colfun <- function() {
 #' @export
 #' @examples
 #' control_fonts(base_font_size = 10)
-control_fonts <- function(base_font_size = 9,
-                          h1 = 12,
-                          h2 = 10,
-                          label = base_font_size + 1) {
+control_fonts <- function(
+  base_font_size = 9,
+  h1 = 12,
+  h2 = 10,
+  label = base_font_size + 1
+) {
   rel <- 7.253 / base_font_size
 
   list(
@@ -141,41 +143,43 @@ control_fonts <- function(base_font_size = 9,
 #'
 #' @return theme for chart
 #' @export
-br_charts_theme <- function(base_family = "",
-                            base_font_size = 9,
-                            base_stroke = 1,
-                            margin = 1,
-                            get_fonts = control_fonts,
-                            get_colors = colfun()[["control_palettes"]],
-                            axis_text_x = ggplot2::element_text(
-                              colour = black
-                            ),
-                            axis_line = ggplot2::element_line(
-                              colour = black,
-                              size = stroke_size
-                            ),
-                            axis_title_y = ggplot2::element_text(),
-                            axis_text_y_left = ggplot2::element_text(
-                              margin = ggplot2::margin(
-                                t = 0,
-                                r = spacing / 2,
-                                l = 0,
-                                b = 0,
-                                unit = "pt"
-                              )
-                            ),
-                            legend_position = "top",
-                            panel_grid_minor = ggplot2::element_line(
-                              colour = grey_2,
-                              size = stroke_size / 2,
-                              linetype = "dashed"
-                            ),
-                            panel_grid_major = ggplot2::element_line(
-                              colour = grey_2,
-                              size = stroke_size / 2,
-                              linetype = "dashed"
-                            ),
-                            ...) {
+br_charts_theme <- function(
+  base_family = "",
+  base_font_size = 9,
+  base_stroke = 1,
+  margin = 1,
+  get_fonts = control_fonts,
+  get_colors = colfun()[["control_palettes"]],
+  axis_text_x = ggplot2::element_text(
+    colour = black
+  ),
+  axis_line = ggplot2::element_line(
+    colour = black,
+    size = stroke_size
+  ),
+  axis_title_y = ggplot2::element_text(),
+  axis_text_y_left = ggplot2::element_text(
+    margin = ggplot2::margin(
+      t = 0,
+      r = spacing / 2,
+      l = 0,
+      b = 0,
+      unit = "pt"
+    )
+  ),
+  legend_position = "top",
+  panel_grid_minor = ggplot2::element_line(
+    colour = grey_2,
+    size = stroke_size / 2,
+    linetype = "dashed"
+  ),
+  panel_grid_major = ggplot2::element_line(
+    colour = grey_2,
+    size = stroke_size / 2,
+    linetype = "dashed"
+  ),
+  ...
+) {
   # stroke size
   stroke_size <- base_stroke * 0.47
 
@@ -294,7 +298,6 @@ br_charts_theme <- function(base_family = "",
     legend.box = NULL,
     legend.spacing.x = ggplot2::unit(spacing / 2, "pt"),
 
-
     # 4 Title & subtitle =======================
     # it changes the font, size, weight and colour
     plot.title.position = "plot",
@@ -341,7 +344,8 @@ br_charts_theme <- function(base_family = "",
       hjust = 0,
       margin = ggplot2::margin(t = 0, r = 0, l = 0, b = spacing, unit = "pt")
     )
-  ) + ggplot2::theme(...)
+  ) +
+    ggplot2::theme(...)
 }
 
 #' Prepare data analysis for binary and continuous outcomes with Supplied
@@ -360,7 +364,6 @@ br_charts_theme <- function(base_family = "",
 #' @details DETAILS
 #' @rdname prepare_br_supplied_ci
 #' @export
-
 
 prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
   outcome <- sub(".*_", "", deparse(substitute(df)))
@@ -399,7 +402,6 @@ prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
 #' @details DETAILS
 #' @rdname prepare_br_calculated_ci
 #' @export
-
 
 prepare_br_calculated_ci <- function(df, colname1, colname2, cl = 0.95, func) {
   outcome <- sub(".*_", "", deparse(substitute(df)))
@@ -486,8 +488,10 @@ labs_bold <- function(cond, bold, nonbold) {
   }
 
   # Writing a message that will be displayed in the log
-  message(glue::glue('[{format(Sys.time(),"%F %T")}] > Dataout object from
-               the labs_bold function is created'))
+  message(glue::glue(
+    '[{format(Sys.time(),"%F %T")}] > Dataout object from
+               the labs_bold function is created'
+  ))
 
   # Returning the dataout object
   gout
@@ -508,7 +512,8 @@ labs_bold <- function(cond, bold, nonbold) {
 #' relmin(-0.3, "Fixed")
 relmin <- function(rmin, type_scale) {
   if (type_scale == "Fixed") {
-    ifelse(rmin >= 0,
+    ifelse(
+      rmin >= 0,
       0,
       ifelse(
         rmin >= -1,
@@ -517,12 +522,10 @@ relmin <- function(rmin, type_scale) {
       )
     )
   } else {
-    ifelse(rmin >= 1,
+    ifelse(
+      rmin >= 1,
       floor(rmin),
-      ifelse(rmin >= -1,
-        floor(10 * rmin) / 10,
-        floor(rmin)
-      )
+      ifelse(rmin >= -1, floor(10 * rmin) / 10, floor(rmin))
     )
   }
 }
@@ -542,7 +545,8 @@ relmin <- function(rmin, type_scale) {
 #' relmax(-0.3, "Fixed")
 relmax <- function(rmax, type_scale) {
   if (type_scale == "Fixed") {
-    ifelse(rmax <= 0,
+    ifelse(
+      rmax <= 0,
       0,
       ifelse(
         rmax <= 1,
@@ -551,12 +555,10 @@ relmax <- function(rmax, type_scale) {
       )
     )
   } else {
-    ifelse(rmax <= -1,
+    ifelse(
+      rmax <= -1,
       ceiling(rmax),
-      ifelse(rmax <= 1,
-        ceiling(10 * rmax) / 10,
-        ceiling(rmax)
-      )
+      ifelse(rmax <= 1, ceiling(10 * rmax) / 10, ceiling(rmax))
     )
   }
 }
@@ -582,16 +584,18 @@ relmax <- function(rmax, type_scale) {
 #'
 #' @export
 #'
-ggsave_custom <- function(save_name,
-                          inplot = NULL,
-                          imgpath = ".",
-                          wdth = 7,
-                          hght = 4.1,
-                          unts = "in",
-                          bgcol = "white",
-                          dpi = 600,
-                          web_suffix = FALSE,
-                          ...) {
+ggsave_custom <- function(
+  save_name,
+  inplot = NULL,
+  imgpath = ".",
+  wdth = 7,
+  hght = 4.1,
+  unts = "in",
+  bgcol = "white",
+  dpi = 600,
+  web_suffix = FALSE,
+  ...
+) {
   if (is.null(inplot)) {
     inplot <- ggplot2::last_plot()
   }
@@ -610,22 +614,41 @@ ggsave_custom <- function(save_name,
     # Record current device to restore later
     current_dev <- grDevices::dev.cur()
 
-    switch(ext,
+    switch(
+      ext,
       png = grDevices::png(
-        filename = file_path, width = wdth, height = hght,
-        units = unts, res = dpi, bg = bgcol, ...
+        filename = file_path,
+        width = wdth,
+        height = hght,
+        units = unts,
+        res = dpi,
+        bg = bgcol,
+        ...
       ),
       pdf = grDevices::pdf(
-        file = file_path, width = wdth, height = hght,
-        bg = bgcol, ...
+        file = file_path,
+        width = wdth,
+        height = hght,
+        bg = bgcol,
+        ...
       ),
       jpeg = grDevices::jpeg(
-        filename = file_path, width = wdth, height = hght,
-        units = unts, res = dpi, bg = bgcol, ...
+        filename = file_path,
+        width = wdth,
+        height = hght,
+        units = unts,
+        res = dpi,
+        bg = bgcol,
+        ...
       ),
       grDevices::png(
-        filename = file_path, width = wdth, height = hght,
-        units = unts, res = dpi, bg = bgcol, ...
+        filename = file_path,
+        width = wdth,
+        height = hght,
+        units = unts,
+        res = dpi,
+        bg = bgcol,
+        ...
       )
     )
     grid::grid.draw(inplot)
@@ -656,28 +679,48 @@ ggsave_custom <- function(save_name,
       imgpath,
       paste0(
         tools::file_path_sans_ext(save_name),
-        "_web.", ext
+        "_web.",
+        ext
       )
     )
     if (is_grob) {
       current_dev <- grDevices::dev.cur()
 
-      switch(ext,
+      switch(
+        ext,
         png = grDevices::png(
-          filename = web_path, width = wdth, height = hght,
-          units = unts, res = 120, bg = bgcol, ...
+          filename = web_path,
+          width = wdth,
+          height = hght,
+          units = unts,
+          res = 120,
+          bg = bgcol,
+          ...
         ),
         pdf = grDevices::pdf(
-          file = web_path, width = wdth, height = hght,
-          bg = bgcol, ...
+          file = web_path,
+          width = wdth,
+          height = hght,
+          bg = bgcol,
+          ...
         ),
         jpeg = grDevices::jpeg(
-          filename = web_path, width = wdth, height = hght,
-          units = unts, res = 120, bg = bgcol, ...
+          filename = web_path,
+          width = wdth,
+          height = hght,
+          units = unts,
+          res = 120,
+          bg = bgcol,
+          ...
         ),
         grDevices::png(
-          filename = web_path, width = wdth, height = hght,
-          units = unts, res = 120, bg = bgcol, ...
+          filename = web_path,
+          width = wdth,
+          height = hght,
+          units = unts,
+          res = 120,
+          bg = bgcol,
+          ...
         )
       )
       grid::grid.draw(inplot)
