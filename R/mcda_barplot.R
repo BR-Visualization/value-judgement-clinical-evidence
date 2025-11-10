@@ -110,7 +110,7 @@ prepare_mcda_data <- function(
   return(result)
 }
 
-#' Create MCDA Bar Chart: From Raw Data to Treatment Differences
+#' Create MCDA Bar Chart: Normalized Values Comparison
 #'
 #' @param data A data frame in wide format with Treatment column and criteria columns.
 #'   Required parameter - must be provided. Should be the output from prepare_mcda_data(),
@@ -121,11 +121,15 @@ prepare_mcda_data <- function(
 #'   placebo in the visualization. Default is "Drug A".
 #' @param benefit_criteria Character vector of benefit criterion names (column names in data).
 #' @param risk_criteria Character vector of risk criterion names (column names in data).
+#' @param clinical_scales List defining clinical reference levels for each criterion.
+#'   Each element should be a list with: min (lower threshold), max (upper threshold),
+#'   direction ("increasing" for higher is better, "decreasing" for lower is better).
 #' @param fig_colors A vector of length 2 specifying colors for benefits and risks.
 #'   Default is c("#0571b0", "#ca0020") to match correlogram colors.
 #'
-#' @return A patchwork object showing three panels: Placebo values, Drug values, and
-#'   Treatment Differences (Drug - Placebo), or NULL if data is not provided.
+#' @return A patchwork object showing three panels: Normalized Placebo values,
+#'   Normalized Drug values, and Difference of Normalized Values (Drug - Placebo),
+#'   or NULL if data is not provided.
 #' @export
 #' @import ggplot2
 #' @importFrom patchwork wrap_plots
@@ -142,12 +146,22 @@ prepare_mcda_data <- function(
 #' # 2    Drug A      0.46        20        60   0.46  0.100
 #' # 3    Drug B      ...
 #'
-#' # Create comparison barplot showing Placebo | Drug B | Treatment Difference
+#' # Define clinical scales
+#' clinical_scales <- list(
+#'   `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
+#'   `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
+#'   `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
+#'   `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
+#'   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+#' )
+#'
+#' # Create comparison barplot showing Normalized Placebo | Normalized Drug B | Difference
 #' barplot_comp <- create_mcda_barplot_comparison(
 #'   data = mcda_data,
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
 #'   risk_criteria = c("Risk 1", "Risk 2"),
-#'   comparison_drug = "Drug B"
+#'   comparison_drug = "Drug B",
+#'   clinical_scales = clinical_scales
 #' )
 #'
 #' # Compare a different drug
@@ -156,7 +170,8 @@ prepare_mcda_data <- function(
 #'   data = mcda_data,
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
 #'   risk_criteria = c("Risk 1", "Risk 2"),
-#'   comparison_drug = "Drug A"
+#'   comparison_drug = "Drug A",
+#'   clinical_scales = clinical_scales
 #' )
 #' ggsave(
 #'   "inst/img/barplot_mcda_comparison_drug_a.png",
@@ -171,6 +186,7 @@ create_mcda_barplot_comparison <- function(data = NULL,
                                            comparison_drug = "Drug A",
                                            benefit_criteria = NULL,
                                            risk_criteria = NULL,
+                                           clinical_scales = NULL,
                                            fig_colors = c("#0571b0", "#ca0020")) {
   # Check if data is provided
   if (is.null(data)) {
@@ -181,6 +197,11 @@ create_mcda_barplot_comparison <- function(data = NULL,
   # Check if criteria are provided
   if (is.null(benefit_criteria) || is.null(risk_criteria)) {
     stop("Both benefit_criteria and risk_criteria must be specified as column names in the data.")
+  }
+
+  # Check if clinical scales are provided
+  if (is.null(clinical_scales)) {
+    stop("Clinical scales must be provided. Please define clinical reference levels for normalization.")
   }
 
   # Extract placebo and drug data
@@ -205,77 +226,58 @@ create_mcda_barplot_comparison <- function(data = NULL,
     stop(paste0("The following criteria columns are not found in data: ", paste(missing_cols, collapse = ", "), ". Available columns: ", paste(setdiff(colnames(data), "Treatment"), collapse = ", ")))
   }
 
-  # Create values for each panel
-  placebo_values <- unlist(placebo_row[, all_criteria, drop = FALSE])
-  drug_values <- unlist(drug_row[, all_criteria, drop = FALSE])
+  # Helper function to normalize values using clinical scales
+  normalize_value <- function(x, scale) {
+    if (is.null(scale$min) || is.null(scale$max) || is.null(scale$direction)) {
+      stop("Scale must have min, max, and direction")
+    }
+
+    if (scale$direction == "increasing") {
+      # Higher values are better
+      values <- 100 * (x - scale$min) / (scale$max - scale$min)
+    } else if (scale$direction == "decreasing") {
+      # Lower values are better
+      values <- 100 * (scale$max - x) / (scale$max - scale$min)
+    } else {
+      stop("Direction must be 'increasing' or 'decreasing'")
+    }
+
+    # Allow extrapolation by default
+    if (!is.null(scale$allow_extrapolation) && !scale$allow_extrapolation) {
+      values <- pmax(0, pmin(100, values))
+    }
+
+    return(values)
+  }
+
+  # Get raw values
+  placebo_raw <- unlist(placebo_row[, all_criteria, drop = FALSE])
+  drug_raw <- unlist(drug_row[, all_criteria, drop = FALSE])
+
+  # Normalize values for each criterion
+  placebo_values <- sapply(seq_along(all_criteria), function(i) {
+    criterion <- all_criteria[i]
+    normalize_value(placebo_raw[i], clinical_scales[[criterion]])
+  })
+  names(placebo_values) <- all_criteria
+
+  drug_values <- sapply(seq_along(all_criteria), function(i) {
+    criterion <- all_criteria[i]
+    normalize_value(drug_raw[i], clinical_scales[[criterion]])
+  })
+  names(drug_values) <- all_criteria
+
+  # Calculate difference of normalized values
   diff_values <- drug_values - placebo_values
 
-  # Adjust for risks (for display purposes, scale if needed)
-  # For AE/SAE that are proportions, multiply by 100 for percentage
-  for (i in seq_along(all_criteria)) {
-    criterion <- all_criteria[i]
-    if (grepl("Efficacy", criterion, ignore.case = TRUE) &&
-      max(abs(c(placebo_values[i], drug_values[i]))) < 1) {
-      placebo_values[i] <- placebo_values[i] * 100
-      drug_values[i] <- drug_values[i] * 100
-      diff_values[i] <- diff_values[i] * 100
-    } else if (grepl("AE|SAE", criterion, ignore.case = TRUE) &&
-      max(abs(c(placebo_values[i], drug_values[i]))) < 1) {
-      placebo_values[i] <- placebo_values[i] * 100
-      drug_values[i] <- drug_values[i] * 100
-      diff_values[i] <- diff_values[i] * 100
-    }
-  }
+  # For normalized values, use 0-100 scale
+  # Determine the maximum absolute value across all normalized values for scaling
+  max_norm_value <- max(c(abs(placebo_values), abs(drug_values)), na.rm = TRUE)
 
-  # Helper function to determine tick interval based on magnitude
-  get_tick_interval <- function(max_val) {
-    if (max_val <= 0.01) {
-      0.002
-    } else if (max_val <= 0.05) {
-      0.01
-    } else if (max_val <= 1) {
-      0.2
-    } else if (max_val <= 5) {
-      1
-    } else if (max_val <= 10) {
-      2
-    } else if (max_val <= 20) {
-      5
-    } else if (max_val <= 50) {
-      10
-    } else if (max_val <= 100) {
-      20
-    } else {
-      50
-    }
-  }
-
-  # Helper function to round up to nearest tick interval
-  round_to_tick <- function(x, interval) {
-    ceiling(x / interval) * interval
-  }
-
-  # Calculate max value for each outcome
-  outcome_maxes <- sapply(seq_along(all_criteria), function(i) {
-    max(c(placebo_values[i], drug_values[i]), na.rm = TRUE)
-  })
-
-  # Determine tick interval for each outcome
-  outcome_intervals <- sapply(outcome_maxes, get_tick_interval)
-
-  # For each interval group, find the max value and create common limits
-  outcome_scale_info <- lapply(seq_along(all_criteria), function(i) {
-    interval <- outcome_intervals[i]
-    # Find all outcomes with same interval
-    same_interval_idx <- which(outcome_intervals == interval)
-    group_max <- max(outcome_maxes[same_interval_idx], na.rm = TRUE)
-    group_max_rounded <- round_to_tick(group_max, interval)
-
-    list(
-      lim = c(0, group_max_rounded),
-      breaks = seq(0, group_max_rounded, by = interval)
-    )
-  })
+  # Set scale to 0-100 or extend if extrapolation occurs
+  norm_max <- max(100, ceiling(max_norm_value / 10) * 10)
+  norm_lim <- c(0, norm_max)
+  norm_breaks <- seq(0, norm_max, by = 20)
 
   # Create separate plots for each outcome, then combine them
   outcome_plots <- list()
@@ -286,14 +288,22 @@ create_mcda_barplot_comparison <- function(data = NULL,
 
     # Create data for this outcome - each row is a different treatment group
     outcome_data <- data.frame(
-      Group = c(placebo_name, comparison_drug, "Treatment Difference"),
+      Group = c(
+        paste("Normalized", placebo_name),
+        paste("Normalized", comparison_drug),
+        "Difference"
+      ),
       Value = c(placebo_values[i], drug_values[i], diff_values[i]),
       Type = criterion_type,
       stringsAsFactors = FALSE
     )
 
     outcome_data$Group <- factor(outcome_data$Group,
-      levels = c(placebo_name, comparison_drug, "Treatment Difference")
+      levels = c(
+        paste("Normalized", placebo_name),
+        paste("Normalized", comparison_drug),
+        "Difference"
+      )
     )
 
     # Determine if this is the first outcome (for labels on left)
@@ -302,27 +312,23 @@ create_mcda_barplot_comparison <- function(data = NULL,
     # Determine if this is the last outcome (for x-axis labels)
     is_last <- (i == length(all_criteria))
 
-    # Use the scale for this outcome's group (aligned with similar-scaled outcomes)
-    raw_lim <- outcome_scale_info[[i]]$lim
-    raw_breaks <- outcome_scale_info[[i]]$breaks
-
     # Calculate range for difference plot - symmetric around zero
     diff_val <- abs(diff_values[i])
-    diff_max <- diff_val * 1.15
+    diff_max <- max(diff_val * 1.15, 10) # At least 10 units for scale
     diff_lim <- c(-diff_max, diff_max)
 
     # Create individual plots for each group
-    # Plot 1: Placebo
+    # Plot 1: Normalized Placebo
     plot_placebo <- ggplot(
-      outcome_data[outcome_data$Group == placebo_name, ],
+      outcome_data[outcome_data$Group == paste("Normalized", placebo_name), ],
       aes(x = Value, y = Type, fill = Type)
     ) +
       geom_col(width = 0.7) +
       geom_vline(xintercept = 0, linetype = "solid", color = "black") +
       scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
-      scale_x_continuous(limits = raw_lim, breaks = raw_breaks, expand = c(0.02, 0)) +
+      scale_x_continuous(limits = norm_lim, breaks = norm_breaks, expand = c(0.02, 0)) +
       labs(
-        title = if (is_first) placebo_name else NULL,
+        title = if (is_first) paste("Normalized", placebo_name) else NULL,
         x = NULL,
         y = criterion
       ) +
@@ -340,20 +346,20 @@ create_mcda_barplot_comparison <- function(data = NULL,
         panel.grid.minor.y = element_blank(),
         plot.margin = margin(5, 15, 5, 5)
       ) +
-      geom_text(aes(label = Value), hjust = -0.1, size = 3) +
+      geom_text(aes(label = sprintf("%.0f", Value)), hjust = -0.1, size = 3) +
       coord_cartesian(clip = "off")
 
-    # Plot 2: Drug A
+    # Plot 2: Normalized Drug
     plot_drug <- ggplot(
-      outcome_data[outcome_data$Group == comparison_drug, ],
+      outcome_data[outcome_data$Group == paste("Normalized", comparison_drug), ],
       aes(x = Value, y = Type, fill = Type)
     ) +
       geom_col(width = 0.7) +
       geom_vline(xintercept = 0, linetype = "solid", color = "black") +
       scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
-      scale_x_continuous(limits = raw_lim, breaks = raw_breaks, expand = c(0.02, 0)) +
+      scale_x_continuous(limits = norm_lim, breaks = norm_breaks, expand = c(0.02, 0)) +
       labs(
-        title = if (is_first) comparison_drug else NULL,
+        title = if (is_first) paste("Normalized", comparison_drug) else NULL,
         x = NULL,
         y = ""
       ) +
@@ -370,12 +376,12 @@ create_mcda_barplot_comparison <- function(data = NULL,
         panel.grid.minor.y = element_blank(),
         plot.margin = margin(5, 15, 5, 5)
       ) +
-      geom_text(aes(label = Value), hjust = -0.1, size = 3) +
+      geom_text(aes(label = sprintf("%.0f", Value)), hjust = -0.1, size = 3) +
       coord_cartesian(clip = "off")
 
-    # Plot 3: Treatment Difference
+    # Plot 3: Normalized Difference
     plot_diff <- ggplot(
-      outcome_data[outcome_data$Group == "Treatment Difference", ],
+      outcome_data[outcome_data$Group == "Difference", ],
       aes(x = Value, y = Type, fill = Type)
     ) +
       geom_col(width = 0.7) +
@@ -383,7 +389,7 @@ create_mcda_barplot_comparison <- function(data = NULL,
       scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
       scale_x_continuous(limits = diff_lim, expand = c(0.02, 0)) +
       labs(
-        title = if (is_first) "Treatment Difference" else NULL,
+        title = if (is_first) "Difference" else NULL,
         x = NULL,
         y = ""
       ) +
@@ -400,7 +406,7 @@ create_mcda_barplot_comparison <- function(data = NULL,
         panel.grid.minor.y = element_blank(),
         plot.margin = margin(5, 15, 5, 5)
       ) +
-      geom_text(aes(label = Value),
+      geom_text(aes(label = sprintf("%.0f", Value)),
         hjust = ifelse(diff_values[i] < 0, 1.2, -0.1),
         size = 3
       ) +
@@ -449,11 +455,10 @@ create_mcda_barplot_comparison <- function(data = NULL,
 #' @param fig_colors A vector of length 2 specifying colors for benefits and risks.
 #'   Default is c("#0571b0", "#ca0020").
 #'
-#' @return A grid arrangement of four panels showing: (1) Treatment Difference
-#'   (raw values: Drug - Placebo), (2) Normalized Difference (on 0-100 scale:
-#'   Drug normalized - Placebo normalized), (3) Weights, and (4) Weighted
-#'   contributions (Benefit-Risk scores), or NULL if data is not provided.
-#'   Negative values in panels 2 and 4 indicate the drug performs worse than placebo.
+#' @return A grid arrangement of three panels showing: (1) Normalized Difference
+#'   (on 0-100 scale: Drug normalized - Placebo normalized), (2) Weights, and
+#'   (3) Weighted contributions (Benefit-Risk scores), or NULL if data is not provided.
+#'   Negative values in panels 1 and 3 indicate the drug performs worse than placebo.
 #' @export
 #' @import ggplot2
 #' @importFrom gridExtra arrangeGrob
@@ -538,7 +543,7 @@ create_mcda_barplot_comparison <- function(data = NULL,
 #' ggsave(
 #'   "inst/img/barplot_mcda_walkthrough_drug_a.png",
 #'   barplot_walk_a,
-#'   width = 14,
+#'   width = 12,
 #'   height = 6,
 #'   dpi = 300
 #' )
@@ -600,19 +605,6 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   # Check if comparison_drug exists
   if (!(comparison_drug %in% treatments$Treatment)) {
     stop(paste0("Comparison drug '", comparison_drug, "' not found in data. Available treatments: ", paste(unique(data$Treatment), collapse = ", ")))
-  }
-
-  # Create matrix for raw differences (Drug - Placebo) for display
-  raw_diff_matrix <- matrix(NA, nrow = nrow(treatments), ncol = length(all_criteria))
-  colnames(raw_diff_matrix) <- criteria_internal
-  rownames(raw_diff_matrix) <- treatments$Treatment
-
-  for (i in seq_along(all_criteria)) {
-    criterion <- all_criteria[i]
-    criterion_int <- criteria_internal[i]
-
-    # Always calculate raw difference as Drug - Placebo for display
-    raw_diff_matrix[, criterion_int] <- as.numeric(treatments[[criterion]]) - as.numeric(placebo_row[[criterion]])
   }
 
   # Create matrices for actual values (to be normalized separately)
@@ -775,13 +767,12 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
   if (length(drug_idx) == 0) drug_idx <- 1
 
   # For the walkthrough visualization, we show:
-  # 1. Raw difference (Drug - Placebo)
-  # 2. Difference in normalized values (Drug normalized - Placebo normalized)
-  # 3. Weights
-  # 4. Weighted contributions
+  # 1. Difference in normalized values (Drug normalized - Placebo normalized)
+  # 2. Weights
+  # 3. Weighted contributions (Benefit-Risk)
   #
   # The "normalized" matrix already contains differences in normalized values,
-  # which is what we want to display in the "Normalized Value" panel
+  # which is what we want to display in the "Difference" panel
 
   drug_values <- normalized[drug_idx, ]
   drug_weights <- weights[criteria_internal] * 100
@@ -790,29 +781,27 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
 
   x_max <- 100
 
-  # Get raw treatment differences for the comparison drug (actual Drug - Placebo)
-  drug_idx <- which(rownames(raw_diff_matrix) == comparison_drug)
-  if (length(drug_idx) == 0) drug_idx <- 1
-  raw_diff_values <- raw_diff_matrix[drug_idx, ]
-
-  # Panel 1: Raw Treatment Differences
-  raw_diff_df <- data.frame(
+  # Panel 1: Difference (Drug normalized - Placebo normalized)
+  # This shows how much better (positive) or worse (negative) the drug performs
+  # compared to placebo on the normalized 0-100 value scale
+  drug_values_df <- data.frame(
     Criterion = factor(all_criteria, levels = rev(all_criteria)),
-    Value = raw_diff_values,
+    Value = drug_values,
     Type = c(rep("Benefit", length(benefit_criteria)), rep("Risk", length(risk_criteria)))
   )
 
-  # Determine scale for raw differences - symmetric around zero
-  max_abs_diff <- max(abs(raw_diff_values), na.rm = TRUE)
-  diff_lim <- c(-max_abs_diff * 1.15, max_abs_diff * 1.15)
+  # Calculate symmetric scale around zero for normalized differences
+  max_abs_norm <- max(abs(drug_values), na.rm = TRUE)
+  norm_lim <- c(-max_abs_norm * 1.15, max_abs_norm * 1.15)
 
-  p_raw_diff <- ggplot(raw_diff_df, aes(x = Value, y = Criterion, fill = Type)) +
+  p_values <- ggplot(drug_values_df, aes(x = Value, y = Criterion, fill = Type)) +
     geom_bar(stat = "identity", width = 0.7) +
+    geom_vline(xintercept = 0, linetype = "solid", color = "black") +
     scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
-    scale_x_continuous(limits = diff_lim, expand = c(0.02, 0)) +
+    scale_x_continuous(limits = norm_lim, expand = c(0.02, 0)) +
     labs(
-      title = "Treatment Difference",
-      subtitle = paste0(comparison_drug, " vs ", placebo_name),
+      title = "Difference",
+      subtitle = paste0("Normalized ", comparison_drug, " - Normalized ", placebo_name),
       x = NULL, y = NULL
     ) +
     theme_minimal() +
@@ -824,8 +813,11 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
       plot.subtitle = element_text(size = 10, hjust = 0.5),
       plot.margin = margin(5, 15, 5, 5)
     ) +
-    geom_text(aes(label = Value),
-      hjust = ifelse(raw_diff_values < 0, 1.2, -0.1),
+    geom_text(
+      aes(
+        label = sprintf("%.0f", Value),
+        hjust = ifelse(Value < 0, 1.2, -0.1)
+      ),
       size = 3
     ) +
     coord_cartesian(clip = "off")
@@ -847,51 +839,14 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
       axis.text.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0),
-      plot.subtitle = element_text(size = 10, hjust = 0),
-      plot.margin = margin(5, 15, 5, 5)
-    ) +
-    geom_text(aes(label = Weight), hjust = -0.1, size = 3) +
-    coord_cartesian(clip = "off")
-
-  # Panel 3: Normalized Difference (Drug normalized - Placebo normalized)
-  # This shows how much better (positive) or worse (negative) the drug performs
-  # compared to placebo on the normalized 0-100 value scale
-  drug_values_df <- data.frame(
-    Criterion = factor(all_criteria, levels = rev(all_criteria)),
-    Value = drug_values,
-    Type = c(rep("Benefit", length(benefit_criteria)), rep("Risk", length(risk_criteria)))
-  )
-
-  # Calculate symmetric scale around zero for normalized differences
-  max_abs_norm <- max(abs(drug_values), na.rm = TRUE)
-  norm_lim <- c(-max_abs_norm * 1.15, max_abs_norm * 1.15)
-
-  p_values <- ggplot(drug_values_df, aes(x = Value, y = Criterion, fill = Type)) +
-    geom_bar(stat = "identity", width = 0.7) +
-    geom_vline(xintercept = 0, linetype = "solid", color = "black") +
-    scale_fill_manual(values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])) +
-    scale_x_continuous(limits = norm_lim, expand = c(0.02, 0)) +
-    labs(title = "Normalized Difference", subtitle = "Drug - Placebo (0-100 scale)", x = NULL, y = NULL) +
-    theme_minimal() +
-    theme(
-      axis.text.y = element_blank(),
-      axis.ticks.x = element_line(color = "grey92"),
-      legend.position = "none",
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
       plot.subtitle = element_text(size = 10, hjust = 0.5),
       plot.margin = margin(5, 15, 5, 5)
     ) +
-    geom_text(
-      aes(
-        label = sprintf("%.0f", Value),
-        hjust = ifelse(Value < 0, 1.2, -0.1)
-      ),
-      size = 3
-    ) +
+    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = 3) +
     coord_cartesian(clip = "off")
 
-  # Panel 4: Weighted Contributions
+  # Panel 3: Weighted Contributions (Benefit-Risk)
   # Positive contributions = Drug better than Placebo
   # Negative contributions = Drug worse than Placebo
   drug_contrib_df <- data.frame(
@@ -933,16 +888,15 @@ create_mcda_barplot_walkthrough <- function(data = NULL,
     coord_cartesian(clip = "off")
 
   # Add borders to individual panels
-  p_raw_diff <- p_raw_diff + theme(plot.background = element_rect(color = "grey92", fill = NA, linewidth = 0.5))
   p_values <- p_values + theme(plot.background = element_rect(color = "grey92", fill = NA, linewidth = 0.5))
   p_weights <- p_weights + theme(plot.background = element_rect(color = "grey92", fill = NA, linewidth = 0.5))
   p_weighted <- p_weighted + theme(plot.background = element_rect(color = "grey92", fill = NA, linewidth = 0.5))
 
-  # Combine panels - now 4 panels
-  # Order: Treatment Difference -> Normalized Difference -> Weight -> Benefit-Risk
-  combined_plot <- patchwork::wrap_plots(p_raw_diff, p_values, p_weights, p_weighted,
-    ncol = 4,
-    widths = c(1.2, 1, 1, 1)
+  # Combine panels - 3 panels
+  # Order: Normalized Difference -> Weight -> Benefit-Risk
+  combined_plot <- patchwork::wrap_plots(p_values, p_weights, p_weighted,
+    ncol = 3,
+    widths = c(1.2, 1, 1)
   )
 
   return(combined_plot)

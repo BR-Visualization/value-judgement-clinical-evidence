@@ -2,7 +2,7 @@
 % Please edit documentation in R/mcda_barplot.R
 \name{create_mcda_barplot_comparison}
 \alias{create_mcda_barplot_comparison}
-\title{Create MCDA Bar Chart: From Raw Data to Treatment Differences}
+\title{Create MCDA Bar Chart: Normalized Values Comparison}
 \usage{
 create_mcda_barplot_comparison(
   data = NULL,
@@ -10,6 +10,7 @@ create_mcda_barplot_comparison(
   comparison_drug = "Drug A",
   benefit_criteria = NULL,
   risk_criteria = NULL,
+  clinical_scales = NULL,
   fig_colors = c("#0571b0", "#ca0020")
 )
 }
@@ -28,15 +29,20 @@ placebo in the visualization. Default is "Drug A".}
 
 \item{risk_criteria}{Character vector of risk criterion names (column names in data).}
 
+\item{clinical_scales}{List defining clinical reference levels for each criterion.
+Each element should be a list with: min (lower threshold), max (upper threshold),
+direction ("increasing" for higher is better, "decreasing" for lower is better).}
+
 \item{fig_colors}{A vector of length 2 specifying colors for benefits and risks.
 Default is c("#0571b0", "#ca0020") to match correlogram colors.}
 }
 \value{
-A patchwork object showing three panels: Placebo values, Drug values, and
-Treatment Differences (Drug - Placebo), or NULL if data is not provided.
+A patchwork object showing three panels: Normalized Placebo values,
+Normalized Drug values, and Difference of Normalized Values (Drug - Placebo),
+or NULL if data is not provided.
 }
 \description{
-Create MCDA Bar Chart: From Raw Data to Treatment Differences
+Create MCDA Bar Chart: Normalized Values Comparison
 }
 \examples{
 # Prepare data from effects_table (extracts raw values for all treatments)
@@ -49,12 +55,22 @@ head(mcda_data)
 # 2    Drug A      0.46        20        60   0.46  0.100
 # 3    Drug B      ...
 
-# Create comparison barplot showing Placebo | Drug B | Treatment Difference
+# Define clinical scales
+clinical_scales <- list(
+  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
+  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
+  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
+  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+)
+
+# Create comparison barplot showing Normalized Placebo | Normalized Drug B | Difference
 barplot_comp <- create_mcda_barplot_comparison(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
-  comparison_drug = "Drug B"
+  comparison_drug = "Drug B",
+  clinical_scales = clinical_scales
 )
 
 # Compare a different drug
@@ -63,7 +79,8 @@ barplot_comp_a <- create_mcda_barplot_comparison(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
-  comparison_drug = "Drug A"
+  comparison_drug = "Drug A",
+  clinical_scales = clinical_scales
 )
 ggsave(
   "inst/img/barplot_mcda_comparison_drug_a.png",
