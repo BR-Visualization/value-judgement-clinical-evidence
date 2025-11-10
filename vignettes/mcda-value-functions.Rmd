@@ -11,7 +11,7 @@ vignette: >
 knitr::opts_chunk$set(
   collapse = TRUE,
   comment = "#>",
-  fig.width = 14,
+  fig.width = 12,
   fig.height = 6
 )
 ```
@@ -22,7 +22,12 @@ library(brpubVJCE)
 
 ## Overview
 
-The `create_mcda_barplot_walkthrough()` function implements **clinical threshold-based normalization** for Multi-Criteria Decision Analysis (MCDA). This approach uses fixed clinical scales (global scales) rather than treatment-relative normalization (local scales), as recommended by FDA/EMA best practices and the PROTECT framework.
+This package provides two MCDA visualization functions that implement **clinical threshold-based normalization**:
+
+1. **`create_mcda_barplot_comparison()`**: Shows normalized values for Placebo and Drug side-by-side with their difference
+2. **`create_mcda_barplot_walkthrough()`**: Shows the complete MCDA calculation from normalized differences through weighted scores
+
+Both functions use fixed clinical scales (global scales) rather than treatment-relative normalization (local scales), as recommended by FDA/EMA best practices and the PROTECT framework.
 
 ## The Normalization Approach
 
@@ -109,9 +114,28 @@ weights <- c(
 )
 ```
 
-### Create Visualization
+### Create Visualizations
 
-```{r visualization, eval=FALSE}
+**Comparison Plot: Shows normalized values and their difference**
+
+```{r comparison, eval=FALSE}
+barplot_comparison <- create_mcda_barplot_comparison(
+  data = mcda_data,
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  comparison_drug = "Drug A",
+  clinical_scales = clinical_scales
+)
+```
+
+This shows 3 columns for each criterion:
+- Normalized Placebo (0-100 scale)
+- Normalized Drug (0-100 scale)
+- Normalized Difference (Drug - Placebo)
+
+**Walkthrough Plot: Shows complete MCDA calculation**
+
+```{r walkthrough, eval=FALSE}
 barplot_walkthrough <- create_mcda_barplot_walkthrough(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
@@ -122,26 +146,26 @@ barplot_walkthrough <- create_mcda_barplot_walkthrough(
 )
 ```
 
-## Interpreting the Output
+## Interpreting the Walkthrough Output
 
-The plot shows 4 panels representing the MCDA calculation steps:
+The plot shows 3 panels representing the MCDA calculation steps:
 
-**Panel 1: Treatment Difference (Raw)**
-- Shows: Drug - Placebo in original units
-- Note: Sign doesn't indicate better/worse
+**Panel 1: Normalized Difference**
+- Shows: (Drug normalized - Placebo normalized)
+- Positive values = Drug performs better than Placebo
+- Negative values = Drug performs worse than Placebo
+- Scale is symmetric around zero
 
-**Panel 2: Normalized Difference**
-- Shows: (Drug normalized - Placebo normalized) on 0-100 scale
-- Positive = Drug performs better
-- Negative = Drug performs worse
-
-**Panel 3: Weight**
+**Panel 2: Weight**
 - Shows: Relative importance (must sum to 100%)
+- Each criterion's contribution to final score
 
-**Panel 4: Benefit-Risk**
+**Panel 3: Benefit-Risk**
 - Shows: Normalized Difference × Weight
-- Total score = Sum of contributions
-- Positive total = Drug better overall
+- Weighted contribution for each criterion
+- Total score = Sum of all contributions
+- Positive total = Drug has better overall benefit-risk profile
+- Negative total = Placebo has better overall benefit-risk profile
 
 ## Understanding Negative Normalized Values
 

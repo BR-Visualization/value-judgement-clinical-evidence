@@ -52,11 +52,10 @@ Based on FDA/EMA best practices and PROTECT framework.}
 Default is c("#0571b0", "#ca0020").}
 }
 \value{
-A grid arrangement of four panels showing: (1) Treatment Difference
-(raw values: Drug - Placebo), (2) Normalized Difference (on 0-100 scale:
-Drug normalized - Placebo normalized), (3) Weights, and (4) Weighted
-contributions (Benefit-Risk scores), or NULL if data is not provided.
-Negative values in panels 2 and 4 indicate the drug performs worse than placebo.
+A grid arrangement of three panels showing: (1) Normalized Difference
+(on 0-100 scale: Drug normalized - Placebo normalized), (2) Weights, and
+(3) Weighted contributions (Benefit-Risk scores), or NULL if data is not provided.
+Negative values in panels 1 and 3 indicate the drug performs worse than placebo.
 }
 \description{
 Create MCDA Bar Chart: Calculation Walkthrough
@@ -102,28 +101,28 @@ favorable_dir <- c(
 # These fixed scales ensure stability and interpretability
 clinical_scales <- list(
   `Benefit 1` = list(
-    min = 0,      # No benefit (unacceptable)
-    max = 1,      # Maximum expected benefit
+    min = 0, # No benefit (unacceptable)
+    max = 1, # Maximum expected benefit
     direction = "increasing"
   ),
   `Benefit 2` = list(
-    min = 0,      # Best outcome (no symptoms)
-    max = 100,    # Worst outcome (severe symptoms)
-    direction = "decreasing"  # Lower is better
+    min = 0, # Best outcome (no symptoms)
+    max = 100, # Worst outcome (severe symptoms)
+    direction = "decreasing" # Lower is better
   ),
   `Benefit 3` = list(
-    min = 0,      # No improvement
-    max = 100,    # Maximum improvement
+    min = 0, # No improvement
+    max = 100, # Maximum improvement
     direction = "increasing"
   ),
   `Risk 1` = list(
-    min = 0,      # No adverse events (ideal)
-    max = 0.5,    # 50\% rate (unacceptable threshold)
+    min = 0, # No adverse events (ideal)
+    max = 0.5, # 50\% rate (unacceptable threshold)
     direction = "decreasing"
   ),
   `Risk 2` = list(
-    min = 0,      # No adverse events (ideal)
-    max = 0.3,    # 30\% rate (concerning threshold)
+    min = 0, # No adverse events (ideal)
+    max = 0.3, # 30\% rate (concerning threshold)
     direction = "decreasing"
   )
 )
@@ -140,7 +139,7 @@ barplot_walk_a <- create_mcda_barplot_walkthrough(
 ggsave(
   "inst/img/barplot_mcda_walkthrough_drug_a.png",
   barplot_walk_a,
-  width = 14,
+  width = 12,
   height = 6,
   dpi = 300
 )

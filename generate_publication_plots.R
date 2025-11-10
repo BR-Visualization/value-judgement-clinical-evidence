@@ -130,32 +130,11 @@ ggsave_custom("inst/img/correlogram_plot.png",
 mcda_data <- prepare_mcda_data(effects_table)
 
 # --------------------------------------------------------------------------
-# MCDA Comparison Plot: Shows Placebo | Drug | Treatment Difference
+# MCDA Comparison Plot: Shows Normalized Placebo | Normalized Drug | Normalized Difference
+# Uses clinical threshold-based normalization to convert raw values to 0-100 scale
 # --------------------------------------------------------------------------
 
-barplot_comp_a <- create_mcda_barplot_comparison(
-  data = mcda_data,
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
-  comparison_drug = "Drug A"
-)
-
-ggsave_custom("inst/img/barplot_mcda_comparison_drug_a.png",
-              imgpath = "./",
-              inplot = barplot_comp_a,
-              wdth = 12,
-              hght = 8,
-              unts = "in", # Single column width
-              dpi = 600 # Higher DPI for publication quality
-)
-
-# --------------------------------------------------------------------------
-# MCDA Walkthrough Plot: Clinical Threshold-Based Normalization
-# Shows 4 panels: Raw Difference | Normalized Difference | Weights | Benefit-Risk
-# --------------------------------------------------------------------------
-
-# Define clinical scales based on clinical guidelines, MCID, or regulatory precedents
-# These fixed scales ensure stability and interpretability
+# Define clinical scales (same as walkthrough - moved before comparison plot)
 clinical_scales <- list(
   `Benefit 1` = list(
     min = 0,      # No efficacy (unacceptable)
@@ -183,6 +162,28 @@ clinical_scales <- list(
     direction = "decreasing"
   )
 )
+
+barplot_comp_a <- create_mcda_barplot_comparison(
+  data = mcda_data,
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  comparison_drug = "Drug A",
+  clinical_scales = clinical_scales  # Required parameter for normalization
+)
+
+ggsave_custom("inst/img/barplot_mcda_comparison_drug_a.png",
+              imgpath = "./",
+              inplot = barplot_comp_a,
+              wdth = 12,
+              hght = 8,
+              unts = "in", # Single column width
+              dpi = 600 # Higher DPI for publication quality
+)
+
+# --------------------------------------------------------------------------
+# MCDA Walkthrough Plot: Clinical Threshold-Based Normalization
+# Shows 3 panels: Normalized Difference | Weights | Benefit-Risk
+# --------------------------------------------------------------------------
 
 # Define weights from stakeholder elicitation
 weights <- c(
@@ -219,7 +220,7 @@ barplot_walk_a <- create_mcda_barplot_walkthrough(
 ggsave_custom("inst/img/barplot_mcda_walkthrough_drug_a.png",
               imgpath = "./",
               inplot = barplot_walk_a,
-              wdth = 14,  # Increased width for 4 panels
+              wdth = 12,  # Width for 3 panels
               hght = 6,
               unts = "in",
               dpi = 600 # Higher DPI for publication quality
