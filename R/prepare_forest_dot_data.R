@@ -35,12 +35,14 @@
 #' prepared_data2 <- prepare_forest_dot_data(effects_table,
 #'   precalculated_stats = TRUE
 #' )
-prepare_forest_dot_data <- function(data,
-                                    outcomes_of_interest = NULL,
-                                    treatment1 = "Drug A",
-                                    treatment2 = "Placebo",
-                                    filter_value = "None",
-                                    precalculated_stats = FALSE) {
+prepare_forest_dot_data <- function(
+  data,
+  outcomes_of_interest = NULL,
+  treatment1 = "Drug A",
+  treatment2 = "Placebo",
+  filter_value = "None",
+  precalculated_stats = FALSE
+) {
   # Auto-discover outcomes if not specified
   if (is.null(outcomes_of_interest)) {
     if ("Outcome" %in% names(data)) {
@@ -79,8 +81,10 @@ prepare_forest_dot_data <- function(data,
 
   # Check which columns are available
   has_binary_cols <- all(c("Prop1", "Prop2") %in% names(filtered_data))
-  has_continuous_cols <- all(c("Mean1", "Mean2", "Sd1", "Sd2") %in%
-    names(filtered_data))
+  has_continuous_cols <- all(
+    c("Mean1", "Mean2", "Sd1", "Sd2") %in%
+      names(filtered_data)
+  )
 
   # Calculate treatment differences and confidence intervals
   result <- filtered_data
@@ -141,8 +145,10 @@ prepare_forest_dot_data <- function(data,
       mutate(
         SE_diff = case_when(
           !is.na(SE_diff) ~ SE_diff, # Preserve existing values
-          Type == "Binary" ~ sqrt((Prop1 * (1 - Prop1) / N1) +
-            (Prop2 * (1 - Prop2) / N2)),
+          Type == "Binary" ~ sqrt(
+            (Prop1 * (1 - Prop1) / N1) +
+              (Prop2 * (1 - Prop2) / N2)
+          ),
           TRUE ~ SE_diff
         )
       )

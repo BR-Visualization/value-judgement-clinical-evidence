@@ -50,46 +50,43 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
   testthat::expect_s3_class(plot, "patchwork")
 })
 
-testthat::test_that(
-  "create_forest_dot_plot reverses axis for benefit + direction less",
-  {
-    # Test data for benefit outcomes
-    test_data_benefit <- data.frame(
-      Outcome = c("Benefit 1", "Benefit 2"),
-      Type = rep("Continuous", 2),
-      Factor = rep("Benefit", 2),
-      Trt1 = rep("Drug A", 2),
-      Trt2 = rep("Placebo", 2),
-      Filter = rep("None", 2),
-      Mean1 = c(0.3, 0.25),
-      Mean2 = c(0.5, 0.45),
-      Sd1 = c(0.1, 0.1),
-      Sd2 = c(0.1, 0.1),
-      N1 = c(100, 100),
-      N2 = c(100, 100)
-    )
+testthat::test_that("create_forest_dot_plot reverses axis for benefit + direction less", {
+  # Test data for benefit outcomes
+  test_data_benefit <- data.frame(
+    Outcome = c("Benefit 1", "Benefit 2"),
+    Type = rep("Continuous", 2),
+    Factor = rep("Benefit", 2),
+    Trt1 = rep("Drug A", 2),
+    Trt2 = rep("Placebo", 2),
+    Filter = rep("None", 2),
+    Mean1 = c(0.3, 0.25),
+    Mean2 = c(0.5, 0.45),
+    Sd1 = c(0.1, 0.1),
+    Sd2 = c(0.1, 0.1),
+    N1 = c(100, 100),
+    N2 = c(100, 100)
+  )
 
-    # Prepare the data using the package function
-    prepared <- brpubVJCE::prepare_forest_dot_data(test_data_benefit)
+  # Prepare the data using the package function
+  prepared <- brpubVJCE::prepare_forest_dot_data(test_data_benefit)
 
-    # Use thresholds with direction = "less" for benefit outcomes
-    # This should trigger axis reversal
-    outcomes_with_thresholds <- list(
-      "Benefit 1" = list(threshold = -0.15, direction = "less"),
-      "Benefit 2" = list(threshold = -0.12, direction = "less")
-    )
+  # Use thresholds with direction = "less" for benefit outcomes
+  # This should trigger axis reversal
+  outcomes_with_thresholds <- list(
+    "Benefit 1" = list(threshold = -0.15, direction = "less"),
+    "Benefit 2" = list(threshold = -0.12, direction = "less")
+  )
 
-    # Create the plot - should reverse axis for benefit + direction "less"
-    plot <- brpubVJCE::create_forest_dot_plot(
-      prepared,
-      outcomes_with_thresholds = outcomes_with_thresholds
-    )
+  # Create the plot - should reverse axis for benefit + direction "less"
+  plot <- brpubVJCE::create_forest_dot_plot(
+    prepared,
+    outcomes_with_thresholds = outcomes_with_thresholds
+  )
 
-    testthat::expect_s3_class(plot, "patchwork")
+  testthat::expect_s3_class(plot, "patchwork")
 
-    # This should trigger axis reversal:
-    # - Benefit outcomes with direction = "less" should reverse the x-axis
-    # - Positive values on left, negative values on right
-    # - Green shading extends towards negative values (right side)
-  }
-)
+  # This should trigger axis reversal:
+  # - Benefit outcomes with direction = "less" should reverse the x-axis
+  # - Positive values on left, negative values on right
+  # - Green shading extends towards negative values (right side)
+})

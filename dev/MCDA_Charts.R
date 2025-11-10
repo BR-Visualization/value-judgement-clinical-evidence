@@ -34,7 +34,9 @@ calculate_treatment_differences <- function(data) {
     Treatment = data$Treatment[data$Treatment != "Placebo"],
     Primary_Efficacy_Diff = data$Primary_Efficacy[data$Treatment != "Placebo"] -
       placebo_row$Primary_Efficacy,
-    Secondary_Efficacy_Diff = data$Secondary_Efficacy[data$Treatment != "Placebo"] -
+    Secondary_Efficacy_Diff = data$Secondary_Efficacy[
+      data$Treatment != "Placebo"
+    ] -
       placebo_row$Secondary_Efficacy,
     Quality_of_Life_Diff = data$Quality_of_Life[data$Treatment != "Placebo"] -
       placebo_row$Quality_of_Life,
@@ -53,8 +55,13 @@ treatment_diffs <- calculate_treatment_differences(pub_data)
 # Create performance matrix
 performance_matrix_pub <- as.matrix(treatment_diffs[, -1])
 rownames(performance_matrix_pub) <- treatment_diffs$Treatment
-colnames(performance_matrix_pub) <- c("Primary_Efficacy", "Secondary_Efficacy",
-                                      "Quality_of_Life", "Recurring_AE", "Rare_SAE")
+colnames(performance_matrix_pub) <- c(
+  "Primary_Efficacy",
+  "Secondary_Efficacy",
+  "Quality_of_Life",
+  "Recurring_AE",
+  "Rare_SAE"
+)
 
 # Define weights
 weights_pub <- c(
@@ -71,7 +78,8 @@ normalized_pub <- apply(performance_matrix_pub, 2, function(x) {
 })
 
 # Calculate weighted contributions
-weighted_contributions_pub <- normalized_pub * rep(weights_pub, each = nrow(normalized_pub))
+weighted_contributions_pub <- normalized_pub *
+  rep(weights_pub, each = nrow(normalized_pub))
 
 # Calculate total scores
 total_scores_pub <- rowSums(weighted_contributions_pub)
@@ -83,9 +91,11 @@ contrib_df$Total_Score <- total_scores_pub * 100
 contrib_df$Rank <- rank(-total_scores_pub)
 
 # Reshape for plotting
-contrib_long <- melt(contrib_df[, 1:5],
-                     variable.name = "Criteria",
-                     value.name = "Contribution")
+contrib_long <- melt(
+  contrib_df[, 1:5],
+  variable.name = "Criteria",
+  value.name = "Contribution"
+)
 contrib_long$Treatment <- rep(contrib_df$Treatment, 5)
 
 # ============================================================================
@@ -94,31 +104,62 @@ contrib_long$Treatment <- rep(contrib_df$Treatment, 5)
 
 create_fig7a <- function() {
   raw_comparison <- data.frame(
-    Criterion = rep(c("Primary Efficacy", "Secondary Efficacy", "Quality of Life",
-                      "Recurring AE", "Rare SAE"), 3),
+    Criterion = rep(
+      c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      ),
+      3
+    ),
     Value = c(
-      0.25 * 100, 5, 2, 0.15 * 100, 0.02 * 100,
-      0.62 * 100, 42, 38, 0.35 * 100, 0.04 * 100,
-      (0.62 - 0.25) * 100, 42 - 5, 38 - 2, (0.15 - 0.35) * 100, (0.02 - 0.04) * 100
+      0.25 * 100,
+      5,
+      2,
+      0.15 * 100,
+      0.02 * 100,
+      0.62 * 100,
+      42,
+      38,
+      0.35 * 100,
+      0.04 * 100,
+      (0.62 - 0.25) * 100,
+      42 - 5,
+      38 - 2,
+      (0.15 - 0.35) * 100,
+      (0.02 - 0.04) * 100
     ),
     Group = rep(c("Placebo", "Drug A", "Treatment Difference"), each = 5),
     Type = rep(c("Benefit", "Benefit", "Benefit", "Risk", "Risk"), 3)
   )
 
-  raw_comparison$Criterion <- factor(raw_comparison$Criterion,
-                                     levels = rev(c("Primary Efficacy", "Secondary Efficacy",
-                                                    "Quality of Life", "Recurring AE", "Rare SAE")))
-  raw_comparison$Group <- factor(raw_comparison$Group,
-                                 levels = c("Placebo", "Drug A", "Treatment Difference"))
+  raw_comparison$Criterion <- factor(
+    raw_comparison$Criterion,
+    levels = rev(c(
+      "Primary Efficacy",
+      "Secondary Efficacy",
+      "Quality of Life",
+      "Recurring AE",
+      "Rare SAE"
+    ))
+  )
+  raw_comparison$Group <- factor(
+    raw_comparison$Group,
+    levels = c("Placebo", "Drug A", "Treatment Difference")
+  )
 
   p_raw <- ggplot(raw_comparison, aes(x = Value, y = Criterion, fill = Type)) +
     geom_bar(stat = "identity", width = 0.7) +
-    facet_wrap(~ Group, ncol = 3, scales = "free_x") +
+    facet_wrap(~Group, ncol = 3, scales = "free_x") +
     scale_fill_manual(values = c("Benefit" = "#4ECDC4", "Risk" = "#FF6B6B")) +
-    labs(title = "Figure 7a: From Raw Data to Treatment Differences",
-         subtitle = "Understanding what MCDA analyzes: Drug effect vs Placebo",
-         x = "Value (various scales)",
-         y = NULL) +
+    labs(
+      title = "Figure 7a: From Raw Data to Treatment Differences",
+      subtitle = "Understanding what MCDA analyzes: Drug effect vs Placebo",
+      x = "Value (various scales)",
+      y = NULL
+    ) +
     theme_minimal() +
     theme(
       strip.text = element_text(size = 12, face = "bold"),
@@ -128,7 +169,12 @@ create_fig7a <- function() {
       plot.title = element_text(size = 14, face = "bold"),
       plot.subtitle = element_text(size = 11)
     ) +
-    geom_vline(xintercept = 0, linetype = "dashed", color = "gray40", size = 0.5)
+    geom_vline(
+      xintercept = 0,
+      linetype = "dashed",
+      color = "gray40",
+      size = 0.5
+    )
 
   return(p_raw)
 }
@@ -148,75 +194,143 @@ create_fig7b <- function() {
 
   # Panel 1: Weights
   weights_df_plot <- data.frame(
-    Criterion = factor(c("Primary Efficacy", "Secondary Efficacy", "Quality of Life",
-                         "Recurring AE", "Rare SAE"),
-                       levels = rev(c("Primary Efficacy", "Secondary Efficacy",
-                                      "Quality of Life", "Recurring AE", "Rare SAE"))),
+    Criterion = factor(
+      c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      ),
+      levels = rev(c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      ))
+    ),
     Weight = weights_pub * 100,
     Type = c("Benefit", "Benefit", "Benefit", "Risk", "Risk")
   )
 
-  p_weights <- ggplot(weights_df_plot, aes(x = Weight, y = Criterion, fill = Type)) +
+  p_weights <- ggplot(
+    weights_df_plot,
+    aes(x = Weight, y = Criterion, fill = Type)
+  ) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(values = c("Benefit" = "#4ECDC4", "Risk" = "#FF6B6B")) +
     labs(title = "Weight", subtitle = "Importance (%)", x = NULL, y = NULL) +
     xlim(0, x_max) +
     theme_minimal() +
-    theme(axis.text.y = element_text(size = 10),
-          legend.position = "none",
-          plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-          plot.subtitle = element_text(size = 10, hjust = 0.5)) +
+    theme(
+      axis.text.y = element_text(size = 10),
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = 10, hjust = 0.5)
+    ) +
     geom_text(aes(label = sprintf("%.1f", Weight)), hjust = -0.1, size = 3)
 
   # Panel 2: Drug A Normalized Values
   drug_a_values_df <- data.frame(
-    Criterion = factor(c("Primary Efficacy", "Secondary Efficacy", "Quality of Life",
-                         "Recurring AE", "Rare SAE"),
-                       levels = rev(c("Primary Efficacy", "Secondary Efficacy",
-                                      "Quality of Life", "Recurring AE", "Rare SAE"))),
+    Criterion = factor(
+      c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      ),
+      levels = rev(c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      ))
+    ),
     Value = normalized_pub[drug_a_idx, ] * 100,
     Type = c("Benefit", "Benefit", "Benefit", "Risk", "Risk")
   )
 
-  p_values <- ggplot(drug_a_values_df, aes(x = Value, y = Criterion, fill = Type)) +
+  p_values <- ggplot(
+    drug_a_values_df,
+    aes(x = Value, y = Criterion, fill = Type)
+  ) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(values = c("Benefit" = "#4ECDC4", "Risk" = "#FF6B6B")) +
-    labs(title = "Value", subtitle = "Drug A vs Placebo (%)", x = NULL, y = NULL) +
+    labs(
+      title = "Value",
+      subtitle = "Drug A vs Placebo (%)",
+      x = NULL,
+      y = NULL
+    ) +
     xlim(0, x_max) +
     theme_minimal() +
-    theme(axis.text.y = element_blank(),
-          legend.position = "none",
-          plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-          plot.subtitle = element_text(size = 10, hjust = 0.5)) +
+    theme(
+      axis.text.y = element_blank(),
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = 10, hjust = 0.5)
+    ) +
     geom_text(aes(label = sprintf("%.0f", Value)), hjust = -0.1, size = 3)
 
   # Panel 3: Drug A Weighted Contributions
   drug_a_contrib_df <- data.frame(
-    Criterion = factor(c("Primary Efficacy", "Secondary Efficacy", "Quality of Life",
-                         "Recurring AE", "Rare SAE"),
-                       levels = rev(c("Primary Efficacy", "Secondary Efficacy",
-                                      "Quality of Life", "Recurring AE", "Rare SAE"))),
+    Criterion = factor(
+      c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      ),
+      levels = rev(c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      ))
+    ),
     Contribution = weighted_contributions_pub[drug_a_idx, ] * 100,
     Type = c("Benefit", "Benefit", "Benefit", "Risk", "Risk")
   )
 
-  p_weighted <- ggplot(drug_a_contrib_df, aes(x = Contribution, y = Criterion, fill = Type)) +
+  p_weighted <- ggplot(
+    drug_a_contrib_df,
+    aes(x = Contribution, y = Criterion, fill = Type)
+  ) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(values = c("Benefit" = "#4ECDC4", "Risk" = "#FF6B6B")) +
-    labs(title = "Benefit-Risk",
-         subtitle = sprintf("Weight × Value (%%)\nTotal = %.1f", drug_a_total),
-         x = NULL, y = NULL) +
+    labs(
+      title = "Benefit-Risk",
+      subtitle = sprintf("Weight × Value (%%)\nTotal = %.1f", drug_a_total),
+      x = NULL,
+      y = NULL
+    ) +
     xlim(0, x_max) +
     theme_minimal() +
-    theme(axis.text.y = element_blank(),
-          legend.position = "none",
-          plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-          plot.subtitle = element_text(size = 10, hjust = 0.5)) +
-    geom_text(aes(label = sprintf("%.1f", Contribution)), hjust = -0.1, size = 3)
+    theme(
+      axis.text.y = element_blank(),
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = 10, hjust = 0.5)
+    ) +
+    geom_text(
+      aes(label = sprintf("%.1f", Contribution)),
+      hjust = -0.1,
+      size = 3
+    )
 
   # Combine panels
-  combined_plot <- grid.arrange(p_weights, p_values, p_weighted, ncol = 3,
-                                top = "Figure 7b: How MCDA Combines Weights and Values (Drug A)")
+  combined_plot <- grid.arrange(
+    p_weights,
+    p_values,
+    p_weighted,
+    ncol = 3,
+    top = "Figure 7b: How MCDA Combines Weights and Values (Drug A)"
+  )
 
   return(combined_plot)
 }
@@ -227,62 +341,123 @@ create_fig7b <- function() {
 
 create_fig8_stacked <- function() {
   # Create stacked bar chart
-  p_stacked <- ggplot(contrib_long, aes(x = Treatment, y = Contribution * 100, fill = Criteria)) +
+  p_stacked <- ggplot(
+    contrib_long,
+    aes(x = Treatment, y = Contribution * 100, fill = Criteria)
+  ) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(
-      values = c("Primary_Efficacy" = "#FF6B6B",
-                 "Secondary_Efficacy" = "#4ECDC4",
-                 "Quality_of_Life" = "#45B7D1",
-                 "Recurring_AE" = "#96CEB4",
-                 "Rare_SAE" = "#FFEAA7"),
-      labels = c("Primary Efficacy", "Secondary Efficacy",
-                 "Quality of Life", "Recurring AE", "Rare SAE")
+      values = c(
+        "Primary_Efficacy" = "#FF6B6B",
+        "Secondary_Efficacy" = "#4ECDC4",
+        "Quality_of_Life" = "#45B7D1",
+        "Recurring_AE" = "#96CEB4",
+        "Rare_SAE" = "#FFEAA7"
+      ),
+      labels = c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      )
     ) +
-    labs(title = "Treatment Scores",
-         x = "Treatment", y = "Weighted Contribution") +
+    labs(
+      title = "Treatment Scores",
+      x = "Treatment",
+      y = "Weighted Contribution"
+    ) +
     theme_minimal() +
-    theme(legend.position = "none",
-          plot.title = element_text(size = 12, face = "bold")) +
-    geom_text(data = contrib_df,
-              aes(x = Treatment, y = Total_Score + 2, label = round(Total_Score, 1)),
-              inherit.aes = FALSE, vjust = 0, size = 5, fontface = "bold")
+    theme(
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold")
+    ) +
+    geom_text(
+      data = contrib_df,
+      aes(x = Treatment, y = Total_Score + 2, label = round(Total_Score, 1)),
+      inherit.aes = FALSE,
+      vjust = 0,
+      size = 5,
+      fontface = "bold"
+    )
 
   # Create weights bar chart
   weights_chart_df <- data.frame(
-    Criteria = factor(c("Primary Efficacy", "Secondary Efficacy", "Quality of Life",
-                        "Recurring AE", "Rare SAE"),
-                      levels = rev(c("Primary Efficacy", "Secondary Efficacy",
-                                     "Quality of Life", "Recurring AE", "Rare SAE"))),
+    Criteria = factor(
+      c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      ),
+      levels = rev(c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE"
+      ))
+    ),
     Weight = weights_pub * 100,
-    Criteria_var = factor(c("Primary_Efficacy", "Secondary_Efficacy", "Quality_of_Life",
-                            "Recurring_AE", "Rare_SAE"),
-                          levels = rev(c("Primary_Efficacy", "Secondary_Efficacy",
-                                         "Quality_of_Life", "Recurring_AE", "Rare_SAE")))
+    Criteria_var = factor(
+      c(
+        "Primary_Efficacy",
+        "Secondary_Efficacy",
+        "Quality_of_Life",
+        "Recurring_AE",
+        "Rare_SAE"
+      ),
+      levels = rev(c(
+        "Primary_Efficacy",
+        "Secondary_Efficacy",
+        "Quality_of_Life",
+        "Recurring_AE",
+        "Rare_SAE"
+      ))
+    )
   )
 
-  p_weights_chart <- ggplot(weights_chart_df, aes(x = Weight, y = Criteria, fill = Criteria_var)) +
+  p_weights_chart <- ggplot(
+    weights_chart_df,
+    aes(x = Weight, y = Criteria, fill = Criteria_var)
+  ) +
     geom_bar(stat = "identity", width = 0.7) +
     scale_fill_manual(
-      values = c("Primary_Efficacy" = "#FF6B6B",
-                 "Secondary_Efficacy" = "#4ECDC4",
-                 "Quality_of_Life" = "#45B7D1",
-                 "Recurring_AE" = "#96CEB4",
-                 "Rare_SAE" = "#FFEAA7")
+      values = c(
+        "Primary_Efficacy" = "#FF6B6B",
+        "Secondary_Efficacy" = "#4ECDC4",
+        "Quality_of_Life" = "#45B7D1",
+        "Recurring_AE" = "#96CEB4",
+        "Rare_SAE" = "#FFEAA7"
+      )
     ) +
-    labs(title = "Criterion Weights",
-         x = "Weight (%)", y = NULL) +
+    labs(title = "Criterion Weights", x = "Weight (%)", y = NULL) +
     theme_minimal() +
-    theme(legend.position = "none",
-          plot.title = element_text(size = 12, face = "bold"),
-          axis.text.y = element_text(size = 10)) +
-    geom_text(aes(label = sprintf("%.1f%%", Weight)), hjust = -0.1, size = 3.5) +
+    theme(
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold"),
+      axis.text.y = element_text(size = 10)
+    ) +
+    geom_text(
+      aes(label = sprintf("%.1f%%", Weight)),
+      hjust = -0.1,
+      size = 3.5
+    ) +
     xlim(0, max(weights_chart_df$Weight) * 1.15)
 
   # Combine both plots
   library(grid)
-  combined_plot <- grid.arrange(p_stacked, p_weights_chart, ncol = 2, widths = c(2.5, 1),
-               top = textGrob("Figure 8: MCDA Weighted Scores by Treatment",
-                             gp = gpar(fontsize = 14, fontface = "bold")))
+  combined_plot <- grid.arrange(
+    p_stacked,
+    p_weights_chart,
+    ncol = 2,
+    widths = c(2.5, 1),
+    top = textGrob(
+      "Figure 8: MCDA Weighted Scores by Treatment",
+      gp = gpar(fontsize = 14, fontface = "bold")
+    )
+  )
 
   return(combined_plot)
 }
@@ -295,9 +470,16 @@ create_fig8_waterfall <- function() {
   # Prepare waterfall data
   waterfall_data <- contrib_long %>%
     mutate(
-      Criteria = factor(Criteria,
-                        levels = c("Primary_Efficacy", "Secondary_Efficacy",
-                                   "Quality_of_Life", "Recurring_AE", "Rare_SAE"))
+      Criteria = factor(
+        Criteria,
+        levels = c(
+          "Primary_Efficacy",
+          "Secondary_Efficacy",
+          "Quality_of_Life",
+          "Recurring_AE",
+          "Rare_SAE"
+        )
+      )
     ) %>%
     arrange(Treatment, Criteria) %>%
     group_by(Treatment) %>%
@@ -313,8 +495,17 @@ create_fig8_waterfall <- function() {
   totals <- contrib_df %>%
     select(Treatment, Total_Score) %>%
     mutate(
-      Criteria = factor("Total", levels = c("Primary_Efficacy", "Secondary_Efficacy",
-                                            "Quality_of_Life", "Recurring_AE", "Rare_SAE", "Total")),
+      Criteria = factor(
+        "Total",
+        levels = c(
+          "Primary_Efficacy",
+          "Secondary_Efficacy",
+          "Quality_of_Life",
+          "Recurring_AE",
+          "Rare_SAE",
+          "Total"
+        )
+      ),
       Contribution_pct = Total_Score,
       start = 0,
       end = Total_Score,
@@ -324,10 +515,21 @@ create_fig8_waterfall <- function() {
   # Combine data
   waterfall_complete <- bind_rows(waterfall_data, totals) %>%
     mutate(
-      Criteria = factor(Criteria,
-                        levels = c("Primary_Efficacy", "Secondary_Efficacy",
-                                   "Quality_of_Life", "Recurring_AE", "Rare_SAE", "Total")),
-      Treatment = factor(Treatment, levels = c("Drug A", "Drug B", "Drug C", "Drug D"))
+      Criteria = factor(
+        Criteria,
+        levels = c(
+          "Primary_Efficacy",
+          "Secondary_Efficacy",
+          "Quality_of_Life",
+          "Recurring_AE",
+          "Rare_SAE",
+          "Total"
+        )
+      ),
+      Treatment = factor(
+        Treatment,
+        levels = c("Drug A", "Drug B", "Drug C", "Drug D")
+      )
     )
 
   # Create connector lines
@@ -344,8 +546,10 @@ create_fig8_waterfall <- function() {
   # Add connectors from Rare SAE to Total
   rare_to_total <- waterfall_data %>%
     filter(Criteria == "Rare_SAE") %>%
-    left_join(totals %>% select(Treatment, total_end = end, total_id = id),
-              by = "Treatment") %>%
+    left_join(
+      totals %>% select(Treatment, total_end = end, total_id = id),
+      by = "Treatment"
+    ) %>%
     mutate(
       next_start = 0,
       next_id = total_id
@@ -355,46 +559,89 @@ create_fig8_waterfall <- function() {
   all_connectors <- bind_rows(connector_lines, rare_to_total)
 
   # Create plot
-  p_waterfall <- ggplot(waterfall_complete,
-                        aes(y = id, fill = Criteria,
-                            ymin = id - 0.45, ymax = id + 0.45,
-                            xmin = start, xmax = end)) +
+  p_waterfall <- ggplot(
+    waterfall_complete,
+    aes(
+      y = id,
+      fill = Criteria,
+      ymin = id - 0.45,
+      ymax = id + 0.45,
+      xmin = start,
+      xmax = end
+    )
+  ) +
     geom_rect(alpha = 0.9) +
-    geom_segment(data = all_connectors,
-                 aes(x = end, xend = end,
-                     y = id + 0.45, yend = next_id - 0.45),
-                 linetype = "dotted", color = "gray40", linewidth = 0.5,
-                 inherit.aes = FALSE) +
+    geom_segment(
+      data = all_connectors,
+      aes(x = end, xend = end, y = id + 0.45, yend = next_id - 0.45),
+      linetype = "dotted",
+      color = "gray40",
+      linewidth = 0.5,
+      inherit.aes = FALSE
+    ) +
     facet_wrap(~Treatment, nrow = 1) +
     scale_fill_manual(
-      values = c("Primary_Efficacy" = "#FF6B6B",
-                 "Secondary_Efficacy" = "#4ECDC4",
-                 "Quality_of_Life" = "#45B7D1",
-                 "Recurring_AE" = "#96CEB4",
-                 "Rare_SAE" = "#FFEAA7",
-                 "Total" = "#34495e"),
-      labels = c("Primary Efficacy", "Secondary Efficacy",
-                 "Quality of Life", "Recurring AE", "Rare SAE", "Total Score"),
+      values = c(
+        "Primary_Efficacy" = "#FF6B6B",
+        "Secondary_Efficacy" = "#4ECDC4",
+        "Quality_of_Life" = "#45B7D1",
+        "Recurring_AE" = "#96CEB4",
+        "Rare_SAE" = "#FFEAA7",
+        "Total" = "#34495e"
+      ),
+      labels = c(
+        "Primary Efficacy",
+        "Secondary Efficacy",
+        "Quality of Life",
+        "Recurring AE",
+        "Rare SAE",
+        "Total Score"
+      ),
       drop = FALSE
     ) +
-    geom_text(data = filter(waterfall_complete, Contribution_pct > 0.5, Criteria != "Total"),
-              aes(x = (start + end) / 2, y = id,
-                  label = sprintf("%.1f", Contribution_pct)),
-              inherit.aes = FALSE, size = 3.5, color = "black", fontface = "bold") +
-    geom_text(data = filter(waterfall_complete, Criteria == "Total"),
-              aes(x = end + 2, y = id,
-                  label = sprintf("%.1f", Contribution_pct)),
-              inherit.aes = FALSE, size = 4, fontface = "bold", hjust = 0) +
+    geom_text(
+      data = filter(
+        waterfall_complete,
+        Contribution_pct > 0.5,
+        Criteria != "Total"
+      ),
+      aes(
+        x = (start + end) / 2,
+        y = id,
+        label = sprintf("%.1f", Contribution_pct)
+      ),
+      inherit.aes = FALSE,
+      size = 3.5,
+      color = "black",
+      fontface = "bold"
+    ) +
+    geom_text(
+      data = filter(waterfall_complete, Criteria == "Total"),
+      aes(x = end + 2, y = id, label = sprintf("%.1f", Contribution_pct)),
+      inherit.aes = FALSE,
+      size = 4,
+      fontface = "bold",
+      hjust = 0
+    ) +
     scale_y_continuous(
       breaks = 1:6,
-      labels = c("Total\nScore", "Rare\nSAE", "Recurring\nAE", "Quality\nof Life",
-                 "Secondary\nEfficacy", "Primary\nEfficacy"),
+      labels = c(
+        "Total\nScore",
+        "Rare\nSAE",
+        "Recurring\nAE",
+        "Quality\nof Life",
+        "Secondary\nEfficacy",
+        "Primary\nEfficacy"
+      ),
       expand = expansion(mult = c(0.02, 0.02))
     ) +
     scale_x_continuous(expand = expansion(mult = c(0.02, 0.15))) +
-    labs(title = "Figure 8: MCDA Waterfall Chart - Treatment Differences vs Placebo",
-         subtitle = "Each bar shows cumulative contribution of criteria to total weighted score difference",
-         x = "Cumulative Weighted Score Difference", y = NULL) +
+    labs(
+      title = "Figure 8: MCDA Waterfall Chart - Treatment Differences vs Placebo",
+      subtitle = "Each bar shows cumulative contribution of criteria to total weighted score difference",
+      x = "Cumulative Weighted Score Difference",
+      y = NULL
+    ) +
     theme_minimal() +
     theme(
       legend.position = "none",
@@ -415,15 +662,19 @@ create_fig8_waterfall <- function() {
 
 create_fig9 <- function() {
   # Calculate benefit and risk category weights
-  benefit_criteria <- c("Primary_Efficacy", "Secondary_Efficacy", "Quality_of_Life")
+  benefit_criteria <- c(
+    "Primary_Efficacy",
+    "Secondary_Efficacy",
+    "Quality_of_Life"
+  )
   risk_criteria <- c("Recurring_AE", "Rare_SAE")
-  
+
   benefit_weights <- weights_pub[benefit_criteria]
   risk_weights <- weights_pub[risk_criteria]
-  
-  total_benefit_weight <- sum(benefit_weights) * 100  # 40.1%
-  total_risk_weight <- sum(risk_weights) * 100        # 59.9%
-  
+
+  total_benefit_weight <- sum(benefit_weights) * 100 # 40.1%
+  total_risk_weight <- sum(risk_weights) * 100 # 59.9%
+
   # Create benefit-risk map data
   br_map_df <- data.frame(
     Treatment = c("Drug A", "Drug B", "Drug C", "Drug D"),
@@ -433,35 +684,64 @@ create_fig9 <- function() {
   )
 
   # Find the two outermost points
-  max_y_point <- br_map_df[which.max(br_map_df$Risks), ]  # Drug D at (24, 98)
-  max_x_point <- br_map_df[which.max(br_map_df$Benefits), ]  # Drug A at (98, 52)
-  
+  max_y_point <- br_map_df[which.max(br_map_df$Risks), ] # Drug D at (24, 98)
+  max_x_point <- br_map_df[which.max(br_map_df$Benefits), ] # Drug A at (98, 52)
+
   # Create frontier polygon: (0, 0) -> (0, 98) -> Drug D (24, 98) -> Drug A (98, 52) -> (98, 0) -> back to origin
   frontier_polygon <- data.frame(
-    x = c(0, 0, max_y_point$Benefits, max_x_point$Benefits, max(br_map_df$Benefits), 0),
+    x = c(
+      0,
+      0,
+      max_y_point$Benefits,
+      max_x_point$Benefits,
+      max(br_map_df$Benefits),
+      0
+    ),
     y = c(0, max(br_map_df$Risks), max_y_point$Risks, max_x_point$Risks, 0, 0)
   )
 
-  p_brmap <- ggplot(br_map_df, aes(x = Benefits, y = Risks, color = Treatment)) +
+  p_brmap <- ggplot(
+    br_map_df,
+    aes(x = Benefits, y = Risks, color = Treatment)
+  ) +
     # Shaded frontier region under the two outermost points
-    geom_polygon(data = frontier_polygon, aes(x = x, y = y),
-                 inherit.aes = FALSE, fill = "lightgreen", alpha = 0.3) +
+    geom_polygon(
+      data = frontier_polygon,
+      aes(x = x, y = y),
+      inherit.aes = FALSE,
+      fill = "lightgreen",
+      alpha = 0.3
+    ) +
     geom_point(size = 8, alpha = 0.8) +
-    geom_text(aes(label = Label), color = "black", size = 5, fontface = "bold") +
+    geom_text(
+      aes(label = Label),
+      color = "black",
+      size = 5,
+      fontface = "bold"
+    ) +
     scale_color_manual(
-      values = c("Drug A" = "#FF6B6B", "Drug B" = "#4ECDC4",
-                 "Drug C" = "#45B7D1", "Drug D" = "#96CEB4"),
+      values = c(
+        "Drug A" = "#FF6B6B",
+        "Drug B" = "#4ECDC4",
+        "Drug C" = "#45B7D1",
+        "Drug D" = "#96CEB4"
+      ),
       labels = c("Drug A (1)", "Drug B (2)", "Drug C (3)", "Drug D (4)")
     ) +
-    xlim(0, 100) + ylim(0, 100) +
-    labs(title = "Figure 9: Benefit-Risk Map",
-         subtitle = "Higher is better on both axes (treatment differences vs placebo)",
-         x = "Benefits →",
-         y = "Risks →") +
+    xlim(0, 100) +
+    ylim(0, 100) +
+    labs(
+      title = "Figure 9: Benefit-Risk Map",
+      subtitle = "Higher is better on both axes (treatment differences vs placebo)",
+      x = "Benefits →",
+      y = "Risks →"
+    ) +
     theme_minimal() +
-    theme(panel.grid.major = element_line(color = "lightgray"),
-          plot.title = element_text(size = 14, face = "bold"),
-          legend.position = "right")
+    theme(
+      panel.grid.major = element_line(color = "lightgray"),
+      plot.title = element_text(size = 14, face = "bold"),
+      legend.position = "right"
+    )
 
   return(p_brmap)
 }
@@ -478,23 +758,53 @@ if (!dir.exists("output")) {
 # Generate and save all figures
 cat("Generating Figure 7a...\n")
 fig7a <- create_fig7a()
-ggsave("dev/figure_7a_raw_comparison.jpeg", fig7a, width = 16, height = 6, dpi = 300)
+ggsave(
+  "dev/figure_7a_raw_comparison.jpeg",
+  fig7a,
+  width = 16,
+  height = 6,
+  dpi = 300
+)
 
 cat("Generating Figure 7b...\n")
 fig7b <- create_fig7b()
-ggsave("dev/figure_7b_mcda_walkthrough.jpeg", fig7b, width = 14, height = 5, dpi = 300)
+ggsave(
+  "dev/figure_7b_mcda_walkthrough.jpeg",
+  fig7b,
+  width = 14,
+  height = 5,
+  dpi = 300
+)
 
 cat("Generating Figure 8 (Stacked Bar)...\n")
 fig8_stacked <- create_fig8_stacked()
-ggsave("dev/figure_8_stacked_bar.jpeg", fig8_stacked, width = 14, height = 7, dpi = 300)
+ggsave(
+  "dev/figure_8_stacked_bar.jpeg",
+  fig8_stacked,
+  width = 14,
+  height = 7,
+  dpi = 300
+)
 
 cat("Generating Figure 8 (Waterfall)...\n")
 fig8_waterfall <- create_fig8_waterfall()
-ggsave("dev/figure_8_waterfall.jpeg", fig8_waterfall, width = 12, height = 6, dpi = 300)
+ggsave(
+  "dev/figure_8_waterfall.jpeg",
+  fig8_waterfall,
+  width = 12,
+  height = 6,
+  dpi = 300
+)
 
 cat("Generating Figure 9...\n")
 fig9 <- create_fig9()
-ggsave("dev/figure_9_benefit_risk_map.jpeg", fig9, width = 8, height = 8, dpi = 300)
+ggsave(
+  "dev/figure_9_benefit_risk_map.jpeg",
+  fig9,
+  width = 8,
+  height = 8,
+  dpi = 300
+)
 
 cat("\nAll figures generated successfully!\n")
 cat("Output saved to 'dev/' directory\n")

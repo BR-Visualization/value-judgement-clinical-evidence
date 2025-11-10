@@ -11,7 +11,8 @@ if (!dir.exists("inst/img")) {
 data(scatterplot)
 outcome <- c("Benefit", "Risk")
 scatter_plot_fig <- scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
-ggsave_custom("inst/img/scatter_plot.png",
+ggsave_custom(
+  "inst/img/scatter_plot.png",
   imgpath = "./",
   inplot = scatter_plot_fig,
   wdth = 7,
@@ -23,7 +24,8 @@ ggsave_custom("inst/img/scatter_plot.png",
 # Forest dot plot
 data(effects_table)
 prepared_data <- prepare_forest_dot_data(effects_table)
-dotforest_4pub <- create_forest_dot_plot(prepared_data,
+dotforest_4pub <- create_forest_dot_plot(
+  prepared_data,
   outcomes_with_thresholds = list(
     "Benefit 1" = 0.10,
     "Benefit 2" = -20,
@@ -32,13 +34,14 @@ dotforest_4pub <- create_forest_dot_plot(prepared_data,
   )
 )
 
-ggsave_custom("inst/img/dotforest.png",
+ggsave_custom(
+  "inst/img/dotforest.png",
   imgpath = "./",
   inplot = dotforest_4pub,
   wdth = 7,
   hght = 5,
   unts = "in", # Single column width
-  dpi = 600  # Higher DPI for publication quality
+  dpi = 600 # Higher DPI for publication quality
 )
 
 # Trade-off plot
@@ -47,10 +50,16 @@ effects_table_filtered <- effects_table %>%
   filter(Outcome %in% c("Risk 1", "Benefit 1"))
 
 tradeoff <- generate_tradeoff_plot(
-  data = effects_table_filtered, filter = "None", category = "All",
-  benefit = "Benefit 1", risk = "Risk 1",
-  type_risk = "Crude proportions", type_graph = "Absolute risk",
-  ci = "Yes", ci_method = "Calculated", cl = 0.95,
+  data = effects_table_filtered,
+  filter = "None",
+  category = "All",
+  benefit = "Benefit 1",
+  risk = "Risk 1",
+  type_risk = "Crude proportions",
+  type_graph = "Absolute risk",
+  ci = "Yes",
+  ci_method = "Calculated",
+  cl = 0.95,
   mab = 0.05,
   mar = 0.45,
   threshold = "Segmented line",
@@ -84,7 +93,8 @@ tradeoff <- generate_tradeoff_plot(
   chartcolors = colfun()$fig7_colors
 )
 
-ggsave_custom("inst/img/tradeoff_plot.png",
+ggsave_custom(
+  "inst/img/tradeoff_plot.png",
   imgpath = "./",
   inplot = tradeoff,
   wdth = 5,
@@ -97,14 +107,20 @@ ggsave_custom("inst/img/tradeoff_plot.png",
 data(cumexcess)
 cumulative_excess_plot <-
   gensurv_combined(
-    df_plot = cumexcess, subjects_pt = 100, visits_pt = 6,
-    df_table = cumexcess, fig_colors_pt = colfun()$fig13_colors,
-    mar = 30, mab = 10, mcd = 15,titlename_p =
-      "Cumulative Excess # of Subjects w/ Events (per 1000 Subjects)",
+    df_plot = cumexcess,
+    subjects_pt = 100,
+    visits_pt = 6,
+    df_table = cumexcess,
+    fig_colors_pt = colfun()$fig13_colors,
+    mar = 30,
+    mab = 10,
+    mcd = 15,
+    titlename_p = "Cumulative Excess # of Subjects w/ Events (per 1000 Subjects)",
   )
 
 
-ggsave_custom("inst/img/cumulative_excess_plot.png",
+ggsave_custom(
+  "inst/img/cumulative_excess_plot.png",
   imgpath = "./",
   inplot = cumulative_excess_plot,
   wdth = 7,
@@ -113,13 +129,14 @@ ggsave_custom("inst/img/cumulative_excess_plot.png",
   dpi = 600 # Higher DPI for publication quality
 )
 
-ggsave_custom("inst/img/correlogram_plot.png",
-              imgpath = "./",
-              inplot = create_correlogram(corr),
-              wdth = 7,
-              hght = 7,
-              unts = "in", # Single column width
-              dpi = 600 # Higher DPI for publication quality
+ggsave_custom(
+  "inst/img/correlogram_plot.png",
+  imgpath = "./",
+  inplot = create_correlogram(corr),
+  wdth = 7,
+  hght = 7,
+  unts = "in", # Single column width
+  dpi = 600 # Higher DPI for publication quality
 )
 
 # ============================================================================
@@ -137,28 +154,28 @@ mcda_data <- prepare_mcda_data(effects_table)
 # Define clinical scales (same as walkthrough - moved before comparison plot)
 clinical_scales <- list(
   `Benefit 1` = list(
-    min = 0,      # No efficacy (unacceptable)
-    max = 1,      # 100% efficacy (maximum expected)
+    min = 0, # No efficacy (unacceptable)
+    max = 1, # 100% efficacy (maximum expected)
     direction = "increasing"
   ),
   `Benefit 2` = list(
-    min = 0,      # No symptoms (best outcome)
-    max = 100,    # Severe symptoms (worst outcome)
-    direction = "decreasing"  # Lower is better
+    min = 0, # No symptoms (best outcome)
+    max = 100, # Severe symptoms (worst outcome)
+    direction = "decreasing" # Lower is better
   ),
   `Benefit 3` = list(
-    min = 0,      # No improvement
-    max = 100,    # Maximum improvement
+    min = 0, # No improvement
+    max = 100, # Maximum improvement
     direction = "increasing"
   ),
   `Risk 1` = list(
-    min = 0,      # No adverse events (ideal)
-    max = 0.5,    # 50% AE rate (unacceptable threshold)
+    min = 0, # No adverse events (ideal)
+    max = 0.5, # 50% AE rate (unacceptable threshold)
     direction = "decreasing"
   ),
   `Risk 2` = list(
-    min = 0,      # No serious adverse events (ideal)
-    max = 0.15,   # 15% SAE rate (concerning threshold)
+    min = 0, # No serious adverse events (ideal)
+    max = 0.15, # 15% SAE rate (concerning threshold)
     direction = "decreasing"
   )
 )
@@ -168,16 +185,17 @@ barplot_comp_a <- create_mcda_barplot_comparison(
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
-  clinical_scales = clinical_scales  # Required parameter for normalization
+  clinical_scales = clinical_scales # Required parameter for normalization
 )
 
-ggsave_custom("inst/img/barplot_mcda_comparison_drug_a.png",
-              imgpath = "./",
-              inplot = barplot_comp_a,
-              wdth = 12,
-              hght = 8,
-              unts = "in", # Single column width
-              dpi = 600 # Higher DPI for publication quality
+ggsave_custom(
+  "inst/img/barplot_mcda_comparison_drug_a.png",
+  imgpath = "./",
+  inplot = barplot_comp_a,
+  wdth = 12,
+  hght = 8,
+  unts = "in", # Single column width
+  dpi = 600 # Higher DPI for publication quality
 )
 
 # --------------------------------------------------------------------------
@@ -214,14 +232,15 @@ barplot_walk_a <- create_mcda_barplot_walkthrough(
   comparison_drug = "Drug A",
   weights = weights,
   favorable_direction = favorable_direction,
-  clinical_scales = clinical_scales  # Use clinical thresholds, not data-driven normalization
+  clinical_scales = clinical_scales # Use clinical thresholds, not data-driven normalization
 )
 
-ggsave_custom("inst/img/barplot_mcda_walkthrough_drug_a.png",
-              imgpath = "./",
-              inplot = barplot_walk_a,
-              wdth = 12,  # Width for 3 panels
-              hght = 6,
-              unts = "in",
-              dpi = 600 # Higher DPI for publication quality
+ggsave_custom(
+  "inst/img/barplot_mcda_walkthrough_drug_a.png",
+  imgpath = "./",
+  inplot = barplot_walk_a,
+  wdth = 12, # Width for 3 panels
+  hght = 6,
+  unts = "in",
+  dpi = 600 # Higher DPI for publication quality
 )

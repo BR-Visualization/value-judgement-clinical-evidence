@@ -17,189 +17,268 @@ check_effects_table <- function(df) {
   tags_ui <- paste0(
     "<ol>",
     check_feature(
-      data = df, feature = "Factor",
+      data = df,
+      feature = "Factor",
       plots = c("value_tree", "forest", "contour", "tradeoff"),
-      func = is.character, na_check = TRUE,
+      func = is.character,
+      na_check = TRUE,
       values = c("Benefit", "Risk")
     ),
     check_feature(
-      data = df, feature = "Grouped_Outcome", plots = "value_tree",
-      func = is.character, na_check = TRUE
+      data = df,
+      feature = "Grouped_Outcome",
+      plots = "value_tree",
+      func = is.character,
+      na_check = TRUE
     ),
     check_feature(
-      data = df, feature = "Outcome",
+      data = df,
+      feature = "Outcome",
       plots = c("value_tree", "forest", "tradeoff", "contour"),
-      func = is.character, na_check = TRUE,
+      func = is.character,
+      na_check = TRUE,
       check_unique = c(
-        "Factor", "Grouped_Outcome",
-        "Statistics", "Outcome_Status",
+        "Factor",
+        "Grouped_Outcome",
+        "Statistics",
+        "Outcome_Status",
         "Type"
       )
     ),
     check_feature(
-      data = df, feature = "Statistics", plots = "value_tree",
-      func = is.character, na_check = TRUE
+      data = df,
+      feature = "Statistics",
+      plots = "value_tree",
+      func = is.character,
+      na_check = TRUE
     ),
     check_feature(
-      data = df, feature = "Outcome_Status", plots = "value_tree",
-      is.character, na_check = TRUE,
+      data = df,
+      feature = "Outcome_Status",
+      plots = "value_tree",
+      is.character,
+      na_check = TRUE,
       values = c("Identified", "Potential")
     ),
     check_feature(
-      data = df, feature = "Filter",
+      data = df,
+      feature = "Filter",
       plots = c("forest", "contour", "tradeoff"),
-      func = is.character, na_check = TRUE
+      func = is.character,
+      na_check = TRUE
     ),
     check_feature(
-      data = df, feature = "Category",
+      data = df,
+      feature = "Category",
       plots = c("forest", "contour", "tradeoff"),
-      func = is.character, na_check = TRUE
+      func = is.character,
+      na_check = TRUE
     ),
     check_feature(
-      data = df, feature = "Type",
+      data = df,
+      feature = "Type",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.character, na_check = TRUE,
+      func = is.character,
+      na_check = TRUE,
       values = c("Binary", "Continuous")
     ),
     check_feature(
-      data = df, feature = "Rate_Type",
+      data = df,
+      feature = "Rate_Type",
       plots = c("contour", "forest", "tradeoff"),
       func = is.character
     ),
     check_feature(
-      data = df, feature = "Mean1",
+      data = df,
+      feature = "Mean1",
       plots = c("contour", "forest", "tradeoff"),
       func = is.numeric
     ),
     check_feature(
-      data = df, feature = "Mean2",
+      data = df,
+      feature = "Mean2",
       plots = c("contour", "forest", "tradeoff"),
       func = is.numeric
     ),
     check_feature(
-      data = df, feature = "Prop1",
-      plots = c("contour", "forest", "tradeoff"), func = is.numeric,
+      data = df,
+      feature = "Prop1",
+      plots = c("contour", "forest", "tradeoff"),
+      func = is.numeric,
       check_range = c(0, 1)
     ),
     check_feature(
-      data = df, feature = "Prop2",
-      plots = c("contour", "forest", "tradeoff"), func = is.numeric,
+      data = df,
+      feature = "Prop2",
+      plots = c("contour", "forest", "tradeoff"),
+      func = is.numeric,
       check_range = c(0, 1)
     ),
     check_feature(
-      data = df, feature = "N1",
+      data = df,
+      feature = "N1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.integer, check_positive = TRUE
+      func = is.integer,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "N2",
+      data = df,
+      feature = "N2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.integer, check_positive = TRUE
+      func = is.integer,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "100PYAR1",
+      data = df,
+      feature = "100PYAR1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "100PYAR2",
+      data = df,
+      feature = "100PYAR2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "IncRate1",
+      data = df,
+      feature = "IncRate1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "IncRate2",
+      data = df,
+      feature = "IncRate2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "100PEY1",
+      data = df,
+      feature = "100PEY1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "100PEY2",
+      data = df,
+      feature = "100PEY2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "EventRate1",
+      data = df,
+      feature = "EventRate1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "EventRate2",
+      data = df,
+      feature = "EventRate2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "Sd1",
+      data = df,
+      feature = "Sd1",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "Sd2",
+      data = df,
+      feature = "Sd2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.numeric, check_positive = TRUE
+      func = is.numeric,
+      check_positive = TRUE
     ),
     check_feature(
-      data = df, feature = "Trt1",
+      data = df,
+      feature = "Trt1",
       plots = c("contour", "forest", "tradeoff"),
       func = is.character,
       na_check = TRUE
     ),
     check_feature(
-      data = df, feature = "Trt2",
+      data = df,
+      feature = "Trt2",
       plots = c("contour", "forest", "tradeoff"),
-      func = is.character, na_check = TRUE, check_same = TRUE
+      func = is.character,
+      na_check = TRUE,
+      check_same = TRUE
     ),
     check_feature(
-      data = df, feature = "Diff_LowerCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "Diff_LowerCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "Diff_UpperCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "Diff_UpperCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "Diff_IncRate_LowerCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "Diff_IncRate_LowerCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "Diff_IncRate_UpperCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "Diff_IncRate_UpperCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "Diff_EventRate_LowerCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "Diff_EventRate_LowerCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "Diff_EventRate_UpperCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "Diff_EventRate_UpperCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "RelRisk_LowerCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "RelRisk_LowerCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "RelRisk_UpperCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "RelRisk_UpperCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "OddsRatio_LowerCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "OddsRatio_LowerCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "OddsRatio_UpperCI",
-      plots = c("forest", "tradeoff"), func = is.numeric
+      data = df,
+      feature = "OddsRatio_UpperCI",
+      plots = c("forest", "tradeoff"),
+      func = is.numeric
     ),
     check_feature(
-      data = df, feature = "Drug_Status", plots = "tradeoff",
-      func = is.character, values = c("Approved", "Test")
+      data = df,
+      feature = "Drug_Status",
+      plots = "tradeoff",
+      func = is.character,
+      values = c("Approved", "Test")
     ),
     "</ol>"
   )
@@ -229,9 +308,18 @@ check_effects_table <- function(df) {
 #' @importFrom dplyr select group_by summarise_all n_distinct
 #' @export
 #'
-check_feature <- function(data, feature, plots, func, na_check, values,
-                          check_same, check_range, check_positive,
-                          check_unique) {
+check_feature <- function(
+  data,
+  feature,
+  plots,
+  func,
+  na_check,
+  values,
+  check_same,
+  check_range,
+  check_positive,
+  check_unique
+) {
   error_msg <- ""
   # check if the feature is available in the effects table
   if (!(feature %in% colnames(data))) {
@@ -245,9 +333,9 @@ check_feature <- function(data, feature, plots, func, na_check, values,
       "<li><span>Feature <b>{feature}</b> is empty : errors ",
       "might occur in <b>{toString(plots)}</b> plot(s)</span></li>"
     )
-  }
-  # check if the feature has the right type
-  else if (!func(data[[feature]])) { # nolint
+  } else if (!func(data[[feature]])) {
+    # check if the feature has the right type
+    # nolint
     typestr <- gsub("is.|\\(\\)", "", deparse(substitute(func())))
     error_msg <- glue(
       "<li><span>Feature <b>{feature}</b> must be of type ",
@@ -269,22 +357,28 @@ check_feature <- function(data, feature, plots, func, na_check, values,
     # check if the feature contains specified values
     if (!missing(values)) {
       if (!(all(data[[feature]] %in% values))) {
-        error_msg <- paste(error_msg, glue(
-          "<li><span>Feature <b>{feature}</b>",
-          " must have the following values **{toString(values)}**",
-          " : errors might occur in <b>{toString(plots)}</b> plot(s)",
-          "</span></li>"
-        ))
+        error_msg <- paste(
+          error_msg,
+          glue(
+            "<li><span>Feature <b>{feature}</b>",
+            " must have the following values **{toString(values)}**",
+            " : errors might occur in <b>{toString(plots)}</b> plot(s)",
+            "</span></li>"
+          )
+        )
       }
     }
     if (!missing(check_same) && check_same == TRUE) {
       if (!(length(unique(data[[feature]])) == 1)) {
-        error_msg <- paste(error_msg, glue(
-          "<li><span>Feature <b>{feature}</b>",
-          " must  have the same value accross all rows : errors",
-          " might occur in <b>{toString(plots)}</b> plot(s)</span>",
-          "</li>"
-        ))
+        error_msg <- paste(
+          error_msg,
+          glue(
+            "<li><span>Feature <b>{feature}</b>",
+            " must  have the same value accross all rows : errors",
+            " might occur in <b>{toString(plots)}</b> plot(s)</span>",
+            "</li>"
+          )
+        )
       }
     }
     if (!missing(check_range)) {
@@ -292,23 +386,29 @@ check_feature <- function(data, feature, plots, func, na_check, values,
       b1 <- all(feature_with_no_na >= check_range[1])
       b2 <- all(feature_with_no_na <= check_range[2])
       if (!(b1 && b2)) {
-        error_msg <- paste(error_msg, glue(
-          "<li><span>Feature <b>{feature}",
-          "</b> must be between [{toString(check_range)}]",
-          " : errors might occur in <b>{toString(plots)}</b> plot(s)",
-          "</span></li>"
-        ))
+        error_msg <- paste(
+          error_msg,
+          glue(
+            "<li><span>Feature <b>{feature}",
+            "</b> must be between [{toString(check_range)}]",
+            " : errors might occur in <b>{toString(plots)}</b> plot(s)",
+            "</span></li>"
+          )
+        )
       }
     }
     if (!missing(check_positive) && check_positive == TRUE) {
       feature_with_no_na <- as.numeric(na.omit(data[[feature]]))
       if (!(all(feature_with_no_na >= 0))) {
-        error_msg <- paste(error_msg, glue(
-          "<li><span>Feature <b>{feature}",
-          "</b> must be positive",
-          " : errors might occur in <b>{toString(plots)}</b> plot(s)",
-          "</span></li>"
-        ))
+        error_msg <- paste(
+          error_msg,
+          glue(
+            "<li><span>Feature <b>{feature}",
+            "</b> must be positive",
+            " : errors might occur in <b>{toString(plots)}</b> plot(s)",
+            "</span></li>"
+          )
+        )
       }
     }
     if (!missing(check_unique) && length(check_unique) > 0) {
@@ -318,17 +418,26 @@ check_feature <- function(data, feature, plots, func, na_check, values,
           group_by(get(feature)) %>%
           summarise_all(n_distinct)
 
-        if (!all(apply(
-          result[, 2:ncol(result)], 2,
-          function(a) length(unique(a)) == "1"
-        ) == TRUE)) {
-          error_msg <- paste(error_msg, glue(
-            "<li><span>Feature ",
-            "<b>{feature}</b> error : Each unique {feature} should be",
-            " associated with unique <b>{toString(check_unique)}</b>",
-            "  : errors occur in <b>{toString(plots)}</b> plot(s)",
-            "</span></li>"
-          ))
+        if (
+          !all(
+            apply(
+              result[, 2:ncol(result)],
+              2,
+              function(a) length(unique(a)) == "1"
+            ) ==
+              TRUE
+          )
+        ) {
+          error_msg <- paste(
+            error_msg,
+            glue(
+              "<li><span>Feature ",
+              "<b>{feature}</b> error : Each unique {feature} should be",
+              " associated with unique <b>{toString(check_unique)}</b>",
+              "  : errors occur in <b>{toString(plots)}</b> plot(s)",
+              "</span></li>"
+            )
+          )
         }
       }
     }
@@ -358,9 +467,19 @@ check_feature <- function(data, feature, plots, func, na_check, values,
 #' @importFrom shiny tags
 #' @export
 #'
-check_feature_string <- function(data, feature, plots, func, na_check, values,
-                                 check_same, check_range, check_positive,
-                                 check_unique, add_msg = "") {
+check_feature_string <- function(
+  data,
+  feature,
+  plots,
+  func,
+  na_check,
+  values,
+  check_same,
+  check_range,
+  check_positive,
+  check_unique,
+  add_msg = ""
+) {
   error_msg <- ""
   # check if the feature is available in the effects table
   if (!(feature %in% colnames(data))) {
@@ -369,16 +488,16 @@ check_feature_string <- function(data, feature, plots, func, na_check, values,
       "effect table : errors occur in {toString(plots)}",
       " plot(s);"
     )
-  }
-  # check if the feature is not empty
-  else if (sum(is.na(data[feature])) == nrow(data)) { # nolint
+  } else if (sum(is.na(data[feature])) == nrow(data)) {
+    # check if the feature is not empty
+    # nolint
     error_msg <- glue(
       "Feature {feature} is empty : errors ",
       "occur in {toString(plots)} plot(s); {add_msg}"
     )
-  }
-  # check if the feature has the right type
-  else if (!func(data[[feature]])) { # nolint
+  } else if (!func(data[[feature]])) {
+    # check if the feature has the right type
+    # nolint
     typestr <- gsub("is.|\\(\\)", "", deparse(substitute(func())))
     error_msg <- glue(
       "Feature {feature} must be of type ",
@@ -400,20 +519,26 @@ check_feature_string <- function(data, feature, plots, func, na_check, values,
     # check if the feature contains specified values
     if (!missing(values)) {
       if (!(all(data[[feature]] %in% values))) {
-        error_msg <- paste(error_msg, glue(
-          "Feature {feature}",
-          " must have the following values **{toString(values)}**",
-          " : errors occur in {toString(plots)} plot(s);"
-        ))
+        error_msg <- paste(
+          error_msg,
+          glue(
+            "Feature {feature}",
+            " must have the following values **{toString(values)}**",
+            " : errors occur in {toString(plots)} plot(s);"
+          )
+        )
       }
     }
     if (!missing(check_same) && check_same == TRUE) {
       if (!(length(unique(data[[feature]])) == 1)) {
-        error_msg <- paste(error_msg, glue(
-          "Feature {feature}",
-          " must have the same value across all rows : errors",
-          " occur in {toString(plots)} plot(s);"
-        ))
+        error_msg <- paste(
+          error_msg,
+          glue(
+            "Feature {feature}",
+            " must have the same value across all rows : errors",
+            " occur in {toString(plots)} plot(s);"
+          )
+        )
       }
     }
     if (!missing(check_range)) {
@@ -421,21 +546,27 @@ check_feature_string <- function(data, feature, plots, func, na_check, values,
       b1 <- all(feature_with_no_na >= check_range[1])
       b2 <- all(feature_with_no_na <= check_range[2])
       if (!(b1 && b2)) {
-        error_msg <- paste(error_msg, glue(
-          "Feature {feature}",
-          " must be between [{toString(check_range)}]",
-          " : errors occur in {toString(plots)} plot(s);"
-        ))
+        error_msg <- paste(
+          error_msg,
+          glue(
+            "Feature {feature}",
+            " must be between [{toString(check_range)}]",
+            " : errors occur in {toString(plots)} plot(s);"
+          )
+        )
       }
     }
     if (!missing(check_positive) && check_positive == TRUE) {
       feature_with_no_na <- as.numeric(na.omit(data[[feature]]))
       if (!(all(feature_with_no_na >= 0))) {
-        error_msg <- paste(error_msg, glue(
-          "Feature {feature}",
-          " must be positive",
-          " : errors occur in {toString(plots)} plot(s);"
-        ))
+        error_msg <- paste(
+          error_msg,
+          glue(
+            "Feature {feature}",
+            " must be positive",
+            " : errors occur in {toString(plots)} plot(s);"
+          )
+        )
       }
     }
     if (!missing(check_unique) && length(check_unique) > 0) {
@@ -444,16 +575,25 @@ check_feature_string <- function(data, feature, plots, func, na_check, values,
           select(c(feature, check_unique)) %>%
           group_by(get(feature)) %>%
           summarise_all(n_distinct)
-        if (!all(apply(
-          result[, 2:ncol(result)], 2,
-          function(a) length(unique(a)) == "1"
-        ) == TRUE)) {
-          error_msg <- paste(error_msg, glue(
-            "Feature {feature} error :",
-            " Each unique {feature} should be associated with unique",
-            " {toString(check_unique)} : errors occur",
-            " in {toString(plots)} plot(s);"
-          ))
+        if (
+          !all(
+            apply(
+              result[, 2:ncol(result)],
+              2,
+              function(a) length(unique(a)) == "1"
+            ) ==
+              TRUE
+          )
+        ) {
+          error_msg <- paste(
+            error_msg,
+            glue(
+              "Feature {feature} error :",
+              " Each unique {feature} should be associated with unique",
+              " {toString(check_unique)} : errors occur",
+              " in {toString(plots)} plot(s);"
+            )
+          )
         }
       }
     }
