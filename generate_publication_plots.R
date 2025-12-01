@@ -225,7 +225,7 @@ favorable_direction <- c(
 )
 
 # Create MCDA walkthrough using clinical threshold-based normalization
-barplot_walk_a <- create_mcda_barplot_walkthrough(
+barplot_walk_a <- create_mcda_walkthrough(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
