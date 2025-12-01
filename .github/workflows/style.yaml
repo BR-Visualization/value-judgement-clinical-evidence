@@ -2,7 +2,7 @@
 # Need help debugging build failures? Start at https://github.com/r-lib/actions#where-to-find-help
 on:
   push:
-    paths: ["**.[rR]", "**.[qrR]md", "**.[rR]markdown", "**.[rR]nw", "**.[rR]profile"]
+    paths: ["**.[rR]","**.[qrR]md","**.[rR]markdown","**.[rR]nw","**.[rR]profile"]
 
 name: style.yaml
 
@@ -63,14 +63,21 @@ jobs:
 
       - name: Commit and push changes
         run: |
+          BRANCH=${GITHUB_REF#refs/heads/}
           if FILES_TO_COMMIT=($(git diff-index --name-only ${{ github.sha }} \
-              | egrep --ignore-case '\.(R|[qR]md|Rmarkdown|Rnw|Rprofile)$'))
+              | egrep --ignore-case '\\.(R|[qR]md|Rmarkdown|Rnw|Rprofile)$'))
           then
             git config --local user.name "$GITHUB_ACTOR"
             git config --local user.email "$GITHUB_ACTOR@users.noreply.github.com"
-            git commit ${FILES_TO_COMMIT[*]} -m "Style code (GHA)"
-            git pull --ff-only
-            git push origin
+            # stage the changed files safely
+            git add -- "${FILES_TO_COMMIT[@]}"
+            # commit only the changed files
+            git commit -m "Style code (GHA)" -- "${FILES_TO_COMMIT[@]}"
+            # fetch and rebase local commit on top of remote branch, then push
+            git fetch origin "${BRANCH}"
+            git rebase --autostash origin/"${BRANCH}"
+            git push origin HEAD:"${BRANCH}"
           else
             echo "No changes to commit."
           fi
+        shell: bash
