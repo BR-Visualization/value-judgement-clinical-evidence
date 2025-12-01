@@ -68,7 +68,7 @@ create_correlogram <- function(
     stop(error_message)
   }
 
-  if (any(is.na(df))) {
+  if (anyNA(df)) {
     miss_vars <- colnames(df)[colSums(is.na(df) > 0)]
     warning(paste(
       "you have a missing value in row(s)",
@@ -95,7 +95,7 @@ create_correlogram <- function(
     })
 
     # If we successfully detected labels for all columns, use them
-    if (!any(is.na(detected_br))) {
+    if (!anyNA(detected_br)) {
       br <- unname(detected_br)
     } else {
       error_message <- "You must label all your variables as either
@@ -104,7 +104,7 @@ create_correlogram <- function(
     }
   }
 
-  if (any(!(br %in% c("Benefit", "Risk")))) {
+  if (!all((br %in% c("Benefit", "Risk")))) {
     error_message <- "You can only label variables as 'Benefit' or 'Risk'."
     stop(error_message)
   }
@@ -237,7 +237,7 @@ create_correlogram <- function(
     corr_df <- corr_df %>% filter(x0 >= y0)
   }
 
-  if (diagonal == FALSE) {
+  if (!diagonal) {
     corr_df <- corr_df %>% filter(x0 != y0)
   }
 

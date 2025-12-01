@@ -76,7 +76,7 @@ scatter_plot <- function(
     )
   }
 
-  if (any(is.na(diff1))) {
+  if (anyNA(diff1)) {
     ind <- which(is.na(diff1))
     warning(paste(
       "you have a missing value in diff1, index",
@@ -92,7 +92,7 @@ scatter_plot <- function(
     diff1 <- na.omit(diff1)
   }
 
-  if (any(is.na(diff2))) {
+  if (anyNA(diff2)) {
     ind <- which(is.na(diff2))
     warning(paste(
       "you have a missing value in diff2, index",

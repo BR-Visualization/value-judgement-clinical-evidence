@@ -766,7 +766,7 @@ prepare_tradeoff_plot <- function(
   if (filter != "None") {
     my_colors <- rep(
       chartcolors,
-      each = length(levels(as.factor(data$Category)))
+      each = nlevels(as.factor(data$Category))
     )
     names(my_colors) <- c(t(outer(
       levels(as.factor(data$Trt1)),
@@ -787,9 +787,7 @@ prepare_tradeoff_plot <- function(
   )
 
   # set a shape for each category
-  my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[seq_along(length(
-    levels(as.factor(data$Category))
-  ))]
+  my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[seq_along(nlevels(as.factor(data$Category)))]
   names(my_shapes) <- c(levels(as.factor(data$Category)))
 
   # map the shape with the different category
