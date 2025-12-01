@@ -99,7 +99,7 @@ gensurv_plot <- function(
       eff_diff_lbl
     )
 
-  if (any(is.na(df_outcome))) {
+  if (anyNA(df_outcome)) {
     warning(paste(
       "you have a missing value in row(s)",
       which(rowSums(is.na(df_outcome)) > 0)
@@ -115,7 +115,7 @@ gensurv_plot <- function(
   std1 <- sd(df_ben$diff)
   bmin <- mean1 - (3 * std1)
   bmax <- mean1 + (3 * std1)
-  error_rows <- which(!(df_ben$diff > bmin) | !(df_ben$diff < bmax))
+  error_rows <- which(df_ben$diff <= bmin | df_ben$diff >= bmax)
   if (!all(df_ben$diff > bmin) && !all(df_ben$diff < bmax)) {
     stop(paste(
       "Custom error message: there is an outlier in your benefit data
@@ -129,7 +129,7 @@ gensurv_plot <- function(
   std2 <- sd(df_risk$diff)
   rmin <- mean2 - (3 * std2)
   rmax <- mean2 + (3 * std2)
-  error_rows <- which(!(df_risk$diff > rmin) | !(df_risk$diff < rmax))
+  error_rows <- which(df_risk$diff <= rmin | df_risk$diff >= rmax)
   if (!all(df_risk$diff > rmin) && !all(df_risk$diff < rmax)) {
     stop(paste(
       "Custom error message: there is an outlier in your risk data
@@ -252,7 +252,7 @@ gensurv_plot <- function(
     ) +
     annotate(
       "text",
-      x = (.95 * obsv_dur),
+      x = (0.95 * obsv_dur),
       y = ifelse(mar > mab, mar + adjustment, mar - adjustment),
       color = "#ca0020",
       label = "MAR",
@@ -536,7 +536,7 @@ gensurv_table <- function(
     }
   }
 
-  if (any(is.na(df_table))) {
+  if (anyNA(df_table)) {
     miss_vars <- colnames(df_table)[colSums(is.na(df_table) > 0)]
     warning(paste(
       "you have a missing value in row(s)",
@@ -607,7 +607,7 @@ gensurv_table <- function(
     labels = NULL
   )
 
-  if (any(is.na(df_table))) {
+  if (anyNA(df_table)) {
     df_table3 <- na.omit(df_table1)
     df_table3 <- droplevels(df_table3)
 
@@ -690,7 +690,7 @@ gensurv_table <- function(
 
   extra_code1 <- labs(titles = "Number of Subjects")
 
-  if (any(is.na(df_table))) {
+  if (anyNA(df_table)) {
     df_table3 <- na.omit(df_table2)
     df_table3 <- droplevels(df_table3)
 

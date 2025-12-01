@@ -345,7 +345,7 @@ check_feature <- function(
   } else {
     # check the content of the feature
     # check if the feature has missing values
-    if (!missing(na_check) && na_check == TRUE) {
+    if (!missing(na_check) && na_check) {
       if (sum(is.na(data[feature])) > 0) {
         error_msg <- glue(
           "<li><span>Feature <b>{feature}</b> has missing values",
@@ -368,8 +368,8 @@ check_feature <- function(
         )
       }
     }
-    if (!missing(check_same) && check_same == TRUE) {
-      if (!(length(unique(data[[feature]])) == 1)) {
+    if (!missing(check_same) && check_same) {
+      if (length(unique(data[[feature]])) != 1) {
         error_msg <- paste(
           error_msg,
           glue(
@@ -397,7 +397,7 @@ check_feature <- function(
         )
       }
     }
-    if (!missing(check_positive) && check_positive == TRUE) {
+    if (!missing(check_positive) && check_positive) {
       feature_with_no_na <- as.numeric(na.omit(data[[feature]]))
       if (!(all(feature_with_no_na >= 0))) {
         error_msg <- paste(
@@ -412,7 +412,7 @@ check_feature <- function(
       }
     }
     if (!missing(check_unique) && length(check_unique) > 0) {
-      if (all(check_unique %in% names(data)) == TRUE) {
+      if (all(check_unique %in% names(data))) {
         result <- data %>%
           select(c(feature, check_unique)) %>%
           group_by(get(feature)) %>%
@@ -424,8 +424,7 @@ check_feature <- function(
               result[, 2:ncol(result)],
               2,
               function(a) length(unique(a)) == "1"
-            ) ==
-              TRUE
+            )
           )
         ) {
           error_msg <- paste(
@@ -507,7 +506,7 @@ check_feature_string <- function(
   } else {
     # check the content of the feature
     # check if the feature has missing values
-    if (!missing(na_check) && na_check == TRUE) {
+    if (!missing(na_check) && na_check) {
       if (sum(is.na(data[feature])) > 0) {
         error_msg <- glue(
           "Feature {feature} has missing values",
@@ -529,8 +528,8 @@ check_feature_string <- function(
         )
       }
     }
-    if (!missing(check_same) && check_same == TRUE) {
-      if (!(length(unique(data[[feature]])) == 1)) {
+    if (!missing(check_same) && check_same) {
+      if (length(unique(data[[feature]])) != 1) {
         error_msg <- paste(
           error_msg,
           glue(
@@ -556,7 +555,7 @@ check_feature_string <- function(
         )
       }
     }
-    if (!missing(check_positive) && check_positive == TRUE) {
+    if (!missing(check_positive) && check_positive) {
       feature_with_no_na <- as.numeric(na.omit(data[[feature]]))
       if (!(all(feature_with_no_na >= 0))) {
         error_msg <- paste(
@@ -570,7 +569,7 @@ check_feature_string <- function(
       }
     }
     if (!missing(check_unique) && length(check_unique) > 0) {
-      if (all(check_unique %in% names(data)) == TRUE) {
+      if (all(check_unique %in% names(data))) {
         result <- data %>%
           select(c(feature, check_unique)) %>%
           group_by(get(feature)) %>%
@@ -581,8 +580,7 @@ check_feature_string <- function(
               result[, 2:ncol(result)],
               2,
               function(a) length(unique(a)) == "1"
-            ) ==
-              TRUE
+            )
           )
         ) {
           error_msg <- paste(
