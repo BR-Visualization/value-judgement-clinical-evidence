@@ -53,13 +53,17 @@ test_that("create_correlogram() will ouput a ggplot object", {
 corr2 <- corr1
 corr2[1, 1] <- NA
 
-test_that("create_correlogram() will return a custom warning message concerning
-missing data", {
+test_that(paste(
+  "create_correlogram() will return a custom warning message",
+  "concerning missing data"
+), {
   expect_warning(create_correlogram(corr2))
 })
 
-test_that("create_correlogram() will return a ggplot object with
-missing data", {
+test_that(paste(
+  "create_correlogram() will return a ggplot object",
+  "with missing data"
+), {
   expect_warning(
     result <- create_correlogram(corr2),
     "you have a missing value"
@@ -71,8 +75,10 @@ missing data", {
 
 corr3 <- corr2[, 2]
 
-test_that("create_correlogram() will return an error and custom message if there
-          is only one column in the dataframe", {
+test_that(paste(
+  "create_correlogram() will return an error and custom message",
+  "if there is only one column in the dataframe"
+), {
   expect_error(create_correlogram(corr3))
 })
 
@@ -137,8 +143,10 @@ for (i in seq(1, ncol(corr5))) {
   }
 }
 
-test_that("create_correlogram() correctly calculates correlations for continuous
-  variables", {
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for continuous variables"
+), {
   expect_equal(mat, mat1)
 })
 
@@ -182,8 +190,10 @@ for (i in seq(1, ncol(corr5))) {
   }
 }
 
-test_that("create_correlogram() correctly calculates correlations for binary
-  variables", {
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for binary variables"
+), {
   expect_equal(mat, mat1)
 })
 
@@ -259,8 +269,10 @@ for (i in seq(1, ncol(corr5))) {
 }
 mat1 <- -mat1
 
-test_that("create_correlogram() correctly calculates correlations for continuous/binary
-  combinations of variables", {
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for continuous/binary combinations of variables"
+), {
   expect_equal(mat, mat1)
 })
 
@@ -292,8 +304,10 @@ for (i in seq(1, ncol(corr5))) {
   }
 }
 
-test_that("create_correlogram() correctly calculates correlations for ordinal
-  variables", {
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for ordinal variables"
+), {
   expect_equal(mat, mat1)
 })
 
@@ -363,8 +377,10 @@ for (i in seq(1, ncol(corr5))) {
   }
 }
 
-test_that("create_correlogram() correctly calculates correlations for continuous/ordinal
-  combinations of variables", {
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for continuous/ordinal combinations of variables"
+), {
   expect_equal(mat, mat1)
 })
 
@@ -434,8 +450,10 @@ for (i in seq_along(names(corr5))) {
   }
 }
 
-test_that("create_correlogram() correctly calculates correlations for ordinal/binary
-  combinations of variables", {
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for ordinal/binary combinations of variables"
+), {
   expect_equal(mat, mat1)
 })
 
@@ -474,7 +492,9 @@ for (i in seq(1, 10)) {
     c(sample(c("Low", "Medium", "High"), 100, replace = TRUE))
 }
 
-test_that("create_correlogram() will return an error and custom message if there is a
-  character-formatted variable in the dataframe", {
+test_that(paste(
+  "create_correlogram() will return an error and custom message",
+  "if there is a character-formatted variable in the dataframe"
+), {
   expect_error(create_correlogram(corr4))
 })

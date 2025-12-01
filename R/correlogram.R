@@ -63,8 +63,10 @@ create_correlogram <- function(
   df <- as.data.frame(df)
 
   if (ncol(df) <= 1) {
-    error_message <- "You must have more than one variable in your
-                              dataframe."
+    error_message <- paste(
+      "You must have more than one variable in your",
+      "dataframe."
+    )
     stop(error_message)
   }
 
@@ -98,8 +100,10 @@ create_correlogram <- function(
     if (!anyNA(detected_br)) {
       br <- unname(detected_br)
     } else {
-      error_message <- "You must label all your variables as either
-    a 'Benefit' or 'Risk'."
+      error_message <- paste(
+        "You must label all your variables as either",
+        "a 'Benefit' or 'Risk'."
+      )
       stop(error_message)
     }
   }
@@ -126,8 +130,10 @@ create_correlogram <- function(
             shortcs[i] <- "o"
           ),
           stop(
-            "Please review your dataframe inputs to ensure correct
-                formatting."
+            paste(
+              "Please review your dataframe inputs to ensure correct",
+              "formatting."
+            )
           )
         )
       )
@@ -162,20 +168,21 @@ create_correlogram <- function(
           mat[i, j] <- rcompanion::phi(df[, i], df[, j]),
           ifelse(
             type == "cb",
-            # calculates point biserial correlation with a
-            # continuous variable as the x attribute followed by a binary variable
+            # calculates point biserial correlation with a continuous
+            # variable as the x attribute followed by a binary variable
             # as the y attribute.
             mat[i, j] <- biserial.cor(df[, i], df[, j]),
             ifelse(
               type %in% c("bc"),
-              # calculates point biserial correlation with a binary variable as
-              # the x attribute followed by a continuous variable as the y
-              # attribute.
+              # calculates point biserial correlation with a binary
+              # variable as the x attribute followed by a continuous
+              # variable as the y attribute.
               mat[i, j] <-
                 biserial.cor(df[, j], df[, i]),
               ifelse(
                 type == "oo",
-                # calculates Spearman rank correlation with two ordinal variables.
+                # calculates Spearman rank correlation with two ordinal
+                # variables.
                 mat[i, j] <- cor(rank(df[, i]), rank(df[, j])),
                 ifelse(
                   type == "co",
@@ -185,25 +192,25 @@ create_correlogram <- function(
                   mat[i, j] <- cor(df[, i], rank(df[, j])),
                   ifelse(
                     type == "oc",
-                    # calculates modified Pearson correlation with nonparametric
-                    # Spearman rank correlation, considering an ordinal variable
-                    # as the x attribute and continuous variable as the y
-                    # attribute.
+                    # calculates modified Pearson correlation with
+                    # nonparametric Spearman rank correlation, considering
+                    # an ordinal variable as the x attribute and
+                    # continuous variable as the y attribute.
                     mat[i, j] <- cor(rank(df[, i]), df[, j]),
                     ifelse(
                       type == "ob",
-                      # calculates glass rank biserial correlation with an ordinal
-                      # variable as the x attribute and binary variable as the y
-                      # attribute.
+                      # calculates glass rank biserial correlation with
+                      # an ordinal variable as the x attribute and binary
+                      # variable as the y attribute.
                       mat[i, j] <- enframe(wilcoxonRG(table(
                         df[, j],
                         df[, i]
                       )))[1, 2],
                       ifelse(
                         type == "bo",
-                        # calculates glass rank biserial correlation with a binary
-                        # variable as the x attribute and an ordinal variable as
-                        # the y attribute.
+                        # calculates glass rank biserial correlation with
+                        # a binary variable as the x attribute and an
+                        # ordinal variable as the y attribute.
                         mat[i, j] <- enframe(wilcoxonRG(table(
                           df[, i],
                           df[, j]

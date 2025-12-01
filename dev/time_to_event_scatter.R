@@ -8,29 +8,35 @@
 #'   - risk_type: Type of risk outcome
 #'   - benefit_observed: (optional) 1 = event observed, 0 = censored
 #'   - risk_observed: (optional) 1 = event observed, 0 = censored
-#'   Censored observations are displayed at their censoring time with open circles and tick marks.
-#' @param vary_by Character string specifying which dimension to vary by color/shape.
-#'   Options: "benefit" (vary by benefit type) or "risk" (vary by risk type).
-#'   Default is "benefit".
-#' @param time_units Character string for time unit labels (e.g., "Days", "Weeks", "Months").
-#'   Default is "Days".
-#' @param add_marginals Logical. If TRUE, adds marginal density plots. Default is TRUE.
+#'   Censored observations are displayed at their censoring time with
+#'   open circles and tick marks.
+#' @param vary_by Character string specifying which dimension to vary
+#'   by color/shape. Options: "benefit" (vary by benefit type) or
+#'   "risk" (vary by risk type). Default is "benefit".
+#' @param time_units Character string for time unit labels (e.g.,
+#'   "Days", "Weeks", "Months"). Default is "Days".
+#' @param add_marginals Logical. If TRUE, adds marginal density plots.
+#'   Default is TRUE.
 #' @param fig_colors Optional vector of colors for different event types.
 #'   If NULL, uses default color palette.
 #'
-#' @return A ggplot object showing the time-to-event scatter plot with unity line.
-#'   Points below the unity line indicate risk occurred before benefit (unfavorable).
-#'   Points above the unity line indicate benefit occurred before risk (favorable).
+#' @return A ggplot object showing the time-to-event scatter plot with
+#'   unity line. Points below the unity line indicate risk occurred
+#'   before benefit (unfavorable). Points above the unity line indicate
+#'   benefit occurred before risk (favorable).
 #'
 #' @export
 #' @import ggplot2
 #' @importFrom ggExtra ggMarginal
 #'
 #' @details
-#' This visualization helps identify temporal patterns in benefit-risk profiles:
+#' This visualization helps identify temporal patterns in benefit-risk
+#' profiles:
 #' - Unity line (y=x): represents equal timing of benefit and risk
-#' - Below line: risk precedes benefit (less favorable patient experience)
-#' - Above line: benefit precedes risk (more favorable patient experience)
+#' - Below line: risk precedes benefit (less favorable patient
+#'   experience)
+#' - Above line: benefit precedes risk (more favorable patient
+#'   experience)
 #'
 #' The plot can highlight whether certain benefit or risk types tend to occur
 #' earlier in treatment, which may inform:
@@ -43,9 +49,9 @@
 #' - Tick marks (+) to indicate censoring direction
 #' - Time displayed is the censoring time (e.g., end of follow-up)
 #'
-#' Note: Summary statistics (mean, benefit-before-risk %) are calculated only
-#' among subjects with both events observed. Consider competing risks and
-#' informative censoring in interpretation.
+#' Note: Summary statistics (mean, benefit-before-risk %) are
+#' calculated only among subjects with both events observed. Consider
+#' competing risks and informative censoring in interpretation.
 #'
 #' @examples
 #' \dontrun{
@@ -53,7 +59,11 @@
 #' time_data <- data.frame(
 #'   subject_id = 1:100,
 #'   time_to_benefit = rexp(100, rate = 0.05),
-#'   benefit_type = sample(c("Symptom Relief", "Clinical Response"), 100, replace = TRUE),
+#'   benefit_type = sample(
+#'     c("Symptom Relief", "Clinical Response"),
+#'     100,
+#'     replace = TRUE
+#'   ),
 #'   time_to_risk = rexp(100, rate = 0.03),
 #'   risk_type = sample(c("Mild AE", "Moderate AE"), 100, replace = TRUE)
 #' )
@@ -226,6 +236,7 @@ create_time_to_event_scatter <- function(
       alpha = 0.5,
       shape = 1
     ) + # Open circles
+
     # Add tick marks for censored observations
     geom_point(
       data = data_clean[data_clean$censoring_status == "Benefit censored", ],
@@ -277,13 +288,10 @@ create_time_to_event_scatter <- function(
       title = "Time-to-Event: Benefit vs Risk",
       subtitle = if (has_censoring && n_censored > 0) {
         paste0(
-          n_both_observed,
-          "/",
-          n_total,
+          n_both_observed, "/", n_total,
           " subjects with both events (",
           sprintf("%.1f%%", pct_benefit_first),
-          " benefit first); ",
-          n_censored,
+          " benefit first); ", n_censored,
           " censored (open circles + ticks)"
         )
       } else {
@@ -353,7 +361,11 @@ create_time_to_event_scatter <- function(
       legend.title = element_text(size = 10, face = "bold"),
       legend.text = element_text(size = 9),
       panel.grid.minor = element_blank(),
-      panel.border = element_rect(color = "grey80", fill = NA, linewidth = 0.5)
+      panel.border = element_rect(
+        color = "grey80",
+        fill = NA,
+        linewidth = 0.5
+      )
     )
 
   # Add marginal plots if requested

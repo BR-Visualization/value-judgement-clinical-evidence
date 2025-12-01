@@ -82,8 +82,7 @@ gensurv_plot <- function(
 
   if (length(nonexistent_columns) > 0) {
     error_message <- paste0(
-      "You are missing a required variable in your
-                            dataframe:",
+      "You are missing a required variable in your dataframe:",
       nonexistent_columns
     )
     stop(error_message)
@@ -118,8 +117,8 @@ gensurv_plot <- function(
   error_rows <- which(df_ben$diff <= bmin | df_ben$diff >= bmax)
   if (!all(df_ben$diff > bmin) && !all(df_ben$diff < bmax)) {
     stop(paste(
-      "Custom error message: there is an outlier in your benefit data
-    in rows",
+      "Custom error message: there is an outlier in your benefit",
+      "data in rows",
       error_rows
     ))
   }
@@ -132,13 +131,15 @@ gensurv_plot <- function(
   error_rows <- which(df_risk$diff <= rmin | df_risk$diff >= rmax)
   if (!all(df_risk$diff > rmin) && !all(df_risk$diff < rmax)) {
     stop(paste(
-      "Custom error message: there is an outlier in your risk data
-               in rows",
+      "Custom error message: there is an outlier in your risk",
+      "data in rows",
       error_rows
     ))
   }
 
-  stopifnot(all(df_outcome$outcome == "Benefit" | df_outcome$outcome == "Risk"))
+  stopifnot(
+    all(df_outcome$outcome == "Benefit" | df_outcome$outcome == "Risk")
+  )
 
   obsv_dur <- unique(df_outcome$obsv_duration)
   min1 <- min((df_outcome$diff) * base_subjects)
@@ -504,14 +505,15 @@ gensurv_table <- function(
     nonexistent_columns <- setdiff(all_columns, colnames(df_table))
     if (length(nonexistent_columns) > 0) {
       error_message <- paste0(
-        "You are missing a required variable in your
-                              dataframe:",
+        "You are missing a required variable in your dataframe:",
         nonexistent_columns
       )
       stop(error_message)
     } else {
       df_table <- df_table %>%
+        # nolint start: object_usage_linter.
         select(obsv_duration, n, effect, outcome, eff_code, eventtime, subjects)
+      # nolint end
     }
   } else {
     all_columns <- c(
@@ -525,14 +527,15 @@ gensurv_table <- function(
     nonexistent_columns <- setdiff(all_columns, colnames(df_table))
     if (length(nonexistent_columns) > 0) {
       error_message <- paste0(
-        "You are missing a required variable in your
-                              dataframe:",
+        "You are missing a required variable in your dataframe:",
         nonexistent_columns
       )
       stop(error_message)
     } else {
       df_table <- df_table %>%
+        # nolint start: object_usage_linter.
         select(obsv_duration, n, effect, outcome, eff_code)
+      # nolint end
     }
   }
 
@@ -582,12 +585,16 @@ gensurv_table <- function(
     df_table1 <- df_table1 %>%
       filter(eventtime %in% unlist(visit)) %>%
       mutate(visit = eventtime) %>%
+      # nolint start: object_usage_linter.
       select(visit, n, effect, y, color_ctrl_var, subjects) %>%
+      # nolint end
       distinct()
   } else {
     df_table1$visit <- visit
     df_table1 <- df_table1 %>%
+      # nolint start: object_usage_linter.
       select(visit, n, effect, y, color_ctrl_var, subjects)
+    # nolint end
   }
 
   geom_text_ctrl <- list(
@@ -668,12 +675,16 @@ gensurv_table <- function(
     df_table2 <- df_table2 %>%
       filter(eventtime %in% unlist(visit)) %>%
       mutate(visit = eventtime) %>%
+      # nolint start: object_usage_linter.
       select(visit, n, effect, z, subjects) %>%
+      # nolint end
       distinct(visit, effect, z, .keep_all = TRUE)
   } else {
     df_table2$visit <- visit
     df_table2 <- df_table2 %>%
+      # nolint start: object_usage_linter.
       select(visit, n, effect, z, subjects) %>%
+      # nolint end
       distinct(visit, effect, z, .keep_all = TRUE)
   }
 
@@ -807,8 +818,10 @@ gensurv_combined <- function(
   subjects_pt,
   visits_pt,
   fig_colors_pt = c("#0571b0", "#ca0020"),
-  titlename_p = "Cumulative Excess # of Subjects w/ Events
-                             (per 1000 Subjects)",
+  titlename_p = paste(
+    "Cumulative Excess # of Subjects w/ Events",
+    "(per 1000 Subjects)"
+  ),
   mar,
   mab,
   mcd,
@@ -831,8 +844,7 @@ gensurv_combined <- function(
     nonexistent_columns <- setdiff(all_columns, colnames(df_table))
     if (length(nonexistent_columns) > 0) {
       error_message <- paste0(
-        "You are missing a required variable in your
-                              table dataframe:",
+        "You are missing a required variable in your table dataframe:",
         nonexistent_columns
       )
       stop(error_message)
@@ -849,8 +861,7 @@ gensurv_combined <- function(
     nonexistent_columns <- setdiff(all_columns, colnames(df_table))
     if (length(nonexistent_columns) > 0) {
       error_message <- paste0(
-        "You are missing a required variable in your
-                              table dataframe:",
+        "You are missing a required variable in your table dataframe:",
         nonexistent_columns
       )
       stop(error_message)
@@ -868,8 +879,7 @@ gensurv_combined <- function(
   nonexistent_columns <- setdiff(all_columns, colnames(df_plot))
   if (length(nonexistent_columns) > 0) {
     error_message <- paste0(
-      "You are missing a required variable in your
-                            plot dataframe:",
+      "You are missing a required variable in your plot dataframe:",
       nonexistent_columns
     )
     stop(error_message)

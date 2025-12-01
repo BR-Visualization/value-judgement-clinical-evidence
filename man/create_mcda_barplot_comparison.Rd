@@ -15,31 +15,36 @@ create_mcda_barplot_comparison(
 )
 }
 \arguments{
-\item{data}{A data frame in wide format with Treatment column and criteria columns.
-Required parameter - must be provided. Should be the output from prepare_mcda_data(),
-which contains raw values for each treatment on their original measurement scales.}
+\item{data}{A data frame in wide format with Treatment column and
+criteria columns. Required parameter - must be provided. Should be
+the output from prepare_mcda_data(), which contains raw values for
+each treatment on their original measurement scales.}
 
-\item{placebo_name}{Character string specifying the name of the placebo/control
-treatment in the data. Default is "Placebo".}
+\item{placebo_name}{Character string specifying the name of the
+placebo/control treatment in the data. Default is "Placebo".}
 
-\item{comparison_drug}{Character string specifying which drug to compare with
-placebo in the visualization. Default is "Drug A".}
+\item{comparison_drug}{Character string specifying which drug to
+compare with placebo in the visualization. Default is "Drug A".}
 
-\item{benefit_criteria}{Character vector of benefit criterion names (column names in data).}
+\item{benefit_criteria}{Character vector of benefit criterion names
+(column names in data).}
 
-\item{risk_criteria}{Character vector of risk criterion names (column names in data).}
+\item{risk_criteria}{Character vector of risk criterion names
+(column names in data).}
 
-\item{clinical_scales}{List defining clinical reference levels for each criterion.
-Each element should be a list with: min (lower threshold), max (upper threshold),
-direction ("increasing" for higher is better, "decreasing" for lower is better).}
+\item{clinical_scales}{List defining clinical reference levels for
+each criterion. Each element should be a list with: min (lower
+threshold), max (upper threshold), direction ("increasing" for
+higher is better, "decreasing" for lower is better).}
 
-\item{fig_colors}{A vector of length 2 specifying colors for benefits and risks.
-Default is c("#0571b0", "#ca0020") to match correlogram colors.}
+\item{fig_colors}{A vector of length 2 specifying colors for benefits
+and risks. Default is c("#0571b0", "#ca0020") to match
+correlogram colors.}
 }
 \value{
-A patchwork object showing three panels: Normalized Placebo values,
-Normalized Drug values, and Difference of Normalized Values (Drug - Placebo),
-or NULL if data is not provided.
+A patchwork object showing three panels: Normalized Placebo
+values, Normalized Drug values, and Difference of Normalized Values
+(Drug - Placebo), or NULL if data is not provided.
 }
 \description{
 Create MCDA Bar Chart: Normalized Values Comparison
@@ -64,7 +69,8 @@ clinical_scales <- list(
   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
-# Create comparison barplot showing Normalized Placebo | Normalized Drug B | Difference
+# Create comparison barplot showing
+# Normalized Placebo | Normalized Drug B | Difference
 barplot_comp <- create_mcda_barplot_comparison(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),

@@ -36,8 +36,7 @@ calculate_treatment_differences <- function(data) {
       placebo_row$Primary_Efficacy,
     Secondary_Efficacy_Diff = data$Secondary_Efficacy[
       data$Treatment != "Placebo"
-    ] -
-      placebo_row$Secondary_Efficacy,
+    ] - placebo_row$Secondary_Efficacy,
     Quality_of_Life_Diff = data$Quality_of_Life[data$Treatment != "Placebo"] -
       placebo_row$Quality_of_Life,
     Recurring_AE_Diff = placebo_row$Recurring_AE -
@@ -156,7 +155,10 @@ create_fig7a <- function() {
     scale_fill_manual(values = c("Benefit" = "#4ECDC4", "Risk" = "#FF6B6B")) +
     labs(
       title = "Figure 7a: From Raw Data to Treatment Differences",
-      subtitle = "Understanding what MCDA analyzes: Drug effect vs Placebo",
+      subtitle = paste(
+        "Understanding what MCDA analyzes:",
+        "Drug effect vs Placebo"
+      ),
       x = "Value (various scales)",
       y = NULL
     ) +
@@ -305,7 +307,10 @@ create_fig7b <- function() {
     scale_fill_manual(values = c("Benefit" = "#4ECDC4", "Risk" = "#FF6B6B")) +
     labs(
       title = "Benefit-Risk",
-      subtitle = sprintf("Weight × Value (%%)\nTotal = %.1f", drug_a_total),
+      subtitle = sprintf(
+        "Weight × Value (%%)\nTotal = %.1f",
+        drug_a_total
+      ),
       x = NULL,
       y = NULL
     ) +
@@ -329,7 +334,10 @@ create_fig7b <- function() {
     p_values,
     p_weighted,
     ncol = 3,
-    top = "Figure 7b: How MCDA Combines Weights and Values (Drug A)"
+    top = paste(
+      "Figure 7b: How MCDA Combines Weights and Values",
+      "(Drug A)"
+    )
   )
 
   return(combined_plot)
@@ -684,10 +692,11 @@ create_fig9 <- function() {
   )
 
   # Find the two outermost points
-  max_y_point <- br_map_df[which.max(br_map_df$Risks), ] # Drug D at (24, 98)
-  max_x_point <- br_map_df[which.max(br_map_df$Benefits), ] # Drug A at (98, 52)
+  max_y_point <- br_map_df[which.max(br_map_df$Risks), ]
+  max_x_point <- br_map_df[which.max(br_map_df$Benefits), ]
 
-  # Create frontier polygon: (0, 0) -> (0, 98) -> Drug D (24, 98) -> Drug A (98, 52) -> (98, 0) -> back to origin
+  # Create frontier polygon: (0, 0) -> (0, 98) -> Drug D (24, 98) ->
+  # Drug A (98, 52) -> (98, 0) -> back to origin
   frontier_polygon <- data.frame(
     x = c(
       0,
@@ -732,7 +741,10 @@ create_fig9 <- function() {
     ylim(0, 100) +
     labs(
       title = "Figure 9: Benefit-Risk Map",
-      subtitle = "Higher is better on both axes (treatment differences vs placebo)",
+      subtitle = paste(
+        "Higher is better on both axes",
+        "(treatment differences vs placebo)"
+      ),
       x = "Benefits →",
       y = "Risks →"
     ) +

@@ -76,7 +76,10 @@ test_that("create_mcda_barplot_comparison validates criteria parameters", {
       benefit_criteria = NULL,
       risk_criteria = c("Risk 1", "Risk 2")
     ),
-    "Both benefit_criteria and risk_criteria must be specified"
+    paste(
+      "Both benefit_criteria and risk_criteria",
+      "must be specified"
+    )
   )
 
   expect_error(
@@ -85,7 +88,10 @@ test_that("create_mcda_barplot_comparison validates criteria parameters", {
       benefit_criteria = c("Benefit 1", "Benefit 2"),
       risk_criteria = NULL
     ),
-    "Both benefit_criteria and risk_criteria must be specified"
+    paste(
+      "Both benefit_criteria and risk_criteria",
+      "must be specified"
+    )
   )
 })
 
@@ -192,34 +198,37 @@ test_that("create_mcda_barplot_comparison handles custom colors", {
   expect_true(inherits(result, "patchwork"))
 })
 
-# Test create_mcda_barplot_walkthrough validation
-test_that("create_mcda_barplot_walkthrough validates data parameter", {
+# Test create_mcda_walkthrough validation
+test_that("create_mcda_walkthrough validates data parameter", {
   expect_warning(
-    result <- create_mcda_barplot_walkthrough(data = NULL),
+    result <- create_mcda_walkthrough(data = NULL),
     "No data provided"
   )
   expect_null(result)
 })
 
-test_that("create_mcda_barplot_walkthrough validates criteria parameters", {
+test_that("create_mcda_walkthrough validates criteria parameters", {
   mcda_data <- create_sample_mcda_data()
 
   expect_error(
-    create_mcda_barplot_walkthrough(
+    create_mcda_walkthrough(
       data = mcda_data,
       benefit_criteria = NULL,
       risk_criteria = c("Risk 1", "Risk 2")
     ),
-    "Both benefit_criteria and risk_criteria must be specified"
+    paste(
+      "Both benefit_criteria and risk_criteria",
+      "must be specified"
+    )
   )
 })
 
-test_that("create_mcda_barplot_walkthrough validates treatment existence", {
+test_that("create_mcda_walkthrough validates treatment existence", {
   mcda_data <- create_sample_mcda_data()
 
   # Test with non-existent comparison drug
   expect_error(
-    create_mcda_barplot_walkthrough(
+    create_mcda_walkthrough(
       data = mcda_data,
       benefit_criteria = c("Benefit 1", "Benefit 2"),
       risk_criteria = c("Risk 1", "Risk 2"),
@@ -230,7 +239,7 @@ test_that("create_mcda_barplot_walkthrough validates treatment existence", {
 
   # Test with non-existent placebo
   expect_error(
-    create_mcda_barplot_walkthrough(
+    create_mcda_walkthrough(
       data = mcda_data,
       benefit_criteria = c("Benefit 1", "Benefit 2"),
       risk_criteria = c("Risk 1", "Risk 2"),
@@ -241,11 +250,11 @@ test_that("create_mcda_barplot_walkthrough validates treatment existence", {
   )
 })
 
-test_that("create_mcda_barplot_walkthrough validates criteria columns", {
+test_that("create_mcda_walkthrough validates criteria columns", {
   mcda_data <- create_sample_mcda_data()
 
   expect_error(
-    create_mcda_barplot_walkthrough(
+    create_mcda_walkthrough(
       data = mcda_data,
       benefit_criteria = c("Nonexistent Benefit"),
       risk_criteria = c("Risk 1", "Risk 2"),
@@ -255,10 +264,10 @@ test_that("create_mcda_barplot_walkthrough validates criteria columns", {
   )
 })
 
-test_that("create_mcda_barplot_walkthrough returns patchwork object", {
+test_that("create_mcda_walkthrough returns patchwork object", {
   mcda_data <- create_sample_mcda_data()
 
-  result <- create_mcda_barplot_walkthrough(
+  result <- create_mcda_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
     risk_criteria = c("Risk 1", "Risk 2"),
@@ -269,10 +278,10 @@ test_that("create_mcda_barplot_walkthrough returns patchwork object", {
   expect_true(inherits(result, "patchwork"))
 })
 
-test_that("create_mcda_barplot_walkthrough uses default equal weights", {
+test_that("create_mcda_walkthrough uses default equal weights", {
   mcda_data <- create_sample_mcda_data()
 
-  result <- create_mcda_barplot_walkthrough(
+  result <- create_mcda_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2"),
     risk_criteria = c("Risk 1"),
@@ -282,7 +291,7 @@ test_that("create_mcda_barplot_walkthrough uses default equal weights", {
   expect_true(inherits(result, "patchwork"))
 })
 
-test_that("create_mcda_barplot_walkthrough accepts custom weights", {
+test_that("create_mcda_walkthrough accepts custom weights", {
   mcda_data <- create_sample_mcda_data()
 
   weights <- c(
@@ -291,7 +300,7 @@ test_that("create_mcda_barplot_walkthrough accepts custom weights", {
     `Risk 1` = 0.40
   )
 
-  result <- create_mcda_barplot_walkthrough(
+  result <- create_mcda_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2"),
     risk_criteria = c("Risk 1"),
@@ -302,7 +311,7 @@ test_that("create_mcda_barplot_walkthrough accepts custom weights", {
   expect_true(inherits(result, "patchwork"))
 })
 
-test_that("create_mcda_barplot_walkthrough validates weight sum", {
+test_that("create_mcda_walkthrough validates weight sum", {
   mcda_data <- create_sample_mcda_data()
 
   # Weights that sum to 1 should work
@@ -314,7 +323,7 @@ test_that("create_mcda_barplot_walkthrough validates weight sum", {
     `Risk 2` = 0.10
   )
 
-  result <- create_mcda_barplot_walkthrough(
+  result <- create_mcda_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
     risk_criteria = c("Risk 1", "Risk 2"),
@@ -325,11 +334,11 @@ test_that("create_mcda_barplot_walkthrough validates weight sum", {
   expect_true(inherits(result, "patchwork"))
 })
 
-test_that("create_mcda_barplot_walkthrough works with different drugs", {
+test_that("create_mcda_walkthrough works with different drugs", {
   mcda_data <- create_sample_mcda_data()
 
   # Test with Drug A
-  result_a <- create_mcda_barplot_walkthrough(
+  result_a <- create_mcda_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1"),
     risk_criteria = c("Risk 1"),
@@ -338,7 +347,7 @@ test_that("create_mcda_barplot_walkthrough works with different drugs", {
   expect_true(inherits(result_a, "patchwork"))
 
   # Test with Drug B
-  result_b <- create_mcda_barplot_walkthrough(
+  result_b <- create_mcda_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1"),
     risk_criteria = c("Risk 1"),
@@ -347,10 +356,10 @@ test_that("create_mcda_barplot_walkthrough works with different drugs", {
   expect_true(inherits(result_b, "patchwork"))
 })
 
-test_that("create_mcda_barplot_walkthrough handles custom colors", {
+test_that("create_mcda_walkthrough handles custom colors", {
   mcda_data <- create_sample_mcda_data()
 
-  result <- create_mcda_barplot_walkthrough(
+  result <- create_mcda_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1"),
     risk_criteria = c("Risk 1"),
@@ -361,13 +370,11 @@ test_that("create_mcda_barplot_walkthrough handles custom colors", {
   expect_true(inherits(result, "patchwork"))
 })
 
-test_that(
-  paste0(
-    "create_mcda_barplot_walkthrough ",
-    "handles favorable_direction parameter"
-  ),
-  {
-    mcda_data <- create_sample_mcda_data()
+test_that(paste(
+  "create_mcda_walkthrough",
+  "handles favorable_direction parameter"
+), {
+  mcda_data <- create_sample_mcda_data()
 
     # Specify that Benefit 2 is "lower is better"
     favorable_dir <- c(
@@ -376,7 +383,7 @@ test_that(
       `Risk 1` = "lower"
     )
 
-    result <- create_mcda_barplot_walkthrough(
+    result <- create_mcda_walkthrough(
       data = mcda_data,
       benefit_criteria = c("Benefit 1", "Benefit 2"),
       risk_criteria = c("Risk 1"),
@@ -388,12 +395,15 @@ test_that(
   }
 )
 
-test_that("create_mcda_barplot_walkthrough uses default favorable_direction", {
+test_that(paste(
+  "create_mcda_walkthrough uses default",
+  "favorable_direction"
+), {
   mcda_data <- create_sample_mcda_data()
 
   # Without specifying favorable_direction, should use defaults
   # (higher for benefits, lower for risks)
-  result <- create_mcda_barplot_walkthrough(
+  result <- create_mcda_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2"),
     risk_criteria = c("Risk 1"),
@@ -415,15 +425,19 @@ test_that("Integration: Full workflow with effects_table", {
   criteria_cols <- setdiff(colnames(mcda_data), "Treatment")
   expect_true(length(criteria_cols) > 0)
 
-  # Step 3: Assume first 3 are benefits, rest are risks (or adjust based on
-  #         actual data)
+  # Step 3: Assume first 3 are benefits, rest are risks
+  #         (or adjust based on actual data)
   # For the test, we'll use the actual column names
   if (length(criteria_cols) >= 3) {
-    benefit_criteria <- criteria_cols[seq_len(min(3, length(criteria_cols)))]
+    benefit_criteria <-
+      criteria_cols[seq_len(min(3, length(criteria_cols)))]
     risk_criteria <- if (length(criteria_cols) > 3) {
-      criteria_cols[(length(benefit_criteria) + 1):length(criteria_cols)]
+      criteria_cols[
+        (length(benefit_criteria) + 1):length(criteria_cols)
+      ]
     } else {
-      criteria_cols[1] # Use first as both if not enough columns
+      # Use first as both if not enough columns
+      criteria_cols[1]
     }
 
     # Create clinical scales for all criteria
@@ -432,7 +446,11 @@ test_that("Integration: Full workflow with effects_table", {
       clinical_scales[[crit]] <- list(
         min = 0,
         max = 1,
-        direction = if (crit %in% benefit_criteria) "increasing" else "decreasing"
+        direction = if (crit %in% benefit_criteria) {
+          "increasing"
+        } else {
+          "decreasing"
+        }
       )
     }
 
@@ -451,7 +469,7 @@ test_that("Integration: Full workflow with effects_table", {
       expect_true(inherits(result_comp, "patchwork"))
 
       # Step 5: Create walkthrough plot
-      result_walk <- create_mcda_barplot_walkthrough(
+      result_walk <- create_mcda_walkthrough(
         data = mcda_data,
         benefit_criteria = benefit_criteria,
         risk_criteria = risk_criteria,

@@ -93,8 +93,9 @@ time_event_data$time_to_risk <- ifelse(
   max_followup
 )
 
-# No additional random censoring - keep only administrative censoring at study end
-# This makes interpretation clearer: all censored observations appear at the edges (180 days)
+# No additional random censoring - keep only administrative censoring
+# at study end. This makes interpretation clearer: all censored
+# observations appear at the edges (180 days)
 
 # Add treatment group for potential future use
 time_event_data$treatment <- sample(

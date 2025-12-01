@@ -10,8 +10,7 @@ gensurv_combined(
   subjects_pt,
   visits_pt,
   fig_colors_pt = c("#0571b0", "#ca0020"),
-  titlename_p =
-    "Cumulative Excess # of Subjects w/ Events\\n                             (per 1000 Subjects)",
+  titlename_p = paste("Cumulative Excess # of Subjects w/ Events", "(per 1000 Subjects)"),
   mar,
   mab,
   mcd,

@@ -24,12 +24,13 @@ library(rlang)
 #'
 #' @param data A data frame prepared using `prepare_forest_dot_data()`
 #'   or with matching structure.
-#' @param outcomes_with_thresholds Either NULL (uses all available outcomes
-#'   with no thresholds), a character vector of outcome names to include
-#'   (with no thresholds), or a named list where names are outcomes and
-#'   values are thresholds. For lists, directions default to "greater" for
-#'   positive values and "less" for negative values, or can be specified as
-#'   list(outcome = list(threshold = 0.1, direction = "greater")).
+#' @param outcomes_with_thresholds Either NULL (uses all available
+#'   outcomes with no thresholds), a character vector of outcome names
+#'   to include (with no thresholds), or a named list where names are
+#'   outcomes and values are thresholds. For lists, directions default
+#'   to "greater" for positive values and "less" for negative values,
+#'   or can be specified as list(outcome = list(threshold = 0.1,
+#'   direction = "greater")).
 #' @param treatment1 Character; label of the first treatment group
 #'   (default: `"Drug A"`).
 #' @param treatment2 Character; label of the second treatment group
@@ -146,7 +147,10 @@ create_forest_dot_plot <- function(
       )
     } else {
       stop(
-        "No 'Outcome' col found in data. Specify outcomes_with_thresholds."
+        paste(
+          "No 'Outcome' col found in data.",
+          "Specify outcomes_with_thresholds."
+        )
       )
     }
   } else if (is.character(outcomes_with_thresholds)) {
@@ -165,7 +169,10 @@ create_forest_dot_plot <- function(
     outcomes_of_interest <- names(outcomes_with_thresholds)
 
     # Debug: Check if outcomes_of_interest is NULL or empty
-    if (is.null(outcomes_of_interest) || length(outcomes_of_interest) == 0) {
+    if (
+      is.null(outcomes_of_interest) ||
+        length(outcomes_of_interest) == 0
+    ) {
       stop(
         "outcomes_with_thresholds list must have named elements."
       )
@@ -188,7 +195,10 @@ create_forest_dot_plot <- function(
         } else if (!is.null(threshold_value$Threshold)) {
           threshold_value$Threshold
         } else {
-          stop("Threshold value must be specified for outcome: ", outcome_name)
+          stop(
+            "Threshold value must be specified for outcome: ",
+            outcome_name
+          )
         }
 
         direction <- if (!is.null(threshold_value$direction)) {
@@ -219,8 +229,10 @@ create_forest_dot_plot <- function(
     clin_thresholds <- threshold_df
   } else {
     stop(
-      "outcomes_with_thresholds must be either NULL, a character vector,
-      or a named list"
+      paste(
+        "outcomes_with_thresholds must be either NULL,",
+        "a character vector, or a named list"
+      )
     )
   }
 
@@ -264,8 +276,11 @@ create_forest_dot_plot <- function(
     types <- unique(factor_data$Type)
 
     for (type in types) {
-      # Check if this is the last plot (for legend and x-axis title display)
-      is_last_plot <- (factor == tail(factors, 1) && type == tail(types, 1))
+      # Check if this is the last plot (for legend and x-axis title
+      # display)
+      is_last_plot <- (
+        factor == tail(factors, 1) && type == tail(types, 1)
+      )
 
       # Filter data for current type
       type_data <- factor_data %>% dplyr::filter(Type == type)
@@ -342,12 +357,14 @@ create_forest_dot_plot <- function(
             ymax = as.numeric(factor(Outcome, levels = y_levels)) + 0.4,
             # Keep benefit areas green, risk areas red
             FillGroup = dplyr::case_when(
-              # For benefit outcomes, the clinically meaningful area should be
-              # green
+              # For benefit outcomes, the clinically meaningful area
+              # should be green
               Outcome %in% benefit_outcomes_reverse ~ "Benefit",
-              # For risk outcomes, the clinically meaningful area should be red
-              Outcome %in% (type_data$Outcome[type_data$Factor == "Risk"]) ~
-                "Risk",
+              # For risk outcomes, the clinically meaningful area
+              # should be red
+              Outcome %in% (
+                type_data$Outcome[type_data$Factor == "Risk"]
+              ) ~ "Risk",
               # Fallback to direction-based logic
               Direction == "greater" ~ "Benefit",
               TRUE ~ "Risk"
@@ -444,8 +461,8 @@ create_forest_dot_plot <- function(
       }
 
       # Determine if we need to reverse the axis
-      # Reverse when: Benefit outcome AND (clinical meaningful direction is
-      # "less" OR threshold is negative)
+      # Reverse when: Benefit outcome AND (clinical meaningful
+      # direction is "less" OR threshold is negative)
       should_reverse_axis <- FALSE
       if (show_thresholds && nrow(clin_thresholds) > 0) {
         should_reverse_axis <- factor == "Benefit" &&
@@ -738,8 +755,10 @@ create_forest_dot_plot <- function(
 
       # Apply the appropriate x-axis scale
       if (should_reverse_axis) {
-        # Use scale_x_reverse to reverse the axis: 60, 40, 20, 0, -20, -40, -60
-        # For reversed axis, limits should be in reverse order (high, low)
+        # Use scale_x_reverse to reverse the axis:
+        # 60, 40, 20, 0, -20, -40, -60
+        # For reversed axis, limits should be in reverse order
+        # (high, low)
         forest_plot <- forest_plot +
           scale_x_reverse(limits = rev(x_lim), breaks = forest_breaks)
       } else {
@@ -825,8 +844,10 @@ create_forest_dot_plot <- function(
   # Check if we have any plots to combine
   if (length(plots) == 0) {
     stop(
-      "No plots were generated. This may be because no data was found for
-      the specified outcomes and factor/type combinations."
+      paste(
+        "No plots were generated. This may be because no data was",
+        "found for the specified outcomes and factor/type combinations."
+      )
     )
   }
 

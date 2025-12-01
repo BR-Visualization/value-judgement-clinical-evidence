@@ -1,19 +1,21 @@
 #' Time-to-Event Data for Benefit-Risk Temporal Analysis
 #'
-#' A dataset containing time-to-first-event data for both benefit and risk outcomes
-#' in 200 subjects. This synthetic dataset demonstrates temporal patterns where
-#' subjects may experience benefits before risks, risks before benefits, or have
-#' censored observations.
+#' A dataset containing time-to-first-event data for both benefit and
+#' risk outcomes in 200 subjects. This synthetic dataset demonstrates
+#' temporal patterns where subjects may experience benefits before
+#' risks, risks before benefits, or have censored observations.
 #'
 #' @format A data frame with 200 rows and 8 variables:
 #' \describe{
 #'   \item{subject_id}{Unique subject identifier (integer, 1-200)}
-#'   \item{time_to_benefit}{Time in days until first benefit event (numeric)}
-#'   \item{benefit_type}{Type of benefit outcome (character): "Symptom Relief",
-#'     "Clinical Response", or "Quality of Life Improvement"}
+#'   \item{time_to_benefit}{Time in days until first benefit event
+#'     (numeric)}
+#'   \item{benefit_type}{Type of benefit outcome (character):
+#'     "Symptom Relief", "Clinical Response", or "Quality of Life
+#'     Improvement"}
 #'   \item{time_to_risk}{Time in days until first risk event (numeric)}
-#'   \item{risk_type}{Type of risk outcome (character): "Mild AE", "Moderate AE",
-#'     or "Serious AE"}
+#'   \item{risk_type}{Type of risk outcome (character): "Mild AE",
+#'     "Moderate AE", or "Serious AE"}
 #'   \item{benefit_observed}{Indicator for benefit event observation (integer):
 #'     1 = event observed, 0 = censored}
 #'   \item{risk_observed}{Indicator for risk event observation (integer):
@@ -22,8 +24,9 @@
 #' }
 #'
 #' @details
-#' This dataset simulates a clinical trial with 180-day follow-up where subjects
-#' are monitored for both benefit and risk events. Key features:
+#' This dataset simulates a clinical trial with 180-day follow-up where
+#' subjects are monitored for both benefit and risk events. Key
+#' features:
 #'
 #' **Benefit Events:**
 #' - Symptom Relief: Fast onset (mean 15 days)
@@ -41,12 +44,13 @@
 #' - Loss to follow-up (random censoring)
 #'
 #' Among the 194 subjects with both events observed, approximately 66%
-#' experienced benefit before risk, demonstrating the favorable temporal
-#' profile of the treatment.
+#' experienced benefit before risk, demonstrating the favorable
+#' temporal profile of the treatment.
 #'
 #' @section Usage:
-#' This dataset is designed for use with \code{\link{create_time_to_event_scatter}}
-#' to visualize temporal relationships between benefit and risk events.
+#' This dataset is designed for use with
+#' \code{\link{create_time_to_event_scatter}} to visualize temporal
+#' relationships between benefit and risk events.
 #'
 #' @examples
 #' data(time_event_data)
@@ -69,8 +73,8 @@
 #' )
 #' }
 #'
-#' @source Generated synthetically using exponential distributions with
-#'   parameters based on typical clinical trial timing patterns.
+#' @source Generated synthetically using exponential distributions
+#'   with parameters based on typical clinical trial timing patterns.
 #'
 #' @seealso \code{\link{create_time_to_event_scatter}}
 "time_event_data"

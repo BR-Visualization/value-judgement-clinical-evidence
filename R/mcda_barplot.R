@@ -3,8 +3,9 @@
 #' @param source_data The effects table dataset (effects_table format).
 #' @param placebo_name Name of the placebo. Default is "Placebo".
 #'
-#' @return A data frame in wide format with Treatment as rows and criteria as columns.
-#'   Each row contains the raw values for that treatment. Note: Outcomes are on
+#' @return A data frame in wide format with Treatment as rows and
+#'   criteria as columns. Each row contains the raw values for that
+#'   treatment. Note: Outcomes are on
 #'   different scales:
 #'   - Binary outcomes (e.g., Benefit 1, Risk 1): proportions (0-1 scale)
 #'   - Continuous outcomes (e.g., Benefit 2, Benefit 3): means (various scales)
@@ -112,24 +113,29 @@ prepare_mcda_data <- function(
 
 #' Create MCDA Bar Chart: Normalized Values Comparison
 #'
-#' @param data A data frame in wide format with Treatment column and criteria columns.
-#'   Required parameter - must be provided. Should be the output from prepare_mcda_data(),
-#'   which contains raw values for each treatment on their original measurement scales.
-#' @param placebo_name Character string specifying the name of the placebo/control
-#'   treatment in the data. Default is "Placebo".
-#' @param comparison_drug Character string specifying which drug to compare with
-#'   placebo in the visualization. Default is "Drug A".
-#' @param benefit_criteria Character vector of benefit criterion names (column names in data).
-#' @param risk_criteria Character vector of risk criterion names (column names in data).
-#' @param clinical_scales List defining clinical reference levels for each criterion.
-#'   Each element should be a list with: min (lower threshold), max (upper threshold),
-#'   direction ("increasing" for higher is better, "decreasing" for lower is better).
-#' @param fig_colors A vector of length 2 specifying colors for benefits and risks.
-#'   Default is c("#0571b0", "#ca0020") to match correlogram colors.
+#' @param data A data frame in wide format with Treatment column and
+#'   criteria columns. Required parameter - must be provided. Should be
+#'   the output from prepare_mcda_data(), which contains raw values for
+#'   each treatment on their original measurement scales.
+#' @param placebo_name Character string specifying the name of the
+#'   placebo/control treatment in the data. Default is "Placebo".
+#' @param comparison_drug Character string specifying which drug to
+#'   compare with placebo in the visualization. Default is "Drug A".
+#' @param benefit_criteria Character vector of benefit criterion names
+#'   (column names in data).
+#' @param risk_criteria Character vector of risk criterion names
+#'   (column names in data).
+#' @param clinical_scales List defining clinical reference levels for
+#'   each criterion. Each element should be a list with: min (lower
+#'   threshold), max (upper threshold), direction ("increasing" for
+#'   higher is better, "decreasing" for lower is better).
+#' @param fig_colors A vector of length 2 specifying colors for benefits
+#'   and risks. Default is c("#0571b0", "#ca0020") to match
+#'   correlogram colors.
 #'
-#' @return A patchwork object showing three panels: Normalized Placebo values,
-#'   Normalized Drug values, and Difference of Normalized Values (Drug - Placebo),
-#'   or NULL if data is not provided.
+#' @return A patchwork object showing three panels: Normalized Placebo
+#'   values, Normalized Drug values, and Difference of Normalized Values
+#'   (Drug - Placebo), or NULL if data is not provided.
 #' @export
 #' @import ggplot2
 #' @importFrom patchwork wrap_plots
@@ -155,7 +161,8 @@ prepare_mcda_data <- function(
 #'   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
 #' )
 #'
-#' # Create comparison barplot showing Normalized Placebo | Normalized Drug B | Difference
+#' # Create comparison barplot showing
+#' # Normalized Placebo | Normalized Drug B | Difference
 #' barplot_comp <- create_mcda_barplot_comparison(
 #'   data = mcda_data,
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
@@ -211,7 +218,7 @@ create_mcda_barplot_comparison <- function(
   # Check if clinical scales are provided
   if (is.null(clinical_scales)) {
     stop(
-      "Clinical scales must be provided. Please define clinical ",
+      "Clinical scales must be provided. Please define clinical",
       "reference levels for normalization."
     )
   }
@@ -258,7 +265,10 @@ create_mcda_barplot_comparison <- function(
 
   # Helper function to normalize values using clinical scales
   normalize_value <- function(x, scale) {
-    if (is.null(scale$min) || is.null(scale$max) || is.null(scale$direction)) {
+    if (
+      is.null(scale$min) || is.null(scale$max) ||
+        is.null(scale$direction)
+    ) {
       stop("Scale must have min, max, and direction")
     }
 
@@ -273,7 +283,10 @@ create_mcda_barplot_comparison <- function(
     }
 
     # Allow extrapolation by default
-    if (!is.null(scale$allow_extrapolation) && !scale$allow_extrapolation) {
+    if (
+      !is.null(scale$allow_extrapolation) &&
+        !scale$allow_extrapolation
+    ) {
       values <- pmax(0, pmin(100, values))
     }
 
@@ -300,8 +313,8 @@ create_mcda_barplot_comparison <- function(
   # Calculate difference of normalized values
   diff_values <- drug_values - placebo_values
 
-  # For normalized values, use 0-100 scale
-  # Determine the maximum absolute value across all normalized values for scaling
+  # For normalized values, use 0-100 scale. Determine the maximum
+  # absolute value across all normalized values for scaling
   max_norm_value <- max(c(abs(placebo_values), abs(drug_values)), na.rm = TRUE)
 
   # Set scale to 0-100 or extend if extrapolation occurs
@@ -309,9 +322,10 @@ create_mcda_barplot_comparison <- function(
   norm_lim <- c(0, norm_max)
   norm_breaks <- seq(0, norm_max, by = 20)
 
-  # Calculate common scale for all difference plots - symmetric around zero
+  # Calculate common scale for all difference plots -
+  # symmetric around zero
   max_abs_diff <- max(abs(diff_values), na.rm = TRUE)
-  diff_max <- max(max_abs_diff * 1.15, 10) # At least 10 units for scale
+  diff_max <- max(max_abs_diff * 1.15, 10)
   diff_lim <- c(-diff_max, diff_max)
 
   # Create data frames for all three plots
@@ -472,36 +486,45 @@ create_mcda_barplot_comparison <- function(
 
 #' Create MCDA Bar Chart: Calculation Walkthrough
 #'
-#' @param data A data frame in wide format with Treatment column and criteria columns.
-#'   Required parameter - must be provided. Should be the output from prepare_mcda_data(),
-#'   which contains raw values for each treatment on their original measurement scales.
-#' @param placebo_name Character string specifying the name of the placebo/control
-#'   treatment. Default is "Placebo".
-#' @param comparison_drug Character string specifying which drug to show the
-#'   calculation for. Default is "Drug A".
-#' @param benefit_criteria Character vector of benefit criterion names (column names in data).
-#' @param risk_criteria Character vector of risk criterion names (column names in data).
+#' @param data A data frame in wide format with Treatment column and
+#'   criteria columns. Required parameter - must be provided. Should be
+#'   the output from prepare_mcda_data(), which contains raw values for
+#'   each treatment on their original measurement scales.
+#' @param placebo_name Character string specifying the name of the
+#'   placebo/control treatment. Default is "Placebo".
+#' @param comparison_drug Character string specifying which drug to show
+#'   the calculation for. Default is "Drug A".
+#' @param benefit_criteria Character vector of benefit criterion names
+#'   (column names in data).
+#' @param risk_criteria Character vector of risk criterion names
+#'   (column names in data).
 #' @param weights Named numeric vector of criterion weights. Must sum to 1.
 #'   If NULL, uses equal weights.
-#' @param favorable_direction Named character vector specifying the favorable direction
-#'   for each criterion. Values should be either "higher" or "lower". If NULL, defaults to
-#'   "higher" for benefits and "lower" for risks. Use this to specify outcomes like
-#'   "Benefit 2" where lower values are better (e.g., symptom severity, days to recovery).
-#' @param clinical_scales List defining clinical reference levels for each criterion.
-#'   Each element should be a list with: min (lower threshold), max (upper threshold),
-#'   direction ("increasing" for higher is better, "decreasing" for lower is better),
-#'   and optionally allow_extrapolation (default TRUE). If NULL, uses data-driven
-#'   normalization (not recommended per FDA/EMA guidance). Example:
-#'   \code{list(`Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-#'              `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"))}
-#'   Based on FDA/EMA best practices and PROTECT framework.
-#' @param fig_colors A vector of length 2 specifying colors for benefits and risks.
+#' @param favorable_direction Named character vector specifying the
+#'   favorable direction for each criterion. Values should be either
+#'   "higher" or "lower". If NULL, defaults to "higher" for benefits
+#'   and "lower" for risks. Use this to specify outcomes like
+#'   "Benefit 2" where lower values are better (e.g., symptom
+#'   severity, days to recovery).
+#' @param clinical_scales List defining clinical reference levels for
+#'   each criterion. Each element should be a list with: min (lower
+#'   threshold), max (upper threshold), direction ("increasing" for
+#'   higher is better, "decreasing" for lower is better), and
+#'   optionally allow_extrapolation (default TRUE). If NULL, uses
+#'   data-driven normalization (not recommended per FDA/EMA guidance).
+#'   Example: \code{list(`Benefit 1` = list(min = 0, max = 1,
+#'   direction = "increasing"), `Risk 1` = list(min = 0, max = 0.5,
+#'   direction = "decreasing"))} Based on FDA/EMA best practices and
+#'   PROTECT framework.
+#' @param fig_colors A vector of length 2 specifying colors for
+#'   benefits and risks.
 #'   Default is c("#0571b0", "#ca0020").
 #'
-#' @return A grid arrangement of three panels showing: (1) Normalized Difference
-#'   (on 0-100 scale: Drug normalized - Placebo normalized), (2) Weights, and
-#'   (3) Weighted contributions (Benefit-Risk scores), or NULL if data is not provided.
-#'   Negative values in panels 1 and 3 indicate the drug performs worse than placebo.
+#' @return A grid arrangement of three panels showing: (1) Normalized
+#'   Difference (on 0-100 scale: Drug normalized - Placebo normalized),
+#'   (2) Weights, and (3) Weighted contributions (Benefit-Risk scores),
+#'   or NULL if data is not provided. Negative values in panels 1 and 3
+#'   indicate the drug performs worse than placebo.
 #' @export
 #' @import ggplot2
 #' @importFrom gridExtra arrangeGrob
@@ -518,7 +541,7 @@ create_mcda_barplot_comparison <- function(
 #' # 2    Drug A      0.46        20        60   0.46  0.100
 #'
 #' # Create walkthrough showing the MCDA calculation steps for Drug B
-#' barplot_walk <- create_mcda_barplot_walkthrough(
+#' barplot_walk <- create_mcda_walkthrough(
 #'   data = mcda_data,
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
 #'   risk_criteria = c("Risk 1", "Risk 2"),
@@ -544,8 +567,9 @@ create_mcda_barplot_comparison <- function(
 #'   `Risk 2` = "lower"
 #' )
 #'
-#' # Define clinical scales based on clinical guidelines, MCID, or regulatory precedents
-#' # These fixed scales ensure stability and interpretability
+#' # Define clinical scales based on clinical guidelines, MCID, or
+#' # regulatory precedents. These fixed scales ensure stability and
+#' # interpretability
 #' clinical_scales <- list(
 #'   `Benefit 1` = list(
 #'     min = 0, # No benefit (unacceptable)
@@ -574,7 +598,7 @@ create_mcda_barplot_comparison <- function(
 #'   )
 #' )
 #'
-#' barplot_walk_a <- create_mcda_barplot_walkthrough(
+#' barplot_walk_a <- create_mcda_walkthrough(
 #'   data = mcda_data,
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
 #'   risk_criteria = c("Risk 1", "Risk 2"),
@@ -591,7 +615,7 @@ create_mcda_barplot_comparison <- function(
 #'   dpi = 300
 #' )
 #' }
-create_mcda_barplot_walkthrough <- function(
+create_mcda_walkthrough <- function(
   data = NULL,
   placebo_name = "Placebo",
   comparison_drug = "Drug A",
@@ -710,22 +734,23 @@ create_mcda_barplot_walkthrough <- function(
     )
   }
 
-  # Apply clinical threshold-based value functions to normalize to 0-100 scale
-  # This approach uses fixed clinical scales (global scales) rather than
-  # treatment-relative normalization (local scales) as recommended by
-  # FDA/EMA best practices and the PROTECT framework.
+  # Apply clinical threshold-based value functions to normalize to
+  # 0-100 scale. This approach uses fixed clinical scales (global
+  # scales) rather than treatment-relative normalization (local scales)
+  # as recommended by FDA/EMA best practices and the PROTECT framework.
   #
-  # Key principle: Normalize ACTUAL values for each treatment separately,
-  # then compute differences in normalized values.
+  # Key principle: Normalize ACTUAL values for each treatment
+  # separately, then compute differences in normalized values.
   #
   # Benefits:
   # - Stability: Results don't change when new treatments are added
   # - Interpretability: Scores reflect absolute clinical performance
   # - Regulatory acceptance: Aligns with FDA/EMA best practices
-  # - Comparability: Enables consistent evaluation across different treatment sets
+  # - Comparability: Enables consistent evaluation across different
+  #   treatment sets
 
   # Helper function to normalize a matrix using clinical scales
-  normalize_with_clinical_scales <- function(
+  normalize_clinical <- function(
     actual_matrix,
     clinical_scales,
     criteria_list
@@ -745,7 +770,8 @@ create_mcda_barplot_walkthrough <- function(
 
       # Validate scale definition
       if (
-        is.null(scale$min) || is.null(scale$max) || is.null(scale$direction)
+        is.null(scale$min) || is.null(scale$max) ||
+          is.null(scale$direction)
       ) {
         stop(sprintf(
           "Scale for '%s' must have min, max, and direction",
@@ -754,7 +780,9 @@ create_mcda_barplot_walkthrough <- function(
       }
 
       if (scale$min >= scale$max) {
-        stop(sprintf("Scale for '%s': min must be less than max", criterion))
+        stop(
+          sprintf("Scale for '%s': min must be less than max", criterion)
+        )
       }
 
       # Apply linear value function based on clinical thresholds
@@ -772,8 +800,12 @@ create_mcda_barplot_walkthrough <- function(
       }
 
       # Handle extrapolation - allow values outside [0, 100] by default
-      # This is important when treatments perform outside expected clinical ranges
-      if (!is.null(scale$allow_extrapolation) && !scale$allow_extrapolation) {
+      # This is important when treatments perform outside expected
+      # clinical ranges
+      if (
+        !is.null(scale$allow_extrapolation) &&
+          !scale$allow_extrapolation
+      ) {
         values <- pmax(0, pmin(100, values))
       }
 
@@ -797,7 +829,9 @@ create_mcda_barplot_walkthrough <- function(
   # (though this is not recommended per FDA/EMA guidance)
   if (is.null(clinical_scales)) {
     warning(
-      "Clinical scales not provided. Using data-driven normalization (not recommended). Consider defining clinical thresholds based on clinical guidelines, MCID, or regulatory precedents."
+      "Clinical scales not provided. Using data-driven normalization",
+      "(not recommended). Consider defining clinical thresholds based",
+      "on clinical guidelines, MCID, or regulatory precedents."
     )
 
     # Compute performance differences for normalization
@@ -836,14 +870,14 @@ create_mcda_barplot_walkthrough <- function(
   } else {
     # Use clinical threshold-based normalization
     # Normalize drug actual values
-    drug_normalized <- normalize_with_clinical_scales(
+    drug_normalized <- normalize_clinical(
       drug_actual_matrix,
       clinical_scales,
       criteria_internal
     )
 
     # Normalize placebo actual values
-    placebo_normalized <- normalize_with_clinical_scales(
+    placebo_normalized <- normalize_clinical(
       placebo_actual_matrix,
       clinical_scales,
       criteria_internal
@@ -872,9 +906,10 @@ create_mcda_barplot_walkthrough <- function(
       )
     }
 
-    # Compute difference in normalized values: Drug normalized - Placebo normalized
-    # This represents how much better (or worse) the drug performs compared to placebo
-    # on the 0-100 value scale
+    # Compute difference in normalized values:
+    # Drug normalized - Placebo normalized
+    # This represents how much better (or worse) the drug performs
+    # compared to placebo on the 0-100 value scale
     normalized <- drug_normalized - placebo_normalized
   }
 
@@ -895,7 +930,8 @@ create_mcda_barplot_walkthrough <- function(
   }
 
   # For the walkthrough visualization, we show:
-  # 1. Difference in normalized values (Drug normalized - Placebo normalized)
+  # 1. Difference in normalized values
+  #    (Drug normalized - Placebo normalized)
   # 2. Weights
   # 3. Weighted contributions (Benefit-Risk)
   #
@@ -910,8 +946,8 @@ create_mcda_barplot_walkthrough <- function(
   x_max <- 100
 
   # Panel 1: Difference (Drug normalized - Placebo normalized)
-  # This shows how much better (positive) or worse (negative) the drug performs
-  # compared to placebo on the normalized 0-100 value scale
+  # This shows how much better (positive) or worse (negative) the drug
+  # performs compared to placebo on the normalized 0-100 value scale
   drug_values_df <- data.frame(
     Criterion = factor(all_criteria, levels = rev(all_criteria)),
     Value = drug_values,
@@ -984,7 +1020,12 @@ create_mcda_barplot_walkthrough <- function(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
     scale_x_continuous(limits = c(0, x_max), expand = c(0.02, 0)) +
-    labs(title = "Weight", subtitle = "Importance (%)", x = NULL, y = NULL) +
+    labs(
+      title = "Weight",
+      subtitle = "Importance (%)",
+      x = NULL,
+      y = NULL
+    ) +
     theme_minimal() +
     theme(
       axis.text.y = element_blank(),
