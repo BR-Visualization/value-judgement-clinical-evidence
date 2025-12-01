@@ -5,8 +5,8 @@
 #'
 #' @param prop1 (`numeric`)\cr Proportion of cases in active treatment
 #' @param prop2 (`numeric`)\cr Proportion of cases in comparator treatment
-#' @param N1 (`numeric`)\cr Total number of subjects in active treatment
-#' @param N2 (`numeric`)\cr Total number of subjects in comparator treatment
+#' @param n1 (`numeric`)\cr Total number of subjects in active treatment
+#' @param n2 (`numeric`)\cr Total number of subjects in comparator treatment
 #' @param cl (`numeric`)\cr confidence level
 #'
 #' @importFrom stats qnorm
@@ -14,25 +14,27 @@
 #'
 #' @examples
 #' calculate_diff_bin(
-#'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
+#'   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
 #'   cl = 0.95
 #' )
-calculate_diff_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
+calculate_diff_bin <- function(prop1, prop2, n1, n2, cl = 0.95) {
   # nolint
-  zscore <- qnorm(0.5 + cl / 2)
+  z_score <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   diff <- prop1 - prop2
-  se <- sqrt((1 - prop1) * prop1 / N1 + (1 - prop2) * prop2 / N2)
-  lower <- diff - zscore * se
-  upper <- diff + zscore * se
+  se <- sqrt((1 - prop1) * prop1 / n1 + (1 - prop2) * prop2 / n2)
+  lower <- diff - z_score * se
+  upper <- diff + z_score * se
 
   # Creating a dataframe from the different calculated elements
   df <- data.frame(diff, se, lower, upper)
 
   # Writing a message that will be displayed in the log
   message(glue(
-    '[{format(Sys.time(),"%F %T")}] >
-                absolute risk CI for binary outcomes is calculated and saved'
+    paste(
+      "[{format(Sys.time(),\"%F %T\")}] >",
+      "absolute risk CI for binary outcomes is calculated and saved"
+    )
   ))
 
   # Returning the df object
@@ -46,25 +48,25 @@ calculate_diff_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 #'
 #' @param prop1 (`numeric`)\cr Proportion of cases in active treatment
 #' @param prop2 (`numeric`)\cr Proportion of cases in comparator treatment
-#' @param N1 (`numeric`)\cr Total number of subjects in active treatment
-#' @param N2 (`numeric`)\cr Total number of subjects in comparator treatment
+#' @param n1 (`numeric`)\cr Total number of subjects in active treatment
+#' @param n2 (`numeric`)\cr Total number of subjects in comparator treatment
 #' @param cl (`numeric`)\cr confidence level
 #'
 #' @export
 #'
 #' @examples
 #' calculate_log_rel_risk_bin(
-#'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
+#'   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
 #'   cl = 0.95
 #' )
-calculate_log_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
+calculate_log_rel_risk_bin <- function(prop1, prop2, n1, n2, cl = 0.95) {
   # nolint
-  zscore <- qnorm(0.5 + cl / 2)
+  z_score <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   diff <- log(prop1 / prop2)
-  se <- sqrt((1 - prop1) / prop1 / N1 + (1 - prop2) / prop2 / N2)
-  lower <- diff - zscore * se
-  upper <- diff + zscore * se
+  se <- sqrt((1 - prop1) / prop1 / n1 + (1 - prop2) / prop2 / n2)
+  lower <- diff - z_score * se
+  upper <- diff + z_score * se
 
   diff[!is.finite(diff)] <- NA
   lower[!is.finite(lower)] <- NA
@@ -76,9 +78,11 @@ calculate_log_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
   # Writing a message that will be displayed in the log
 
   message(glue(
-    '[{format(Sys.time(),"%F %T")}] >
-               log relative risk CI for binary outcomes is calculated
-               and saved'
+    paste(
+      "[{format(Sys.time(),\"%F %T\")}] >",
+      "log relative risk CI for binary outcomes is calculated",
+      "and saved"
+    )
   ))
 
   # Returning the df object
@@ -92,8 +96,8 @@ calculate_log_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 #'
 #' @param prop1 (`numeric`)\cr Proportion of cases in active treatment
 #' @param prop2 (`numeric`)\cr Proportion of cases in comparator treatment
-#' @param N1 (`numeric`)\cr Total number of subjects in active treatment
-#' @param N2 (`numeric`)\cr Total number of subjects in comparator treatment
+#' @param n1 (`numeric`)\cr Total number of subjects in active treatment
+#' @param n2 (`numeric`)\cr Total number of subjects in comparator treatment
 #' @param cl (`numeric`)\cr confidence level
 #'
 #' @importFrom shiny validate
@@ -102,12 +106,12 @@ calculate_log_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 #'
 #' @examples
 #' calculate_rel_risk_bin(
-#'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
+#'   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
 #'   cl = 0.95
 #' )
-calculate_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
+calculate_rel_risk_bin <- function(prop1, prop2, n1, n2, cl = 0.95) {
   # nolint
-  zscore <- qnorm(0.5 + cl / 2)
+  z_score <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   validate(need(
     prop2 != 0,
@@ -115,9 +119,9 @@ calculate_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
   ))
   rr <- prop1 / prop2
 
-  se <- sqrt((1 - prop1) / prop1 / N1 + (1 - prop2) / prop2 / N2)
-  lower <- exp(log(rr) - zscore * se)
-  upper <- exp(log(rr) + zscore * se)
+  se <- sqrt((1 - prop1) / prop1 / n1 + (1 - prop2) / prop2 / n2)
+  lower <- exp(log(rr) - z_score * se)
+  upper <- exp(log(rr) + z_score * se)
 
   rr[!is.finite(rr)] <- NA
   lower[!is.finite(lower)] <- NA
@@ -128,8 +132,10 @@ calculate_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 
   # Writing a message that will be displayed in the log
   message(glue(
-    '[{format(Sys.time(),"%F %T")}] >
-               CI for relative risk for binary outcomes is calculated'
+    paste(
+      "[{format(Sys.time(),\"%F %T\")}] >",
+      "CI for relative risk for binary outcomes is calculated"
+    )
   ))
 
   # Returning the df object
@@ -143,31 +149,31 @@ calculate_rel_risk_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 #'
 #' @param prop1 (`numeric`)\cr Proportion of cases in active treatment
 #' @param prop2 (`numeric`)\cr Proportion of cases in comparator treatment
-#' @param N1 (`numeric`)\cr Total number of subjects in active treatment
-#' @param N2 (`numeric`)\cr Total number of subjects in comparator treatment
+#' @param n1 (`numeric`)\cr Total number of subjects in active treatment
+#' @param n2 (`numeric`)\cr Total number of subjects in comparator treatment
 #' @param cl (`numeric`)\cr confidence level
 #'
 #' @export
 #'
 #' @examples
 #' calculate_log_odds_ratio_bin(
-#'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
+#'   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
 #'   cl = 0.95
 #' )
-calculate_log_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
+calculate_log_odds_ratio_bin <- function(prop1, prop2, n1, n2, cl = 0.95) {
   # nolint
-  zscore <- qnorm(0.5 + cl / 2)
+  z_score <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   diff <- log((prop1 * (1 - prop2)) / (prop2 * (1 - prop1)))
   se <- sqrt(
     1 /
-      (N1 * prop1) +
-      1 / (N1 * (1 - prop1)) +
-      1 / (N2 * prop2) +
-      1 / (N2 * (1 - prop2))
+      (n1 * prop1) +
+      1 / (n1 * (1 - prop1)) +
+      1 / (n2 * prop2) +
+      1 / (n2 * (1 - prop2))
   )
-  lower <- diff - zscore * se
-  upper <- diff + zscore * se
+  lower <- diff - z_score * se
+  upper <- diff + z_score * se
 
   diff[!is.finite(diff)] <- NA
   lower[!is.finite(lower)] <- NA
@@ -178,8 +184,10 @@ calculate_log_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 
   # Writing a message that will be displayed in the log
   message(glue(
-    '[{format(Sys.time(),"%F %T")}] >
-               log odds ratio CI for binary outcomes is calculated and saved'
+    paste(
+      "[{format(Sys.time(),\"%F %T\")}] >",
+      "log odds ratio CI for binary outcomes is calculated and saved"
+    )
   ))
 
   # Returning the df object
@@ -193,20 +201,20 @@ calculate_log_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 #'
 #' @param prop1 (`numeric`)\cr Proportion of cases in active treatment
 #' @param prop2 (`numeric`)\cr Proportion of cases in comparator treatment
-#' @param N1 (`numeric`)\cr Total number of subjects in active treatment
-#' @param N2 (`numeric`)\cr Total number of subjects in comparator treatment
+#' @param n1 (`numeric`)\cr Total number of subjects in active treatment
+#' @param n2 (`numeric`)\cr Total number of subjects in comparator treatment
 #' @param cl (`numeric`)\cr confidence level
 #'
 #' @export
 #'
 #' @examples
 #' calculate_odds_ratio_bin(
-#'   prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
+#'   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
 #'   cl = 0.95
 #' )
-calculate_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
+calculate_odds_ratio_bin <- function(prop1, prop2, n1, n2, cl = 0.95) {
   # nolint
-  zscore <- qnorm(0.5 + cl / 2)
+  z_score <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   validate(need(
     prop2 != 0,
@@ -216,13 +224,13 @@ calculate_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 
   se <- sqrt(
     1 /
-      (N1 * prop1) +
-      1 / (N1 * (1 - prop1)) +
-      1 / (N2 * prop2) +
-      1 / (N2 * (1 - prop2))
+      (n1 * prop1) +
+      1 / (n1 * (1 - prop1)) +
+      1 / (n2 * prop2) +
+      1 / (n2 * (1 - prop2))
   )
-  lower <- exp(log(or) - zscore * se)
-  upper <- exp(log(or) + zscore * se)
+  lower <- exp(log(or) - z_score * se)
+  upper <- exp(log(or) + z_score * se)
 
   or[!is.finite(or)] <- NA
   lower[!is.finite(lower)] <- NA
@@ -233,8 +241,10 @@ calculate_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 
   # Writing a message that will be displayed in the log
   message(glue(
-    '[{format(Sys.time(),"%F %T")}] >
-               CI for odds ratio for binary outcomes is calculated and saved'
+    paste(
+      "[{format(Sys.time(),\"%F %T\")}] >",
+      "CI for odds ratio for binary outcomes is calculated and saved"
+    )
   ))
 
   # Returning the df object
@@ -251,8 +261,8 @@ calculate_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 #' @param sd1 (`numeric`)\cr Standard deviation of measure in active treatment
 #' @param sd2 (`numeric`)\cr Standard deviation of measure in comparator
 #' treatment
-#' @param N1 (`numeric`)\cr Total number of subjects in active treatment
-#' @param N2 (`numeric`)\cr Total number of subjects in comparator treatment
+#' @param n1 (`numeric`)\cr Total number of subjects in active treatment
+#' @param n2 (`numeric`)\cr Total number of subjects in comparator treatment
 #' @param cl (`numeric`)\cr confidence level
 #'
 #' @importFrom stats qt
@@ -261,25 +271,28 @@ calculate_odds_ratio_bin <- function(prop1, prop2, N1, N2, cl = 0.95) {
 #' @examples
 #' calculate_diff_con(
 #'   mean1 = 0.6, mean2 = 0.5, sd1 = 0.1, sd2 = 0.3,
-#'   N1 = 400, N2 = 500, cl = 0.95
+#'   n1 = 400, n2 = 500, cl = 0.95
 #' )
-calculate_diff_con <- function(mean1, mean2, sd1, sd2, N1, N2, cl = 0.95) {
+calculate_diff_con <- function(mean1, mean2, sd1, sd2, n1, n2, cl = 0.95) {
   # nolint
-  tscore <- qt(0.5 + cl / 2, N1 + N2 - 2)
+  t_score <- qt(0.5 + cl / 2, n1 + n2 - 2)
   # Calculating the different elements
   diff <- mean1 - mean2
-  sp2 <- ((N1 - 1) * sd1^2 + (N2 - 1) * sd2^2) / (N1 + N2 - 2)
-  se <- sqrt(sp2 / N1 + sp2 / N2)
-  lower <- diff - tscore * se
-  upper <- diff + tscore * se
+  sp2 <- ((n1 - 1) * sd1^2 + (n2 - 1) * sd2^2) / (n1 + n2 - 2)
+  se <- sqrt(sp2 / n1 + sp2 / n2)
+  lower <- diff - t_score * se
+  upper <- diff + t_score * se
 
   # Creating a dataframe from the different calculated elements
   df <- data.frame(diff, se, lower, upper)
 
   # Writing a message that will be displayed in the log
   message(glue(
-    '[{format(Sys.time(),"%F %T")}] > CI for treatment difference in continuous outcomes is calculated'
-  )) # nolint
+    paste(
+      "[{format(Sys.time(),\"%F %T\")}] >",
+      "CI for treatment difference in continuous outcomes is calculated"
+    )
+  ))
 
   # Returning the df object
   df
@@ -306,21 +319,23 @@ calculate_diff_con <- function(mean1, mean2, sd1, sd2, N1, N2, cl = 0.95) {
 #'   cl = 0.95
 #' )
 calculate_diff_rates <- function(rate1, rate2, py1, py2, cl = 0.95) {
-  zscore <- qnorm(0.5 + cl / 2)
+  z_score <- qnorm(0.5 + cl / 2)
   # Calculating the different elements
   diff <- rate1 - rate2
   se <- sqrt(rate1 / py1 + rate2 / py2)
-  lower <- diff - zscore * se
-  upper <- diff + zscore * se
+  lower <- diff - z_score * se
+  upper <- diff + z_score * se
 
   # Creating a dataframe from the different calculated elements
   df <- data.frame(diff, se, lower, upper)
 
   # Writing a message that will be displayed in the log
   message(glue(
-    '[{format(Sys.time(),"%F %T")}] >
-               CI for treatment difference in exposure-adjusted rates
-               is calculated and saved in a dataframe'
+    paste(
+      "[{format(Sys.time(),\"%F %T\")}] >",
+      "CI for treatment difference in exposure-adjusted rates",
+      "is calculated and saved in a dataframe"
+    )
   ))
 
   # Returning the df object

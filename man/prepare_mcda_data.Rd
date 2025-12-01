@@ -12,8 +12,9 @@ prepare_mcda_data(source_data, placebo_name = "Placebo")
 \item{placebo_name}{Name of the placebo. Default is "Placebo".}
 }
 \value{
-A data frame in wide format with Treatment as rows and criteria as columns.
-Each row contains the raw values for that treatment. Note: Outcomes are on
+A data frame in wide format with Treatment as rows and
+criteria as columns. Each row contains the raw values for that
+treatment. Note: Outcomes are on
 different scales:
 \itemize{
 \item Binary outcomes (e.g., Benefit 1, Risk 1): proportions (0-1 scale)

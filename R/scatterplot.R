@@ -1,29 +1,33 @@
 #' Create a scatterplot from a given dataframe.
 #'
-#' @param df_diff A dataframe containing two vectors, each of which displays the
-#' difference between incremental probabilities in active and control effects
-#' for a specified outcome.
-#' @param outcome A vector of two strings that describes the two outcomes
-#' associated with the difference in active and control effects, where the first
-#' outcome corresponds to `diff1` and the second to `diff2`.
+#' @param df_diff A dataframe containing two vectors, each of which
+#' displays the difference between incremental probabilities in active
+#' and control effects for a specified outcome.
+#' @param outcome A vector of two strings that describes the two
+#' outcomes associated with the difference in active and control
+#' effects, where the first outcome corresponds to `diff1` and the
+#' second to `diff2`.
 #' @param mab A numerical value that specifies the mimimum acceptable benefit.
 #' @param mar A numerical value that specifies the maximum acceptable risk.
-#' @param ellipse_type Type of confidence ellipse. The default "t" assumes a
-#' multivariate t-distribution, and "norm" assumes a multivariate normal
-#' distribution. "euclid" draws a circle with the radius equal to level,
-#' representing the euclidean distance from the center. If ellipse_type = NULL,
-#' the confidence ellipse will not be showed.
-#' @param ellipse_level The confidence level at which to draw an ellipse
-#' (default is 0.95). If type = "euclid", the radius of the circle to be drawn.
-#' @param marginal_type Type of marginal plot to show. One of: density,
-#' histogram, boxplot, violin, densigram (a 'densigram' is when a density plot
-#' is overlaid on a histogram). If marginal_type = NULL, the marginal plot will
-#' not be showed.
-#' By default, densigram is displayed.
-#' @param fig_colors Allows user to change colors of the figure (defaults are
-#' provided). Must be a vector of length 3, with the first color corresponding
-#' to the scatter plot points, the second corresponding to the overall mean, and
-#' third to the written probability text color.
+#' @param ellipse_type Type of confidence ellipse. The default "t"
+#' assumes a multivariate t-distribution, and "norm" assumes a
+#' multivariate normal distribution. "euclid" draws a circle with the
+#' radius equal to level, representing the euclidean distance from the
+#' center. If ellipse_type = NULL, the confidence ellipse will not be
+#' showed.
+#' @param ellipse_level The confidence level at which to draw an
+#' ellipse (default is 0.95). If type = "euclid", the radius of the
+#' circle to be drawn.
+#' @param marginal_type Type of marginal plot to show. One of:
+#' density, histogram, boxplot, violin, densigram (a 'densigram' is
+#' when a density plot is overlaid on a histogram). If marginal_type =
+#' NULL, the marginal plot will not be showed. By default, densigram
+#' is displayed.
+#' @param fig_colors Allows user to change colors of the figure
+#' (defaults are provided). Must be a vector of length 3, with the
+#' first color corresponding to the scatter plot points, the second
+#' corresponding to the overall mean, and third to the written
+#' probability text color.
 #'
 #'
 #' @return A scatterplot.
@@ -51,16 +55,16 @@ scatter_plot <- function(
 
   if (ncol(df_diff) < 2) {
     error_message <- paste0(
-      "You are missing incremental probabilities
-                            corresponding to an outcome."
+      "You are missing incremental probabilities corresponding to",
+      "an outcome."
     )
     stop(error_message)
   }
 
   if (ncol(df_diff) > 2) {
     error_message <- paste0(
-      "You have excess incremental probabilities, decide
-                            between two outcomes."
+      "You have excess incremental probabilities, decide between",
+      "two outcomes."
     )
     stop(error_message)
   }
@@ -70,9 +74,11 @@ scatter_plot <- function(
 
   if (identical(diff1, diff2)) {
     stop(
-      "Please enter two different vectors of incremental probabilities
-         based on their respective outcomes, as specified in the 'outcome'
-         argument."
+      paste(
+        "Please enter two different vectors of incremental",
+        "probabilities based on their respective outcomes, as",
+        "specified in the 'outcome' argument."
+      )
     )
   }
 

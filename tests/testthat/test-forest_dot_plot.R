@@ -32,8 +32,8 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
   # Prepare the data using the package function
   prepared <- brpubVJCE::prepare_forest_dot_data(full_data)
 
-  # Use outcomes_with_thresholds with explicit directions instead of direction
-  # parameter
+  # Use outcomes_with_thresholds with explicit directions
+  # instead of direction parameter
   outcomes_with_thresholds <- list(
     "Benefit 1" = list(threshold = 0.10, direction = "greater"),
     "Benefit 2" = list(threshold = 0.08, direction = "greater"),
@@ -50,7 +50,10 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
   testthat::expect_s3_class(plot, "patchwork")
 })
 
-testthat::test_that("create_forest_dot_plot reverses axis for benefit + direction less", {
+testthat::test_that(paste(
+  "create_forest_dot_plot reverses axis for benefit",
+  "+ direction less"
+), {
   # Test data for benefit outcomes
   test_data_benefit <- data.frame(
     Outcome = c("Benefit 1", "Benefit 2"),
@@ -77,7 +80,8 @@ testthat::test_that("create_forest_dot_plot reverses axis for benefit + directio
     "Benefit 2" = list(threshold = -0.12, direction = "less")
   )
 
-  # Create the plot - should reverse axis for benefit + direction "less"
+  # Create the plot - should reverse axis
+  # for benefit + direction "less"
   plot <- brpubVJCE::create_forest_dot_plot(
     prepared,
     outcomes_with_thresholds = outcomes_with_thresholds

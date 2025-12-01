@@ -43,5 +43,6 @@ utils::globalVariables(c(
   "group",
   "time_to_benefit",
   "time_to_risk",
-  "n_total_original"
+  "n_total_original",
+  "n"
 ))

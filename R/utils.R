@@ -74,14 +74,12 @@ colfun <- function() {
 #'
 #' @description `control_fonts()` calculates font-sizes depending on output size
 #'
-#' @param base_font_size (unit)\cr Font-size of normal paragraph text.
+#' @param base_font_size (unit)\cr Font-size of normal paragraph
+#'   text. By default is 9pt. By editing this value, all the other
+#'   parameters get updated too.
 #'
-#'   By default is 9pt.
-#'
-#'   By editing this value, all the other parameters get updated too.
-#'
-#' @param h1 (unit)\cr Font-size of title of the graph,
-#'   dependent of `base_font_size`. By default, 12pt.
+#' @param h1 (unit)\cr Font-size of title of the graph, dependent
+#'   of `base_font_size`. By default, 12pt.
 #'
 #' @param h2 (unit)\cr Font-size of subtitle of the graph,
 #'   dependent of `base_font_size`. By default, 10pt.
