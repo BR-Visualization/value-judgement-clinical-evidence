@@ -41,7 +41,8 @@ NULL
 #' @usage data(mcda_data)
 #' @format A data frame with 5 rows (Placebo + 4 drugs) and 6 columns:
 #'   \describe{
-#'     \item{Treatment}{Character: Treatment name (Placebo, Drug A, Drug B, Drug C, Drug D)}
+#'     \item{Treatment}{Character: Treatment name (Placebo, Drug A,
+#'       Drug B, Drug C, Drug D)}
 #'     \item{Benefit 1}{Numeric: Binary benefit outcome (proportion scale 0-1)}
 #'     \item{Benefit 2}{Numeric: Continuous benefit outcome (original scale)}
 #'     \item{Benefit 3}{Numeric: Continuous benefit outcome (original scale)}

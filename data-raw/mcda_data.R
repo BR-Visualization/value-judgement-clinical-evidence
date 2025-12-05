@@ -85,7 +85,7 @@ prepare_mcda_data_internal <- function(
     result <- rbind(result, drug_row)
   }
 
-  return(result)
+  result
 }
 
 # Load effects_table

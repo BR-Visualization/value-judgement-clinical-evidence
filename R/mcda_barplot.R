@@ -370,7 +370,7 @@ create_mcda_barplot_comparison <- function(
     widths = c(1.2, 1, 1)
   )
 
-  return(combined)
+  combined
 }
 
 #' Create MCDA Bar Chart: Calculation Walkthrough
@@ -1016,5 +1016,5 @@ create_mcda_walkthrough <- function(
     widths = c(1.2, 1, 1)
   )
 
-  return(combined_plot)
+  combined_plot
 }
