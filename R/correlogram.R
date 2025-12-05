@@ -227,10 +227,10 @@ create_correlogram <- function(
     }
   }
 
-  corr_df <- as.data.frame(as.table(as.matrix(mat))) %>%
+  corr_df <- as.data.frame(as.table(as.matrix(mat))) |>
     dplyr::rename(Var1 = Var1, Var2 = Var2, Cor = Freq)
 
-  corr_df <- corr_df %>%
+  corr_df <- corr_df |>
     mutate(
       x0 = as.numeric(factor(Var1, levels = colnames(mat))),
       y0 = as.numeric(factor(Var2, levels = colnames(mat))),
@@ -241,11 +241,11 @@ create_correlogram <- function(
     )
 
   if (type_c == "lower") {
-    corr_df <- corr_df %>% filter(x0 >= y0)
+    corr_df <- corr_df |> filter(x0 >= y0)
   }
 
   if (!diagonal) {
-    corr_df <- corr_df %>% filter(x0 != y0)
+    corr_df <- corr_df |> filter(x0 != y0)
   }
 
   # Create markdown-formatted labels with colors

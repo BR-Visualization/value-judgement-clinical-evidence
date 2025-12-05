@@ -21,7 +21,7 @@
 #'   differences and 95% confidence intervals. Includes directionally colored
 #'   confidence intervals for plotting.
 #'
-#' @importFrom dplyr %>% filter mutate case_when if_else arrange bind_rows
+#' @importFrom dplyr filter mutate case_when if_else arrange bind_rows
 #' @export
 #'
 #' @examples
@@ -55,13 +55,13 @@ prepare_forest_dot_data <- function(
   }
 
   # Filter data
-  filtered_data <- data %>%
+  filtered_data <- data |>
     filter(
       Outcome %in% outcomes_of_interest,
       Trt1 == treatment1,
       Trt2 == treatment2,
       Filter == filter_value
-    ) %>%
+    ) |>
     arrange(match(Outcome, outcomes_of_interest))
 
   # If using precalculated stats, validate presence of required columns
@@ -97,7 +97,7 @@ prepare_forest_dot_data <- function(
 
   # Calculate Diff for continuous data if available
   if (has_continuous_cols) {
-    result <- result %>%
+    result <- result |>
       mutate(
         Diff = case_when(
           !is.na(Diff) ~ Diff, # Preserve existing values
@@ -110,7 +110,7 @@ prepare_forest_dot_data <- function(
 
   # Calculate Diff for binary data if available
   if (has_binary_cols) {
-    result <- result %>%
+    result <- result |>
       mutate(
         Diff = case_when(
           !is.na(Diff) ~ Diff, # Preserve existing values
@@ -129,7 +129,7 @@ prepare_forest_dot_data <- function(
 
   # Calculate SE_diff for continuous data if available
   if (has_continuous_cols) {
-    result <- result %>%
+    result <- result |>
       mutate(
         SE_diff = case_when(
           !is.na(SE_diff) ~ SE_diff, # Preserve existing values
@@ -141,7 +141,7 @@ prepare_forest_dot_data <- function(
 
   # Calculate SE_diff for binary data if available
   if (has_binary_cols) {
-    result <- result %>%
+    result <- result |>
       mutate(
         SE_diff = case_when(
           !is.na(SE_diff) ~ SE_diff, # Preserve existing values
@@ -155,7 +155,7 @@ prepare_forest_dot_data <- function(
   }
 
   # Calculate confidence intervals and other columns
-  result %>%
+  result |>
     mutate(
       df = if_else(
         Type == "Continuous",

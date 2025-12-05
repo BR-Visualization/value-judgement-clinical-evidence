@@ -88,7 +88,7 @@ gensurv_plot <- function(
     stop(error_message)
   }
 
-  df_outcome %>%
+  df_outcome |>
     select(
       eventtime,
       diff,
@@ -109,7 +109,7 @@ gensurv_plot <- function(
   active <- strsplit(unique(df_outcome$eff_diff_lbl), "-")[[1]][1]
   control <- strsplit(unique(df_outcome$eff_diff_lbl), "-")[[1]][2]
 
-  df_ben <- df_outcome %>% dplyr::filter(outcome == "Benefit")
+  df_ben <- df_outcome |> dplyr::filter(outcome == "Benefit")
   mean1 <- mean(df_ben$diff)
   std1 <- sd(df_ben$diff)
   bmin <- mean1 - (3 * std1)
@@ -123,7 +123,7 @@ gensurv_plot <- function(
     ))
   }
 
-  df_risk <- df_outcome %>% dplyr::filter(outcome == "Risk")
+  df_risk <- df_outcome |> dplyr::filter(outcome == "Risk")
   mean2 <- mean(df_risk$diff)
   std2 <- sd(df_risk$diff)
   rmin <- mean2 - (3 * std2)
@@ -166,19 +166,19 @@ gensurv_plot <- function(
 
   window_size <- 5
 
-  df_ben <- df_ben %>%
+  df_ben <- df_ben |>
     mutate(
       sd_diff = rollapply(diff, window_size, sd, fill = NA, align = "right")
-    ) %>%
+    ) |>
     mutate(
       lower_ci = diff - 5 * sd_diff,
       upper_ci = diff + 5 * sd_diff
     )
 
-  df_risk <- df_risk %>%
+  df_risk <- df_risk |>
     mutate(
       sd_diff = rollapply(diff, window_size, sd, fill = NA, align = "right")
-    ) %>%
+    ) |>
     mutate(
       lower_ci = diff - 10 * sd_diff,
       upper_ci = diff + 10 * sd_diff
@@ -260,7 +260,7 @@ gensurv_plot <- function(
       size = 3
     ) +
     geom_ribbon(
-      data = df_ben %>% filter(diff * base_subjects >= mab),
+      data = df_ben |> filter(diff * base_subjects >= mab),
       aes(
         x = eventtime,
         ymin = lower_ci * base_subjects,
@@ -270,7 +270,7 @@ gensurv_plot <- function(
       alpha = 0.2
     ) +
     geom_ribbon(
-      data = df_ben %>% filter(diff * base_subjects < mab),
+      data = df_ben |> filter(diff * base_subjects < mab),
       aes(
         x = eventtime,
         ymin = lower_ci * base_subjects,
@@ -280,7 +280,7 @@ gensurv_plot <- function(
       alpha = 0.2
     ) +
     geom_ribbon(
-      data = df_risk %>% filter(diff * base_subjects <= mar),
+      data = df_risk |> filter(diff * base_subjects <= mar),
       aes(
         x = eventtime,
         ymin = lower_ci * base_subjects,
@@ -290,7 +290,7 @@ gensurv_plot <- function(
       alpha = 0.2
     ) +
     geom_ribbon(
-      data = df_risk %>% filter(diff * base_subjects > mar),
+      data = df_risk |> filter(diff * base_subjects > mar),
       aes(
         x = eventtime,
         ymin = lower_ci * base_subjects,
@@ -300,13 +300,13 @@ gensurv_plot <- function(
       alpha = 0.2
     ) +
     geom_text(
-      data = df_ben %>%
+      data = df_ben |>
         filter(
           abs(diff * base_subjects - mcd) ==
             min(
               abs(diff * base_subjects - mcd)
             )
-        ) %>%
+        ) |>
         slice(1),
       aes(x = eventtime, y = diff * base_subjects, label = "MCD"),
       color = "black",
@@ -399,13 +399,13 @@ gensurv_plot <- function(
       axis.title.y.right = element_text(color = fig_colors[2])
     ) +
     geom_line(
-      data = df_risk %>%
+      data = df_risk |>
         filter(diff * base_subjects <= mar),
       aes(x = eventtime, y = diff * base_subjects, color = "Risk_Acceptable"),
       size = 0.5
     ) +
     geom_line(
-      data = df_ben %>%
+      data = df_ben |>
         filter(diff * base_subjects >= mab),
       aes(
         x = eventtime,
@@ -415,25 +415,25 @@ gensurv_plot <- function(
       size = 0.5
     ) +
     geom_line(
-      data = df_risk %>%
+      data = df_risk |>
         filter(diff * base_subjects > mar),
       aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"),
       size = 0.5
     ) +
     geom_line(
-      data = df_ben %>%
+      data = df_ben |>
         filter(diff * base_subjects < mab),
       aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"),
       size = 0.5
     ) +
     geom_point(
-      data = df_ben %>%
+      data = df_ben |>
         filter(
           abs(diff * base_subjects - mcd) ==
             min(
               abs(diff * base_subjects - mcd)
             )
-        ) %>%
+        ) |>
         slice(1),
       aes(x = eventtime, y = diff * base_subjects),
       shape = 23,
@@ -510,7 +510,7 @@ gensurv_table <- function(
       )
       stop(error_message)
     } else {
-      df_table <- df_table %>%
+      df_table <- df_table |>
         # nolint start: object_usage_linter.
         select(obsv_duration, n, effect, outcome, eff_code, eventtime, subjects)
       # nolint end
@@ -532,7 +532,7 @@ gensurv_table <- function(
       )
       stop(error_message)
     } else {
-      df_table <- df_table %>%
+      df_table <- df_table |>
         # nolint start: object_usage_linter.
         select(obsv_duration, n, effect, outcome, eff_code)
       # nolint end
@@ -550,7 +550,7 @@ gensurv_table <- function(
     })
   }
 
-  df_table1 <- df_table %>%
+  df_table1 <- df_table |>
     mutate(
       y = dplyr::case_when(
         eff_code == 0 & outcome == "Benefit" ~ 3,
@@ -564,7 +564,7 @@ gensurv_table <- function(
         eff_code == 1 & outcome == "Risk" ~ fig_colors[2],
         eff_code == 0 & outcome == "Risk" ~ fig_colors[2]
       )
-    ) %>%
+    ) |>
     mutate(
       effect = forcats::fct_reorder(
         as.factor(paste(effect, outcome, sep = " ")),
@@ -573,7 +573,7 @@ gensurv_table <- function(
       )
     )
 
-  df_table1 <- df_table1 %>%
+  df_table1 <- df_table1 |>
     mutate(
       effect = factor(effect, levels = unique(effect[order(y)]))
     )
@@ -582,16 +582,16 @@ gensurv_table <- function(
   visit <- seq.default(0, len, by = visits)
 
   if (!is.null(df_table1$eventtime)) {
-    df_table1 <- df_table1 %>%
-      filter(eventtime %in% unlist(visit)) %>%
-      mutate(visit = eventtime) %>%
+    df_table1 <- df_table1 |>
+      filter(eventtime %in% unlist(visit)) |>
+      mutate(visit = eventtime) |>
       # nolint start: object_usage_linter.
-      select(visit, n, effect, y, color_ctrl_var, subjects) %>%
+      select(visit, n, effect, y, color_ctrl_var, subjects) |>
       # nolint end
       distinct()
   } else {
     df_table1$visit <- visit
-    df_table1 <- df_table1 %>%
+    df_table1 <- df_table1 |>
       # nolint start: object_usage_linter.
       select(visit, n, effect, y, color_ctrl_var, subjects)
     # nolint end
@@ -658,7 +658,7 @@ gensurv_table <- function(
       legend.position = "none"
     )
 
-  df_table2 <- df_table %>%
+  df_table2 <- df_table |>
     mutate(
       z = dplyr::case_when(
         eff_code == 0 ~ 1,
@@ -666,24 +666,24 @@ gensurv_table <- function(
       )
     )
 
-  df_table2 <- df_table2 %>%
+  df_table2 <- df_table2 |>
     mutate(
       effect = factor(effect, levels = unique(effect[order(z)]))
     )
 
   if (!is.null(df_table2$eventtime)) {
-    df_table2 <- df_table2 %>%
-      filter(eventtime %in% unlist(visit)) %>%
-      mutate(visit = eventtime) %>%
+    df_table2 <- df_table2 |>
+      filter(eventtime %in% unlist(visit)) |>
+      mutate(visit = eventtime) |>
       # nolint start: object_usage_linter.
-      select(visit, n, effect, z, subjects) %>%
+      select(visit, n, effect, z, subjects) |>
       # nolint end
       distinct(visit, effect, z, .keep_all = TRUE)
   } else {
     df_table2$visit <- visit
-    df_table2 <- df_table2 %>%
+    df_table2 <- df_table2 |>
       # nolint start: object_usage_linter.
-      select(visit, n, effect, z, subjects) %>%
+      select(visit, n, effect, z, subjects) |>
       # nolint end
       distinct(visit, effect, z, .keep_all = TRUE)
   }
@@ -937,7 +937,7 @@ gensurv_combined <- function(
     rel_heights = rel_heights_table
   )
 
-  return(fig_plot)
+  fig_plot
 }
 
 #' Simulate data (utilized for function tests)
@@ -1006,7 +1006,7 @@ gensurv <- function(
       n1 -
       sum(sim2$eventtime < eventtime_sim[t] & sim2$status == 1) / n2
   }
-  df_sim %>%
-    mutate(obsv_duration = obsv_duration, obsv_unit = unit) %>%
+  df_sim |>
+    mutate(obsv_duration = obsv_duration, obsv_unit = unit) |>
     rename(eventtime = eventtime_sim, diff = diff_sim)
 }

@@ -46,7 +46,7 @@ library(rlang)
 #'   shared legend.
 #'
 #' @import ggplot2
-#' @importFrom dplyr %>% filter mutate case_when if_else arrange bind_rows
+#' @importFrom dplyr filter mutate case_when if_else arrange bind_rows
 #' @importFrom patchwork wrap_plots plot_layout
 #' @importFrom stats qt qnorm setNames df
 #' @importFrom utils tail
@@ -272,7 +272,7 @@ create_forest_dot_plot <- function(
 
   # Loop through factors and types to create plots
   for (factor in factors) {
-    factor_data <- filtered_data %>% dplyr::filter(Factor == factor)
+    factor_data <- filtered_data |> dplyr::filter(Factor == factor)
     types <- unique(factor_data$Type)
 
     for (type in types) {
@@ -283,7 +283,7 @@ create_forest_dot_plot <- function(
       )
 
       # Filter data for current type
-      type_data <- factor_data %>% dplyr::filter(Type == type)
+      type_data <- factor_data |> dplyr::filter(Type == type)
 
       # Skip if no data for this factor/type combination
       if (nrow(type_data) == 0) {
@@ -307,13 +307,13 @@ create_forest_dot_plot <- function(
           x = type_data[[estimate2]],
           Treatment = treatment2
         )
-      ) %>%
+      ) |>
         dplyr::filter(!is.na(x))
 
       # Create data for clinical thresholds (only if thresholds should be shown)
       if (show_thresholds && nrow(clin_thresholds) > 0) {
-        thresholds_with_treatment <- clin_thresholds %>%
-          dplyr::filter(Outcome %in% type_data$Outcome) %>%
+        thresholds_with_treatment <- clin_thresholds |>
+          dplyr::filter(Outcome %in% type_data$Outcome) |>
           dplyr::mutate(Treatment = "Clinical Threshold")
 
         # Prepare data for shaded regions
@@ -322,7 +322,7 @@ create_forest_dot_plot <- function(
           type_data$Factor == "Benefit"
         ]
 
-        shade_data <- thresholds_with_treatment %>%
+        shade_data <- thresholds_with_treatment |>
           dplyr::mutate(
             # Check if axis should be reversed for this outcome
             outcome_needs_reverse = Outcome %in%
@@ -860,5 +860,5 @@ create_forest_dot_plot <- function(
   # (with limits)
   final_plot_assembly <- wrap_plots(plots, ncol = 1, heights = heights)
 
-  return(final_plot_assembly)
+  final_plot_assembly
 }

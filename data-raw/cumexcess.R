@@ -2,8 +2,8 @@
 
 load("data-raw/manuscript_example.rda")
 
-cumexcess <- manuscript_example %>%
-  filter(subgroup == "Overall") %>%
+cumexcess <- manuscript_example |>
+  filter(subgroup == "Overall") |>
   select(
     trt_diff_lbl,
     treat_code,
@@ -17,7 +17,7 @@ cumexcess <- manuscript_example %>%
     subjects
   )
 
-cumexcess <- cumexcess %>%
+cumexcess <- cumexcess |>
   rename(
     eff_diff_lbl = trt_diff_lbl,
     eff_code = treat_code,

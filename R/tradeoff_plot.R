@@ -193,7 +193,7 @@
 #' \dontrun{
 #' # Filter data for a specific treatment to ensure unique outcome combinations
 #' library(dplyr)
-#' effects_table_filtered <- effects_table %>% filter(Trt1 == "Drug A")
+#' effects_table_filtered <- effects_table |> filter(Trt1 == "Drug A")
 #'
 #' generate_tradeoff_plot(
 #'   data = effects_table_filtered, filter = "None", category = "All",
@@ -543,7 +543,7 @@ generate_tradeoff_plot <- function(
     }
 
     df_curve <- data.frame(x_curve, y_curve)
-    df_curve <- df_curve %>%
+    df_curve <- df_curve |>
       filter(!is.na(x_curve) & !is.na(y_curve))
 
     if (threshold == "Segmented line") {
@@ -749,11 +749,11 @@ prepare_tradeoff_plot <- function(
 ) {
   # get all the treatments that comply with the status to display
   if (filter != "None") {
-    df_br_status <- df_br %>%
-      filter(Drug_Status %in% drug_status) %>%
+    df_br_status <- df_br |>
+      filter(Drug_Status %in% drug_status) |>
       mutate(treatment = paste0(treatment, " : ", category))
   } else {
-    df_br_status <- df_br %>%
+    df_br_status <- df_br |>
       filter(Drug_Status %in% drug_status)
   }
 
@@ -764,10 +764,10 @@ prepare_tradeoff_plot <- function(
 
   # set a color for each treatment
   if (filter != "None") {
-    data <- data %>%
+    data <- data |>
       mutate(treatment = paste0(Trt1, " : ", Category))
   } else {
-    data <- data %>%
+    data <- data |>
       mutate(treatment = Trt1)
   }
 
@@ -1009,10 +1009,10 @@ prepare_tradeoff_data <- function(
   # subset the data based on a selected filter/category if applicable
 
   if (filter == "None") {
-    df_filter <- data %>%
+    df_filter <- data |>
       filter(Filter == "None")
   } else {
-    df_filter <- data %>%
+    df_filter <- data |>
       filter(Filter == filter & Category %in% category)
   }
 
@@ -1748,8 +1748,8 @@ prepare_tradeoff_data <- function(
   # subset the filtered data based on the selected benefit outcome
   # and keep only the treatment and drug status column
 
-  df_drug <- df_filter %>%
-    filter(Outcome == benefit) %>%
+  df_drug <- df_filter |>
+    filter(Outcome == benefit) |>
     select("Category", "Trt1", "Trt2", "Drug_Status")
 
   df_br <- merge(df_benefit, df_risk, by = c("Category", "Trt1"), sort = FALSE)
