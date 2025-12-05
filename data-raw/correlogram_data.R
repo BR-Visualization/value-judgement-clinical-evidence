@@ -35,8 +35,8 @@ for (i in seq(1, 10)) {
     c(sample(c("Low", "Medium", "High"), 100, replace = TRUE))
 }
 
-corr <- corr %>%
-  select(subject_id:`Benefit.3`, `Risk.6`:`Risk.8`) %>%
+corr <- corr |>
+  select(subject_id:`Benefit.3`, `Risk.6`:`Risk.8`) |>
   rename(
     `Primary Efficacy` = `Benefit.1`,
     `Secondary Efficacy` = `Benefit.2`,
@@ -46,7 +46,7 @@ corr <- corr %>%
     `Liver Toxicity` = `Risk.8`
   )
 
-corr <- corr %>% select(-subject_id)
+corr <- corr |> select(-subject_id)
 
 
 corr$`Secondary Efficacy` <- rnorm_pre(

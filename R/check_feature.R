@@ -413,9 +413,9 @@ check_feature <- function(
     }
     if (!missing(check_unique) && length(check_unique) > 0) {
       if (all(check_unique %in% names(data))) {
-        result <- data %>%
-          select(c(feature, check_unique)) %>%
-          group_by(get(feature)) %>%
+        result <- data |>
+          select(c(feature, check_unique)) |>
+          group_by(get(feature)) |>
           summarise_all(n_distinct)
 
         if (
@@ -570,9 +570,9 @@ check_feature_string <- function(
     }
     if (!missing(check_unique) && length(check_unique) > 0) {
       if (all(check_unique %in% names(data))) {
-        result <- data %>%
-          select(c(feature, check_unique)) %>%
-          group_by(get(feature)) %>%
+        result <- data |>
+          select(c(feature, check_unique)) |>
+          group_by(get(feature)) |>
           summarise_all(n_distinct)
         if (
           !all(
