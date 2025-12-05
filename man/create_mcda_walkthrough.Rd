@@ -6,7 +6,7 @@
 \usage{
 create_mcda_walkthrough(
   data = NULL,
-  placebo_name = "Placebo",
+  comparator_name = "Placebo",
   comparison_drug = "Drug A",
   benefit_criteria = NULL,
   risk_criteria = NULL,
@@ -18,12 +18,13 @@ create_mcda_walkthrough(
 }
 \arguments{
 \item{data}{A data frame in wide format with Treatment column and
-criteria columns. Required parameter - must be provided. Should be
-the output from prepare_mcda_data(), which contains raw values for
-each treatment on their original measurement scales.}
+criteria columns. Required parameter - must be provided. Each row
+should contain raw values for a treatment on their original
+measurement scales. See \code{\link{mcda_data}} for example format.}
 
-\item{placebo_name}{Character string specifying the name of the
-placebo/control treatment. Default is "Placebo".}
+\item{comparator_name}{Character string specifying the name of the
+reference treatment (e.g., placebo or active control). Default is
+"Placebo".}
 
 \item{comparison_drug}{Character string specifying which drug to show
 the calculation for. Default is "Drug A".}
@@ -61,30 +62,40 @@ Default is c("#0571b0", "#ca0020").}
 }
 \value{
 A grid arrangement of three panels showing: (1) Normalized
-Difference (on 0-100 scale: Drug normalized - Placebo normalized),
+Difference (on 0-100 scale: Drug normalized - Comparator normalized),
 (2) Weights, and (3) Weighted contributions (Benefit-Risk scores),
 or NULL if data is not provided. Negative values in panels 1 and 3
-indicate the drug performs worse than placebo.
+indicate the drug performs worse than the comparator.
 }
 \description{
 Create MCDA Bar Chart: Calculation Walkthrough
 }
 \examples{
-# Prepare data from effects_table (extracts raw values for all treatments)
-mcda_data <- prepare_mcda_data(effects_table)
+# Load example MCDA data
+data(mcda_data)
 
-# View the data structure - each row has raw values
+# View the data structure - each row has raw values for a treatment
 head(mcda_data)
 #   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
 # 1   Placebo      0.05        65         9   0.30  0.087
 # 2    Drug A      0.46        20        60   0.46  0.100
+
+# Define clinical scales
+clinical_scales <- list(
+  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
+  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
+  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
+  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+)
 
 # Create walkthrough showing the MCDA calculation steps for Drug B
 barplot_walk <- create_mcda_walkthrough(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
-  comparison_drug = "Drug B"
+  comparison_drug = "Drug B",
+  clinical_scales = clinical_scales
 )
 
 # With custom weights and clinical scales for Drug A
@@ -97,18 +108,12 @@ weights <- c(
   `Risk 2` = 0.10
 )
 
-# Specify that Benefit 2 is "lower is better" (e.g., symptom severity)
-favorable_dir <- c(
-  `Benefit 1` = "higher",
-  `Benefit 2` = "lower",
-  `Benefit 3` = "higher",
-  `Risk 1` = "lower",
-  `Risk 2` = "lower"
-)
-
 # Define clinical scales based on clinical guidelines, MCID, or
 # regulatory precedents. These fixed scales ensure stability and
-# interpretability
+# interpretability.
+# Note: The "direction" field specifies which direction is favorable:
+#   - "increasing": higher values are better
+#   - "decreasing": lower values are better
 clinical_scales <- list(
   `Benefit 1` = list(
     min = 0, # No benefit (unacceptable)
@@ -118,7 +123,7 @@ clinical_scales <- list(
   `Benefit 2` = list(
     min = 0, # Best outcome (no symptoms)
     max = 100, # Worst outcome (severe symptoms)
-    direction = "decreasing" # Lower is better
+    direction = "decreasing" # Lower is better (e.g., symptom severity)
   ),
   `Benefit 3` = list(
     min = 0, # No improvement
@@ -143,7 +148,6 @@ barplot_walk_a <- create_mcda_walkthrough(
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
   weights = weights,
-  favorable_direction = favorable_dir,
   clinical_scales = clinical_scales
 )
 ggsave(

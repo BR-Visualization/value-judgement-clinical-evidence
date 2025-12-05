@@ -143,8 +143,8 @@ ggsave_custom(
 # MCDA Barplots
 # ============================================================================
 
-# Prepare MCDA data from effects table
-mcda_data <- prepare_mcda_data(effects_table)
+# Load MCDA data (generated from effects_table via data-raw/mcda_data.R)
+data("mcda_data")
 
 # --------------------------------------------------------------------------
 # MCDA Comparison Plot: Shows Normalized Placebo | Normalized Drug | Normalized Difference

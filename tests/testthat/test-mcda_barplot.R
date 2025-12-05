@@ -26,36 +26,26 @@ create_sample_clinical_scales <- function() {
   )
 }
 
-# Test prepare_mcda_data function
-test_that("prepare_mcda_data returns correct structure", {
-  # Load the actual effects_table data
-  data("effects_table", package = "brpubVJCE")
-
-  result <- prepare_mcda_data(effects_table)
+# Test mcda_data dataset structure
+test_that("mcda_data has correct structure", {
+  # Load the mcda_data
+  data("mcda_data", package = "brpubVJCE")
 
   # Check that result is a data frame
-  expect_true(is.data.frame(result))
+  expect_true(is.data.frame(mcda_data))
 
   # Check that Treatment column exists
-  expect_true("Treatment" %in% colnames(result))
+  expect_true("Treatment" %in% colnames(mcda_data))
 
   # Check that Placebo is the first row
-  expect_equal(result$Treatment[1], "Placebo")
+  expect_equal(mcda_data$Treatment[1], "Placebo")
 
   # Check that we have multiple rows (placebo + drugs)
-  expect_true(nrow(result) > 1)
+  expect_true(nrow(mcda_data) > 1)
 
   # Check that all outcome columns are numeric (except Treatment)
-  numeric_cols <- colnames(result)[colnames(result) != "Treatment"]
-  expect_true(all(sapply(result[numeric_cols], is.numeric)))
-})
-
-test_that("prepare_mcda_data handles custom placebo name", {
-  data("effects_table", package = "brpubVJCE")
-
-  result <- prepare_mcda_data(effects_table, placebo_name = "Control")
-
-  expect_equal(result$Treatment[1], "Control")
+  numeric_cols <- colnames(mcda_data)[colnames(mcda_data) != "Treatment"]
+  expect_true(all(sapply(mcda_data[numeric_cols], is.numeric)))
 })
 
 # Test create_mcda_barplot_comparison validation
@@ -117,11 +107,11 @@ test_that("create_mcda_barplot_comparison validates treatment existence", {
       data = mcda_data,
       benefit_criteria = c("Benefit 1", "Benefit 2"),
       risk_criteria = c("Risk 1", "Risk 2"),
-      placebo_name = "Control",
+      comparator_name = "Control",
       comparison_drug = "Drug A",
       clinical_scales = clinical_scales
     ),
-    "Placebo 'Control' not found in data"
+    "Comparator 'Control' not found in data"
   )
 })
 
@@ -243,10 +233,10 @@ test_that("create_mcda_walkthrough validates treatment existence", {
       data = mcda_data,
       benefit_criteria = c("Benefit 1", "Benefit 2"),
       risk_criteria = c("Risk 1", "Risk 2"),
-      placebo_name = "Control",
+      comparator_name = "Control",
       comparison_drug = "Drug A"
     ),
-    "Placebo 'Control' not found in data"
+    "Comparator 'Control' not found in data"
   )
 })
 
@@ -415,10 +405,8 @@ test_that(paste(
 
 # Integration tests with actual effects_table data
 test_that("Integration: Full workflow with effects_table", {
-  data("effects_table", package = "brpubVJCE")
-
-  # Step 1: Prepare data
-  mcda_data <- prepare_mcda_data(effects_table)
+  # Step 1: Load MCDA data
+  data("mcda_data", package = "brpubVJCE")
   expect_true(is.data.frame(mcda_data))
 
   # Step 2: Get available criteria

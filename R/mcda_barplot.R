@@ -1,126 +1,15 @@
-#' Prepare MCDA data from effects table
-#'
-#' @param source_data The effects table dataset (effects_table format).
-#' @param placebo_name Name of the placebo. Default is "Placebo".
-#'
-#' @return A data frame in wide format with Treatment as rows and
-#'   criteria as columns. Each row contains the raw values for that
-#'   treatment. Note: Outcomes are on
-#'   different scales:
-#'   - Binary outcomes (e.g., Benefit 1, Risk 1): proportions (0-1 scale)
-#'   - Continuous outcomes (e.g., Benefit 2, Benefit 3): means (various scales)
-#' @export
-#'
-#' @details
-#' This function transforms the long-format effects_table into wide format
-#' suitable for MCDA visualizations. Each treatment retains its raw values on
-#' the original measurement scales:
-#' \itemize{
-#'   \item Binary outcomes use Prop1/Prop2 (proportions: 0-1)
-#'   \item Continuous outcomes use Mean1/Mean2 (original measurement units)
-#' }
-#' The MCDA visualization functions will calculate treatment differences from
-#' placebo and display the transformation steps.
-#'
-#' @examples
-#' # Prepare data from effects_table
-#' mcda_data <- prepare_mcda_data(effects_table)
-#' head(mcda_data)
-#'
-#' # Check the structure - raw values for each treatment
-#' str(mcda_data)
-#' # Each row contains raw values on original scales
-prepare_mcda_data <- function(
-  source_data,
-  placebo_name = "Placebo"
-) {
-  # Filter for identified outcomes only, Category == 'All'
-  identified <- source_data[
-    source_data$Outcome_Status == "Identified" &
-      source_data$Category == "All",
-  ]
-
-  # Get unique drugs (Trt1 values)
-  drugs <- unique(identified$Trt1)
-
-  # Extract unique outcomes
-  outcomes <- unique(identified$Outcome)
-
-  # Initialize result data frame
-  result <- data.frame(Treatment = character(), stringsAsFactors = FALSE)
-
-  # First, get placebo values from any drug row (Trt2/Prop2/Mean2)
-  first_drug_data <- identified[identified$Trt1 == drugs[1], ]
-  placebo_row <- data.frame(Treatment = placebo_name, stringsAsFactors = FALSE)
-
-  for (outcome in outcomes) {
-    row_data <- first_drug_data[first_drug_data$Outcome == outcome, ]
-
-    if (nrow(row_data) == 0) {
-      placebo_row[[outcome]] <- NA
-      next
-    }
-
-    row_data <- row_data[1, ]
-
-    # Extract placebo value
-    if (!is.na(row_data$Prop2)) {
-      placebo_row[[outcome]] <- row_data$Prop2
-    } else if (!is.na(row_data$Mean2)) {
-      placebo_row[[outcome]] <- row_data$Mean2
-    } else {
-      placebo_row[[outcome]] <- NA
-    }
-  }
-
-  result <- rbind(result, placebo_row)
-
-  # Process each drug
-  for (drug in drugs) {
-    drug_data <- identified[identified$Trt1 == drug, ]
-
-    # Create a new row for this drug
-    drug_row <- data.frame(Treatment = drug, stringsAsFactors = FALSE)
-
-    for (outcome in outcomes) {
-      row_data <- drug_data[drug_data$Outcome == outcome, ]
-
-      if (nrow(row_data) == 0) {
-        drug_row[[outcome]] <- NA
-        next
-      }
-
-      row_data <- row_data[1, ]
-
-      # Extract drug value (raw value, not difference)
-      if (!is.na(row_data$Prop1)) {
-        # Binary outcome - proportion scale (0-1)
-        drug_row[[outcome]] <- row_data$Prop1
-      } else if (!is.na(row_data$Mean1)) {
-        # Continuous outcome - original measurement scale
-        drug_row[[outcome]] <- row_data$Mean1
-      } else {
-        drug_row[[outcome]] <- NA
-      }
-    }
-
-    # Add this drug's row to the result
-    result <- rbind(result, drug_row)
-  }
-
-  return(result)
-}
-
 #' Create MCDA Bar Chart: Normalized Values Comparison
 #'
 #' @param data A data frame in wide format with Treatment column and
-#'   criteria columns. Required parameter - must be provided. Should be
-#'   the output from prepare_mcda_data(), which contains raw values for
-#'   each treatment on their original measurement scales.
-#' @param placebo_name Character string specifying the name of the
-#'   placebo/control treatment in the data. Default is "Placebo".
+#'   criteria columns. Required parameter - must be provided. Each row
+#'   should contain raw values for a treatment on their original
+#'   measurement scales. See \code{\link{mcda_data}} for example format.
+#' @param comparator_name Character string specifying the name of the
+#'   reference treatment (e.g., placebo or active control) in the data.
+#'   Default is "Placebo".
 #' @param comparison_drug Character string specifying which drug to
-#'   compare with placebo in the visualization. Default is "Drug A".
+#'   compare with the reference treatment in the visualization.
+#'   Default is "Drug A".
 #' @param benefit_criteria Character vector of benefit criterion names
 #'   (column names in data).
 #' @param risk_criteria Character vector of risk criterion names
@@ -133,19 +22,20 @@ prepare_mcda_data <- function(
 #'   and risks. Default is c("#0571b0", "#ca0020") to match
 #'   correlogram colors.
 #'
-#' @return A patchwork object showing three panels: Normalized Placebo
-#'   values, Normalized Drug values, and Difference of Normalized Values
-#'   (Drug - Placebo), or NULL if data is not provided.
+#' @return A patchwork object showing three panels: Normalized
+#'   Comparator values, Normalized Drug values, and Difference of
+#'   Normalized Values (Drug - Comparator), or NULL if data is not
+#'   provided.
 #' @export
 #' @import ggplot2
 #' @importFrom patchwork wrap_plots
 #' @importFrom ggh4x facetted_pos_scales
 #'
 #' @examples
-#' # Prepare data from effects_table (extracts raw values for all treatments)
-#' mcda_data <- prepare_mcda_data(effects_table)
+#' # Load example MCDA data
+#' data(mcda_data)
 #'
-#' # View the data structure - each row has raw values
+#' # View the data structure - each row has raw values for a treatment
 #' head(mcda_data)
 #' #   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
 #' # 1   Placebo      0.05        65         9   0.30  0.087
@@ -162,7 +52,7 @@ prepare_mcda_data <- function(
 #' )
 #'
 #' # Create comparison barplot showing
-#' # Normalized Placebo | Normalized Drug B | Difference
+#' # Normalized Comparator | Normalized Drug B | Difference
 #' barplot_comp <- create_mcda_barplot_comparison(
 #'   data = mcda_data,
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
@@ -190,7 +80,7 @@ prepare_mcda_data <- function(
 #' }
 create_mcda_barplot_comparison <- function(
   data = NULL,
-  placebo_name = "Placebo",
+  comparator_name = "Placebo",
   comparison_drug = "Drug A",
   benefit_criteria = NULL,
   risk_criteria = NULL,
@@ -201,8 +91,7 @@ create_mcda_barplot_comparison <- function(
   if (is.null(data)) {
     warning(
       "No data provided. Please supply a data frame with Treatment ",
-      "column and criteria columns. Use prepare_mcda_data() to prepare ",
-      "data from effects_table."
+      "column and criteria columns. See ?mcda_data for expected format."
     )
     return(invisible(NULL))
   }
@@ -224,7 +113,7 @@ create_mcda_barplot_comparison <- function(
   }
 
   # Extract placebo and drug data
-  placebo_row <- data[data$Treatment == placebo_name, ]
+  placebo_row <- data[data$Treatment == comparator_name, ]
   drug_row <- data[data$Treatment == comparison_drug, ]
 
   # Check if comparison_drug exists
@@ -238,11 +127,11 @@ create_mcda_barplot_comparison <- function(
     )
   }
 
-  # Check if placebo exists
+  # Check if comparator exists
   if (nrow(placebo_row) == 0) {
     stop(
-      "Placebo '",
-      placebo_name,
+      "Comparator '",
+      comparator_name,
       "' not found in data. ",
       "Available treatments: ",
       paste(unique(data$Treatment), collapse = ", ")
@@ -335,7 +224,7 @@ create_mcda_barplot_comparison <- function(
     Value = c(placebo_values, drug_values, diff_values),
     Group = rep(
       c(
-        paste("Normalized", placebo_name),
+        paste("Normalized", comparator_name),
         paste("Normalized", comparison_drug),
         "Difference"
       ),
@@ -356,7 +245,7 @@ create_mcda_barplot_comparison <- function(
 
   # Plot 1: Normalized Placebo
   plot_placebo <- ggplot(
-    plot_data[plot_data$Group == paste("Normalized", placebo_name), ],
+    plot_data[plot_data$Group == paste("Normalized", comparator_name), ],
     aes(x = Value, y = Criterion, fill = Type)
   ) +
     geom_col(width = 0.7) +
@@ -370,7 +259,7 @@ create_mcda_barplot_comparison <- function(
       expand = c(0.02, 0)
     ) +
     labs(
-      title = paste("Normalized", placebo_name),
+      title = paste("Normalized", comparator_name),
       x = NULL,
       y = NULL
     ) +
@@ -487,11 +376,12 @@ create_mcda_barplot_comparison <- function(
 #' Create MCDA Bar Chart: Calculation Walkthrough
 #'
 #' @param data A data frame in wide format with Treatment column and
-#'   criteria columns. Required parameter - must be provided. Should be
-#'   the output from prepare_mcda_data(), which contains raw values for
-#'   each treatment on their original measurement scales.
-#' @param placebo_name Character string specifying the name of the
-#'   placebo/control treatment. Default is "Placebo".
+#'   criteria columns. Required parameter - must be provided. Each row
+#'   should contain raw values for a treatment on their original
+#'   measurement scales. See \code{\link{mcda_data}} for example format.
+#' @param comparator_name Character string specifying the name of the
+#'   reference treatment (e.g., placebo or active control). Default is
+#'   "Placebo".
 #' @param comparison_drug Character string specifying which drug to show
 #'   the calculation for. Default is "Drug A".
 #' @param benefit_criteria Character vector of benefit criterion names
@@ -521,31 +411,41 @@ create_mcda_barplot_comparison <- function(
 #'   Default is c("#0571b0", "#ca0020").
 #'
 #' @return A grid arrangement of three panels showing: (1) Normalized
-#'   Difference (on 0-100 scale: Drug normalized - Placebo normalized),
+#'   Difference (on 0-100 scale: Drug normalized - Comparator normalized),
 #'   (2) Weights, and (3) Weighted contributions (Benefit-Risk scores),
 #'   or NULL if data is not provided. Negative values in panels 1 and 3
-#'   indicate the drug performs worse than placebo.
+#'   indicate the drug performs worse than the comparator.
 #' @export
 #' @import ggplot2
 #' @importFrom gridExtra arrangeGrob
 #' @importFrom grid textGrob gpar
 #'
 #' @examples
-#' # Prepare data from effects_table (extracts raw values for all treatments)
-#' mcda_data <- prepare_mcda_data(effects_table)
+#' # Load example MCDA data
+#' data(mcda_data)
 #'
-#' # View the data structure - each row has raw values
+#' # View the data structure - each row has raw values for a treatment
 #' head(mcda_data)
 #' #   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
 #' # 1   Placebo      0.05        65         9   0.30  0.087
 #' # 2    Drug A      0.46        20        60   0.46  0.100
+#'
+#' # Define clinical scales
+#' clinical_scales <- list(
+#'   `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
+#'   `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
+#'   `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
+#'   `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
+#'   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+#' )
 #'
 #' # Create walkthrough showing the MCDA calculation steps for Drug B
 #' barplot_walk <- create_mcda_walkthrough(
 #'   data = mcda_data,
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
 #'   risk_criteria = c("Risk 1", "Risk 2"),
-#'   comparison_drug = "Drug B"
+#'   comparison_drug = "Drug B",
+#'   clinical_scales = clinical_scales
 #' )
 #'
 #' # With custom weights and clinical scales for Drug A
@@ -558,18 +458,12 @@ create_mcda_barplot_comparison <- function(
 #'   `Risk 2` = 0.10
 #' )
 #'
-#' # Specify that Benefit 2 is "lower is better" (e.g., symptom severity)
-#' favorable_dir <- c(
-#'   `Benefit 1` = "higher",
-#'   `Benefit 2` = "lower",
-#'   `Benefit 3` = "higher",
-#'   `Risk 1` = "lower",
-#'   `Risk 2` = "lower"
-#' )
-#'
 #' # Define clinical scales based on clinical guidelines, MCID, or
 #' # regulatory precedents. These fixed scales ensure stability and
-#' # interpretability
+#' # interpretability.
+#' # Note: The "direction" field specifies which direction is favorable:
+#' #   - "increasing": higher values are better
+#' #   - "decreasing": lower values are better
 #' clinical_scales <- list(
 #'   `Benefit 1` = list(
 #'     min = 0, # No benefit (unacceptable)
@@ -579,7 +473,7 @@ create_mcda_barplot_comparison <- function(
 #'   `Benefit 2` = list(
 #'     min = 0, # Best outcome (no symptoms)
 #'     max = 100, # Worst outcome (severe symptoms)
-#'     direction = "decreasing" # Lower is better
+#'     direction = "decreasing" # Lower is better (e.g., symptom severity)
 #'   ),
 #'   `Benefit 3` = list(
 #'     min = 0, # No improvement
@@ -604,7 +498,6 @@ create_mcda_barplot_comparison <- function(
 #'   risk_criteria = c("Risk 1", "Risk 2"),
 #'   comparison_drug = "Drug A",
 #'   weights = weights,
-#'   favorable_direction = favorable_dir,
 #'   clinical_scales = clinical_scales
 #' )
 #' ggsave(
@@ -617,7 +510,7 @@ create_mcda_barplot_comparison <- function(
 #' }
 create_mcda_walkthrough <- function(
   data = NULL,
-  placebo_name = "Placebo",
+  comparator_name = "Placebo",
   comparison_drug = "Drug A",
   benefit_criteria = NULL,
   risk_criteria = NULL,
@@ -630,8 +523,7 @@ create_mcda_walkthrough <- function(
   if (is.null(data)) {
     warning(
       "No data provided. Please supply a data frame with Treatment ",
-      "column and criteria columns. Use prepare_mcda_data() to prepare ",
-      "data from effects_table."
+      "column and criteria columns. See ?mcda_data for expected format."
     )
     return(invisible(NULL))
   }
@@ -679,14 +571,14 @@ create_mcda_walkthrough <- function(
   }
 
   # Calculate treatment differences
-  placebo_row <- data[data$Treatment == placebo_name, ]
-  treatments <- data[data$Treatment != placebo_name, ]
+  placebo_row <- data[data$Treatment == comparator_name, ]
+  treatments <- data[data$Treatment != comparator_name, ]
 
-  # Check if placebo exists
+  # Check if comparator exists
   if (nrow(placebo_row) == 0) {
     stop(
-      "Placebo '",
-      placebo_name,
+      "Comparator '",
+      comparator_name,
       "' not found in data. ",
       "Available treatments: ",
       paste(unique(data$Treatment), collapse = ", ")
@@ -977,7 +869,7 @@ create_mcda_walkthrough <- function(
         "Normalized ",
         comparison_drug,
         " - Normalized ",
-        placebo_name
+        comparator_name
       ),
       x = NULL,
       y = NULL
@@ -1075,8 +967,8 @@ create_mcda_walkthrough <- function(
       axis.text.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0),
-      plot.subtitle = element_text(size = 10, hjust = 0),
+      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = 10, hjust = 0.5),
       plot.margin = margin(5, 15, 5, 5)
     ) +
     geom_text(

@@ -6,7 +6,7 @@
 \usage{
 create_mcda_barplot_comparison(
   data = NULL,
-  placebo_name = "Placebo",
+  comparator_name = "Placebo",
   comparison_drug = "Drug A",
   benefit_criteria = NULL,
   risk_criteria = NULL,
@@ -16,15 +16,17 @@ create_mcda_barplot_comparison(
 }
 \arguments{
 \item{data}{A data frame in wide format with Treatment column and
-criteria columns. Required parameter - must be provided. Should be
-the output from prepare_mcda_data(), which contains raw values for
-each treatment on their original measurement scales.}
+criteria columns. Required parameter - must be provided. Each row
+should contain raw values for a treatment on their original
+measurement scales. See \code{\link{mcda_data}} for example format.}
 
-\item{placebo_name}{Character string specifying the name of the
-placebo/control treatment in the data. Default is "Placebo".}
+\item{comparator_name}{Character string specifying the name of the
+reference treatment (e.g., placebo or active control) in the data.
+Default is "Placebo".}
 
 \item{comparison_drug}{Character string specifying which drug to
-compare with placebo in the visualization. Default is "Drug A".}
+compare with the reference treatment in the visualization.
+Default is "Drug A".}
 
 \item{benefit_criteria}{Character vector of benefit criterion names
 (column names in data).}
@@ -42,18 +44,19 @@ and risks. Default is c("#0571b0", "#ca0020") to match
 correlogram colors.}
 }
 \value{
-A patchwork object showing three panels: Normalized Placebo
-values, Normalized Drug values, and Difference of Normalized Values
-(Drug - Placebo), or NULL if data is not provided.
+A patchwork object showing three panels: Normalized
+Comparator values, Normalized Drug values, and Difference of
+Normalized Values (Drug - Comparator), or NULL if data is not
+provided.
 }
 \description{
 Create MCDA Bar Chart: Normalized Values Comparison
 }
 \examples{
-# Prepare data from effects_table (extracts raw values for all treatments)
-mcda_data <- prepare_mcda_data(effects_table)
+# Load example MCDA data
+data(mcda_data)
 
-# View the data structure - each row has raw values
+# View the data structure - each row has raw values for a treatment
 head(mcda_data)
 #   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
 # 1   Placebo      0.05        65         9   0.30  0.087
@@ -70,7 +73,7 @@ clinical_scales <- list(
 )
 
 # Create comparison barplot showing
-# Normalized Placebo | Normalized Drug B | Difference
+# Normalized Comparator | Normalized Drug B | Difference
 barplot_comp <- create_mcda_barplot_comparison(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
