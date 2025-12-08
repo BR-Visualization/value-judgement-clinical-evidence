@@ -21,7 +21,7 @@
 #'   differences and 95% confidence intervals. Includes directionally colored
 #'   confidence intervals for plotting.
 #'
-#' @importFrom dplyr %>% filter mutate case_when if_else arrange bind_rows
+#' @importFrom dplyr filter mutate case_when if_else arrange bind_rows
 #' @export
 #'
 #' @examples
@@ -35,12 +35,14 @@
 #' prepared_data2 <- prepare_forest_dot_data(effects_table,
 #'   precalculated_stats = TRUE
 #' )
-prepare_forest_dot_data <- function(data,
-                                    outcomes_of_interest = NULL,
-                                    treatment1 = "Drug A",
-                                    treatment2 = "Placebo",
-                                    filter_value = "None",
-                                    precalculated_stats = FALSE) {
+prepare_forest_dot_data <- function(
+  data,
+  outcomes_of_interest = NULL,
+  treatment1 = "Drug A",
+  treatment2 = "Placebo",
+  filter_value = "None",
+  precalculated_stats = FALSE
+) {
   # Auto-discover outcomes if not specified
   if (is.null(outcomes_of_interest)) {
     if ("Outcome" %in% names(data)) {
@@ -53,13 +55,13 @@ prepare_forest_dot_data <- function(data,
   }
 
   # Filter data
-  filtered_data <- data %>%
+  filtered_data <- data |>
     filter(
       Outcome %in% outcomes_of_interest,
       Trt1 == treatment1,
       Trt2 == treatment2,
       Filter == filter_value
-    ) %>%
+    ) |>
     arrange(match(Outcome, outcomes_of_interest))
 
   # If using precalculated stats, validate presence of required columns
@@ -79,8 +81,10 @@ prepare_forest_dot_data <- function(data,
 
   # Check which columns are available
   has_binary_cols <- all(c("Prop1", "Prop2") %in% names(filtered_data))
-  has_continuous_cols <- all(c("Mean1", "Mean2", "Sd1", "Sd2") %in%
-    names(filtered_data))
+  has_continuous_cols <- all(
+    c("Mean1", "Mean2", "Sd1", "Sd2") %in%
+      names(filtered_data)
+  )
 
   # Calculate treatment differences and confidence intervals
   result <- filtered_data
@@ -93,7 +97,7 @@ prepare_forest_dot_data <- function(data,
 
   # Calculate Diff for continuous data if available
   if (has_continuous_cols) {
-    result <- result %>%
+    result <- result |>
       mutate(
         Diff = case_when(
           !is.na(Diff) ~ Diff, # Preserve existing values
@@ -106,7 +110,7 @@ prepare_forest_dot_data <- function(data,
 
   # Calculate Diff for binary data if available
   if (has_binary_cols) {
-    result <- result %>%
+    result <- result |>
       mutate(
         Diff = case_when(
           !is.na(Diff) ~ Diff, # Preserve existing values
@@ -125,7 +129,7 @@ prepare_forest_dot_data <- function(data,
 
   # Calculate SE_diff for continuous data if available
   if (has_continuous_cols) {
-    result <- result %>%
+    result <- result |>
       mutate(
         SE_diff = case_when(
           !is.na(SE_diff) ~ SE_diff, # Preserve existing values
@@ -137,19 +141,21 @@ prepare_forest_dot_data <- function(data,
 
   # Calculate SE_diff for binary data if available
   if (has_binary_cols) {
-    result <- result %>%
+    result <- result |>
       mutate(
         SE_diff = case_when(
           !is.na(SE_diff) ~ SE_diff, # Preserve existing values
-          Type == "Binary" ~ sqrt((Prop1 * (1 - Prop1) / N1) +
-            (Prop2 * (1 - Prop2) / N2)),
+          Type == "Binary" ~ sqrt(
+            (Prop1 * (1 - Prop1) / N1) +
+              (Prop2 * (1 - Prop2) / N2)
+          ),
           TRUE ~ SE_diff
         )
       )
   }
 
   # Calculate confidence intervals and other columns
-  result %>%
+  result |>
     mutate(
       df = if_else(
         Type == "Continuous",

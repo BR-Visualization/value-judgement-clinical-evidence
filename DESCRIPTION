@@ -31,8 +31,7 @@ RoxygenNote: 7.3.3
 Suggests:
     knitr,
     rmarkdown,
-    testthat (>= 3.0.0),
-    faux
+    testthat (>= 3.0.0)
 VignetteBuilder: knitr
 Imports:
     dplyr,
@@ -50,17 +49,17 @@ Imports:
     reshape2,
     colorBlindness,
     glue,
-    ggtext,
     magrittr,
     shiny,
     scales,
-    MASS,
     ltm,
     tibble,
     rcompanion,
     ggcorrplot,
     stringr,
-    ggforce
+    ggforce,
+    ggh4x,
+    gridExtra
 Depends: 
     R (>= 3.5)
 LazyData: true

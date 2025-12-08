@@ -35,8 +35,8 @@ for (i in seq(1, 10)) {
     c(sample(c("Low", "Medium", "High"), 100, replace = TRUE))
 }
 
-corr <- corr %>%
-  select(subject_id:`Benefit.3`, `Risk.6`:`Risk.8`) %>%
+corr <- corr |>
+  select(subject_id:`Benefit.3`, `Risk.6`:`Risk.8`) |>
   rename(
     `Primary Efficacy` = `Benefit.1`,
     `Secondary Efficacy` = `Benefit.2`,
@@ -46,29 +46,32 @@ corr <- corr %>%
     `Liver Toxicity` = `Risk.8`
   )
 
-corr <- corr %>% select(-subject_id)
+corr <- corr |> select(-subject_id)
 
 
-corr$`Secondary Efficacy` <- rnorm_pre(corr[, 1],
+corr$`Secondary Efficacy` <- rnorm_pre(
+  corr[, 1],
   mean(corr$`Secondary Efficacy`),
   sd(corr$`Secondary Efficacy`),
-  r = .6
+  r = 0.6
 )
-corr$`Recurring AE` <- rnorm_pre(corr[, 1:3],
+corr$`Recurring AE` <- rnorm_pre(
+  corr[, 1:3],
   mean(corr$`Recurring AE`),
   sd(corr$`Recurring AE`),
-  r = c(.3, .2, -.5)
+  r = c(0.3, 0.2, -0.5)
 )
-corr$`Rare SAE` <- rnorm_pre(corr[, 1:4],
+corr$`Rare SAE` <- rnorm_pre(
+  corr[, 1:4],
   mean(corr$`Rare SAE`),
   sd(corr$`Rare SAE`),
-  r = c(.13, .3, -.09, -.1)
+  r = c(0.13, 0.3, -0.09, -0.1)
 )
 corr$`Liver Toxicity` <- rnorm_pre(
   corr[, 1:5],
   mean(corr$`Liver Toxicity`),
   sd(corr$`Liver Toxicity`),
-  r = c(-.13, -.1, -.5, -0.1, 0)
+  r = c(-0.13, -0.1, -0.5, -0.1, 0)
 )
 
 usethis::use_data(corr, overwrite = TRUE)
