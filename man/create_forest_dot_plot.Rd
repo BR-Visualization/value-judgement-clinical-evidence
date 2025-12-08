@@ -18,12 +18,13 @@ create_forest_dot_plot(
 \item{data}{A data frame prepared using \code{prepare_forest_dot_data()}
 or with matching structure.}
 
-\item{outcomes_with_thresholds}{Either NULL (uses all available outcomes
-with no thresholds), a character vector of outcome names to include
-(with no thresholds), or a named list where names are outcomes and
-values are thresholds. For lists, directions default to "greater" for
-positive values and "less" for negative values, or can be specified as
-list(outcome = list(threshold = 0.1, direction = "greater")).}
+\item{outcomes_with_thresholds}{Either NULL (uses all available
+outcomes with no thresholds), a character vector of outcome names
+to include (with no thresholds), or a named list where names are
+outcomes and values are thresholds. For lists, directions default
+to "greater" for positive values and "less" for negative values,
+or can be specified as list(outcome = list(threshold = 0.1,
+direction = "greater")).}
 
 \item{treatment1}{Character; label of the first treatment group
 (default: \code{"Drug A"}).}

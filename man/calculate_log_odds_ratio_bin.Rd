@@ -4,16 +4,16 @@
 \alias{calculate_log_odds_ratio_bin}
 \title{CI for log odds ratio for binary outcomes}
 \usage{
-calculate_log_odds_ratio_bin(prop1, prop2, N1, N2, cl = 0.95)
+calculate_log_odds_ratio_bin(prop1, prop2, n1, n2, cl = 0.95)
 }
 \arguments{
 \item{prop1}{(\code{numeric})\cr Proportion of cases in active treatment}
 
 \item{prop2}{(\code{numeric})\cr Proportion of cases in comparator treatment}
 
-\item{N1}{(\code{numeric})\cr Total number of subjects in active treatment}
+\item{n1}{(\code{numeric})\cr Total number of subjects in active treatment}
 
-\item{N2}{(\code{numeric})\cr Total number of subjects in comparator treatment}
+\item{n2}{(\code{numeric})\cr Total number of subjects in comparator treatment}
 
 \item{cl}{(\code{numeric})\cr confidence level}
 }
@@ -23,7 +23,7 @@ for binary outcomes
 }
 \examples{
 calculate_log_odds_ratio_bin(
-  prop1 = .45, prop2 = 0.25, N1 = 500, N2 = 500,
+  prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
   cl = 0.95
 )
 }

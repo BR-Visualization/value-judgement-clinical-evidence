@@ -31,6 +31,34 @@
 #' @format A data frame with ...
 NULL
 
+#' @docType data
+#' @name mcda_data
+#' @title Example MCDA data in wide format
+#' @description Sample MCDA data frame derived from effects_table. Each row
+#'   represents a treatment (placebo or active drug) with raw values for
+#'   benefit and risk criteria on their original measurement scales. This
+#'   format is required for MCDA visualization functions.
+#' @usage data(mcda_data)
+#' @format A data frame with 5 rows (Placebo + 4 drugs) and 6 columns:
+#'   \describe{
+#'     \item{Treatment}{Character: Treatment name (Placebo, Drug A,
+#'       Drug B, Drug C, Drug D)}
+#'     \item{Benefit 1}{Numeric: Binary benefit outcome (proportion scale 0-1)}
+#'     \item{Benefit 2}{Numeric: Continuous benefit outcome (original scale)}
+#'     \item{Benefit 3}{Numeric: Continuous benefit outcome (original scale)}
+#'     \item{Risk 1}{Numeric: Binary risk outcome (proportion scale 0-1)}
+#'     \item{Risk 2}{Numeric: Binary risk outcome (proportion scale 0-1)}
+#'   }
+#' @details
+#'   This dataset contains raw values (not differences from placebo) for
+#'   each treatment. The MCDA visualization functions (e.g.,
+#'   \code{\link{create_mcda_barplot_comparison}},
+#'   \code{\link{create_mcda_walkthrough}}) will calculate treatment
+#'   differences from placebo and normalize values using clinical scales.
+#' @seealso \code{\link{create_mcda_barplot_comparison}},
+#'   \code{\link{create_mcda_walkthrough}}
+NULL
+
 #' Example scatterplot data used for Figure 11
 #'
 #' @name scatterplot
@@ -49,14 +77,21 @@ NULL
 #' @name corr
 #' @format A data frame with 100 rows and 6 columns:
 #'   \describe{
-#'   \item{Primary Efficacy}{Continuous variable representing primary efficacy outcome}
-#'   \item{Secondary Efficacy}{Continuous variable representing secondary efficacy outcome}
-#'   \item{Quality of Life}{Continuous variable representing quality of life outcome}
-#'   \item{Recurring AE}{Binary variable (0/1) representing recurring adverse events}
-#'   \item{Rare SAE}{Binary variable (0/1) representing rare serious adverse events}
-#'   \item{Liver Toxicity}{Binary variable (0/1) representing liver toxicity events}
+#'   \item{Primary Efficacy}{Continuous variable representing primary
+#'   efficacy outcome}
+#'   \item{Secondary Efficacy}{Continuous variable representing secondary
+#'   efficacy outcome}
+#'   \item{Quality of Life}{Continuous variable representing quality of
+#'   life outcome}
+#'   \item{Recurring AE}{Binary variable (0/1) representing recurring
+#'   adverse events}
+#'   \item{Rare SAE}{Binary variable (0/1) representing rare serious
+#'   adverse events}
+#'   \item{Liver Toxicity}{Binary variable (0/1) representing liver
+#'   toxicity events}
 #'   }
-#' @details This dataset contains simulated clinical trial data with specific correlation
-#' structures between benefit and risk outcomes. It demonstrates mixed variable types
-#' (continuous and binary) suitable for correlogram analysis.
+#' @details This dataset contains simulated clinical trial data with
+#' specific correlation structures between benefit and risk outcomes. It
+#' demonstrates mixed variable types (continuous and binary) suitable for
+#' correlogram analysis.
 "corr"

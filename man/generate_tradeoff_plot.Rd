@@ -263,7 +263,7 @@ Generate trade-off plot
 \dontrun{
 # Filter data for a specific treatment to ensure unique outcome combinations
 library(dplyr)
-effects_table_filtered <- effects_table \%>\% filter(Trt1 == "Drug A")
+effects_table_filtered <- effects_table |> filter(Trt1 == "Drug A")
 
 generate_tradeoff_plot(
   data = effects_table_filtered, filter = "None", category = "All",

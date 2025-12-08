@@ -67,3 +67,6 @@ inst/doc
 
 # air setup
 .vscode/
+
+# R default plot file
+Rplots.pdf

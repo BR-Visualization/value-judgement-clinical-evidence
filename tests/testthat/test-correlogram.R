@@ -35,11 +35,12 @@ for (i in seq(1, 10)) {
   ))
   corr1[, i + 21] <-
     factor(c(sample(
-      c("Low", "Medium", "High"), 100,
+      c("Low", "Medium", "High"),
+      100,
       replace = TRUE
     )))
 }
-corr1 <- select(corr1, -c(subject_id))
+corr1 <- dplyr::select(corr1, -c(subject_id))
 
 # testing create_correlogram for ggplot object
 
@@ -52,13 +53,17 @@ test_that("create_correlogram() will ouput a ggplot object", {
 corr2 <- corr1
 corr2[1, 1] <- NA
 
-test_that("create_correlogram() will return a custom warning message concerning
-missing data", {
+test_that(paste(
+  "create_correlogram() will return a custom warning message",
+  "concerning missing data"
+), {
   expect_warning(create_correlogram(corr2))
 })
 
-test_that("create_correlogram() will return a ggplot object with
-missing data", {
+test_that(paste(
+  "create_correlogram() will return a ggplot object",
+  "with missing data"
+), {
   expect_warning(
     result <- create_correlogram(corr2),
     "you have a missing value"
@@ -70,13 +75,12 @@ missing data", {
 
 corr3 <- corr2[, 2]
 
-test_that(
-  "create_correlogram() will return an error and custom message if there
-          is only one column in the dataframe",
-  {
-    expect_error(create_correlogram(corr3))
-  }
-)
+test_that(paste(
+  "create_correlogram() will return an error and custom message",
+  "if there is only one column in the dataframe"
+), {
+  expect_error(create_correlogram(corr3))
+})
 
 # testing the accuracy of create_correlogram's calculations
 
@@ -108,9 +112,9 @@ df_attribs <- data.frame(
 
 # testing the accuracy of continuous correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "c")
+df_attribs1 <- df_attribs |> dplyr::filter(shortc == "c")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 |> dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -130,23 +134,27 @@ for (i in seq(1, ncol(corr5))) {
     mean_x <- mean(corr5[, i])
     mean_y <- mean(corr5[, j])
     numerator <- sum((corr5[, i] - mean_x) * (corr5[, j] - mean_y))
-    denominator <- sqrt(sum((corr5[, i] - mean_x)^2) *
-      sum((corr5[, j] - mean_y)^2))
+    denominator <- sqrt(
+      sum((corr5[, i] - mean_x)^2) *
+        sum((corr5[, j] - mean_y)^2)
+    )
     r <- numerator / denominator
     mat1[i, j] <- r
   }
 }
 
-test_that("create_correlogram() correctly calculates correlations for continuous
-  variables", {
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for continuous variables"
+), {
   expect_equal(mat, mat1)
 })
 
 # testing the accuracy of binary correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "b")
+df_attribs1 <- df_attribs |> dplyr::filter(shortc == "b")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 |> dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -182,16 +190,18 @@ for (i in seq(1, ncol(corr5))) {
   }
 }
 
-test_that("create_correlogram() correctly calculates correlations for binary
-  variables", {
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for binary variables"
+), {
   expect_equal(mat, mat1)
 })
 
 # testing the accuracy of binary/continuous correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "c" | shortc == "b")
+df_attribs1 <- df_attribs |> dplyr::filter(shortc == "c" | shortc == "b")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 |> dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -259,19 +269,18 @@ for (i in seq(1, ncol(corr5))) {
 }
 mat1 <- -mat1
 
-test_that(
-  "create_correlogram() correctly calculates correlations for continuous/binary
-  combinations of variables",
-  {
-    expect_equal(mat, mat1)
-  }
-)
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for continuous/binary combinations of variables"
+), {
+  expect_equal(mat, mat1)
+})
 
 # testing the accuracy of ordinal correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "o")
+df_attribs1 <- df_attribs |> dplyr::filter(shortc == "o")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 |> dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -295,16 +304,18 @@ for (i in seq(1, ncol(corr5))) {
   }
 }
 
-test_that("create_correlogram() correctly calculates correlations for ordinal
-  variables", {
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for ordinal variables"
+), {
   expect_equal(mat, mat1)
 })
 
 # testing the accuracy of continuous/ordinal correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "c" | shortc == "o")
+df_attribs1 <- df_attribs |> dplyr::filter(shortc == "c" | shortc == "o")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 |> dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -320,12 +331,14 @@ for (i in seq(1, ncol(corr5))) {
       df_attribs[df_attribs$names %in% names(corr5)[j], ][["shortc"]]
 
     type <- paste0(xattr, yattr)
-    ifelse(type == "co",
+    ifelse(
+      type == "co",
       # calculates modified Pearson correlation with nonparametric
       # Spearman rank correlation, considering a continuous variable
       # as the x attribute and ordinal variable as the y attribute.
       mat[i, j] <- cor(corr1[, i], rank(corr1[, j])),
-      ifelse(type == "oc", # calculates modified Pearson correlation with
+      ifelse(
+        type == "oc", # calculates modified Pearson correlation with
         # non parametric Spearman rank correlation, considering an
         # ordinal variable as the x attribute and continuous variable
         # as the y attribute.
@@ -364,19 +377,18 @@ for (i in seq(1, ncol(corr5))) {
   }
 }
 
-test_that(
-  "create_correlogram() correctly calculates correlations for continuous/ordinal
-  combinations of variables",
-  {
-    expect_equal(mat, mat1)
-  }
-)
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for continuous/ordinal combinations of variables"
+), {
+  expect_equal(mat, mat1)
+})
 
 # testing the accuracy of ordinal/binary correlations
 
-df_attribs1 <- df_attribs %>% filter(shortc == "o" | shortc == "b")
+df_attribs1 <- df_attribs |> dplyr::filter(shortc == "o" | shortc == "b")
 name1 <- c(df_attribs1$names)
-corr5 <- corr1 %>% select(which(names(corr1) %in% name1))
+corr5 <- corr1 |> dplyr::select(which(names(corr1) %in% name1))
 
 mat <- data.frame(matrix(NA, nrow = ncol(corr5), ncol = ncol(corr5)))
 dimnames(mat) <- list(names(corr5), names(corr5))
@@ -438,13 +450,12 @@ for (i in seq_along(names(corr5))) {
   }
 }
 
-test_that(
-  "create_correlogram() correctly calculates correlations for ordinal/binary
-  combinations of variables",
-  {
-    expect_equal(mat, mat1)
-  }
-)
+test_that(paste(
+  "create_correlogram() correctly calculates correlations",
+  "for ordinal/binary combinations of variables"
+), {
+  expect_equal(mat, mat1)
+})
 
 # testing create_correlogram's ability to handle incorrectly formatted variables
 
@@ -481,10 +492,9 @@ for (i in seq(1, 10)) {
     c(sample(c("Low", "Medium", "High"), 100, replace = TRUE))
 }
 
-test_that(
-  "create_correlogram() will return an error and custom message if there is a
-  character-formatted variable in the dataframe",
-  {
-    expect_error(create_correlogram(corr4))
-  }
-)
+test_that(paste(
+  "create_correlogram() will return an error and custom message",
+  "if there is a character-formatted variable in the dataframe"
+), {
+  expect_error(create_correlogram(corr4))
+})
