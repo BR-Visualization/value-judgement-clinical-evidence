@@ -11,7 +11,6 @@ create_mcda_walkthrough(
   benefit_criteria = NULL,
   risk_criteria = NULL,
   weights = NULL,
-  favorable_direction = NULL,
   clinical_scales = NULL,
   fig_colors = c("#0571b0", "#ca0020")
 )
@@ -37,13 +36,6 @@ the calculation for. Default is "Drug A".}
 
 \item{weights}{Named numeric vector of criterion weights. Must sum to 1.
 If NULL, uses equal weights.}
-
-\item{favorable_direction}{Named character vector specifying the
-favorable direction for each criterion. Values should be either
-"higher" or "lower". If NULL, defaults to "higher" for benefits
-and "lower" for risks. Use this to specify outcomes like
-"Benefit 2" where lower values are better (e.g., symptom
-severity, days to recovery).}
 
 \item{clinical_scales}{List defining clinical reference levels for
 each criterion. Each element should be a list with: min (lower

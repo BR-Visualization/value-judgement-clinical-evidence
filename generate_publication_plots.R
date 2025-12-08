@@ -212,26 +212,14 @@ weights <- c(
   `Risk 2` = 0.10
 )
 
-# Specify favorable direction for each criterion
-# Note: This is different from clinical_scales$direction
-# favorable_direction is used for computing performance-oriented differences
-# Benefit 2 is "lower is better" (e.g., symptom severity)
-favorable_direction <- c(
-  `Benefit 1` = "higher",
-  `Benefit 2` = "lower",
-  `Benefit 3` = "higher",
-  `Risk 1` = "lower",
-  `Risk 2` = "lower"
-)
-
 # Create MCDA walkthrough using clinical threshold-based normalization
+# Note: Direction for each criterion is specified in clinical_scales$direction
 barplot_walk_a <- create_mcda_walkthrough(
   data = mcda_data,
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
   weights = weights,
-  favorable_direction = favorable_direction,
   clinical_scales = clinical_scales # Use clinical thresholds, not data-driven normalization
 )
 

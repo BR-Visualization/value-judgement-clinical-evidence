@@ -390,12 +390,6 @@ create_mcda_barplot_comparison <- function(
 #'   (column names in data).
 #' @param weights Named numeric vector of criterion weights. Must sum to 1.
 #'   If NULL, uses equal weights.
-#' @param favorable_direction Named character vector specifying the
-#'   favorable direction for each criterion. Values should be either
-#'   "higher" or "lower". If NULL, defaults to "higher" for benefits
-#'   and "lower" for risks. Use this to specify outcomes like
-#'   "Benefit 2" where lower values are better (e.g., symptom
-#'   severity, days to recovery).
 #' @param clinical_scales List defining clinical reference levels for
 #'   each criterion. Each element should be a list with: min (lower
 #'   threshold), max (upper threshold), direction ("increasing" for
@@ -515,7 +509,6 @@ create_mcda_walkthrough <- function(
   benefit_criteria = NULL,
   risk_criteria = NULL,
   weights = NULL,
-  favorable_direction = NULL,
   clinical_scales = NULL,
   fig_colors = c("#0571b0", "#ca0020")
 ) {
@@ -543,18 +536,19 @@ create_mcda_walkthrough <- function(
     weights <- setNames(rep(1 / n_criteria, n_criteria), all_criteria)
   }
 
-  # Default favorable direction if not provided
+  # Determine favorable direction for fallback normalization
+  # (only used when clinical_scales is not provided)
   # Benefits: higher is better by default
   # Risks: lower is better by default
-  if (is.null(favorable_direction)) {
-    favorable_direction <- setNames(
-      c(
-        rep("higher", length(benefit_criteria)),
-        rep("lower", length(risk_criteria))
-      ),
-      all_criteria
-    )
-  }
+  # Note: When clinical_scales is provided, direction comes from
+  # clinical_scales$direction instead
+  favorable_direction <- setNames(
+    c(
+      rep("higher", length(benefit_criteria)),
+      rep("lower", length(risk_criteria))
+    ),
+    all_criteria
+  )
 
   criteria_internal <- all_criteria
 

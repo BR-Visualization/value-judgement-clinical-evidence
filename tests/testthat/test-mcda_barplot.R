@@ -361,38 +361,13 @@ test_that("create_mcda_walkthrough handles custom colors", {
 })
 
 test_that(paste(
-  "create_mcda_walkthrough",
-  "handles favorable_direction parameter"
+  "create_mcda_walkthrough uses default direction",
+  "(higher for benefits, lower for risks)"
 ), {
   mcda_data <- create_sample_mcda_data()
 
-    # Specify that Benefit 2 is "lower is better"
-    favorable_dir <- c(
-      `Benefit 1` = "higher",
-      `Benefit 2` = "lower",
-      `Risk 1` = "lower"
-    )
-
-    result <- create_mcda_walkthrough(
-      data = mcda_data,
-      benefit_criteria = c("Benefit 1", "Benefit 2"),
-      risk_criteria = c("Risk 1"),
-      comparison_drug = "Drug A",
-      favorable_direction = favorable_dir
-    )
-
-    expect_true(inherits(result, "patchwork"))
-  }
-)
-
-test_that(paste(
-  "create_mcda_walkthrough uses default",
-  "favorable_direction"
-), {
-  mcda_data <- create_sample_mcda_data()
-
-  # Without specifying favorable_direction, should use defaults
-  # (higher for benefits, lower for risks)
+  # Direction is derived from benefit/risk classification:
+  # higher for benefits, lower for risks (when clinical_scales not provided)
   result <- create_mcda_walkthrough(
     data = mcda_data,
     benefit_criteria = c("Benefit 1", "Benefit 2"),
