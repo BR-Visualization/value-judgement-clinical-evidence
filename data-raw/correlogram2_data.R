@@ -19,24 +19,24 @@ corr2$`Benefit 2` <- rnorm_pre(
   corr2$`Benefit 1`,
   mean(corr2$`Benefit 2`),
   sd(corr2$`Benefit 2`),
-  r = .6
+  r = 0.6
 )
 corr2$`Risk 1` <- rnorm_pre(
   corr2[, c("Benefit 1", "Benefit 2", "Benefit 3")],
   mean(corr2$`Risk 1`),
   sd(corr2$`Risk 1`),
-  r = c(.3, .2, -.5)
+  r = c(0.3, 0.2, -0.5)
 )
 corr2$`Risk 2` <- rnorm_pre(
   corr2[, c("Benefit 1", "Benefit 2", "Benefit 3", "Risk 1")],
   mean(corr2$`Risk 2`),
   sd(corr2$`Risk 2`),
-  r = c(.13, .3, -.09, -.1)
+  r = c(0.13, 0.3, -0.09, -0.1)
 )
 corr2$`Risk 3` <- rnorm_pre(
   corr2[, c("Benefit 1", "Benefit 2", "Benefit 3", "Risk 1", "Risk 2")],
   mean(corr2$`Risk 3`),
   sd(corr2$`Risk 3`),
-  r = c(-.13, -.1, -.5, -0.1, 0)
+  r = c(-0.13, -0.1, -0.5, -0.1, 0)
 )
 usethis::use_data(corr2, overwrite = TRUE)
