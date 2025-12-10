@@ -132,7 +132,7 @@ ggsave_custom(
 ggsave_custom(
   "inst/img/correlogram_plot.png",
   imgpath = "./",
-  inplot = create_correlogram(corr),
+  inplot = create_correlogram(corr2),
   wdth = 7,
   hght = 7,
   unts = "in", # Single column width
