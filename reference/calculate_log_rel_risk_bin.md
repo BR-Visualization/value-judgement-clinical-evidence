@@ -43,7 +43,7 @@ calculate_log_rel_risk_bin(
   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
   cl = 0.95
 )
-#> [2025-12-08 09:43:13] > log relative risk CI for binary outcomes is calculated and saved
+#> [2025-12-12 09:44:33] > log relative risk CI for binary outcomes is calculated and saved
 #>        diff         se     lower     upper
 #> 1 0.5877867 0.09189366 0.4076784 0.7678949
 ```

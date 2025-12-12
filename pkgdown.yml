@@ -4,7 +4,7 @@ pkgdown_sha: ~
 articles:
   brpubVJCE: brpubVJCE.html
   mcda-value-functions: mcda-value-functions.html
-last_built: 2025-12-08T09:43Z
+last_built: 2025-12-12T09:44Z
 urls:
   reference: https://pkgdown.r-lib.org/reference
   article: https://pkgdown.r-lib.org/articles

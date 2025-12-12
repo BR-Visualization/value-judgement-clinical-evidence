@@ -180,6 +180,8 @@ This package is licensed under the MIT License. See the
   : Control Fonts
 - [`corr`](https://pkgdown.r-lib.org/reference/corr.md) : Example
   correlation data for correlogram visualization
+- [`corr2`](https://pkgdown.r-lib.org/reference/corr2.md) : Simulated
+  benefit-risk correlation data for correlogram visualization
 - [`create_correlogram()`](https://pkgdown.r-lib.org/reference/create_correlogram.md)
   : Create a correlogram from a given dataframe
 - [`create_forest_dot_plot()`](https://pkgdown.r-lib.org/reference/create_forest_dot_plot.md)

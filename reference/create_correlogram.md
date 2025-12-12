@@ -68,5 +68,5 @@ ordinal variable, Glass rank biserial correlation is implemented.
 ## Examples
 
 ``` r
-create_correlogram(corr)
+create_correlogram(corr2)
 ```
