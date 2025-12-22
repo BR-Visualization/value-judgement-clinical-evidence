@@ -10,7 +10,8 @@
 #' @param comparison_drug Character string specifying which drug to
 #'   compare with the reference treatment in the visualization.
 #'   Default is "Drug A".
-#' @param weights List defining weights for each criterion.
+#' @param weights Named numeric vector of criterion weights. Must sum to 1.
+#'   If NULL, uses equal weights.
 #' @param clinical_scales List defining clinical reference levels for
 #'   each criterion. Each element should be a list with: min (lower
 #'   threshold), max (upper threshold), direction ("increasing" for
@@ -49,12 +50,12 @@
 #' )
 #'
 #' # Define weights
-#' weights <- list(
-#'   `Benefit 1` = .2,
-#'   `Benefit 2` = .15,
-#'   `Benefit 3` = .1,
-#'   `Risk 1` = .35,
-#'   `Risk 2` = .2
+#' weights <- c(
+#'   `Benefit 1` = 0.30,
+#'   `Benefit 2` = 0.20,
+#'   `Benefit 3` = 0.10,
+#'   `Risk 1` = 0.30,
+#'   `Risk 2` = 0.10
 #' )
 #'
 #' # Create sensitivity plot toggling criterion weight by 20 percent
