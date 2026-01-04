@@ -13,7 +13,8 @@ divergent_stacked_barchart(
 )
 }
 \arguments{
-\item{data}{\code{dataframe} a data frame with a minimum of 4 variables named the following:
+\item{data}{\code{dataframe} a data frame with a minimum of 4 variables named the
+following:
 \enumerate{
 \item usubjid: unique subject ID
 \item visit: visit ID
@@ -24,9 +25,11 @@ divergent_stacked_barchart(
 \item{chartcolors}{\code{vector} a vector of colors, the same number of levels as
 the brcat variable}
 
-\item{favcat}{\code{vector} a vector of favorable categories in the desired plot order}
+\item{favcat}{\code{vector} a vector of favorable categories in the desired plot
+order}
 
-\item{unfavcat}{\code{vector} a vector of unfavorable categories in the desired plot order}
+\item{unfavcat}{\code{vector} a vector of unfavorable categories in the desired
+plot order}
 
 \item{ylabel}{\code{character} y label name, default is "Visit"}
 }
@@ -40,8 +43,11 @@ Divergent Stacked Bar Chart
 divergent_stacked_barchart(
   data = comp_outcome,
   chartcolors = colfun()$fig12_colors,
-  favcat = c("Benefit larger than threshold, with AE", "Benefit larger than threshold, w/o AE"),
-  unfavcat = c("Withdrew", "Benefit less than threshold, w/o AE", "Benefit less than threshold, with AE"),
+  favcat = c("Benefit larger than threshold, with AE",
+  "Benefit larger than threshold, w/o AE"),
+  unfavcat = c("Withdrew",
+  "Benefit less than threshold, w/o AE",
+  "Benefit less than threshold, with AE"),
   ylabel = "Study Week"
 )
 

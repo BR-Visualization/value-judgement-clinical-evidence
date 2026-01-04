@@ -7,7 +7,8 @@
 stacked_barchart(data, chartcolors, ylabel = "Visit")
 }
 \arguments{
-\item{data}{\code{dataframe} a data frame with a minimum of 4 variables named the following:
+\item{data}{\code{dataframe} a data frame with a minimum of 4 variables named the
+following:
 \enumerate{
 \item usubjid: unique subject ID
 \item visit: visit ID
