@@ -84,8 +84,11 @@ treatments <- c("Placebo (N=500)", "Low Dose (N=500)", "High Dose (N=500)")
 df$trt <- factor(df$trtn, labels = treatments)
 
 categories <- c(
-  "Benefit larger than threshold, w/o AE", "Benefit larger than threshold, with AE", "Benefit less than threshold, w/o AE",
-  "Benefit less than threshold, with AE", "Withdrew"
+  "Benefit larger than threshold, w/o AE",
+  "Benefit larger than threshold, with AE",
+  "Benefit less than threshold, w/o AE",
+  "Benefit less than threshold, with AE",
+  "Withdrew"
 )
 df$brcat <- factor(df$brcatn, labels = categories)
 
