@@ -11,7 +11,6 @@
 #' @param ylabel `character` y label name, default is "Visit"
 #'
 #' @return a ggplot object
-#' @importFrom dplyr summarise
 #' @export
 #'
 #' @examples
@@ -36,17 +35,18 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit") {
 
   df_n1 <- data |>
     group_by(trt, visit) |>
-    summarise(n1 = n())
+    dplyr::summarise(n1 = n())
 
   if (nrow(unique(df_n1[c("trt", "n1")])) > nrow(unique(df_n1["trt"]))) {
-    warning(paste(
-      "You have unequal number of observations across visits, please check missing data."
-    ))
+    warning(
+      "You have unequal number of observations across visits, ",
+      "please check missing data."
+    )
   }
 
   df_n2 <- data |>
     group_by(trt, visit, brcat) |>
-    summarise(n2 = n())
+    dplyr::summarise(n2 = n())
 
   df_stacked <- merge(df_n1, df_n2, by = c("trt", "visit"))
   df_stacked$percentage <- df_stacked$n2 / df_stacked$n1 * 100
@@ -124,17 +124,18 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
 
   df_n1 <- data |>
     group_by(trt, visit) |>
-    summarise(n1 = n())
+    dplyr::summarise(n1 = n())
 
   if (nrow(unique(df_n1[c("trt", "n1")])) > nrow(unique(df_n1["trt"]))) {
-    warning(paste(
-      "You have unequal number of observations across visits, please check missing data."
-    ))
+    warning(
+      "You have unequal number of observations across visits, ",
+      "please check missing data."
+    )
   }
 
   df_n2 <- data |>
     group_by(trt, visit, brcat) |>
-    summarise(n2 = n())
+    dplyr::summarise(n2 = n())
 
   df_stacked <- merge(df_n1, df_n2, by = c("trt", "visit"))
   df_stacked$percentage <- df_stacked$n2 / df_stacked$n1 * 100
@@ -156,7 +157,9 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
     scale_x_continuous(breaks = seq(-100, 100, 20),
                        limits = c(-100, 100),
                        expand = c(0, 0),
-                       labels = function(breaks) ifelse(breaks > 0, breaks, abs(breaks))) +
+                       labels = function(breaks) ifelse(breaks > 0,
+                                                        breaks,
+                                                        abs(breaks))) +
     xlab("Percentage") +
     ylab(ylabel) +
     guides(fill = guide_legend(title = "Outcome", nrow = 3, byrow = TRUE)) +
