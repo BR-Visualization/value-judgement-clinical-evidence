@@ -16,7 +16,7 @@ df <- data.frame(
 )
 
 # initial outcomes from first visit
-df <- df %>% add_column(brcatn = NA)
+df <- df |> add_column(brcatn = NA)
 count <- c(30, 45, 150, 45, 30)
 df[df$visit == 1, ]$brcatn <- sample(c(
   rep(1, count[1]), rep(2, count[2]),
