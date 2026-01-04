@@ -157,9 +157,10 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
     scale_x_continuous(breaks = seq(-100, 100, 20),
                        limits = c(-100, 100),
                        expand = c(0, 0),
-                       labels = function(breaks) ifelse(breaks > 0,
+                       labels = function(breaks) {ifelse(breaks > 0,
                                                         breaks,
-                                                        abs(breaks))) +
+                                                        abs(breaks))}
+                       ) +
     xlab("Percentage") +
     ylab(ylabel) +
     guides(fill = guide_legend(title = "Outcome", nrow = 3, byrow = TRUE)) +
