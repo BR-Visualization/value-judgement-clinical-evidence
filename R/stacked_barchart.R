@@ -36,7 +36,7 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit") {
 
   df_n1 <- data |>
     group_by(trt, visit) |>
-    dplyr::summarise(n1 = n())
+    summarise(n1 = dplyr::n())
 
   if (nrow(unique(df_n1[c("trt", "n1")])) > nrow(unique(df_n1["trt"]))) {
     warning(
@@ -47,7 +47,7 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit") {
 
   df_n2 <- data |>
     group_by(trt, visit, brcat) |>
-    dplyr::summarise(n2 = n())
+    summarise(n2 = dplyr::n())
 
   df_stacked <- merge(df_n1, df_n2, by = c("trt", "visit"))
   df_stacked$percentage <- df_stacked$n2 / df_stacked$n1 * 100
@@ -126,7 +126,7 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
 
   df_n1 <- data |>
     group_by(trt, visit) |>
-    dplyr::summarise(n1 = n())
+    summarise(n1 = dplyr::n())
 
   if (nrow(unique(df_n1[c("trt", "n1")])) > nrow(unique(df_n1["trt"]))) {
     warning(
@@ -137,7 +137,7 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
 
   df_n2 <- data |>
     group_by(trt, visit, brcat) |>
-    dplyr::summarise(n2 = n())
+    summarise(n2 = dplyr::n())
 
   df_stacked <- merge(df_n1, df_n2, by = c("trt", "visit"))
   df_stacked$percentage <- df_stacked$n2 / df_stacked$n1 * 100
