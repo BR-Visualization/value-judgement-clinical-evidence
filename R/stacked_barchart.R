@@ -11,6 +11,7 @@
 #' @param ylabel `character` y label name, default is "Visit"
 #'
 #' @return a ggplot object
+#' @importFrom dplyr summarise
 #' @export
 #'
 #' @examples
