@@ -11,6 +11,7 @@
 #' @param ylabel `character` y label name, default is "Visit"
 #'
 #' @return a ggplot object
+#' @importFrom dplyr summarise
 #' @export
 #'
 #' @examples
@@ -94,6 +95,7 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit") {
 #' @param ylabel `character` y label name, default is "Visit"
 #'
 #' @return a ggplot object
+#' @importFrom dplyr summarise
 #' @export
 #'
 #' @examples
