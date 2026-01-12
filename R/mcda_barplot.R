@@ -1,12 +1,14 @@
 #' Create MCDA Bar Chart: Normalized Values Comparison
 #'
-#' @param data A data frame in wide format with Treatment column and
+#' @param data A data frame in wide format with Study, Treatment, and
 #'   criteria columns. Required parameter - must be provided. Each row
 #'   should contain raw values for a treatment on their original
 #'   measurement scales. See \code{\link{mcda_data}} for example format.
+#' @param study Character string specifying which study to analyze.
+#'   If NULL, uses all data (assumes single comparator). Default is NULL.
 #' @param comparator_name Character string specifying the name of the
 #'   reference treatment (e.g., placebo or active control) in the data.
-#'   Default is "Placebo".
+#'   Required. Default is "Placebo".
 #' @param comparison_drug Character string specifying which drug to
 #'   compare with the reference treatment in the visualization.
 #'   Default is "Drug A".
@@ -18,29 +20,31 @@
 #'   each criterion. Each element should be a list with: min (lower
 #'   threshold), max (upper threshold), direction ("increasing" for
 #'   higher is better, "decreasing" for lower is better).
+#' @param weights Named numeric vector of criterion weights. Must sum to 1.
+#'   If NULL, uses equal weights. Default is NULL.
 #' @param fig_colors A vector of length 2 specifying colors for benefits
 #'   and risks. Default is c("#0571b0", "#ca0020") to match
 #'   correlogram colors.
 #'
-#' @return A patchwork object showing three panels: Normalized
-#'   Comparator values, Normalized Drug values, and Difference of
-#'   Normalized Values (Drug - Comparator), or NULL if data is not
-#'   provided.
+#' @return A patchwork object showing four panels: Normalized
+#'   Values (side-by-side bars for Comparator and Drug), Difference
+#'   of Normalized Values (Drug - Comparator), Weights, and
+#'   Benefit-Risk scores, or NULL if data is not provided.
 #' @export
 #' @import ggplot2
 #' @importFrom patchwork wrap_plots
-#' @importFrom ggh4x facetted_pos_scales
 #'
 #' @examples
 #' # Load example MCDA data
 #' data(mcda_data)
 #'
-#' # View the data structure - each row has raw values for a treatment
+#' # View the data structure - each study has comparator and active treatment
 #' head(mcda_data)
-#' #   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
-#' # 1   Placebo      0.05        65         9   0.30  0.087
-#' # 2    Drug A      0.46        20        60   0.46  0.100
-#' # 3    Drug B      ...
+#' #   Study      Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
+#' # 1 Study 1    Placebo      0.05        65         9   0.30  0.087
+#' # 2 Study 1    Drug A       0.46        20        60   0.46  0.100
+#' # 3 Study 2    Placebo      0.05        65         9   0.30  0.087
+#' # 4 Study 2    Drug B       ...          ...        ...  ...   ...
 #'
 #' # Define clinical scales
 #' clinical_scales <- list(
@@ -51,40 +55,46 @@
 #'   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
 #' )
 #'
-#' # Create comparison barplot showing
-#' # Normalized Comparator | Normalized Drug B | Difference
-#' barplot_comp <- create_mcda_barplot_comparison(
-#'   data = mcda_data,
-#'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-#'   risk_criteria = c("Risk 1", "Risk 2"),
-#'   comparison_drug = "Drug B",
-#'   clinical_scales = clinical_scales
+#' # Define weights from stakeholder elicitation
+#' weights <- c(
+#'   `Benefit 1` = 0.30,
+#'   `Benefit 2` = 0.20,
+#'   `Benefit 3` = 0.10,
+#'   `Risk 1` = 0.30,
+#'   `Risk 2` = 0.10
 #' )
 #'
-#' # Compare a different drug
-#' \dontrun{
+#' # Create comparison barplot for a specific study
+#' # Side-by-side Normalized Values | Difference | Weight | Benefit-Risk
 #' barplot_comp_a <- create_mcda_barplot_comparison(
 #'   data = mcda_data,
+#'   study = "Study 1",
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
 #'   risk_criteria = c("Risk 1", "Risk 2"),
 #'   comparison_drug = "Drug A",
-#'   clinical_scales = clinical_scales
+#'   clinical_scales = clinical_scales,
+#'   weights = weights
 #' )
+#'
+#' # Save the plot
+#' \dontrun{
 #' ggsave(
 #'   "inst/img/barplot_mcda_comparison_drug_a.png",
 #'   barplot_comp_a,
-#'   width = 12,
+#'   width = 16,
 #'   height = 6,
-#'   dpi = 300
+#'   dpi = 600
 #' )
 #' }
 create_mcda_barplot_comparison <- function(
   data = NULL,
+  study = NULL,
   comparator_name = "Placebo",
   comparison_drug = "Drug A",
   benefit_criteria = NULL,
   risk_criteria = NULL,
   clinical_scales = NULL,
+  weights = NULL,
   fig_colors = c("#0571b0", "#ca0020")
 ) {
   # Check if data is provided
@@ -110,6 +120,45 @@ create_mcda_barplot_comparison <- function(
       "Clinical scales must be provided. Please define clinical",
       "reference levels for normalization."
     )
+  }
+
+  # Filter by study if specified, or auto-detect from comparison_drug
+  if (!is.null(study)) {
+    if (!"Study" %in% colnames(data)) {
+      stop("Study column not found in data but study parameter was specified.")
+    }
+    data <- data[data$Study == study, ]
+    if (nrow(data) == 0) {
+      stop(
+        "No data found for study '", study, "'. ",
+        "Available studies: ", paste(unique(data$Study), collapse = ", ")
+      )
+    }
+    # Validate that study has exactly 2 rows (comparator + active treatment)
+    if (nrow(data) != 2) {
+      stop(
+        "Study '", study, "' should have exactly 2 rows ",
+        "(comparator + active treatment), but has ", nrow(data), " rows."
+      )
+    }
+  } else if ("Study" %in% colnames(data)) {
+    # Auto-detect study from comparison_drug
+    drug_studies <- data$Study[data$Treatment == comparison_drug]
+    if (length(drug_studies) == 0) {
+      stop(
+        "Comparison drug '", comparison_drug, "' not found in data. ",
+        "Available treatments: ", paste(unique(data$Treatment), collapse = ", ")
+      )
+    }
+    if (length(drug_studies) > 1) {
+      stop(
+        "Comparison drug '", comparison_drug, "' found in multiple studies. ",
+        "Please specify the 'study' parameter."
+      )
+    }
+    # Filter to the detected study
+    study <- drug_studies[1]
+    data <- data[data$Study == study, ]
   }
 
   # Extract placebo and drug data
@@ -139,6 +188,12 @@ create_mcda_barplot_comparison <- function(
   }
 
   all_criteria <- c(benefit_criteria, risk_criteria)
+
+  # Default weights if not provided - equal weights
+  if (is.null(weights)) {
+    n_criteria <- length(all_criteria)
+    weights <- setNames(rep(1 / n_criteria, n_criteria), all_criteria)
+  }
 
   # Verify all criteria columns exist in data
   missing_cols <- setdiff(all_criteria, colnames(data))
@@ -202,6 +257,11 @@ create_mcda_barplot_comparison <- function(
   # Calculate difference of normalized values
   diff_values <- drug_values - placebo_values
 
+  # Calculate weights (as percentages for display) and weighted contributions
+  weight_values <- weights[all_criteria] * 100
+  contribution_values <- diff_values * weights[all_criteria]
+  total_score <- sum(contribution_values)
+
   # For normalized values, use 0-100 scale. Determine the maximum
   # absolute value across all normalized values for scaling
   max_norm_value <- max(c(abs(placebo_values), abs(drug_values)), na.rm = TRUE)
@@ -217,17 +277,13 @@ create_mcda_barplot_comparison <- function(
   diff_max <- max(max_abs_diff * 1.15, 10)
   diff_lim <- c(-diff_max, diff_max)
 
-  # Create data frames for all three plots
+  # Create data frames for combined and difference plots
   # Prepare data with all outcomes
-  plot_data <- data.frame(
-    Criterion = rep(all_criteria, 3),
-    Value = c(placebo_values, drug_values, diff_values),
-    Group = rep(
-      c(
-        paste("Normalized", comparator_name),
-        paste("Normalized", comparison_drug),
-        "Difference"
-      ),
+  combined_data <- data.frame(
+    Criterion = rep(all_criteria, 2),
+    Value = c(placebo_values, drug_values),
+    Treatment = rep(
+      c(comparator_name, comparison_drug),
       each = length(all_criteria)
     ),
     Type = rep(
@@ -235,103 +291,133 @@ create_mcda_barplot_comparison <- function(
         rep("Benefit", length(benefit_criteria)),
         rep("Risk", length(risk_criteria))
       ),
-      3
+      2
+    ),
+    stringsAsFactors = FALSE
+  )
+
+  diff_data <- data.frame(
+    Criterion = all_criteria,
+    Value = diff_values,
+    Type = c(
+      rep("Benefit", length(benefit_criteria)),
+      rep("Risk", length(risk_criteria))
     ),
     stringsAsFactors = FALSE
   )
 
   # Reverse criterion order for plotting (top to bottom)
-  plot_data$Criterion <- factor(plot_data$Criterion, levels = rev(all_criteria))
+  combined_data$Criterion <- factor(combined_data$Criterion, levels = rev(all_criteria))
+  diff_data$Criterion <- factor(diff_data$Criterion, levels = rev(all_criteria))
 
-  # Plot 1: Normalized Placebo
-  plot_placebo <- ggplot(
-    plot_data[plot_data$Group == paste("Normalized", comparator_name), ],
-    aes(x = Value, y = Criterion, fill = Type)
+  # Create combined fill-treatment variable for legend
+  combined_data$FillTreatment <- interaction(
+    combined_data$Type,
+    combined_data$Treatment,
+    sep = "_"
+  )
+
+  # Define colors for all combinations
+  color_map <- setNames(
+    c(
+      grDevices::adjustcolor(fig_colors[1], alpha.f = 0.5),
+      fig_colors[1],
+      grDevices::adjustcolor(fig_colors[2], alpha.f = 0.5),
+      fig_colors[2]
+    ),
+    c(
+      paste0("Benefit_", comparator_name),
+      paste0("Benefit_", comparison_drug),
+      paste0("Risk_", comparator_name),
+      paste0("Risk_", comparison_drug)
+    )
+  )
+
+  # Define legend labels
+  legend_labels <- setNames(
+    c(
+      paste("Benefit -", comparator_name),
+      paste("Benefit -", comparison_drug),
+      paste("Risk -", comparator_name),
+      paste("Risk -", comparison_drug)
+    ),
+    c(
+      paste0("Benefit_", comparator_name),
+      paste0("Benefit_", comparison_drug),
+      paste0("Risk_", comparator_name),
+      paste0("Risk_", comparison_drug)
+    )
+  )
+
+  # Plot 1: Combined Normalized Values (side-by-side bars)
+  plot_combined <- ggplot(
+    combined_data,
+    aes(x = Value, y = Criterion, fill = FillTreatment)
   ) +
-    geom_col(width = 0.7) +
+    geom_col(
+      width = 0.7,
+      position = position_dodge(width = 0.8)
+    ) +
     geom_vline(xintercept = 0, linetype = "solid", color = "black") +
+    geom_text(
+      aes(
+        label = sprintf("%.0f", Value),
+        group = interaction(Type, Treatment)
+      ),
+      position = position_dodge(width = 0.8),
+      hjust = -0.1,
+      size = 3.5,
+      show.legend = FALSE
+    ) +
     scale_fill_manual(
-      values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
+      values = color_map,
+      labels = legend_labels,
+      name = NULL
     ) +
     scale_x_continuous(
       limits = norm_lim,
       breaks = norm_breaks,
-      expand = c(0.02, 0)
+      expand = expansion(mult = c(0.05, 0.15))
     ) +
     labs(
-      title = paste("Normalized", comparator_name),
+      title = "Normalized Values",
       x = NULL,
       y = NULL
     ) +
     theme_minimal() +
     theme(
-      legend.position = "none",
+      legend.position = c(0.98, 0.98),
+      legend.justification = c("right", "top"),
+      legend.background = element_rect(fill = "white", color = "darkgray", linewidth = 0.5),
+      legend.margin = margin(4, 6, 4, 6),
+      legend.key.size = unit(0.8, "lines"),
+      legend.text = element_text(size = 8),
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      axis.text.y = element_text(size = 10, face = "bold"),
-      axis.text.x = element_text(size = 9),
+      axis.text.y = element_text(size = 12, face = "bold"),
+      axis.text.x = element_text(size = 10),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
       panel.grid.minor.y = element_blank(),
-      plot.margin = margin(5, 15, 5, 5),
-      plot.background = element_rect(
+      plot.margin = margin(5, 0, 5, 5),
+      panel.border = element_rect(
         color = "darkgray",
         fill = NA,
         linewidth = 1
       )
     ) +
-    geom_text(aes(label = sprintf("%.0f", Value)), hjust = -0.1, size = 3) +
-    coord_cartesian(clip = "off")
+    guides(
+      fill = guide_legend(nrow = 2, byrow = TRUE)
+    )
 
-  # Plot 2: Normalized Drug
-  plot_drug <- ggplot(
-    plot_data[plot_data$Group == paste("Normalized", comparison_drug), ],
-    aes(x = Value, y = Criterion, fill = Type)
-  ) +
-    geom_col(width = 0.7) +
-    geom_vline(xintercept = 0, linetype = "solid", color = "black") +
-    scale_fill_manual(
-      values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
-    ) +
-    scale_x_continuous(
-      limits = norm_lim,
-      breaks = norm_breaks,
-      expand = c(0.02, 0)
-    ) +
-    labs(
-      title = paste("Normalized", comparison_drug),
-      x = NULL,
-      y = NULL
-    ) +
-    theme_minimal() +
-    theme(
-      legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      axis.text.y = element_blank(),
-      axis.text.x = element_text(size = 9),
-      axis.ticks.y = element_blank(),
-      axis.ticks.x = element_line(color = "grey92"),
-      panel.grid.major.y = element_blank(),
-      panel.grid.minor.y = element_blank(),
-      plot.margin = margin(5, 15, 5, 5),
-      plot.background = element_rect(
-        color = "darkgray",
-        fill = NA,
-        linewidth = 1
-      )
-    ) +
-    geom_text(aes(label = sprintf("%.0f", Value)), hjust = -0.1, size = 3) +
-    coord_cartesian(clip = "off")
-
-  # Plot 3: Normalized Difference
-  diff_data <- plot_data[plot_data$Group == "Difference", ]
+  # Plot 2: Normalized Difference
   plot_diff <- ggplot(diff_data, aes(x = Value, y = Criterion, fill = Type)) +
     geom_col(width = 0.7) +
     geom_vline(xintercept = 0, linetype = "solid", color = "black") +
     scale_fill_manual(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
-    scale_x_continuous(limits = diff_lim, expand = c(0.02, 0)) +
+    scale_x_continuous(limits = diff_lim, expand = expansion(mult = c(0.15, 0.15))) +
     labs(
       title = "Difference",
       x = NULL,
@@ -342,13 +428,13 @@ create_mcda_barplot_comparison <- function(
       legend.position = "none",
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = 9),
+      axis.text.x = element_text(size = 10),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
       panel.grid.minor.y = element_blank(),
-      plot.margin = margin(5, 15, 5, 5),
-      plot.background = element_rect(
+      plot.margin = margin(5, 0, 5, 0),
+      panel.border = element_rect(
         color = "darkgray",
         fill = NA,
         linewidth = 1
@@ -357,17 +443,125 @@ create_mcda_barplot_comparison <- function(
     geom_text(
       aes(label = sprintf("%.0f", Value)),
       hjust = ifelse(diff_data$Value < 0, 1.2, -0.1),
-      size = 3
+      size = 4
     ) +
     coord_cartesian(clip = "off")
 
-  # Combine the three plots horizontally
+  # Plot 3: Weights
+  weights_data <- data.frame(
+    Criterion = factor(all_criteria, levels = rev(all_criteria)),
+    Weight = weight_values,
+    Type = c(
+      rep("Benefit", length(benefit_criteria)),
+      rep("Risk", length(risk_criteria))
+    ),
+    stringsAsFactors = FALSE
+  )
+
+  plot_weights <- ggplot(
+    weights_data,
+    aes(x = Weight, y = Criterion, fill = Type)
+  ) +
+    geom_col(width = 0.7) +
+    geom_vline(xintercept = 0, linetype = "solid", color = "black") +
+    scale_fill_manual(
+      values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
+    ) +
+    scale_x_continuous(
+      limits = c(0, 100),
+      expand = expansion(mult = c(0.05, 0.15))
+    ) +
+    labs(
+      title = "Weight",
+      x = NULL,
+      y = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+      axis.text.y = element_blank(),
+      axis.text.x = element_text(size = 10),
+      axis.ticks.y = element_blank(),
+      axis.ticks.x = element_line(color = "grey92"),
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor.y = element_blank(),
+      plot.margin = margin(5, 0, 5, 0),
+      panel.border = element_rect(
+        color = "darkgray",
+        fill = NA,
+        linewidth = 1
+      )
+    ) +
+    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = 4) +
+    coord_cartesian(clip = "off")
+
+  # Plot 4: Benefit-Risk (Weighted Contributions)
+  contrib_data <- data.frame(
+    Criterion = factor(all_criteria, levels = rev(all_criteria)),
+    Contribution = contribution_values,
+    Type = c(
+      rep("Benefit", length(benefit_criteria)),
+      rep("Risk", length(risk_criteria))
+    ),
+    stringsAsFactors = FALSE
+  )
+
+  # Calculate symmetric scale around zero for weighted contributions
+  max_abs_contrib <- max(abs(contribution_values), na.rm = TRUE)
+  contrib_lim <- c(-max_abs_contrib * 1.15, max_abs_contrib * 1.15)
+
+  plot_contrib <- ggplot(
+    contrib_data,
+    aes(x = Contribution, y = Criterion, fill = Type)
+  ) +
+    geom_col(width = 0.7) +
+    geom_vline(xintercept = 0, linetype = "solid", color = "black") +
+    scale_fill_manual(
+      values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
+    ) +
+    scale_x_continuous(limits = contrib_lim, expand = expansion(mult = c(0.15, 0.15))) +
+    labs(
+      title = "Benefit-Risk",
+      subtitle = sprintf("Total = %.1f", total_score),
+      x = NULL,
+      y = NULL
+    ) +
+    theme_minimal() +
+    theme(
+      legend.position = "none",
+      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = 10, hjust = 0.5),
+      axis.text.y = element_blank(),
+      axis.text.x = element_text(size = 10),
+      axis.ticks.y = element_blank(),
+      axis.ticks.x = element_line(color = "grey92"),
+      panel.grid.major.y = element_blank(),
+      panel.grid.minor.y = element_blank(),
+      plot.margin = margin(5, 15, 5, 0),
+      panel.border = element_rect(
+        color = "darkgray",
+        fill = NA,
+        linewidth = 1
+      )
+    ) +
+    geom_text(
+      aes(
+        label = sprintf("%.1f", Contribution),
+        hjust = ifelse(Contribution < 0, 1.2, -0.1)
+      ),
+      size = 4
+    ) +
+    coord_cartesian(clip = "off")
+
+  # Combine all four plots horizontally
   combined <- patchwork::wrap_plots(
-    plot_placebo,
-    plot_drug,
+    plot_combined,
     plot_diff,
-    ncol = 3,
-    widths = c(1.2, 1, 1)
+    plot_weights,
+    plot_contrib,
+    ncol = 4,
+    widths = c(1.5, 1, 1, 1)
   )
 
   combined
@@ -375,13 +569,15 @@ create_mcda_barplot_comparison <- function(
 
 #' Create MCDA Bar Chart: Calculation Walkthrough
 #'
-#' @param data A data frame in wide format with Treatment column and
+#' @param data A data frame in wide format with Study, Treatment, and
 #'   criteria columns. Required parameter - must be provided. Each row
 #'   should contain raw values for a treatment on their original
 #'   measurement scales. See \code{\link{mcda_data}} for example format.
+#' @param study Character string specifying which study to analyze.
+#'   If NULL, uses all data (assumes single comparator). Default is NULL.
 #' @param comparator_name Character string specifying the name of the
-#'   reference treatment (e.g., placebo or active control). Default is
-#'   "Placebo".
+#'   reference treatment (e.g., placebo or active control). Required.
+#'   Default is "Placebo".
 #' @param comparison_drug Character string specifying which drug to show
 #'   the calculation for. Default is "Drug A".
 #' @param benefit_criteria Character vector of benefit criterion names
@@ -418,11 +614,11 @@ create_mcda_barplot_comparison <- function(
 #' # Load example MCDA data
 #' data(mcda_data)
 #'
-#' # View the data structure - each row has raw values for a treatment
+#' # View the data structure - each study has comparator and active treatment
 #' head(mcda_data)
-#' #   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
-#' # 1   Placebo      0.05        65         9   0.30  0.087
-#' # 2    Drug A      0.46        20        60   0.46  0.100
+#' #   Study      Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
+#' # 1 Study 1    Placebo      0.05        65         9   0.30  0.087
+#' # 2 Study 1    Drug A       0.46        20        60   0.46  0.100
 #'
 #' # Define clinical scales
 #' clinical_scales <- list(
@@ -436,6 +632,7 @@ create_mcda_barplot_comparison <- function(
 #' # Create walkthrough showing the MCDA calculation steps for Drug B
 #' barplot_walk <- create_mcda_walkthrough(
 #'   data = mcda_data,
+#'   study = "Study 2",
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
 #'   risk_criteria = c("Risk 1", "Risk 2"),
 #'   comparison_drug = "Drug B",
@@ -488,6 +685,7 @@ create_mcda_barplot_comparison <- function(
 #'
 #' barplot_walk_a <- create_mcda_walkthrough(
 #'   data = mcda_data,
+#'   study = "Study 1",
 #'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
 #'   risk_criteria = c("Risk 1", "Risk 2"),
 #'   comparison_drug = "Drug A",
@@ -504,6 +702,7 @@ create_mcda_barplot_comparison <- function(
 #' }
 create_mcda_walkthrough <- function(
   data = NULL,
+  study = NULL,
   comparator_name = "Placebo",
   comparison_drug = "Drug A",
   benefit_criteria = NULL,
@@ -534,6 +733,45 @@ create_mcda_walkthrough <- function(
   if (is.null(weights)) {
     n_criteria <- length(all_criteria)
     weights <- setNames(rep(1 / n_criteria, n_criteria), all_criteria)
+  }
+
+  # Filter by study if specified, or auto-detect from comparison_drug
+  if (!is.null(study)) {
+    if (!"Study" %in% colnames(data)) {
+      stop("Study column not found in data but study parameter was specified.")
+    }
+    data <- data[data$Study == study, ]
+    if (nrow(data) == 0) {
+      stop(
+        "No data found for study '", study, "'. ",
+        "Available studies: ", paste(unique(data$Study), collapse = ", ")
+      )
+    }
+    # Validate that study has exactly 2 rows (comparator + active treatment)
+    if (nrow(data) != 2) {
+      stop(
+        "Study '", study, "' should have exactly 2 rows ",
+        "(comparator + active treatment), but has ", nrow(data), " rows."
+      )
+    }
+  } else if ("Study" %in% colnames(data)) {
+    # Auto-detect study from comparison_drug
+    drug_studies <- data$Study[data$Treatment == comparison_drug]
+    if (length(drug_studies) == 0) {
+      stop(
+        "Comparison drug '", comparison_drug, "' not found in data. ",
+        "Available treatments: ", paste(unique(data$Treatment), collapse = ", ")
+      )
+    }
+    if (length(drug_studies) > 1) {
+      stop(
+        "Comparison drug '", comparison_drug, "' found in multiple studies. ",
+        "Please specify the 'study' parameter."
+      )
+    }
+    # Filter to the detected study
+    study <- drug_studies[1]
+    data <- data[data$Study == study, ]
   }
 
   # Determine favorable direction for fallback normalization
@@ -856,7 +1094,7 @@ create_mcda_walkthrough <- function(
     scale_fill_manual(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
-    scale_x_continuous(limits = norm_lim, expand = c(0.02, 0)) +
+    scale_x_continuous(limits = norm_lim, expand = expansion(mult = c(0.15, 0.15))) +
     labs(
       title = "Difference",
       subtitle = paste0(
@@ -870,19 +1108,25 @@ create_mcda_walkthrough <- function(
     ) +
     theme_minimal() +
     theme(
-      axis.text.y = element_text(size = 10),
+      axis.text.y = element_text(size = 12, face = "bold"),
+      axis.text.x = element_text(size = 10),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
       plot.subtitle = element_text(size = 10, hjust = 0.5),
-      plot.margin = margin(5, 15, 5, 5)
+      plot.margin = margin(5, 0, 5, 5),
+      panel.border = element_rect(
+        color = "darkgray",
+        fill = NA,
+        linewidth = 1
+      )
     ) +
     geom_text(
       aes(
         label = sprintf("%.0f", Value),
         hjust = ifelse(Value < 0, 1.2, -0.1)
       ),
-      size = 3
+      size = 4
     ) +
     coord_cartesian(clip = "off")
 
@@ -905,7 +1149,7 @@ create_mcda_walkthrough <- function(
     scale_fill_manual(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
-    scale_x_continuous(limits = c(0, x_max), expand = c(0.02, 0)) +
+    scale_x_continuous(limits = c(0, x_max), expand = expansion(mult = c(0.05, 0.15))) +
     labs(
       title = "Weight",
       subtitle = "Importance (%)",
@@ -915,13 +1159,19 @@ create_mcda_walkthrough <- function(
     theme_minimal() +
     theme(
       axis.text.y = element_blank(),
+      axis.text.x = element_text(size = 10),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
       plot.subtitle = element_text(size = 10, hjust = 0.5),
-      plot.margin = margin(5, 15, 5, 5)
+      plot.margin = margin(5, 0, 5, 0),
+      panel.border = element_rect(
+        color = "darkgray",
+        fill = NA,
+        linewidth = 1
+      )
     ) +
-    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = 3) +
+    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = 4) +
     coord_cartesian(clip = "off")
 
   # Panel 3: Weighted Contributions (Benefit-Risk)
@@ -949,7 +1199,7 @@ create_mcda_walkthrough <- function(
     scale_fill_manual(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
-    scale_x_continuous(limits = contrib_lim, expand = c(0.02, 0)) +
+    scale_x_continuous(limits = contrib_lim, expand = expansion(mult = c(0.15, 0.15))) +
     labs(
       title = "Benefit-Risk",
       subtitle = sprintf("Total = %.1f", drug_total),
@@ -959,46 +1209,26 @@ create_mcda_walkthrough <- function(
     theme_minimal() +
     theme(
       axis.text.y = element_blank(),
+      axis.text.x = element_text(size = 10),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
       plot.subtitle = element_text(size = 10, hjust = 0.5),
-      plot.margin = margin(5, 15, 5, 5)
+      plot.margin = margin(5, 15, 5, 0),
+      panel.border = element_rect(
+        color = "darkgray",
+        fill = NA,
+        linewidth = 1
+      )
     ) +
     geom_text(
       aes(
         label = sprintf("%.1f", Contribution),
         hjust = ifelse(Contribution < 0, 1.2, -0.1)
       ),
-      size = 3
+      size = 4
     ) +
     coord_cartesian(clip = "off")
-
-  # Add borders to individual panels
-  p_values <- p_values +
-    theme(
-      plot.background = element_rect(
-        color = "darkgray",
-        fill = NA,
-        linewidth = 1
-      )
-    )
-  p_weights <- p_weights +
-    theme(
-      plot.background = element_rect(
-        color = "darkgray",
-        fill = NA,
-        linewidth = 1
-      )
-    )
-  p_weighted <- p_weighted +
-    theme(
-      plot.background = element_rect(
-        color = "darkgray",
-        fill = NA,
-        linewidth = 1
-      )
-    )
 
   # Combine panels - 3 panels
   # Order: Normalized Difference -> Weight -> Benefit-Risk

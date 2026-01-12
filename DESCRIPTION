@@ -59,7 +59,8 @@ Imports:
     stringr,
     ggforce,
     ggh4x,
-    gridExtra
+    gridExtra,
+    tidyr
 Depends: 
     R (>= 3.5)
 LazyData: true
