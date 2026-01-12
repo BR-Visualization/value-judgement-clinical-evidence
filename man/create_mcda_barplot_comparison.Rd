@@ -12,6 +12,7 @@ create_mcda_barplot_comparison(
   benefit_criteria = NULL,
   risk_criteria = NULL,
   clinical_scales = NULL,
+  weights = NULL,
   fig_colors = c("#0571b0", "#ca0020")
 )
 }
@@ -43,15 +44,18 @@ each criterion. Each element should be a list with: min (lower
 threshold), max (upper threshold), direction ("increasing" for
 higher is better, "decreasing" for lower is better).}
 
+\item{weights}{Named numeric vector of criterion weights. Must sum to 1.
+If NULL, uses equal weights. Default is NULL.}
+
 \item{fig_colors}{A vector of length 2 specifying colors for benefits
 and risks. Default is c("#0571b0", "#ca0020") to match
 correlogram colors.}
 }
 \value{
-A patchwork object showing three panels: Normalized
-Comparator values, Normalized Drug values, and Difference of
-Normalized Values (Drug - Comparator), or NULL if data is not
-provided.
+A patchwork object showing four panels: Normalized
+Values (side-by-side bars for Comparator and Drug), Difference
+of Normalized Values (Drug - Comparator), Weights, and
+Benefit-Risk scores, or NULL if data is not provided.
 }
 \description{
 Create MCDA Bar Chart: Normalized Values Comparison
@@ -77,25 +81,35 @@ clinical_scales <- list(
   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
+# Define weights from stakeholder elicitation
+weights <- c(
+  `Benefit 1` = 0.30,
+  `Benefit 2` = 0.20,
+  `Benefit 3` = 0.10,
+  `Risk 1` = 0.30,
+  `Risk 2` = 0.10
+)
+
 # Create comparison barplot for a specific study
-# Normalized Comparator | Normalized Drug A | Difference
+# Side-by-side Normalized Values | Difference | Weight | Benefit-Risk
 barplot_comp_a <- create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 1",
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
-  clinical_scales = clinical_scales
+  clinical_scales = clinical_scales,
+  weights = weights
 )
 
-# Compare a different drug
+# Save the plot
 \dontrun{
 ggsave(
   "inst/img/barplot_mcda_comparison_drug_a.png",
   barplot_comp_a,
-  width = 12,
+  width = 16,
   height = 6,
-  dpi = 300
+  dpi = 600
 )
 }
 }
