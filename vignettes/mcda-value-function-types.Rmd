@@ -698,3 +698,96 @@ p1 / p2
 The current `brpubVJCE` package implements **linear value functions** by default, which is consistent with FDA/EMA guidance and provides a transparent, conservative approach to benefit-risk assessment.
 
 If you need to implement alternative value functions for specific applications, the examples in this vignette provide the mathematical framework. Always ensure proper documentation and justification for non-linear choices.
+
+---
+
+## Package Functions for Value Function Visualization
+
+The `brpubVJCE` package now includes dedicated functions for visualizing linear value functions used in MCDA analyses:
+
+### Single Value Function Plot
+
+Create a plot showing how raw values transform to normalized scores (0-100):
+
+```{r value-function-single, fig.height=4, fig.width=5}
+# Benefit criterion: higher efficacy is better
+create_value_function_plot(
+  criterion_name = "Response Rate (%)",
+  min_val = 0,
+  max_val = 100,
+  direction = "increasing"
+)
+```
+
+### Compare Benefits vs Risks
+
+Create side-by-side comparison showing the different normalization directions:
+
+```{r value-function-comparison, fig.height=4, fig.width=10}
+# Compare benefit (increasing) and risk (decreasing) value functions
+compare_value_functions(
+  benefit_name = "Efficacy",
+  benefit_min = 0,
+  benefit_max = 100,
+  benefit_label = "Response Rate (%)",
+  risk_name = "Safety",
+  risk_min = 0,
+  risk_max = 50,
+  risk_label = "Adverse Event Rate (%)"
+)
+```
+
+### Visualize All MCDA Criteria
+
+Create a multi-panel plot for all criteria in your clinical scales:
+
+```{r value-function-multiple, fig.height=6, fig.width=10}
+# Define clinical scales
+clinical_scales <- list(
+  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
+  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
+  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
+  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+)
+
+# Plot all value functions
+plot_multiple_value_functions(
+  clinical_scales = clinical_scales,
+  ncol = 3
+)
+```
+
+### Compare Linear to Alternative Value Function Types
+
+Create comparison plots showing how linear functions compare to other approaches (piecewise, exponential, sigmoid, step) for both benefits and risks:
+
+```{r value-function-comparison-types, fig.height=5, fig.width=12}
+# Compare different value function types
+compare_value_function_types(
+  benefit_name = "Efficacy",
+  benefit_min = 0,
+  benefit_max = 100,
+  benefit_label = "Response Rate (%)",
+  risk_name = "Safety",
+  risk_min = 0,
+  risk_max = 50,
+  risk_label = "Adverse Event Rate (%)",
+  power = 2
+)
+```
+
+This visualization helps stakeholders understand:
+- How the **linear function** (current standard, shown in gray) provides a neutral, transparent approach
+- How **alternative functions** would transform the same clinical data differently
+- Why regulatory agencies prefer linear functions (simplicity, transparency, no imposed risk attitudes)
+- The potential impact of choosing non-linear approaches on benefit-risk conclusions
+
+**Key observations:**
+- **Linear (Current Standard)**: Equal marginal value across all levels - regulatory preference
+- **Piecewise Linear**: Different slopes in different regions - useful when clinical thresholds exist
+- **Exponential**: Captures diminishing returns or increasing concern - requires stakeholder justification
+- **Sigmoid**: Threshold effects with smooth transitions - useful for binary clinical interpretations
+- **Step**: Discrete categories - matches categorical clinical practice (e.g., CTCAE grades)
+
+These functions help communicate the MCDA normalization process to stakeholders and demonstrate the linear value function approach used throughout the package.

@@ -14,6 +14,8 @@ create_mcda_brmap(
   clinical_scales = NULL,
   show_frontier = TRUE,
   show_labels = TRUE,
+  show_title = FALSE,
+  show_subtitle = FALSE,
   fig_colors = NULL
 )
 }
@@ -55,6 +57,12 @@ Default is TRUE.}
 \item{show_labels}{Logical indicating whether to show treatment labels
 on points. Default is TRUE.}
 
+\item{show_title}{Logical indicating whether to show the plot title.
+Default is FALSE.}
+
+\item{show_subtitle}{Logical indicating whether to show the plot subtitle.
+Default is FALSE.}
+
 \item{fig_colors}{A vector specifying colors for each treatment. If NULL,
 uses default color palette.}
 }
@@ -88,13 +96,24 @@ clinical_scales <- list(
   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
-# Create benefit-risk map
+# Create benefit-risk map (no title/subtitle by default)
 brmap_plot <- create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   clinical_scales = clinical_scales
+)
+
+# With title and subtitle
+brmap_with_titles <- create_mcda_brmap(
+  data = mcda_data,
+  comparator_name = "Placebo",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  clinical_scales = clinical_scales,
+  show_title = TRUE,
+  show_subtitle = TRUE
 )
 
 # With custom weights and colors
@@ -123,6 +142,17 @@ brmap_custom <- create_mcda_brmap(
   clinical_scales = clinical_scales,
   fig_colors = custom_colors,
   show_frontier = TRUE
+)
+
+# Show only title without subtitle
+brmap_title_only <- create_mcda_brmap(
+  data = mcda_data,
+  comparator_name = "Placebo",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  clinical_scales = clinical_scales,
+  show_title = TRUE,
+  show_subtitle = FALSE
 )
 }
 }
