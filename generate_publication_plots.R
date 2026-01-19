@@ -336,3 +336,149 @@ ggsave_custom(
   unts = "in",
   dpi = 600 # Higher DPI for publication quality
 )
+
+# ============================================================================
+# Value Function Visualizations
+# Educational plots showing how raw clinical values are transformed to
+# normalized scores (0-100 scale) using linear and alternative value functions
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Single Value Function Example: Benefit (Increasing Direction)
+# Shows how higher raw efficacy values map to higher normalized values
+# --------------------------------------------------------------------------
+
+value_func_benefit <- create_value_function_plot(
+  criterion_name = "Response Rate",
+  min_val = 0,
+  max_val = 100,
+  direction = "increasing",
+  x_label = "Response Rate (%)",
+  show_title = TRUE,
+  show_reference_line = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_benefit_example.png",
+  imgpath = "./",
+  inplot = value_func_benefit,
+  wdth = 5,
+  hght = 4,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Single Value Function Example: Risk (Decreasing Direction)
+# Shows how lower raw adverse event rates map to higher normalized values
+# --------------------------------------------------------------------------
+
+value_func_risk <- create_value_function_plot(
+  criterion_name = "Adverse Events",
+  min_val = 0,
+  max_val = 50,
+  direction = "decreasing",
+  x_label = "Adverse Event Rate (%)",
+  show_title = TRUE,
+  show_reference_line = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_risk_example.png",
+  imgpath = "./",
+  inplot = value_func_risk,
+  wdth = 5,
+  hght = 4,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Side-by-Side Comparison: Benefit vs Risk Value Functions
+# Demonstrates how normalization direction differs between benefits and risks
+# --------------------------------------------------------------------------
+
+value_func_comparison <- compare_value_functions(
+  benefit_name = "Efficacy",
+  benefit_min = 0,
+  benefit_max = 100,
+  benefit_label = "Response Rate (%)",
+  risk_name = "Safety",
+  risk_min = 0,
+  risk_max = 50,
+  risk_label = "Adverse Event Rate (%)",
+  show_titles = TRUE,
+  show_reference_lines = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_comparison_benefit_risk.png",
+  imgpath = "./",
+  inplot = value_func_comparison,
+  wdth = 10,
+  hght = 4,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Multiple Value Functions from Clinical Scales
+# Shows all MCDA criteria value functions in a grid layout
+# Uses the same clinical_scales defined earlier for MCDA analyses
+# --------------------------------------------------------------------------
+
+value_func_multiple <- plot_multiple_value_functions(
+  clinical_scales = clinical_scales,
+  ncol = 3,
+  show_titles = TRUE,
+  show_reference_lines = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_multiple_criteria.png",
+  imgpath = "./",
+  inplot = value_func_multiple,
+  wdth = 12,
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Comparison of Different Value Function Types
+# Educational plot comparing Linear (current standard) to alternative
+# approaches: Piecewise Linear, Exponential, Sigmoid, and Step functions
+# Shows why linear is the regulatory-preferred default
+# --------------------------------------------------------------------------
+
+value_func_types_comparison <- compare_value_function_types(
+  benefit_name = "Efficacy",
+  benefit_min = 0,
+  benefit_max = 100,
+  benefit_label = "Response Rate (%)",
+  risk_name = "Safety",
+  risk_min = 0,
+  risk_max = 50,
+  risk_label = "Adverse Event Rate (%)",
+  power = 2,
+  show_titles = FALSE,
+  show_legend = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_types_comparison.png",
+  imgpath = "./",
+  inplot = value_func_types_comparison,
+  wdth = 14,
+  hght = 5,
+  unts = "in",
+  dpi = 600
+)
+
+message("All publication plots generated successfully in inst/img/")
+message("Value function visualization plots:")
+message("  - value_function_benefit_example.png")
+message("  - value_function_risk_example.png")
+message("  - value_function_comparison_benefit_risk.png")
+message("  - value_function_multiple_criteria.png")
+message("  - value_function_types_comparison.png")
