@@ -310,49 +310,17 @@ create_mcda_barplot_comparison <- function(
   combined_data$Criterion <- factor(combined_data$Criterion, levels = rev(all_criteria))
   diff_data$Criterion <- factor(diff_data$Criterion, levels = rev(all_criteria))
 
-  # Create combined fill-treatment variable for legend
-  combined_data$FillTreatment <- interaction(
-    combined_data$Type,
-    combined_data$Treatment,
-    sep = "_"
-  )
-
-  # Define colors for all combinations
-  color_map <- setNames(
-    c(
-      grDevices::adjustcolor(fig_colors[1], alpha.f = 0.5),
-      fig_colors[1],
-      grDevices::adjustcolor(fig_colors[2], alpha.f = 0.5),
-      fig_colors[2]
-    ),
-    c(
-      paste0("Benefit_", comparator_name),
-      paste0("Benefit_", comparison_drug),
-      paste0("Risk_", comparator_name),
-      paste0("Risk_", comparison_drug)
-    )
-  )
-
-  # Define legend labels
-  legend_labels <- setNames(
-    c(
-      paste("Benefit -", comparator_name),
-      paste("Benefit -", comparison_drug),
-      paste("Risk -", comparator_name),
-      paste("Risk -", comparison_drug)
-    ),
-    c(
-      paste0("Benefit_", comparator_name),
-      paste0("Benefit_", comparison_drug),
-      paste0("Risk_", comparator_name),
-      paste0("Risk_", comparison_drug)
-    )
-  )
+  # Define colors for treatments (active vs comparator)
+  # Contrasting colors: neutral gray for comparator, orange for active
+  # These complement the blue (#0571b0) and red (#ca0020) benefit-risk colors
+  treatment_colors <- c("#808080", "#ff7f00")
+  names(treatment_colors) <- c(comparator_name, comparison_drug)
 
   # Plot 1: Combined Normalized Values (side-by-side bars)
+  # Color by treatment (comparator vs active) for simplified legend
   plot_combined <- ggplot(
     combined_data,
-    aes(x = Value, y = Criterion, fill = FillTreatment)
+    aes(x = Value, y = Criterion, fill = Treatment)
   ) +
     geom_col(
       width = 0.7,
@@ -362,7 +330,7 @@ create_mcda_barplot_comparison <- function(
     geom_text(
       aes(
         label = sprintf("%.0f", Value),
-        group = interaction(Type, Treatment)
+        group = Treatment
       ),
       position = position_dodge(width = 0.8),
       hjust = -0.1,
@@ -370,8 +338,7 @@ create_mcda_barplot_comparison <- function(
       show.legend = FALSE
     ) +
     scale_fill_manual(
-      values = color_map,
-      labels = legend_labels,
+      values = treatment_colors,
       name = NULL
     ) +
     scale_x_continuous(
@@ -391,7 +358,7 @@ create_mcda_barplot_comparison <- function(
       legend.background = element_rect(fill = "white", color = "darkgray", linewidth = 0.5),
       legend.margin = margin(4, 6, 4, 6),
       legend.key.size = unit(0.8, "lines"),
-      legend.text = element_text(size = 8),
+      legend.text = element_text(size = 9),
       plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
       axis.text.y = element_text(size = 12, face = "bold"),
       axis.text.x = element_text(size = 10),
@@ -405,9 +372,6 @@ create_mcda_barplot_comparison <- function(
         fill = NA,
         linewidth = 1
       )
-    ) +
-    guides(
-      fill = guide_legend(nrow = 2, byrow = TRUE)
     )
 
   # Plot 2: Normalized Difference
