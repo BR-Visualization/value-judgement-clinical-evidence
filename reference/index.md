@@ -32,6 +32,8 @@
   specific feature exist in the data
 - [`colfun()`](https://pkgdown.r-lib.org/reference/colfun.md) : Function
   for colors
+- [`comp_outcome`](https://pkgdown.r-lib.org/reference/comp_outcome.md)
+  : Example composite outcome data used for Figure 12
 - [`control_fonts()`](https://pkgdown.r-lib.org/reference/control_fonts.md)
   : Control Fonts
 - [`corr`](https://pkgdown.r-lib.org/reference/corr.md) : Example
@@ -48,6 +50,8 @@
   : Create MCDA Bar Chart: Calculation Walkthrough
 - [`cumexcess`](https://pkgdown.r-lib.org/reference/cumexcess.md) :
   Example cumulative excess plot data used for Figure 13
+- [`divergent_stacked_barchart()`](https://pkgdown.r-lib.org/reference/divergent_stacked_barchart.md)
+  : Divergent Stacked Bar Chart
 - [`effects_table`](https://pkgdown.r-lib.org/reference/effects_table.md)
   : Example treatment effect table
 - [`generate_tradeoff_plot()`](https://pkgdown.r-lib.org/reference/generate_tradeoff_plot.md)
@@ -92,3 +96,5 @@
   : Create a scatterplot from a given dataframe.
 - [`scatterplot`](https://pkgdown.r-lib.org/reference/scatterplot.md) :
   Example scatterplot data used for Figure 11
+- [`stacked_barchart()`](https://pkgdown.r-lib.org/reference/stacked_barchart.md)
+  : Stacked Bar Chart

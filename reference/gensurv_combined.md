@@ -142,14 +142,6 @@ gensurv_combined(
 #> ℹ Please use `linewidth` instead.
 #> ℹ The deprecated feature was likely used in the brpubVJCE package.
 #>   Please report the issue to the authors.
-#> Warning: The `size` argument of `element_line()` is deprecated as of ggplot2 3.4.0.
-#> ℹ Please use the `linewidth` argument instead.
-#> ℹ The deprecated feature was likely used in the brpubVJCE package.
-#>   Please report the issue to the authors.
-#> Warning: The `size` argument of `element_rect()` is deprecated as of ggplot2 3.4.0.
-#> ℹ Please use the `linewidth` argument instead.
-#> ℹ The deprecated feature was likely used in the brpubVJCE package.
-#>   Please report the issue to the authors.
 #> Warning: Removed 4 rows containing missing values or values outside the scale range
 #> (`geom_ribbon()`).
 #> Warning: Removed 4 rows containing missing values or values outside the scale range

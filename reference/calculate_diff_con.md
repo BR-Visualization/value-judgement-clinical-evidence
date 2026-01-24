@@ -53,7 +53,7 @@ calculate_diff_con(
   mean1 = 0.6, mean2 = 0.5, sd1 = 0.1, sd2 = 0.3,
   n1 = 400, n2 = 500, cl = 0.95
 )
-#> [2025-12-12 09:44:33] > CI for treatment difference in continuous outcomes is calculated
+#> [2026-01-24 18:48:59] > CI for treatment difference in continuous outcomes is calculated
 #>   diff        se      lower     upper
 #> 1  0.1 0.0156539 0.06927751 0.1307225
 ```

@@ -24,6 +24,7 @@
 <url><loc>https://pkgdown.r-lib.org/reference/check_feature.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/check_feature_string.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/colfun.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/comp_outcome.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/control_fonts.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/corr.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/corr2.html</loc></url>
@@ -32,6 +33,7 @@
 <url><loc>https://pkgdown.r-lib.org/reference/create_mcda_barplot_comparison.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/create_mcda_walkthrough.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/cumexcess.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/divergent_stacked_barchart.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/effects_table.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/forest_dot_plot_imports.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/generate_tradeoff_plot.html</loc></url>
@@ -52,5 +54,6 @@
 <url><loc>https://pkgdown.r-lib.org/reference/relmin.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/scatter_plot.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/scatterplot.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/stacked_barchart.html</loc></url>
 </urlset>
 
