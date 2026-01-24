@@ -52,7 +52,7 @@ colfun <- function() {
   fig7_colors <- c("#009292", "#ff6db6", "#490092", "#006ddb")
   fig10_colors <- c("#0571b0", "white", "#ca0020")
   fig11_colors <- c("#00AFBB", "red", "blue")
-  fig12_colors <- c("#0571b0", "#92c5de", "#f7f7f7", "#f4a582", "#ca0020")
+  fig12_colors <- c("chartreuse3", "yellow", "gray85", "red2", "black")
   fig13_colors <- c("#0571b0", "#ca0020")
 
   list(

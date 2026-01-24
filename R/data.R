@@ -118,3 +118,18 @@ NULL
 #' and risk outcomes, demonstrating both positive and negative
 #' relationships suitable for correlogram analysis.
 "corr2"
+
+#' Example composite outcome data used for Figure 12
+#'
+#' @name comp_outcome
+#' @format A data frame with 1800 rows and 6 variables
+#' \describe{
+#'   \item{usubjid}{Subject ID}
+#'   \item{visit}{Visit}
+#'   \item{trtn}{Treatment arms in numeric type}
+#'   \item{trt}{Treatment arms in character type}
+#'   \item{brcatn}{Category of composite outcome in numeric type}
+#'   \item{brcat}{Category of composite outcome in character type}
+#'
+#' }
+"comp_outcome"
