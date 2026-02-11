@@ -6,23 +6,28 @@
 \usage{
 create_mcda_barplot_comparison(
   data = NULL,
+  study = NULL,
   comparator_name = "Placebo",
   comparison_drug = "Drug A",
   benefit_criteria = NULL,
   risk_criteria = NULL,
   clinical_scales = NULL,
+  weights = NULL,
   fig_colors = c("#0571b0", "#ca0020")
 )
 }
 \arguments{
-\item{data}{A data frame in wide format with Treatment column and
+\item{data}{A data frame in wide format with Study, Treatment, and
 criteria columns. Required parameter - must be provided. Each row
 should contain raw values for a treatment on their original
 measurement scales. See \code{\link{mcda_data}} for example format.}
 
+\item{study}{Character string specifying which study to analyze.
+If NULL, uses all data (assumes single comparator). Default is NULL.}
+
 \item{comparator_name}{Character string specifying the name of the
 reference treatment (e.g., placebo or active control) in the data.
-Default is "Placebo".}
+Required. Default is "Placebo".}
 
 \item{comparison_drug}{Character string specifying which drug to
 compare with the reference treatment in the visualization.
@@ -39,15 +44,18 @@ each criterion. Each element should be a list with: min (lower
 threshold), max (upper threshold), direction ("increasing" for
 higher is better, "decreasing" for lower is better).}
 
+\item{weights}{Named numeric vector of criterion weights. Must sum to 1.
+If NULL, uses equal weights. Default is NULL.}
+
 \item{fig_colors}{A vector of length 2 specifying colors for benefits
 and risks. Default is c("#0571b0", "#ca0020") to match
 correlogram colors.}
 }
 \value{
-A patchwork object showing three panels: Normalized
-Comparator values, Normalized Drug values, and Difference of
-Normalized Values (Drug - Comparator), or NULL if data is not
-provided.
+A patchwork object showing four panels: Normalized
+Values (side-by-side bars for Comparator and Drug), Difference
+of Normalized Values (Drug - Comparator), Weights, and
+Benefit-Risk scores, or NULL if data is not provided.
 }
 \description{
 Create MCDA Bar Chart: Normalized Values Comparison
@@ -56,12 +64,13 @@ Create MCDA Bar Chart: Normalized Values Comparison
 # Load example MCDA data
 data(mcda_data)
 
-# View the data structure - each row has raw values for a treatment
+# View the data structure - each study has comparator and active treatment
 head(mcda_data)
-#   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
-# 1   Placebo      0.05        65         9   0.30  0.087
-# 2    Drug A      0.46        20        60   0.46  0.100
-# 3    Drug B      ...
+#   Study      Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
+# 1 Study 1    Placebo      0.05        65         9   0.30  0.087
+# 2 Study 1    Drug A       0.46        20        60   0.46  0.100
+# 3 Study 2    Placebo      0.05        65         9   0.30  0.087
+# 4 Study 2    Drug B       ...          ...        ...  ...   ...
 
 # Define clinical scales
 clinical_scales <- list(
@@ -72,31 +81,35 @@ clinical_scales <- list(
   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
-# Create comparison barplot showing
-# Normalized Comparator | Normalized Drug B | Difference
-barplot_comp <- create_mcda_barplot_comparison(
-  data = mcda_data,
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
-  comparison_drug = "Drug B",
-  clinical_scales = clinical_scales
+# Define weights from stakeholder elicitation
+weights <- c(
+  `Benefit 1` = 0.30,
+  `Benefit 2` = 0.20,
+  `Benefit 3` = 0.10,
+  `Risk 1` = 0.30,
+  `Risk 2` = 0.10
 )
 
-# Compare a different drug
-\dontrun{
+# Create comparison barplot for a specific study
+# Side-by-side Normalized Values | Difference | Weight | Benefit-Risk
 barplot_comp_a <- create_mcda_barplot_comparison(
   data = mcda_data,
+  study = "Study 1",
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
-  clinical_scales = clinical_scales
+  clinical_scales = clinical_scales,
+  weights = weights
 )
+
+# Save the plot
+\dontrun{
 ggsave(
   "inst/img/barplot_mcda_comparison_drug_a.png",
   barplot_comp_a,
-  width = 12,
+  width = 16,
   height = 6,
-  dpi = 300
+  dpi = 600
 )
 }
 }

@@ -2,87 +2,89 @@
 ## This script transforms the effects_table into wide format for MCDA analysis
 
 # Helper function to prepare MCDA data from effects table
-# NOTE: This function is specific to the effects_table example data
-# and only extracts placebo values from the first drug comparison.
-# This is suitable for the example dataset where comparisons share a
-# common placebo arm.
-prepare_mcda_data_internal <- function(
-  source_data,
-  placebo_name = "Placebo"
-) {
+# This function creates two rows for each treatment comparison:
+# one for the active treatment (Trt1) and one for the comparator (Trt2)
+# Each comparison gets a unique Study identifier
+prepare_mcda_data_internal <- function(source_data) {
   # Filter for identified outcomes only, Category == 'All'
   identified <- source_data[
     source_data$Outcome_Status == "Identified" &
       source_data$Category == "All",
   ]
 
-  # Get unique drugs (Trt1 values)
-  drugs <- unique(identified$Trt1)
+  # Get unique treatment pairs (Trt1-Trt2 combinations)
+  treatment_pairs <- unique(identified[, c("Trt1", "Trt2")])
 
   # Extract unique outcomes
   outcomes <- unique(identified$Outcome)
 
   # Initialize result data frame
-  result <- data.frame(Treatment = character(), stringsAsFactors = FALSE)
+  result <- data.frame(
+    Study = character(),
+    Treatment = character(),
+    stringsAsFactors = FALSE
+  )
 
-  # First, get placebo values from any drug row (Trt2/Prop2/Mean2)
-  # NOTE: This assumes all drug comparisons share the same placebo arm
-  first_drug_data <- identified[identified$Trt1 == drugs[1], ]
-  placebo_row <- data.frame(Treatment = placebo_name, stringsAsFactors = FALSE)
+  # Process each unique treatment comparison
+  for (i in seq_len(nrow(treatment_pairs))) {
+    trt1_name <- treatment_pairs$Trt1[i]
+    trt2_name <- treatment_pairs$Trt2[i]
 
-  for (outcome in outcomes) {
-    row_data <- first_drug_data[first_drug_data$Outcome == outcome, ]
+    # Create study identifier
+    study_id <- paste0("Study ", i)
 
-    if (nrow(row_data) == 0) {
-      placebo_row[[outcome]] <- NA
-      next
-    }
+    # Get all data for this treatment pair
+    pair_data <- identified[
+      identified$Trt1 == trt1_name & identified$Trt2 == trt2_name,
+    ]
 
-    row_data <- row_data[1, ]
+    # Create row for Trt1 (active treatment)
+    trt1_row <- data.frame(
+      Study = study_id,
+      Treatment = trt1_name,
+      stringsAsFactors = FALSE
+    )
 
-    # Extract placebo value
-    if (!is.na(row_data$Prop2)) {
-      placebo_row[[outcome]] <- row_data$Prop2
-    } else if (!is.na(row_data$Mean2)) {
-      placebo_row[[outcome]] <- row_data$Mean2
-    } else {
-      placebo_row[[outcome]] <- NA
-    }
-  }
+    # Create row for Trt2 (comparator)
+    trt2_row <- data.frame(
+      Study = study_id,
+      Treatment = trt2_name,
+      stringsAsFactors = FALSE
+    )
 
-  result <- rbind(result, placebo_row)
-
-  # Process each drug
-  for (drug in drugs) {
-    drug_data <- identified[identified$Trt1 == drug, ]
-
-    # Create a new row for this drug
-    drug_row <- data.frame(Treatment = drug, stringsAsFactors = FALSE)
-
+    # Extract values for each outcome
     for (outcome in outcomes) {
-      row_data <- drug_data[drug_data$Outcome == outcome, ]
+      outcome_data <- pair_data[pair_data$Outcome == outcome, ]
 
-      if (nrow(row_data) == 0) {
-        drug_row[[outcome]] <- NA
+      if (nrow(outcome_data) == 0) {
+        trt1_row[[outcome]] <- NA
+        trt2_row[[outcome]] <- NA
         next
       }
 
-      row_data <- row_data[1, ]
+      outcome_data <- outcome_data[1, ]
 
-      # Extract drug value (raw value, not difference)
-      if (!is.na(row_data$Prop1)) {
-        # Binary outcome - proportion scale (0-1)
-        drug_row[[outcome]] <- row_data$Prop1
-      } else if (!is.na(row_data$Mean1)) {
-        # Continuous outcome - original measurement scale
-        drug_row[[outcome]] <- row_data$Mean1
+      # Extract Trt1 value (active treatment)
+      if (!is.na(outcome_data$Prop1)) {
+        trt1_row[[outcome]] <- outcome_data$Prop1
+      } else if (!is.na(outcome_data$Mean1)) {
+        trt1_row[[outcome]] <- outcome_data$Mean1
       } else {
-        drug_row[[outcome]] <- NA
+        trt1_row[[outcome]] <- NA
+      }
+
+      # Extract Trt2 value (comparator)
+      if (!is.na(outcome_data$Prop2)) {
+        trt2_row[[outcome]] <- outcome_data$Prop2
+      } else if (!is.na(outcome_data$Mean2)) {
+        trt2_row[[outcome]] <- outcome_data$Mean2
+      } else {
+        trt2_row[[outcome]] <- NA
       }
     }
 
-    # Add this drug's row to the result
-    result <- rbind(result, drug_row)
+    # Add both rows to the result
+    result <- rbind(result, trt2_row, trt1_row)
   }
 
   result
