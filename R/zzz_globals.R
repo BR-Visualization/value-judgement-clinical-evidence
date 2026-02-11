@@ -49,5 +49,10 @@ utils::globalVariables(c(
   "visit",
   "brcat",
   "percentage",
-  "side"
+  "side",
+  "Total_Score",
+  "id",
+  "next_start",
+  "total_id",
+  "next_id"
 ))
