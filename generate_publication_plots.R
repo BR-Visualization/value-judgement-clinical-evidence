@@ -139,6 +139,50 @@ ggsave_custom(
   dpi = 600 # Higher DPI for publication quality
 )
 
+# Stacked bar chart
+data(comp_outcome)
+stacked_bar_fig <- stacked_barchart(
+  data = comp_outcome,
+  chartcolors = colfun()$fig12_colors,
+  ylabel = "Study Week"
+)
+
+ggsave_custom(
+  "inst/img/stacked_barchart.png",
+  imgpath = "./",
+  inplot = stacked_bar_fig,
+  wdth = 7,
+  hght = 7,
+  unts = "in",
+  dpi = 600 # Higher DPI for publication quality
+)
+
+# Divergent stacked bar chart
+divergent_stacked_bar_fig <- divergent_stacked_barchart(
+  data = comp_outcome,
+  chartcolors = colfun()$fig12_colors,
+  favcat = c(
+    "Benefit larger than threshold, with AE",
+    "Benefit larger than threshold, w/o AE"
+  ),
+  unfavcat = c(
+    "Withdrew",
+    "Benefit less than threshold, w/o AE",
+    "Benefit less than threshold, with AE"
+  ),
+  ylabel = "Study Week"
+)
+
+ggsave_custom(
+  "inst/img/divergent_stacked_barchart.png",
+  imgpath = "./",
+  inplot = divergent_stacked_bar_fig,
+  wdth = 7,
+  hght = 7,
+  unts = "in",
+  dpi = 600 # Higher DPI for publication quality
+)
+
 # ============================================================================
 # MCDA Comparison Plots
 # 4-panel visualization: Side-by-side Normalized Values | Difference | Weight | Benefit-Risk
