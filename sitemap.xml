@@ -1,11 +1,13 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://pkgdown.r-lib.org/404.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/CLAUDE.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/CODE_OF_CONDUCT.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/CONTRIBUTING.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/LICENSE-text.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/LICENSE.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/articles/brpubVJCE.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/articles/index.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/articles/mcda-value-function-types.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/articles/mcda-value-functions.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/authors.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/index.html</loc></url>
@@ -25,13 +27,18 @@
 <url><loc>https://pkgdown.r-lib.org/reference/check_feature_string.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/colfun.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/comp_outcome.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/compare_value_function_types.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/compare_value_functions.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/control_fonts.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/corr.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/corr2.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/create_correlogram.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/create_forest_dot_plot.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/create_mcda_barplot_comparison.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/create_mcda_brmap.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/create_mcda_walkthrough.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/create_mcda_waterfall.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/create_value_function_plot.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/cumexcess.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/divergent_stacked_barchart.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/effects_table.html</loc></url>
@@ -45,6 +52,8 @@
 <url><loc>https://pkgdown.r-lib.org/reference/index.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/labs_bold.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/mcda_data.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/mcda_tornado.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/plot_multiple_value_functions.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/prepare_br_calculated_ci.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/prepare_br_supplied_ci.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/prepare_forest_dot_data.html</loc></url>

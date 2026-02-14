@@ -7,6 +7,7 @@ Create MCDA Bar Chart: Calculation Walkthrough
 ``` r
 create_mcda_walkthrough(
   data = NULL,
+  study = NULL,
   comparator_name = "Placebo",
   comparison_drug = "Drug A",
   benefit_criteria = NULL,
@@ -21,17 +22,22 @@ create_mcda_walkthrough(
 
 - data:
 
-  A data frame in wide format with Treatment column and criteria
+  A data frame in wide format with Study, Treatment, and criteria
   columns. Required parameter - must be provided. Each row should
   contain raw values for a treatment on their original measurement
   scales. See
   [`mcda_data`](https://pkgdown.r-lib.org/reference/mcda_data.md) for
   example format.
 
+- study:
+
+  Character string specifying which study to analyze. If NULL, uses all
+  data (assumes single comparator). Default is NULL.
+
 - comparator_name:
 
   Character string specifying the name of the reference treatment (e.g.,
-  placebo or active control). Default is "Placebo".
+  placebo or active control). Required. Default is "Placebo".
 
 - comparison_drug:
 
@@ -81,17 +87,18 @@ performs worse than the comparator.
 # Load example MCDA data
 data(mcda_data)
 
-# View the data structure - each row has raw values for a treatment
+# View the data structure - each study has comparator and active treatment
 head(mcda_data)
-#>   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
-#> 1   Placebo      0.05        65         9   0.03  0.002
-#> 2    Drug A      0.46        20        60   0.19  0.015
-#> 3    Drug B      0.20        50        58   0.18  0.010
-#> 4    Drug C      0.46        57        45   0.36  0.020
-#> 5    Drug D      0.14        40        55   0.11  0.012
-#   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
-# 1   Placebo      0.05        65         9   0.30  0.087
-# 2    Drug A      0.46        20        60   0.46  0.100
+#>     Study Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
+#> 1 Study 1   Placebo      0.05        65         9   0.03  0.002
+#> 2 Study 1    Drug A      0.46        20        60   0.19  0.015
+#> 3 Study 2   Placebo      0.06        50        15   0.01  0.001
+#> 4 Study 2    Drug B      0.20        14        18   0.18  0.010
+#> 5 Study 3   Placebo      0.04        57        44   0.05  0.001
+#> 6 Study 3    Drug C      0.46        50        45   0.36  0.020
+#   Study      Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
+# 1 Study 1    Placebo      0.05        65         9   0.30  0.087
+# 2 Study 1    Drug A       0.46        20        60   0.46  0.100
 
 # Define clinical scales
 clinical_scales <- list(
@@ -105,6 +112,7 @@ clinical_scales <- list(
 # Create walkthrough showing the MCDA calculation steps for Drug B
 barplot_walk <- create_mcda_walkthrough(
   data = mcda_data,
+  study = "Study 2",
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug B",
@@ -157,6 +165,7 @@ clinical_scales <- list(
 
 barplot_walk_a <- create_mcda_walkthrough(
   data = mcda_data,
+  study = "Study 1",
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",

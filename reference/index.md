@@ -34,6 +34,10 @@
   for colors
 - [`comp_outcome`](https://pkgdown.r-lib.org/reference/comp_outcome.md)
   : Example composite outcome data used for Figure 12
+- [`compare_value_function_types()`](https://pkgdown.r-lib.org/reference/compare_value_function_types.md)
+  : Compare Different Value Function Types
+- [`compare_value_functions()`](https://pkgdown.r-lib.org/reference/compare_value_functions.md)
+  : Compare Value Functions for Benefits and Risks
 - [`control_fonts()`](https://pkgdown.r-lib.org/reference/control_fonts.md)
   : Control Fonts
 - [`corr`](https://pkgdown.r-lib.org/reference/corr.md) : Example
@@ -46,8 +50,14 @@
   : Create Forest and Dot Plots for Treatment Effects
 - [`create_mcda_barplot_comparison()`](https://pkgdown.r-lib.org/reference/create_mcda_barplot_comparison.md)
   : Create MCDA Bar Chart: Normalized Values Comparison
+- [`create_mcda_brmap()`](https://pkgdown.r-lib.org/reference/create_mcda_brmap.md)
+  : Create MCDA Benefit-Risk Map
 - [`create_mcda_walkthrough()`](https://pkgdown.r-lib.org/reference/create_mcda_walkthrough.md)
   : Create MCDA Bar Chart: Calculation Walkthrough
+- [`create_mcda_waterfall()`](https://pkgdown.r-lib.org/reference/create_mcda_waterfall.md)
+  : Create MCDA Waterfall Chart
+- [`create_value_function_plot()`](https://pkgdown.r-lib.org/reference/create_value_function_plot.md)
+  : Create Value Function Visualization
 - [`cumexcess`](https://pkgdown.r-lib.org/reference/cumexcess.md) :
   Example cumulative excess plot data used for Figure 13
 - [`divergent_stacked_barchart()`](https://pkgdown.r-lib.org/reference/divergent_stacked_barchart.md)
@@ -72,6 +82,10 @@
   Create expression
 - [`mcda_data`](https://pkgdown.r-lib.org/reference/mcda_data.md) :
   Example MCDA data in wide format
+- [`mcda_tornado()`](https://pkgdown.r-lib.org/reference/mcda_tornado.md)
+  : Create MCDA Tornado Plot
+- [`plot_multiple_value_functions()`](https://pkgdown.r-lib.org/reference/plot_multiple_value_functions.md)
+  : Compare Multiple Value Functions
 - [`prepare_br_calculated_ci()`](https://pkgdown.r-lib.org/reference/prepare_br_calculated_ci.md)
   : Prepare data analysis for binary and continuous outcomes with
   Calculated interval confidence identifies whether the dataframe is for

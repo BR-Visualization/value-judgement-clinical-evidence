@@ -6,16 +6,20 @@ library(brpubVJCE)
 
 ## Overview
 
-This package provides two MCDA visualization functions that implement
+This package provides three MCDA visualization functions that implement
 **clinical threshold-based normalization**:
 
 1.  **[`create_mcda_barplot_comparison()`](https://pkgdown.r-lib.org/reference/create_mcda_barplot_comparison.md)**:
     Shows normalized values for Placebo and Drug side-by-side with their
     difference
-2.  **`create_mcda_barplot_walkthrough()`**: Shows the complete MCDA
-    calculation from normalized differences through weighted scores
+2.  **[`create_mcda_walkthrough()`](https://pkgdown.r-lib.org/reference/create_mcda_walkthrough.md)**:
+    Shows the complete MCDA calculation from normalized differences
+    through weighted scores
+3.  **[`create_mcda_waterfall()`](https://pkgdown.r-lib.org/reference/create_mcda_waterfall.md)**:
+    Shows cumulative contribution of each criterion to the total
+    benefit-risk score
 
-Both functions use fixed clinical scales (global scales) rather than
+All functions use fixed clinical scales (global scales) rather than
 treatment-relative normalization (local scales), as recommended by
 FDA/EMA best practices and the PROTECT framework.
 
@@ -93,7 +97,7 @@ clinical_scales <- list(
   `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
   `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
   `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-  `Risk 2` = list(min = 0, max = 0.15, direction = "decreasing")
+  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 ```
 
@@ -116,6 +120,7 @@ weights <- c(
 ``` r
 barplot_comparison <- create_mcda_barplot_comparison(
   data = mcda_data,
+  study = "Study 1",
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
@@ -130,11 +135,37 @@ Placebo)
 **Walkthrough Plot: Shows complete MCDA calculation**
 
 ``` r
-barplot_walkthrough <- create_mcda_barplot_walkthrough(
+barplot_walkthrough <- create_mcda_walkthrough(
   data = mcda_data,
+  study = "Study 1",
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+```
+
+**Waterfall Plot: Shows cumulative contributions**
+
+``` r
+# Show all active treatments compared to their study-specific comparators
+waterfall_all <- create_mcda_waterfall(
+  data = mcda_data,
+  comparator_name = "Placebo",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+
+# Or analyze a single study
+waterfall_study1 <- create_mcda_waterfall(
+  data = mcda_data,
+  study = "Study 1",
+  comparator_name = "Placebo",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
   weights = weights,
   clinical_scales = clinical_scales
 )
@@ -157,6 +188,28 @@ Weighted contribution for each criterion - Total score = Sum of all
 contributions - Positive total = Drug has better overall benefit-risk
 profile - Negative total = Placebo has better overall benefit-risk
 profile
+
+## Interpreting the Waterfall Output
+
+The waterfall chart shows how criteria cumulatively contribute to the
+total benefit-risk score:
+
+**Bar Segments** - Each colored segment represents one criterion’s
+weighted contribution - Blue segments = Benefits (positive
+contribution) - Red segments = Risks (negative contribution) - Gray bar
+= Total score (cumulative sum)
+
+**Dotted Connector Lines** - Connect the end of one bar to the start of
+the next - Show cumulative progression toward total score
+
+**Interpretation** - Segments extending right = Favorable
+contributions - Segments extending left = Unfavorable contributions -
+The Total bar shows the net benefit-risk balance - Positive total = Drug
+favored over comparator - Negative total = Comparator favored over drug
+
+When showing all studies, each facet panel displays one active treatment
+compared to its study-specific comparator, allowing visual comparison
+across multiple drugs.
 
 ## Understanding Negative Normalized Values
 

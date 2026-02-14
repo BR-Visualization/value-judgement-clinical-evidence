@@ -43,7 +43,7 @@ calculate_log_odds_ratio_bin(
   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
   cl = 0.95
 )
-#> [2026-01-24 18:48:59] > log odds ratio CI for binary outcomes is calculated and saved
+#> [2026-02-14 18:22:35] > log odds ratio CI for binary outcomes is calculated and saved
 #>        diff        se     lower    upper
 #> 1 0.8979416 0.1369214 0.6295805 1.166303
 ```

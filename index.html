@@ -36,7 +36,8 @@
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="articles/mcda-value-functions.html">MCDA Clinical Threshold-Based Normalization</a></li>
+<li><a class="dropdown-item" href="articles/mcda-value-function-types.html">MCDA Value Function Types</a></li>
+    <li><a class="dropdown-item" href="articles/mcda-value-functions.html">MCDA Clinical Threshold-Based Normalization</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="news/index.html">Changelog</a></li>
@@ -65,7 +66,16 @@
 <ul>
 <li><a href="#installation">Installation</a></li>
 <li><a href="#figure---dot-forest-plot">Figure - Dot-Forest Plot</a></li>
+<li><a href="#figure---trade-off-plot">Figure - Trade-off Plot</a></li>
+<li><a href="#figure---correlogram">Figure - Correlogram</a></li>
+<li><a href="#figure---scatter-plot">Figure - Scatter Plot</a></li>
+<li><a href="#figure---divergent-stacked-bar-chart">Figure - Divergent Stacked Bar Chart</a></li>
 <li><a href="#figure---cumulative-excess-plot">Figure - Cumulative Excess Plot</a></li>
+<li><a href="#figure---value-function-types">Figure - Value Function Types</a></li>
+<li><a href="#figure---mcda-comparison-plot">Figure - MCDA Comparison Plot</a></li>
+<li><a href="#figure---mcda-waterfall-plot">Figure - MCDA Waterfall Plot</a></li>
+<li><a href="#figure---mcda-benefit-risk-map">Figure - MCDA Benefit-Risk Map</a></li>
+<li><a href="#figure---mcda-tornado-plot">Figure - MCDA Tornado Plot</a></li>
 </ul>
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
@@ -91,7 +101,7 @@
 <div class="section level2">
 <h2 id="figure---dot-forest-plot">Figure - Dot-Forest Plot<a class="anchor" aria-label="anchor" href="#figure---dot-forest-plot"></a>
 </h2>
-<p><img src="reference/figures/README-dot_forest_plot-1.png" width="100%"></p>
+<p><img src="reference/figures/README-dot_forest_plot-1.png" alt="" width="100%"></p>
 <details><summary>
 Click to learn more
 </summary><p><strong>Getting Help</strong></p>
@@ -118,14 +128,14 @@ Click to view sample code
 </details>
 </div>
 <div class="section level2">
-<h2 id="figure---cumulative-excess-plot">Figure - Cumulative Excess Plot<a class="anchor" aria-label="anchor" href="#figure---cumulative-excess-plot"></a>
+<h2 id="figure---trade-off-plot">Figure - Trade-off Plot<a class="anchor" aria-label="anchor" href="#figure---trade-off-plot"></a>
 </h2>
-<p><img src="reference/figures/README-cumulative_excess_plot-1.png" width="100%"></p>
+<p><img src="reference/figures/README-tradeoff_plot-1.png" alt="" width="100%"></p>
 <details><summary>
 Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
-<li>Documentation: Use <code><a href="reference/gensurv_combined.html">?gensurv_combined</a></code> for detailed function help</li>
+<li>Documentation: Use <code><a href="reference/generate_tradeoff_plot.html">?generate_tradeoff_plot</a></code> for detailed function help</li>
 <li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
 </li>
 <li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
@@ -136,23 +146,40 @@ Click to view sample code
 </summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/gensurv_combined.html">gensurv_combined</a></span><span class="op">(</span></span>
-<span>  df_plot <span class="op">=</span> <span class="va">cumexcess</span>, subjects_pt <span class="op">=</span> <span class="fl">100</span>, visits_pt <span class="op">=</span> <span class="fl">6</span>,</span>
-<span>  df_table <span class="op">=</span> <span class="va">cumexcess</span>, fig_colors_pt <span class="op">=</span> <span class="fu"><a href="reference/colfun.html">colfun</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">fig13_colors</span>,</span>
-<span>  rel_heights_table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
-<span>  legend_position_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">1.56</span><span class="op">)</span>,</span>
-<span>  titlename <span class="op">=</span></span>
-<span>    <span class="st">"Cumulative Excess # of Subjects w/ Events (per 100 Subjects)"</span>,</span>
-<span>  mar <span class="op">=</span> <span class="fl">32</span>,</span>
-<span>  mab <span class="op">=</span> <span class="fl">15</span>,</span>
-<span>  mcd <span class="op">=</span> <span class="fl">22</span></span>
+<span><span class="va">effects_table_filtered</span> <span class="op">&lt;-</span> <span class="va">effects_table</span> <span class="op">|&gt;</span></span>
+<span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Outcome</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Benefit 1"</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/generate_tradeoff_plot.html">generate_tradeoff_plot</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">effects_table_filtered</span>,</span>
+<span>  filter <span class="op">=</span> <span class="st">"None"</span>,</span>
+<span>  category <span class="op">=</span> <span class="st">"All"</span>,</span>
+<span>  benefit <span class="op">=</span> <span class="st">"Benefit 1"</span>,</span>
+<span>  risk <span class="op">=</span> <span class="st">"Risk 1"</span>,</span>
+<span>  type_risk <span class="op">=</span> <span class="st">"Crude proportions"</span>,</span>
+<span>  type_graph <span class="op">=</span> <span class="st">"Absolute risk"</span>,</span>
+<span>  ci <span class="op">=</span> <span class="st">"Yes"</span>,</span>
+<span>  ci_method <span class="op">=</span> <span class="st">"Calculated"</span>,</span>
+<span>  cl <span class="op">=</span> <span class="fl">0.95</span>,</span>
+<span>  mab <span class="op">=</span> <span class="fl">0.05</span>,</span>
+<span>  mar <span class="op">=</span> <span class="fl">0.45</span>,</span>
+<span>  threshold <span class="op">=</span> <span class="st">"Segmented line"</span>,</span>
+<span>  ratio <span class="op">=</span> <span class="fl">4</span>,</span>
+<span>  b1 <span class="op">=</span> <span class="fl">0.05</span>, b2 <span class="op">=</span> <span class="fl">0.1</span>, b3 <span class="op">=</span> <span class="fl">0.15</span>, b4 <span class="op">=</span> <span class="fl">0.2</span>, b5 <span class="op">=</span> <span class="fl">0.25</span>,</span>
+<span>  b6 <span class="op">=</span> <span class="fl">0.3</span>, b7 <span class="op">=</span> <span class="fl">0.35</span>, b8 <span class="op">=</span> <span class="fl">0.4</span>, b9 <span class="op">=</span> <span class="fl">0.45</span>, b10 <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  r1 <span class="op">=</span> <span class="fl">0.09</span>, r2 <span class="op">=</span> <span class="fl">0.17</span>, r3 <span class="op">=</span> <span class="fl">0.24</span>, r4 <span class="op">=</span> <span class="fl">0.3</span>, r5 <span class="op">=</span> <span class="fl">0.35</span>,</span>
+<span>  r6 <span class="op">=</span> <span class="fl">0.39</span>, r7 <span class="op">=</span> <span class="fl">0.42</span>, r8 <span class="op">=</span> <span class="fl">0.44</span>, r9 <span class="op">=</span> <span class="fl">0.45</span>, r10 <span class="op">=</span> <span class="fl">0.45</span>,</span>
+<span>  testdrug <span class="op">=</span> <span class="st">"Yes"</span>,</span>
+<span>  type_scale <span class="op">=</span> <span class="st">"Free"</span>,</span>
+<span>  lower_x <span class="op">=</span> <span class="fl">0</span>, upper_x <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  lower_y <span class="op">=</span> <span class="fl">0</span>, upper_y <span class="op">=</span> <span class="fl">0.5</span>,</span>
+<span>  chartcolors <span class="op">=</span> <span class="fu"><a href="reference/colfun.html">colfun</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">fig7_colors</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </details>
 </div>
 <div class="section level2">
 <h2 id="figure---correlogram">Figure - Correlogram<a class="anchor" aria-label="anchor" href="#figure---correlogram"></a>
 </h2>
-<p><img src="reference/figures/README-correlogram-1.png" width="100%"></p>
+<p><img src="reference/figures/README-correlogram-1.png" alt="" width="100%"></p>
 <details><summary>
 Click to learn more
 </summary><p><strong>Getting Help</strong></p>
@@ -172,10 +199,252 @@ Click to view sample code
 </details>
 </div>
 <div class="section level2">
+<h2 id="figure---scatter-plot">Figure - Scatter Plot<a class="anchor" aria-label="anchor" href="#figure---scatter-plot"></a>
+</h2>
+<p><img src="reference/figures/README-scatter_plot-1.png" alt="" width="100%"></p>
+<details><summary>
+Click to learn more
+</summary><p><strong>Getting Help</strong></p>
+<ul>
+<li>Documentation: Use <code><a href="reference/scatter_plot.html">?scatter_plot</a></code> for detailed function help</li>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+</li>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+</li>
+<li>Contact: Reach out to the package maintainers via GitHub</li>
+</ul></details><details><summary>
+Click to view sample code
+</summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit"</span>, <span class="st">"Risk"</span><span class="op">)</span></span>
+<span><span class="fu"><a href="reference/scatter_plot.html">scatter_plot</a></span><span class="op">(</span><span class="va">scatterplot</span>, <span class="va">outcome</span>, mab <span class="op">=</span> <span class="fl">0.2</span>, mar <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="section level2">
+<h2 id="figure---divergent-stacked-bar-chart">Figure - Divergent Stacked Bar Chart<a class="anchor" aria-label="anchor" href="#figure---divergent-stacked-bar-chart"></a>
+</h2>
+<p><img src="reference/figures/README-divergent_stacked_barchart-1.png" alt="" width="100%"></p>
+<details><summary>
+Click to learn more
+</summary><p><strong>Getting Help</strong></p>
+<ul>
+<li>Documentation: Use <code><a href="reference/divergent_stacked_barchart.html">?divergent_stacked_barchart</a></code> for detailed function help</li>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+</li>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+</li>
+<li>Contact: Reach out to the package maintainers via GitHub</li>
+</ul></details><details><summary>
+Click to view sample code
+</summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/divergent_stacked_barchart.html">divergent_stacked_barchart</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">comp_outcome</span>,</span>
+<span>  chartcolors <span class="op">=</span> <span class="fu"><a href="reference/colfun.html">colfun</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">fig12_colors</span>,</span>
+<span>  favcat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Benefit larger than threshold, with AE"</span>,</span>
+<span>    <span class="st">"Benefit larger than threshold, w/o AE"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  unfavcat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
+<span>    <span class="st">"Withdrew"</span>,</span>
+<span>    <span class="st">"Benefit less than threshold, w/o AE"</span>,</span>
+<span>    <span class="st">"Benefit less than threshold, with AE"</span></span>
+<span>  <span class="op">)</span>,</span>
+<span>  ylabel <span class="op">=</span> <span class="st">"Study Week"</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="section level2">
+<h2 id="figure---cumulative-excess-plot">Figure - Cumulative Excess Plot<a class="anchor" aria-label="anchor" href="#figure---cumulative-excess-plot"></a>
+</h2>
+<p><img src="reference/figures/README-cumulative_excess_plot-1.png" alt="" width="100%"></p>
+<details><summary>
+Click to learn more
+</summary><p><strong>Getting Help</strong></p>
+<ul>
+<li>Documentation: Use <code><a href="reference/gensurv_combined.html">?gensurv_combined</a></code> for detailed function help</li>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+</li>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+</li>
+<li>Contact: Reach out to the package maintainers via GitHub</li>
+</ul></details><details><summary>
+Click to view sample code
+</summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/gensurv_combined.html">gensurv_combined</a></span><span class="op">(</span></span>
+<span>  df_plot <span class="op">=</span> <span class="va">cumexcess</span>, subjects_pt <span class="op">=</span> <span class="fl">100</span>, visits_pt <span class="op">=</span> <span class="fl">6</span>,</span>
+<span>  df_table <span class="op">=</span> <span class="va">cumexcess</span>, fig_colors_pt <span class="op">=</span> <span class="fu"><a href="reference/colfun.html">colfun</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">fig13_colors</span>,</span>
+<span>  rel_heights_table <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">1</span>, <span class="fl">0.5</span><span class="op">)</span>,</span>
+<span>  legend_position_p <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">.1</span>, <span class="fl">1.56</span><span class="op">)</span>,</span>
+<span>  titlename <span class="op">=</span></span>
+<span>    <span class="st">"Cumulative Excess # of Subjects w/ Events (per 100 Subjects)"</span>,</span>
+<span>  mar <span class="op">=</span> <span class="fl">32</span>,</span>
+<span>  mab <span class="op">=</span> <span class="fl">15</span>,</span>
+<span>  mcd <span class="op">=</span> <span class="fl">22</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="section level2">
+<h2 id="figure---value-function-types">Figure - Value Function Types<a class="anchor" aria-label="anchor" href="#figure---value-function-types"></a>
+</h2>
+<p><img src="reference/figures/README-value_function_types-1.png" alt="" width="100%"></p>
+<details><summary>
+Click to learn more
+</summary><p><strong>Getting Help</strong></p>
+<ul>
+<li>Documentation: Use <code><a href="reference/compare_value_function_types.html">?compare_value_function_types</a></code> for detailed function help</li>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+</li>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+</li>
+<li>Contact: Reach out to the package maintainers via GitHub</li>
+</ul></details><details><summary>
+Click to view sample code
+</summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/compare_value_function_types.html">compare_value_function_types</a></span><span class="op">(</span></span>
+<span>  benefit_name <span class="op">=</span> <span class="st">"Efficacy"</span>,</span>
+<span>  benefit_min <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  benefit_max <span class="op">=</span> <span class="fl">100</span>,</span>
+<span>  benefit_label <span class="op">=</span> <span class="st">"Response Rate (%)"</span>,</span>
+<span>  risk_name <span class="op">=</span> <span class="st">"Safety"</span>,</span>
+<span>  risk_min <span class="op">=</span> <span class="fl">0</span>,</span>
+<span>  risk_max <span class="op">=</span> <span class="fl">50</span>,</span>
+<span>  risk_label <span class="op">=</span> <span class="st">"Adverse Event Rate (%)"</span>,</span>
+<span>  power <span class="op">=</span> <span class="fl">2</span>,</span>
+<span>  show_titles <span class="op">=</span> <span class="cn">FALSE</span>,</span>
+<span>  show_legend <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="section level2">
+<h2 id="figure---mcda-comparison-plot">Figure - MCDA Comparison Plot<a class="anchor" aria-label="anchor" href="#figure---mcda-comparison-plot"></a>
+</h2>
+<p><img src="reference/figures/README-mcda_barplot-1.png" alt="" width="100%"></p>
+<details><summary>
+Click to learn more
+</summary><p><strong>Getting Help</strong></p>
+<ul>
+<li>Documentation: Use <code><a href="reference/create_mcda_barplot_comparison.html">?create_mcda_barplot_comparison</a></code> for detailed function help</li>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+</li>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+</li>
+<li>Contact: Reach out to the package maintainers via GitHub</li>
+</ul></details><details><summary>
+Click to view sample code
+</summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/create_mcda_barplot_comparison.html">create_mcda_barplot_comparison</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
+<span>  study <span class="op">=</span> <span class="st">"Study 1"</span>,</span>
+<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
+<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
+<span>  comparison_drug <span class="op">=</span> <span class="st">"Drug A"</span>,</span>
+<span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span>,</span>
+<span>  weights <span class="op">=</span> <span class="va">weights</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="section level2">
+<h2 id="figure---mcda-waterfall-plot">Figure - MCDA Waterfall Plot<a class="anchor" aria-label="anchor" href="#figure---mcda-waterfall-plot"></a>
+</h2>
+<p><img src="reference/figures/README-mcda_waterfall-1.png" alt="" width="100%"></p>
+<details><summary>
+Click to learn more
+</summary><p><strong>Getting Help</strong></p>
+<ul>
+<li>Documentation: Use <code><a href="reference/create_mcda_waterfall.html">?create_mcda_waterfall</a></code> for detailed function help</li>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+</li>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+</li>
+<li>Contact: Reach out to the package maintainers via GitHub</li>
+</ul></details><details><summary>
+Click to view sample code
+</summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/create_mcda_waterfall.html">create_mcda_waterfall</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
+<span>  comparator_name <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
+<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
+<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
+<span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
+<span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="section level2">
+<h2 id="figure---mcda-benefit-risk-map">Figure - MCDA Benefit-Risk Map<a class="anchor" aria-label="anchor" href="#figure---mcda-benefit-risk-map"></a>
+</h2>
+<p><img src="reference/figures/README-mcda_brmap-1.png" alt="" width="100%"></p>
+<details><summary>
+Click to learn more
+</summary><p><strong>Getting Help</strong></p>
+<ul>
+<li>Documentation: Use <code><a href="reference/create_mcda_brmap.html">?create_mcda_brmap</a></code> for detailed function help</li>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+</li>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+</li>
+<li>Contact: Reach out to the package maintainers via GitHub</li>
+</ul></details><details><summary>
+Click to view sample code
+</summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/create_mcda_brmap.html">create_mcda_brmap</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
+<span>  comparator_name <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
+<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
+<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
+<span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
+<span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span>,</span>
+<span>  show_frontier <span class="op">=</span> <span class="cn">TRUE</span>,</span>
+<span>  show_labels <span class="op">=</span> <span class="cn">TRUE</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="section level2">
+<h2 id="figure---mcda-tornado-plot">Figure - MCDA Tornado Plot<a class="anchor" aria-label="anchor" href="#figure---mcda-tornado-plot"></a>
+</h2>
+<p><img src="reference/figures/README-mcda_tornado-1.png" alt="" width="100%"></p>
+<details><summary>
+Click to learn more
+</summary><p><strong>Getting Help</strong></p>
+<ul>
+<li>Documentation: Use <code><a href="reference/mcda_tornado.html">?mcda_tornado</a></code> for detailed function help</li>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+</li>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+</li>
+<li>Contact: Reach out to the package maintainers via GitHub</li>
+</ul></details><details><summary>
+Click to view sample code
+</summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
+<span></span>
+<span><span class="fu"><a href="reference/mcda_tornado.html">mcda_tornado</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">mcda_data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Study</span> <span class="op">==</span> <span class="st">"Study 1"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Study</span><span class="op">)</span>,</span>
+<span>  comparator_name <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
+<span>  comparison_drug <span class="op">=</span> <span class="st">"Drug A"</span>,</span>
+<span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
+<span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+</details>
+</div>
+<div class="section level2">
 <h2 id="citation">Citation<a class="anchor" aria-label="anchor" href="#citation"></a>
 </h2>
 <p>If you use this package in your research, please cite:</p>
-<div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"brpubVJCE"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">

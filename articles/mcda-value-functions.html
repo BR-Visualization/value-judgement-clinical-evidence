@@ -34,7 +34,8 @@
 <li class="active nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
   <ul class="dropdown-menu" aria-labelledby="dropdown-articles">
-<li><a class="dropdown-item" href="../articles/mcda-value-functions.html">MCDA Clinical Threshold-Based Normalization</a></li>
+<li><a class="dropdown-item" href="../articles/mcda-value-function-types.html">MCDA Value Function Types</a></li>
+    <li><a class="dropdown-item" href="../articles/mcda-value-functions.html">MCDA Clinical Threshold-Based Normalization</a></li>
   </ul>
 </li>
 <li class="nav-item"><a class="nav-link" href="../news/index.html">Changelog</a></li>
@@ -70,19 +71,23 @@
 <div class="section level2">
 <h2 id="overview">Overview<a class="anchor" aria-label="anchor" href="#overview"></a>
 </h2>
-<p>This package provides two MCDA visualization functions that implement
-<strong>clinical threshold-based normalization</strong>:</p>
+<p>This package provides three MCDA visualization functions that
+implement <strong>clinical threshold-based normalization</strong>:</p>
 <ol style="list-style-type: decimal">
 <li>
 <strong><code><a href="../reference/create_mcda_barplot_comparison.html">create_mcda_barplot_comparison()</a></code></strong>:
 Shows normalized values for Placebo and Drug side-by-side with their
 difference</li>
 <li>
-<strong><code>create_mcda_barplot_walkthrough()</code></strong>:
-Shows the complete MCDA calculation from normalized differences through
-weighted scores</li>
+<strong><code><a href="../reference/create_mcda_walkthrough.html">create_mcda_walkthrough()</a></code></strong>: Shows the
+complete MCDA calculation from normalized differences through weighted
+scores</li>
+<li>
+<strong><code><a href="../reference/create_mcda_waterfall.html">create_mcda_waterfall()</a></code></strong>: Shows
+cumulative contribution of each criterion to the total benefit-risk
+score</li>
 </ol>
-<p>Both functions use fixed clinical scales (global scales) rather than
+<p>All functions use fixed clinical scales (global scales) rather than
 treatment-relative normalization (local scales), as recommended by
 FDA/EMA best practices and the PROTECT framework.</p>
 </div>
@@ -170,7 +175,7 @@ Important Difference (MCID), or regulatory precedents.</p>
 <span>  `Benefit 2` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">100</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span>,</span>
 <span>  `Benefit 3` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">100</span>, direction <span class="op">=</span> <span class="st">"increasing"</span><span class="op">)</span>,</span>
 <span>  `Risk 1` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.5</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span>,</span>
-<span>  `Risk 2` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.15</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span></span>
+<span>  `Risk 2` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.3</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -193,6 +198,7 @@ difference</strong></p>
 <div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">barplot_comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_mcda_barplot_comparison.html">create_mcda_barplot_comparison</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
+<span>  study <span class="op">=</span> <span class="st">"Study 1"</span>,</span>
 <span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
 <span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
 <span>  comparison_drug <span class="op">=</span> <span class="st">"Drug A"</span>,</span>
@@ -204,11 +210,34 @@ Placebo)</p>
 <p><strong>Walkthrough Plot: Shows complete MCDA
 calculation</strong></p>
 <div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="va">barplot_walkthrough</span> <span class="op">&lt;-</span> <span class="fu">create_mcda_barplot_walkthrough</span><span class="op">(</span></span>
+<code class="sourceCode R"><span><span class="va">barplot_walkthrough</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_mcda_walkthrough.html">create_mcda_walkthrough</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
+<span>  study <span class="op">=</span> <span class="st">"Study 1"</span>,</span>
 <span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
 <span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
 <span>  comparison_drug <span class="op">=</span> <span class="st">"Drug A"</span>,</span>
+<span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
+<span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
+<span><span class="op">)</span></span></code></pre></div>
+<p><strong>Waterfall Plot: Shows cumulative contributions</strong></p>
+<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<code class="sourceCode R"><span><span class="co"># Show all active treatments compared to their study-specific comparators</span></span>
+<span><span class="va">waterfall_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_mcda_waterfall.html">create_mcda_waterfall</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
+<span>  comparator_name <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
+<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
+<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
+<span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
+<span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Or analyze a single study</span></span>
+<span><span class="va">waterfall_study1</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_mcda_waterfall.html">create_mcda_waterfall</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
+<span>  study <span class="op">=</span> <span class="st">"Study 1"</span>,</span>
+<span>  comparator_name <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
+<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
+<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
 <span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
 <span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -231,11 +260,32 @@ benefit-risk profile - Negative total = Placebo has better overall
 benefit-risk profile</p>
 </div>
 <div class="section level2">
+<h2 id="interpreting-the-waterfall-output">Interpreting the Waterfall Output<a class="anchor" aria-label="anchor" href="#interpreting-the-waterfall-output"></a>
+</h2>
+<p>The waterfall chart shows how criteria cumulatively contribute to the
+total benefit-risk score:</p>
+<p><strong>Bar Segments</strong> - Each colored segment represents one
+criterion’s weighted contribution - Blue segments = Benefits (positive
+contribution) - Red segments = Risks (negative contribution) - Gray bar
+= Total score (cumulative sum)</p>
+<p><strong>Dotted Connector Lines</strong> - Connect the end of one bar
+to the start of the next - Show cumulative progression toward total
+score</p>
+<p><strong>Interpretation</strong> - Segments extending right =
+Favorable contributions - Segments extending left = Unfavorable
+contributions - The Total bar shows the net benefit-risk balance -
+Positive total = Drug favored over comparator - Negative total =
+Comparator favored over drug</p>
+<p>When showing all studies, each facet panel displays one active
+treatment compared to its study-specific comparator, allowing visual
+comparison across multiple drugs.</p>
+</div>
+<div class="section level2">
 <h2 id="understanding-negative-normalized-values">Understanding Negative Normalized Values<a class="anchor" aria-label="anchor" href="#understanding-negative-normalized-values"></a>
 </h2>
 <p>Example: Drug has 19% adverse events, Placebo has 3% adverse
 events</p>
-<div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Clinical scale: min=0%, max=50%, direction="decreasing"</span></span>
 <span></span>
 <span><span class="co"># Step 1: Normalize separately</span></span>
