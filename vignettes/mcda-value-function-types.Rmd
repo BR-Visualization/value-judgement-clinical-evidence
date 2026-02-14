@@ -533,8 +533,8 @@ comparison_all <- data.frame(
   value = c(
     linear_decreasing(x_vals, 0, 50),
     piecewise_linear(x_vals, c(10, 25), c(-2, -3, -5), c(100, 80, 35)),
-    power_function(50 - x_vals, 0, 50, 2),  # Decreasing + risk-averse
-    100 - sigmoid_function(x_vals, 0, 50, 25, 0.15),  # Inverted sigmoid
+    power_function(50 - x_vals, 0, 50, 2),
+    100 - sigmoid_function(x_vals, 0, 50, 25, 0.15),
     step_function(x_vals, c(5, 15, 30), c(100, 75, 40, 0))
   ),
   type = rep(

@@ -607,9 +607,6 @@ create_mcda_waterfall <- function(
     all_connectors <- connector_lines
   }
 
-  # Determine factor levels for treatments
-  treatment_levels <- rownames(weighted_contributions)
-
   # Create the waterfall plot
   p_waterfall <- ggplot(
     waterfall_complete,
@@ -631,7 +628,13 @@ create_mcda_waterfall <- function(
       linewidth = 0.5,
       inherit.aes = FALSE
     ) +
-    facet_wrap(~factor(Treatment, levels = treatment_levels), nrow = 1) +
+    facet_wrap(
+      ~factor(
+        Treatment,
+        levels = rownames(weighted_contributions)
+      ),
+      nrow = 1
+    ) +
     scale_fill_manual(
       values = fig_colors_complete,
       drop = FALSE
