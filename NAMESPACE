@@ -82,7 +82,6 @@ importFrom(dplyr,ungroup)
 importFrom(forcats,fct_reorder)
 importFrom(ggExtra,ggMarginal)
 importFrom(ggforce,geom_ellipse)
-
 importFrom(ggrepel,geom_label_repel)
 importFrom(ggtext,element_markdown)
 importFrom(grid,gpar)
