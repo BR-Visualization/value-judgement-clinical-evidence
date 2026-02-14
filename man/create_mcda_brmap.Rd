@@ -73,7 +73,7 @@ is not provided.
 \description{
 Creates a benefit-risk map showing the trade-off between aggregated benefits
 and risks for each treatment. Each treatment is plotted as a point where the
-x-axis represents the total weighted benefit score (0-100 scale, used directly)
+x-axis represents the total weighted benefit score (0-100 scale)
 and the y-axis represents the transformed risk score (0-100 scale, calculated
 as 100 + risk_score). Higher is better on both axes: high benefit scores
 indicate more benefits vs comparator, high risk scores indicate better risk

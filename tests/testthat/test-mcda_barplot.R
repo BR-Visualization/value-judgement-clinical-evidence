@@ -44,7 +44,9 @@ test_that("mcda_data has correct structure", {
   expect_true(nrow(mcda_data) > 1)
 
   # Check that all outcome columns are numeric (except Treatment and Study)
-  numeric_cols <- colnames(mcda_data)[!colnames(mcda_data) %in% c("Treatment", "Study")]
+  numeric_cols <- colnames(mcda_data)[
+    !colnames(mcda_data) %in% c("Treatment", "Study")
+  ]
   expect_true(all(sapply(mcda_data[numeric_cols], is.numeric)))
 })
 

@@ -43,7 +43,8 @@
 #'   is not provided.
 #' @export
 #' @import ggplot2
-#' @importFrom dplyr mutate arrange group_by ungroup filter select bind_rows row_number summarise desc left_join
+#' @importFrom dplyr mutate arrange group_by ungroup filter select
+#'   bind_rows row_number summarise desc left_join
 #' @importFrom tidyr pivot_longer
 #' @importFrom stats end start
 #'
@@ -174,8 +175,9 @@ create_mcda_waterfall <- function(
     )
   }
 
-  # For waterfall, we process each study separately to match each active treatment
-  # with its study-specific comparator
+
+  # For waterfall, we process each study separately
+  # to match each active treatment with its comparator
 
   # Check if Study column exists
   if ("Study" %in% colnames(data)) {
@@ -244,7 +246,9 @@ create_mcda_waterfall <- function(
     for (i in seq_len(n_comparisons)) {
       treatment_names[i] <- all_comparisons[[i]]$treatment_name
       drug_actual_matrix[i, ] <- as.numeric(all_comparisons[[i]]$drug_values)
-      placebo_actual_matrix[i, ] <- as.numeric(all_comparisons[[i]]$placebo_values)
+      placebo_actual_matrix[i, ] <- as.numeric(
+        all_comparisons[[i]]$placebo_values
+      )
     }
 
     colnames(drug_actual_matrix) <- criteria_internal
@@ -524,24 +528,24 @@ create_mcda_waterfall <- function(
   }
 
   # Prepare waterfall data with cumulative sums
-  waterfall_data <- all_contrib %>%
+  waterfall_data <- all_contrib |>
     mutate(
       Criterion = factor(Criterion, levels = all_criteria)
-    ) %>%
-    arrange(Treatment, Criterion) %>%
-    group_by(Treatment) %>%
+    ) |>
+    arrange(Treatment, Criterion) |>
+    group_by(Treatment) |>
     mutate(
       end = cumsum(Contribution),
       start = dplyr::lag(end, default = 0),
       id = length(all_criteria) + 2 - row_number()
-    ) %>%
+    ) |>
     ungroup()
 
   # Add total bars if requested
   if (show_total) {
-    totals <- waterfall_data %>%
-      group_by(Treatment) %>%
-      summarise(Total_Score = sum(Contribution), .groups = "drop") %>%
+    totals <- waterfall_data |>
+      group_by(Treatment) |>
+      summarise(Total_Score = sum(Contribution), .groups = "drop") |>
       mutate(
         Criterion = factor(
           "Total",
@@ -554,7 +558,7 @@ create_mcda_waterfall <- function(
         Type = "Total"
       )
 
-    waterfall_complete <- bind_rows(waterfall_data, totals) %>%
+    waterfall_complete <- bind_rows(waterfall_data, totals) |>
       mutate(
         Criterion = factor(
           Criterion,
@@ -566,36 +570,36 @@ create_mcda_waterfall <- function(
     # Add total to colors
     fig_colors_complete <- c(fig_colors, "Total" = "#34495e")
   } else {
-    waterfall_complete <- waterfall_data %>%
+    waterfall_complete <- waterfall_data |>
       mutate(Type = factor(Type, levels = c("Benefit", "Risk")))
     fig_colors_complete <- fig_colors
   }
 
   # Create connector lines between segments
-  connector_lines <- waterfall_data %>%
-    arrange(Treatment, desc(id)) %>%
-    group_by(Treatment) %>%
+  connector_lines <- waterfall_data |>
+    arrange(Treatment, desc(id)) |>
+    group_by(Treatment) |>
     mutate(
       next_start = dplyr::lead(start),
       next_id = dplyr::lead(id)
-    ) %>%
-    filter(!is.na(next_start)) %>%
+    ) |>
+    filter(!is.na(next_start)) |>
     ungroup()
 
   # Add connectors from last criterion to Total (if showing total)
   if (show_total) {
-    last_to_total <- waterfall_data %>%
-      group_by(Treatment) %>%
-      filter(id == min(id)) %>%
-      ungroup() %>%
+    last_to_total <- waterfall_data |>
+      group_by(Treatment) |>
+      filter(id == min(id)) |>
+      ungroup() |>
       left_join(
-        totals %>% select(Treatment, total_end = end, total_id = id),
+        totals |> select(Treatment, total_end = end, total_id = id),
         by = "Treatment"
-      ) %>%
+      ) |>
       mutate(
         next_start = 0,
         next_id = total_id
-      ) %>%
+      ) |>
       select(Treatment, Criterion, end, id, next_start, next_id)
 
     all_connectors <- bind_rows(connector_lines, last_to_total)
@@ -669,7 +673,7 @@ create_mcda_waterfall <- function(
   # Add value labels if requested
   # Following the same labeling pattern as mcda_barplot.R
   if (show_labels) {
-    # Labels for criterion contributions - show all labels without threshold filtering
+    # Labels for criterion contributions
     p_waterfall <- p_waterfall +
       geom_text(
         data = filter(waterfall_complete, Criterion != "Total"),
@@ -705,7 +709,10 @@ create_mcda_waterfall <- function(
 
   # Add vertical line at zero
   p_waterfall <- p_waterfall +
-    geom_vline(xintercept = 0, linetype = "solid", color = "black", linewidth = 0.5)
+    geom_vline(
+      xintercept = 0, linetype = "solid",
+      color = "black", linewidth = 0.5
+    )
 
-  return(p_waterfall)
+  p_waterfall
 }

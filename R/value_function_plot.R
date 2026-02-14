@@ -164,7 +164,7 @@ create_value_function_plot <- function(
       panel.grid.minor = element_line(color = "gray95")
     )
 
-  return(p)
+  p
 }
 
 
@@ -264,7 +264,7 @@ compare_value_functions <- function(
   # Combine plots side by side
   combined_plot <- patchwork::wrap_plots(p_benefit, p_risk, ncol = 2)
 
-  return(combined_plot)
+  combined_plot
 }
 
 
@@ -381,7 +381,7 @@ plot_multiple_value_functions <- function(
 
   combined_plot <- patchwork::wrap_plots(plots_list, ncol = ncol)
 
-  return(combined_plot)
+  combined_plot
 }
 
 
@@ -710,5 +710,5 @@ compare_value_function_types <- function(
     patchwork::plot_layout(guides = "collect") &
     theme(legend.position = "bottom")
 
-  return(combined_plot)
+  combined_plot
 }

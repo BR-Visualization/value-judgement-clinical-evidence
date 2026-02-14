@@ -307,7 +307,9 @@ create_mcda_barplot_comparison <- function(
   )
 
   # Reverse criterion order for plotting (top to bottom)
-  combined_data$Criterion <- factor(combined_data$Criterion, levels = rev(all_criteria))
+  combined_data$Criterion <- factor(
+    combined_data$Criterion, levels = rev(all_criteria)
+  )
   diff_data$Criterion <- factor(diff_data$Criterion, levels = rev(all_criteria))
 
   # Define colors for treatments (active vs comparator)
@@ -355,7 +357,9 @@ create_mcda_barplot_comparison <- function(
     theme(
       legend.position = c(0.98, 0.98),
       legend.justification = c("right", "top"),
-      legend.background = element_rect(fill = "white", color = "darkgray", linewidth = 0.5),
+      legend.background = element_rect(
+        fill = "white", color = "darkgray", linewidth = 0.5
+      ),
       legend.margin = margin(4, 6, 4, 6),
       legend.key.size = unit(0.8, "lines"),
       legend.text = element_text(size = 9),
@@ -381,7 +385,10 @@ create_mcda_barplot_comparison <- function(
     scale_fill_manual(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
-    scale_x_continuous(limits = diff_lim, expand = expansion(mult = c(0.15, 0.15))) +
+    scale_x_continuous(
+      limits = diff_lim,
+      expand = expansion(mult = c(0.15, 0.15))
+    ) +
     labs(
       title = "Difference",
       x = NULL,
@@ -484,7 +491,10 @@ create_mcda_barplot_comparison <- function(
     scale_fill_manual(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
-    scale_x_continuous(limits = contrib_lim, expand = expansion(mult = c(0.15, 0.15))) +
+    scale_x_continuous(
+      limits = contrib_lim,
+      expand = expansion(mult = c(0.15, 0.15))
+    ) +
     labs(
       title = "Benefit-Risk",
       subtitle = sprintf("Total = %.1f", total_score),
@@ -1058,7 +1068,10 @@ create_mcda_walkthrough <- function(
     scale_fill_manual(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
-    scale_x_continuous(limits = norm_lim, expand = expansion(mult = c(0.15, 0.15))) +
+    scale_x_continuous(
+      limits = norm_lim,
+      expand = expansion(mult = c(0.15, 0.15))
+    ) +
     labs(
       title = "Difference",
       subtitle = paste0(
@@ -1113,7 +1126,10 @@ create_mcda_walkthrough <- function(
     scale_fill_manual(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
-    scale_x_continuous(limits = c(0, x_max), expand = expansion(mult = c(0.05, 0.15))) +
+    scale_x_continuous(
+      limits = c(0, x_max),
+      expand = expansion(mult = c(0.05, 0.15))
+    ) +
     labs(
       title = "Weight",
       subtitle = "Importance (%)",
@@ -1163,7 +1179,10 @@ create_mcda_walkthrough <- function(
     scale_fill_manual(
       values = c("Benefit" = fig_colors[1], "Risk" = fig_colors[2])
     ) +
-    scale_x_continuous(limits = contrib_lim, expand = expansion(mult = c(0.15, 0.15))) +
+    scale_x_continuous(
+      limits = contrib_lim,
+      expand = expansion(mult = c(0.15, 0.15))
+    ) +
     labs(
       title = "Benefit-Risk",
       subtitle = sprintf("Total = %.1f", drug_total),

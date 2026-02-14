@@ -2,7 +2,7 @@
 #'
 #' Creates a benefit-risk map showing the trade-off between aggregated benefits
 #' and risks for each treatment. Each treatment is plotted as a point where the
-#' x-axis represents the total weighted benefit score (0-100 scale, used directly)
+#' x-axis represents the total weighted benefit score (0-100 scale)
 #' and the y-axis represents the transformed risk score (0-100 scale, calculated
 #' as 100 + risk_score). Higher is better on both axes: high benefit scores
 #' indicate more benefits vs comparator, high risk scores indicate better risk
@@ -260,7 +260,9 @@ create_mcda_brmap <- function(
     for (i in seq_len(n_comparisons)) {
       treatment_names[i] <- all_comparisons[[i]]$treatment_name
       drug_actual_matrix[i, ] <- as.numeric(all_comparisons[[i]]$drug_values)
-      placebo_actual_matrix[i, ] <- as.numeric(all_comparisons[[i]]$placebo_values)
+      placebo_actual_matrix[i, ] <- as.numeric(
+        all_comparisons[[i]]$placebo_values
+      )
     }
 
     colnames(drug_actual_matrix) <- criteria_internal
@@ -514,11 +516,13 @@ create_mcda_brmap <- function(
   benefit_indices <- which(criteria_internal %in% benefit_criteria)
   risk_indices <- which(criteria_internal %in% risk_criteria)
 
-  # Calculate total benefit and risk scores for each treatment
-  # These are already weighted differences vs comparator from the MCDA calculations
+
+  # Total benefit and risk scores for each treatment
   # Positive values = better than comparator
   # Negative values = worse than comparator
-  benefit_scores <- rowSums(weighted_contributions[, benefit_indices, drop = FALSE])
+  benefit_scores <- rowSums(
+    weighted_contributions[, benefit_indices, drop = FALSE]
+  )
   risk_scores <- rowSums(weighted_contributions[, risk_indices, drop = FALSE])
 
   # Scale to 0-100 for visualization
@@ -528,11 +532,8 @@ create_mcda_brmap <- function(
   # or cap at 0-100 range
   benefits_scaled <- pmax(0, pmin(100, benefit_scores))
 
-  # For RISKS: Transform from negative scale to positive scale
-  # Risk score 0 (same as placebo) → 100 (best)
-  # Risk score -10 (slightly worse) → 90
-  # Risk score -100 (much worse) → 0 (worst)
-  # Formula: 100 + risk_score
+  # Transform risks from negative scale to positive:
+  # same as placebo maps to 100, much worse maps to 0.
   risks_scaled <- 100 + risk_scores
 
   # Cap risks at 0-100 range in case some treatments are better than placebo
@@ -672,5 +673,5 @@ create_mcda_brmap <- function(
       axis.title = element_text(size = 12)
     )
 
-  return(p_brmap)
+  p_brmap
 }
