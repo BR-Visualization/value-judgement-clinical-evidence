@@ -82,7 +82,9 @@ weights <- c(
 
 # Create sensitivity plot toggling criterion weight by 20 percent
 sensitivity_plot <- mcda_tornado(
-  data = mcda_data,
+  data = mcda_data |>
+           dplyr::filter(Study == "Study 1") |>
+             dplyr::select(-Study),
   comparison_drug = "Drug A",
   clinical_scales = clinical_scales,
   weights = weights
