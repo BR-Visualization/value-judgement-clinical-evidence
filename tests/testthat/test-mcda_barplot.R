@@ -43,8 +43,8 @@ test_that("mcda_data has correct structure", {
   # Check that we have multiple rows (placebo + drugs)
   expect_true(nrow(mcda_data) > 1)
 
-  # Check that all outcome columns are numeric (except Treatment)
-  numeric_cols <- colnames(mcda_data)[colnames(mcda_data) != "Treatment"]
+  # Check that all outcome columns are numeric (except Treatment and Study)
+  numeric_cols <- colnames(mcda_data)[!colnames(mcda_data) %in% c("Treatment", "Study")]
   expect_true(all(sapply(mcda_data[numeric_cols], is.numeric)))
 })
 
@@ -384,8 +384,8 @@ test_that("Integration: Full workflow with effects_table", {
   data("mcda_data", package = "brpubVJCE")
   expect_true(is.data.frame(mcda_data))
 
-  # Step 2: Get available criteria
-  criteria_cols <- setdiff(colnames(mcda_data), "Treatment")
+  # Step 2: Get available criteria (exclude Treatment and Study columns)
+  criteria_cols <- setdiff(colnames(mcda_data), c("Treatment", "Study"))
   expect_true(length(criteria_cols) > 0)
 
   # Step 3: Assume first 3 are benefits, rest are risks

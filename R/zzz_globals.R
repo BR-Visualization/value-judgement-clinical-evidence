@@ -44,5 +44,15 @@ utils::globalVariables(c(
   "time_to_benefit",
   "time_to_risk",
   "n_total_original",
-  "n"
+  "n",
+  "trt",
+  "visit",
+  "brcat",
+  "percentage",
+  "side",
+  "Total_Score",
+  "id",
+  "next_start",
+  "total_id",
+  "next_id"
 ))

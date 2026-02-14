@@ -139,19 +139,63 @@ ggsave_custom(
   dpi = 600 # Higher DPI for publication quality
 )
 
+# Stacked bar chart
+data(comp_outcome)
+stacked_bar_fig <- stacked_barchart(
+  data = comp_outcome,
+  chartcolors = colfun()$fig12_colors,
+  ylabel = "Study Week"
+)
+
+ggsave_custom(
+  "inst/img/stacked_barchart.png",
+  imgpath = "./",
+  inplot = stacked_bar_fig,
+  wdth = 7,
+  hght = 7,
+  unts = "in",
+  dpi = 600 # Higher DPI for publication quality
+)
+
+# Divergent stacked bar chart
+divergent_stacked_bar_fig <- divergent_stacked_barchart(
+  data = comp_outcome,
+  chartcolors = colfun()$fig12_colors,
+  favcat = c(
+    "Benefit larger than threshold, with AE",
+    "Benefit larger than threshold, w/o AE"
+  ),
+  unfavcat = c(
+    "Withdrew",
+    "Benefit less than threshold, w/o AE",
+    "Benefit less than threshold, with AE"
+  ),
+  ylabel = "Study Week"
+)
+
+ggsave_custom(
+  "inst/img/divergent_stacked_barchart.png",
+  imgpath = "./",
+  inplot = divergent_stacked_bar_fig,
+  wdth = 7,
+  hght = 7,
+  unts = "in",
+  dpi = 600 # Higher DPI for publication quality
+)
+
 # ============================================================================
-# MCDA Barplots
+# MCDA Comparison Plots
+# 4-panel visualization: Side-by-side Normalized Values | Difference | Weight | Benefit-Risk
+# Uses clinical threshold-based normalization to convert raw values to 0-100 scale
 # ============================================================================
 
 # Load MCDA data (generated from effects_table via data-raw/mcda_data.R)
 data("mcda_data")
 
 # --------------------------------------------------------------------------
-# MCDA Comparison Plot: Shows Normalized Placebo | Normalized Drug | Normalized Difference
-# Uses clinical threshold-based normalization to convert raw values to 0-100 scale
+# Define Clinical Scales and Weights (Used for All Drugs)
 # --------------------------------------------------------------------------
 
-# Define clinical scales (same as walkthrough - moved before comparison plot)
 clinical_scales <- list(
   `Benefit 1` = list(
     min = 0, # No efficacy (unacceptable)
@@ -175,33 +219,10 @@ clinical_scales <- list(
   ),
   `Risk 2` = list(
     min = 0, # No serious adverse events (ideal)
-    max = 0.15, # 15% SAE rate (concerning threshold)
+    max = 0.3, # 30% SAE rate (concerning threshold)
     direction = "decreasing"
   )
 )
-
-barplot_comp_a <- create_mcda_barplot_comparison(
-  data = mcda_data,
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
-  comparison_drug = "Drug A",
-  clinical_scales = clinical_scales # Required parameter for normalization
-)
-
-ggsave_custom(
-  "inst/img/barplot_mcda_comparison_drug_a.png",
-  imgpath = "./",
-  inplot = barplot_comp_a,
-  wdth = 12,
-  hght = 8,
-  unts = "in", # Single column width
-  dpi = 600 # Higher DPI for publication quality
-)
-
-# --------------------------------------------------------------------------
-# MCDA Walkthrough Plot: Clinical Threshold-Based Normalization
-# Shows 3 panels: Normalized Difference | Weights | Benefit-Risk
-# --------------------------------------------------------------------------
 
 # Define weights from stakeholder elicitation
 weights <- c(
@@ -212,23 +233,296 @@ weights <- c(
   `Risk 2` = 0.10
 )
 
-# Create MCDA walkthrough using clinical threshold-based normalization
-# Note: Direction for each criterion is specified in clinical_scales$direction
-barplot_walk_a <- create_mcda_walkthrough(
+# --------------------------------------------------------------------------
+# Drug A: MCDA Comparison Plot
+# --------------------------------------------------------------------------
+
+barplot_comp_a <- create_mcda_barplot_comparison(
   data = mcda_data,
+  study = "Study 1",
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
-  weights = weights,
-  clinical_scales = clinical_scales # Use clinical thresholds, not data-driven normalization
+  clinical_scales = clinical_scales,
+  weights = weights
 )
 
 ggsave_custom(
-  "inst/img/barplot_mcda_walkthrough_drug_a.png",
+  "inst/img/barplot_mcda_comparison_drug_a.png",
   imgpath = "./",
-  inplot = barplot_walk_a,
-  wdth = 12, # Width for 3 panels
+  inplot = barplot_comp_a,
+  wdth = 16, # Width for 4 panels
   hght = 6,
   unts = "in",
   dpi = 600 # Higher DPI for publication quality
 )
+
+# --------------------------------------------------------------------------
+# Drug B: MCDA Comparison Plot
+# --------------------------------------------------------------------------
+
+barplot_comp_b <- create_mcda_barplot_comparison(
+  data = mcda_data,
+  study = "Study 2",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  comparison_drug = "Drug B",
+  clinical_scales = clinical_scales,
+  weights = weights
+)
+
+ggsave_custom(
+  "inst/img/barplot_mcda_comparison_drug_b.png",
+  imgpath = "./",
+  inplot = barplot_comp_b,
+  wdth = 16, # Width for 4 panels
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Drug C: MCDA Comparison Plot
+# --------------------------------------------------------------------------
+
+barplot_comp_c <- create_mcda_barplot_comparison(
+  data = mcda_data,
+  study = "Study 3",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  comparison_drug = "Drug C",
+  clinical_scales = clinical_scales,
+  weights = weights
+)
+
+ggsave_custom(
+  "inst/img/barplot_mcda_comparison_drug_c.png",
+  imgpath = "./",
+  inplot = barplot_comp_c,
+  wdth = 16, # Width for 4 panels
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Drug D: MCDA Comparison Plot
+# --------------------------------------------------------------------------
+
+barplot_comp_d <- create_mcda_barplot_comparison(
+  data = mcda_data,
+  study = "Study 4",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  comparison_drug = "Drug D",
+  clinical_scales = clinical_scales,
+  weights = weights
+)
+
+ggsave_custom(
+  "inst/img/barplot_mcda_comparison_drug_d.png",
+  imgpath = "./",
+  inplot = barplot_comp_d,
+  wdth = 16, # Width for 4 panels
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# MCDA Waterfall Plot: Cumulative Contribution of Criteria
+# Shows how each criterion builds up to the total benefit-risk score
+# All active treatments compared to their study-specific comparators
+# --------------------------------------------------------------------------
+
+waterfall_all <- create_mcda_waterfall(
+  data = mcda_data,
+  comparator_name = "Placebo",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+
+ggsave_custom(
+  "inst/img/mcda_waterfall_all_drugs.png",
+  imgpath = "./",
+  inplot = waterfall_all,
+  wdth = 16, # Width for 4 drug panels
+  hght = 6,
+  unts = "in",
+  dpi = 600 # Higher DPI for publication quality
+)
+
+# --------------------------------------------------------------------------
+# MCDA Benefit-Risk Map: 2D Visualization of Benefits vs Risks
+# Shows all treatments positioned by their total benefit and risk scores
+# Higher is better on both axes
+# --------------------------------------------------------------------------
+
+brmap_all <- create_mcda_brmap(
+  data = mcda_data,
+  comparator_name = "Placebo",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  weights = weights,
+  clinical_scales = clinical_scales,
+  show_frontier = TRUE,
+  show_labels = TRUE
+)
+
+ggsave_custom(
+  "inst/img/mcda_benefit_risk_map.png",
+  imgpath = "./",
+  inplot = brmap_all,
+  wdth = 8,
+  hght = 8,
+  unts = "in",
+  dpi = 600 # Higher DPI for publication quality
+)
+
+# ============================================================================
+# Value Function Visualizations
+# Educational plots showing how raw clinical values are transformed to
+# normalized scores (0-100 scale) using linear and alternative value functions
+# ============================================================================
+
+# --------------------------------------------------------------------------
+# Single Value Function Example: Benefit (Increasing Direction)
+# Shows how higher raw efficacy values map to higher normalized values
+# --------------------------------------------------------------------------
+
+value_func_benefit <- create_value_function_plot(
+  criterion_name = "Response Rate",
+  min_val = 0,
+  max_val = 100,
+  direction = "increasing",
+  x_label = "Response Rate (%)",
+  show_title = TRUE,
+  show_reference_line = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_benefit_example.png",
+  imgpath = "./",
+  inplot = value_func_benefit,
+  wdth = 5,
+  hght = 4,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Single Value Function Example: Risk (Decreasing Direction)
+# Shows how lower raw adverse event rates map to higher normalized values
+# --------------------------------------------------------------------------
+
+value_func_risk <- create_value_function_plot(
+  criterion_name = "Adverse Events",
+  min_val = 0,
+  max_val = 50,
+  direction = "decreasing",
+  x_label = "Adverse Event Rate (%)",
+  show_title = TRUE,
+  show_reference_line = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_risk_example.png",
+  imgpath = "./",
+  inplot = value_func_risk,
+  wdth = 5,
+  hght = 4,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Side-by-Side Comparison: Benefit vs Risk Value Functions
+# Demonstrates how normalization direction differs between benefits and risks
+# --------------------------------------------------------------------------
+
+value_func_comparison <- compare_value_functions(
+  benefit_name = "Efficacy",
+  benefit_min = 0,
+  benefit_max = 100,
+  benefit_label = "Response Rate (%)",
+  risk_name = "Safety",
+  risk_min = 0,
+  risk_max = 50,
+  risk_label = "Adverse Event Rate (%)",
+  show_titles = TRUE,
+  show_reference_lines = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_comparison_benefit_risk.png",
+  imgpath = "./",
+  inplot = value_func_comparison,
+  wdth = 10,
+  hght = 4,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Multiple Value Functions from Clinical Scales
+# Shows all MCDA criteria value functions in a grid layout
+# Uses the same clinical_scales defined earlier for MCDA analyses
+# --------------------------------------------------------------------------
+
+value_func_multiple <- plot_multiple_value_functions(
+  clinical_scales = clinical_scales,
+  ncol = 3,
+  show_titles = TRUE,
+  show_reference_lines = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_multiple_criteria.png",
+  imgpath = "./",
+  inplot = value_func_multiple,
+  wdth = 12,
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
+# --------------------------------------------------------------------------
+# Comparison of Different Value Function Types
+# Educational plot comparing Linear (current standard) to alternative
+# approaches: Piecewise Linear, Exponential, Sigmoid, and Step functions
+# Shows why linear is the regulatory-preferred default
+# --------------------------------------------------------------------------
+
+value_func_types_comparison <- compare_value_function_types(
+  benefit_name = "Efficacy",
+  benefit_min = 0,
+  benefit_max = 100,
+  benefit_label = "Response Rate (%)",
+  risk_name = "Safety",
+  risk_min = 0,
+  risk_max = 50,
+  risk_label = "Adverse Event Rate (%)",
+  power = 2,
+  show_titles = FALSE,
+  show_legend = TRUE
+)
+
+ggsave_custom(
+  "inst/img/value_function_types_comparison.png",
+  imgpath = "./",
+  inplot = value_func_types_comparison,
+  wdth = 14,
+  hght = 5,
+  unts = "in",
+  dpi = 600
+)
+
+message("All publication plots generated successfully in inst/img/")
+message("Value function visualization plots:")
+message("  - value_function_benefit_example.png")
+message("  - value_function_risk_example.png")
+message("  - value_function_comparison_benefit_risk.png")
+message("  - value_function_multiple_criteria.png")
+message("  - value_function_types_comparison.png")
