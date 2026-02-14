@@ -27,7 +27,6 @@
 #' BRScore between the comparison and comparator treatments.
 #' @export
 #' @import ggplot2
-#' @importFrom ggpubr as_ggplot
 #'
 #' @examples
 #' # Load example MCDA data
@@ -60,7 +59,9 @@
 #'
 #' # Create sensitivity plot toggling criterion weight by 20 percent
 #' sensitivity_plot <- mcda_tornado(
-#'   data = mcda_data,
+#'   data = mcda_data |>
+#'            dplyr::filter(Study == "Study 1") |>
+#'              dplyr::select(-Study),
 #'   comparison_drug = "Drug A",
 #'   clinical_scales = clinical_scales,
 #'   weights = weights
@@ -376,10 +377,11 @@ mcda_tornado <- function(
     ggplot2::coord_cartesian(clip = "off")
 
   p_table <- ggplot2::ggplot(weight_table, aes(x = scenario, y = label_y -.07)) +
-    geom_hline(aes(yintercept = label_y + 0.40), color = "grey80", size = 0.5) +
-    geom_vline(xintercept = c(1.5, 2.5), color = "grey80", size = 0.5) +
+    geom_hline(aes(yintercept = label_y + 0.40), color = "grey80", linewidth = 0.5) +
+    geom_hline(yintercept = max(weight_table$label_y) + 0.40, color = "black", linewidth = 0.5) +
+    geom_vline(xintercept = c(1.5, 2.5), color = "grey80", linewidth = 0.5) +
     geom_text(aes(label = paste0(weight_pct, "%")), hjust = 0.5) +
-    scale_x_discrete(name = NULL, position = "top") +
+    scale_x_discrete(name = "Weight Change", position = "top") +
     scale_y_continuous(breaks = unique(df_bars$label_y), labels = NULL,
                        expand = c(0, 0),
                        limits = c(
@@ -388,27 +390,18 @@ mcda_tornado <- function(
                        )) +
     theme_void() +
     theme(
-      axis.text.x = element_text(color = "black", face = "plain", vjust = 3.5),
+      axis.title.x.top = element_text(color = "black", face = "bold", size = 10,
+                                       margin = ggplot2::margin(b = 0)),
+      axis.text.x.top = element_text(color = "black", face = "bold", size = 10,
+                                      margin = ggplot2::margin(b = -5)),
       axis.text.y = element_blank(),
       plot.margin = grid::unit(c(0, 0, 0, 0), "cm")
     )+
-    geom_hline(yintercept = min(weight_table$label_y) - 0.40, color = "grey80", size = 0.5)
+    geom_hline(yintercept = min(weight_table$label_y) - 0.40, color = "black", linewidth = 0.5)
 
   p_combined <- p_tornado + p_table +
     patchwork::plot_layout(ncol = 2, widths = c(3, 1))
 
-  g <- grid::grid.grabExpr({
-    grid::grid.newpage()
-    grid::grid.draw(patchwork::patchworkGrob(p_combined))
-    grid::grid.text(
-      "Weight Change",
-      x = 0.875,
-      y = 0.93,
-      gp = grid::gpar(fontsize = 10)
-    )
-  })
-
-  g_gg <- ggpubr::as_ggplot(g)
-  g_gg
+  p_combined
 
 }

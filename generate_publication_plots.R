@@ -381,6 +381,83 @@ ggsave_custom(
   dpi = 600 # Higher DPI for publication quality
 )
 
+# --------------------------------------------------------------------------
+# MCDA Tornado Plots: Sensitivity Analysis of Criterion Weights
+# Shows how ±20% changes in each criterion weight affect the BRScore
+# --------------------------------------------------------------------------
+
+tornado_a <- mcda_tornado(
+  data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
+  comparator_name = "Placebo",
+  comparison_drug = "Drug A",
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+
+ggsave_custom(
+  "inst/img/mcda_tornado_drug_a.png",
+  imgpath = "./",
+  inplot = tornado_a,
+  wdth = 10,
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
+tornado_b <- mcda_tornado(
+  data = mcda_data |> dplyr::filter(Study == "Study 2") |> dplyr::select(-Study),
+  comparator_name = "Placebo",
+  comparison_drug = "Drug B",
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+
+ggsave_custom(
+  "inst/img/mcda_tornado_drug_b.png",
+  imgpath = "./",
+  inplot = tornado_b,
+  wdth = 10,
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
+tornado_c <- mcda_tornado(
+  data = mcda_data |> dplyr::filter(Study == "Study 3") |> dplyr::select(-Study),
+  comparator_name = "Placebo",
+  comparison_drug = "Drug C",
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+
+ggsave_custom(
+  "inst/img/mcda_tornado_drug_c.png",
+  imgpath = "./",
+  inplot = tornado_c,
+  wdth = 10,
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
+tornado_d <- mcda_tornado(
+  data = mcda_data |> dplyr::filter(Study == "Study 4") |> dplyr::select(-Study),
+  comparator_name = "Placebo",
+  comparison_drug = "Drug D",
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+
+ggsave_custom(
+  "inst/img/mcda_tornado_drug_d.png",
+  imgpath = "./",
+  inplot = tornado_d,
+  wdth = 10,
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
 # ============================================================================
 # Value Function Visualizations
 # Educational plots showing how raw clinical values are transformed to
@@ -520,6 +597,11 @@ ggsave_custom(
 )
 
 message("All publication plots generated successfully in inst/img/")
+message("MCDA Tornado plots:")
+message("  - mcda_tornado_drug_a.png")
+message("  - mcda_tornado_drug_b.png")
+message("  - mcda_tornado_drug_c.png")
+message("  - mcda_tornado_drug_d.png")
 message("Value function visualization plots:")
 message("  - value_function_benefit_example.png")
 message("  - value_function_risk_example.png")
