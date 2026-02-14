@@ -380,7 +380,12 @@ mcda_tornado <- function(
     geom_vline(xintercept = c(1.5, 2.5), color = "grey80", size = 0.5) +
     geom_text(aes(label = paste0(weight_pct, "%")), hjust = 0.5) +
     scale_x_discrete(name = NULL, position = "top") +
-    scale_y_continuous(breaks = unique(df_bars$label_y), labels = NULL) +
+    scale_y_continuous(breaks = unique(df_bars$label_y), labels = NULL,
+                       expand = c(0, 0),
+                       limits = c(
+                         min(weight_table$label_y) - 0.25,
+                         max(weight_table$label_y) + 0.25
+                       )) +
     theme_void() +
     theme(
       axis.text.x = element_text(color = "black", face = "plain", vjust = 3.5),
