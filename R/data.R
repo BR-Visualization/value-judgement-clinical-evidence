@@ -56,7 +56,8 @@ NULL
 #'   each treatment within each study. Each unique treatment comparison from
 #'   the effects_table is assigned a Study identifier, and both the active
 #'   treatment and its comparator are included as separate rows. The MCDA
-#'   visualization functions (e.g., \code{\link{create_mcda_barplot_comparison}},
+#'   visualization functions
+#'   (e.g., \code{\link{create_mcda_barplot_comparison}},
 #'   \code{\link{create_mcda_walkthrough}}, \code{\link{create_mcda_waterfall}})
 #'   will calculate treatment differences from the comparator and normalize
 #'   values using clinical scales.

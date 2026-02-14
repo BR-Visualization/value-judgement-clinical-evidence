@@ -20,6 +20,7 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup, message=FALSE, warning=FALSE}
+library(brpubVJCE)
 library(ggplot2)
 library(dplyr)
 library(tidyr)
@@ -144,9 +145,9 @@ piecewise_linear <- function(x, breakpoints, slopes, intercepts) {
 x_ae_pw <- seq(0, 40, by = 0.5)
 
 # Calculate intercepts to ensure continuity
-# At x=0: value=100
-# At x=10: value=100-2*10=80
-# At x=25: value=80-3*(25-10)=35
+# At x 0: score 100
+# At x 10: score 80 (100 - 2*10)
+# At x 25: score 35 (80 - 3*15)
 
 breakpoints <- c(10, 25)
 slopes <- c(-2, -3, -5)
@@ -166,11 +167,24 @@ comparison_df <- data.frame(
 ggplot(comparison_df, aes(x = x, y = value, color = type, linetype = type)) +
   geom_line(linewidth = 1.2) +
   geom_vline(xintercept = breakpoints, linetype = "dotted", color = "gray40") +
-  annotate("text", x = 5, y = 95, label = "Mild", size = 3.5, color = "gray30") +
-  annotate("text", x = 17.5, y = 95, label = "Moderate", size = 3.5, color = "gray30") +
-  annotate("text", x = 32, y = 95, label = "Severe", size = 3.5, color = "gray30") +
-  scale_color_manual(values = c("Piecewise" = "#ca0020", "Linear" = "gray50")) +
-  scale_linetype_manual(values = c("Piecewise" = "solid", "Linear" = "dashed")) +
+  annotate(
+    "text", x = 5, y = 95,
+    label = "Mild", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 17.5, y = 95,
+    label = "Moderate", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 32, y = 95,
+    label = "Severe", size = 3.5, color = "gray30"
+  ) +
+  scale_color_manual(
+    values = c("Piecewise" = "#ca0020", "Linear" = "gray50")
+  ) +
+  scale_linetype_manual(
+    values = c("Piecewise" = "solid", "Linear" = "dashed")
+  ) +
   labs(
     title = "Piecewise Linear: AE Severity Regions",
     x = "Adverse Event Rate (%)",
@@ -247,10 +261,16 @@ for (p in powers) {
 ggplot(power_data, aes(x = x, y = value, color = power)) +
   geom_line(linewidth = 1.2) +
   geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "gray50") +
-  annotate("text", x = 75, y = 85, label = "b < 1: Risk-seeking\n(increasing returns)",
-           size = 3.5, color = "gray30", hjust = 0) +
-  annotate("text", x = 25, y = 20, label = "b > 1: Risk-averse\n(diminishing returns)",
-           size = 3.5, color = "gray30", hjust = 0) +
+  annotate(
+    "text", x = 75, y = 85,
+    label = "b < 1: Risk-seeking\n(increasing returns)",
+    size = 3.5, color = "gray30", hjust = 0
+  ) +
+  annotate(
+    "text", x = 25, y = 20,
+    label = "b > 1: Risk-averse\n(diminishing returns)",
+    size = 3.5, color = "gray30", hjust = 0
+  ) +
   scale_color_manual(values = c(
     "b = 0.5" = "#2c7bb6",
     "b = 1.0" = "gray50",
@@ -338,11 +358,24 @@ sigmoid_data <- rbind(
   )
 )
 
-ggplot(sigmoid_data, aes(x = x, y = value, color = steepness, linetype = steepness)) +
+ggplot(
+  sigmoid_data,
+  aes(
+    x = x, y = value,
+    color = steepness, linetype = steepness
+  )
+) +
   geom_line(linewidth = 1.2) +
-  geom_vline(xintercept = 50, linetype = "dotted", color = "gray40") +
-  geom_hline(yintercept = 50, linetype = "dotted", color = "gray40") +
-  annotate("text", x = 50, y = 5, label = "Midpoint", size = 3, color = "gray30") +
+  geom_vline(
+    xintercept = 50, linetype = "dotted", color = "gray40"
+  ) +
+  geom_hline(
+    yintercept = 50, linetype = "dotted", color = "gray40"
+  ) +
+  annotate(
+    "text", x = 50, y = 5,
+    label = "Midpoint", size = 3, color = "gray30"
+  ) +
   scale_color_manual(values = c(
     "k = 0.05" = "#2c7bb6",
     "k = 0.10" = "#fdae61",
@@ -412,10 +445,10 @@ step_function <- function(x, thresholds, values) {
 x_vals <- seq(0, 50, by = 0.5)
 
 # Example: AE severity categories
-# None (0-5%): value=100
-# Mild (5-15%): value=75
-# Moderate (15-30%): value=40
-# Severe (>30%): value=0
+# None (0-5%): score 100
+# Mild (5-15%): score 75
+# Moderate (15-30%): score 40
+# Severe (>30%): score 0
 
 thresholds <- c(5, 15, 30)
 values <- c(100, 75, 40, 0)
@@ -432,10 +465,22 @@ comparison_step <- data.frame(
 ggplot(comparison_step, aes(x = x, y = value, color = type, linetype = type)) +
   geom_line(linewidth = 1.2) +
   geom_vline(xintercept = thresholds, linetype = "dotted", color = "gray40") +
-  annotate("text", x = 2.5, y = 105, label = "None", size = 3.5, color = "gray30") +
-  annotate("text", x = 10, y = 105, label = "Mild", size = 3.5, color = "gray30") +
-  annotate("text", x = 22.5, y = 105, label = "Moderate", size = 3.5, color = "gray30") +
-  annotate("text", x = 40, y = 105, label = "Severe", size = 3.5, color = "gray30") +
+  annotate(
+    "text", x = 2.5, y = 105,
+    label = "None", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 10, y = 105,
+    label = "Mild", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 22.5, y = 105,
+    label = "Moderate", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 40, y = 105,
+    label = "Severe", size = 3.5, color = "gray30"
+  ) +
   scale_color_manual(values = c("Step" = "#ca0020", "Linear" = "gray50")) +
   scale_linetype_manual(values = c("Step" = "solid", "Linear" = "dashed")) +
   labs(
@@ -602,11 +647,14 @@ for (p in powers) {
 }
 
 # Calculate area under curve as a sensitivity metric
-auc_values <- sensitivity_data %>%
-  group_by(power_label) %>%
+auc_values <- sensitivity_data |>
+  group_by(power_label) |>
   summarise(auc = sum(value) / n(), .groups = "drop")
 
-p1 <- ggplot(sensitivity_data, aes(x = x, y = value, color = as.factor(power))) +
+p1 <- ggplot(
+  sensitivity_data,
+  aes(x = x, y = value, color = as.factor(power))
+) +
   geom_line(linewidth = 1.2) +
   scale_color_brewer(palette = "RdYlBu", direction = -1) +
   labs(
