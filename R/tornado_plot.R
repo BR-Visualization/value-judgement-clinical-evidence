@@ -159,16 +159,16 @@ mcda_tornado <- function(
 
   df_res <- df_res %>%
     mutate(
-      AVAL_clamped = ifelse(
-        direction == "increasing",
-        pmin(pmax(AVAL, WORST), BEST),
-        pmin(pmax(AVAL, BEST), WORST)
-      ),
+    #  AVAL_clamped = ifelse(
+    #    direction == "increasing",
+    #    pmin(pmax(AVAL, WORST), BEST),
+    #    pmin(pmax(AVAL, BEST), WORST)
+    #  ),
 
       trans_trt = ifelse(
         direction == "increasing",
-        (AVAL_clamped - WORST) / (BEST - WORST),
-        (BEST - AVAL_clamped) / (BEST - WORST)
+        100*(AVAL - WORST) / (BEST - WORST),
+        100* (BEST - AVAL) / (BEST - WORST)
       )
     )
 
@@ -367,8 +367,8 @@ mcda_tornado <- function(
       axis.line.x = ggplot2::element_line("black", size = 1),
       axis.ticks.x = ggplot2::element_line("black", size = 1),
       axis.ticks.length = grid::unit(0.2, "cm"),
-      axis.text.x = ggplot2::element_text(color = "black"),
-      axis.text.y = ggplot2::element_text(color = "black")
+      axis.text.x = ggplot2::element_text(color = "black", size = 10),
+      axis.text.y = ggplot2::element_text(color = "black", size = 10)
     ) +
     ggplot2::scale_x_continuous(
       sec.axis = ggplot2::dup_axis(name = NULL)
@@ -383,9 +383,9 @@ mcda_tornado <- function(
     scale_y_continuous(breaks = unique(df_bars$label_y), labels = NULL) +
     theme_void() +
     theme(
-      axis.text.x = element_text(color = "black", face = "plain"),
+      axis.text.x = element_text(color = "black", face = "plain", vjust = 3.5),
       axis.text.y = element_blank(),
-      plot.margin = grid::unit(c(0,0,0,0), "cm")
+      plot.margin = grid::unit(c(0, 0, 0, 0), "cm")
     )
 
   p_combined <- p_tornado + p_table +
@@ -398,7 +398,7 @@ mcda_tornado <- function(
       "Weight Change",
       x = 0.875,
       y = 0.93,
-      gp = grid::gpar(fontsize = 11)
+      gp = grid::gpar(fontsize = 10)
     )
   })
 
