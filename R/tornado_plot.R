@@ -375,23 +375,24 @@ mcda_tornado <- function(
     ) +
     ggplot2::coord_cartesian(clip = "off")
 
-  p_table <- ggplot2::ggplot(weight_table, aes(x = scenario, y = label_y)) +
-    geom_hline(aes(yintercept = label_y + 0.25), color = "grey80", size = 0.5) +
+  p_table <- ggplot2::ggplot(weight_table, aes(x = scenario, y = label_y -.07)) +
+    geom_hline(aes(yintercept = label_y + 0.40), color = "grey80", size = 0.5) +
     geom_vline(xintercept = c(1.5, 2.5), color = "grey80", size = 0.5) +
     geom_text(aes(label = paste0(weight_pct, "%")), hjust = 0.5) +
     scale_x_discrete(name = NULL, position = "top") +
     scale_y_continuous(breaks = unique(df_bars$label_y), labels = NULL,
                        expand = c(0, 0),
                        limits = c(
-                         min(weight_table$label_y) - 0.25,
-                         max(weight_table$label_y) + 0.25
+                         min(weight_table$label_y) - 0.40,
+                         max(weight_table$label_y) + 0.40
                        )) +
     theme_void() +
     theme(
       axis.text.x = element_text(color = "black", face = "plain", vjust = 3.5),
       axis.text.y = element_blank(),
       plot.margin = grid::unit(c(0, 0, 0, 0), "cm")
-    )
+    )+
+    geom_hline(yintercept = min(weight_table$label_y) - 0.40, color = "grey80", size = 0.5)
 
   p_combined <- p_tornado + p_table +
     patchwork::plot_layout(ncol = 2, widths = c(3, 1))
