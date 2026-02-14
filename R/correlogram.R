@@ -22,7 +22,6 @@
 #' @import rcompanion
 #' @import ggcorrplot
 #' @import stringr
-#' @importFrom ggtext element_markdown
 #' @importFrom ggforce geom_ellipse
 #' @importFrom stats cor
 #' @importFrom dplyr rename filter mutate
@@ -248,55 +247,50 @@ create_correlogram <- function(
     corr_df <- corr_df |> filter(x0 != y0)
   }
 
-  # Create markdown-formatted labels with colors
-  label_colors_horizontal <- ifelse(
+  # Create plain text labels with per-label color vectors.
+
+  # Note: ggtext::element_markdown() is incompatible with
+ # ggforce::geom_ellipse() — when both are present, HTML span tags render
+ # literally instead of being parsed. We use element_text() with color
+  # vectors instead, which works reliably across all platforms and devices.
+  label_colors_x <- ifelse(
     br[colnames(mat)] == "Benefit",
     fig_colors[1],
     fig_colors[2]
   )
-  label_colors_vertical <- ifelse(
+  label_colors_y <- ifelse(
     br[colnames(mat)] == "Benefit",
     fig_colors[1],
     fig_colors[2]
   )
 
-  labels_x_markdown <- paste0(
-    "<span style='color:",
-    label_colors_horizontal,
-    "'>",
-    str_wrap(colnames(mat), width = 7),
-    "</span>"
-  )
-  labels_y_markdown <- paste0(
-    "<span style='color:",
-    label_colors_vertical,
-    "'>",
-    str_wrap(colnames(mat), width = 7),
-    "</span>"
-  )
+  labels_x <- str_wrap(colnames(mat), width = 7)
+  labels_y <- str_wrap(colnames(mat), width = 7)
 
   fig <- ggplot(corr_df, aes(x0 = x0, y0 = y0, a = a, b = b, angle = angle)) +
     coord_fixed() +
     scale_x_continuous(
       breaks = seq_len(ncol(mat)),
-      labels = labels_x_markdown
+      labels = labels_x
     ) +
     scale_y_continuous(
       breaks = seq_len(ncol(mat)),
-      labels = labels_y_markdown
+      labels = labels_y
     ) +
     theme_minimal() +
     labs(x = NULL, y = NULL) +
     theme(
-      axis.text.x = ggtext::element_markdown(
+      axis.text.x = element_text(
         angle = 0,
         hjust = 0.5,
-        size = rel(1.2)
+        size = rel(1.2),
+        color = label_colors_x
       ),
-      axis.text.y = ggtext::element_markdown(
+      axis.text.y = element_text(
         angle = 0,
         hjust = 0.5,
-        size = rel(1.2)
+        size = rel(1.2),
+        color = label_colors_y
       ),
       plot.margin = margin(0, 0, 0, 0, unit = "cm"),
       legend.position = "top",
