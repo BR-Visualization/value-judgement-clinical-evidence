@@ -36,15 +36,12 @@ generate_plot <- function(name, expr) {
 
 # Source the main plot generation script
 cat("\nGenerating plots...\n")
-if (file.exists("dev/generate_publication_plots_with_fonts.R")) {
-  source("dev/generate_publication_plots_with_fonts.R", local = TRUE)
-  cat("\n✅ All plots generated from generate_publication_plots_with_fonts.R\n")
-} else if (file.exists("dev/generate_publication_plots.R")) {
+if (file.exists("dev/generate_publication_plots.R")) {
   source("dev/generate_publication_plots.R", local = TRUE)
   cat("\n✅ All plots generated from generate_publication_plots.R\n")
 } else {
   cat("\n⚠️  No plot generation script found\n")
-  cat("   Expected: dev/generate_publication_plots_with_fonts.R\n")
+  cat("   Expected: dev/generate_publication_plots.R\n")
 }
 
 cat("\n==================================\n")
