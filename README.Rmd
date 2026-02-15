@@ -356,7 +356,7 @@ gensurv_combined(
 
 ## Figure - Value Function Types
 
-```{r value_function_types, fig.width=14, fig.height=5, message = FALSE, echo = FALSE}
+```{r value_function_types, fig.width=10, fig.height=5, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
 compare_value_function_types(
@@ -366,7 +366,7 @@ compare_value_function_types(
   benefit_label = "Response Rate (%)",
   risk_name = "Safety",
   risk_min = 0,
-  risk_max = 50,
+  risk_max = 100,
   risk_label = "Adverse Event Rate (%)",
   power = 2,
   show_titles = FALSE,
@@ -396,7 +396,7 @@ compare_value_function_types(
   benefit_label = "Response Rate (%)",
   risk_name = "Safety",
   risk_min = 0,
-  risk_max = 50,
+  risk_max = 100,
   risk_label = "Adverse Event Rate (%)",
   power = 2,
   show_titles = FALSE,

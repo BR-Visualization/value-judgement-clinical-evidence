@@ -128,8 +128,17 @@ control_fonts <- function(
 #' visual consistency across plots of different sizes. Font size scales with the
 #' square root of the area to ensure readability.
 #'
+#' For combined plots (e.g., patchwork or cowplot layouts), use \code{ncol} and
+#' \code{nrow} to specify the panel grid. The function will compute the effective
+#' per-panel dimensions and size the font accordingly, so text remains
+#' appropriately sized after the layout engine shrinks each panel.
+#'
 #' @param width Figure width in inches
 #' @param height Figure height in inches
+#' @param ncol Number of panel columns in a combined layout (default: 1).
+#'   For example, a 2-column patchwork layout should use \code{ncol = 2}.
+#' @param nrow Number of panel rows in a combined layout (default: 1).
+#'   For example, a 2-row cowplot layout should use \code{nrow = 2}.
 #' @param reference_font_size Base font size for reference dimensions (default: 9pt)
 #' @param reference_width Reference width in inches (default: 7)
 #' @param reference_height Reference height in inches (default: 7)
@@ -145,22 +154,36 @@ control_fonts <- function(
 #'
 #' # Font config for a large 16×6 plot
 #' font_config(16, 6)
+#'
+#' # Font config for a 16×6 figure with 4 side-by-side panels
+#' # (each panel is effectively 4×6)
+#' font_config(16, 6, ncol = 4)
+#'
+#' # Font config for a 14×5 figure with 2 side-by-side panels
+#' font_config(14, 5, ncol = 2)
 font_config <- function(
   width,
   height,
+  ncol = 1,
+  nrow = 1,
   reference_font_size = 9,
   reference_width = 7,
   reference_height = 7,
   min_font_size = 6,
   max_font_size = 14
 ) {
+  # Compute effective per-panel dimensions for combined layouts
+  panel_width <- width / ncol
+  panel_height <- height / nrow
+
   # Calculate area ratio and scale by square root for proportional sizing
-  area_ratio <- sqrt((width * height) / (reference_width * reference_height))
+  area_ratio <- sqrt((panel_width * panel_height) /
+    (reference_width * reference_height))
   base_font_size <- reference_font_size * area_ratio
-  
+
   # Apply bounds
   base_font_size <- max(min_font_size, min(max_font_size, base_font_size))
-  
+
   # Return font configuration
   control_fonts(base_font_size = base_font_size)
 }

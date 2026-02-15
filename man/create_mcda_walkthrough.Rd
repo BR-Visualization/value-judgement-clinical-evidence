@@ -13,7 +13,8 @@ create_mcda_walkthrough(
   risk_criteria = NULL,
   weights = NULL,
   clinical_scales = NULL,
-  fig_colors = c("#0571b0", "#ca0020")
+  fig_colors = c("#0571b0", "#ca0020"),
+  base_font_size = 9
 )
 }
 \arguments{
@@ -55,6 +56,9 @@ PROTECT framework.}
 \item{fig_colors}{A vector of length 2 specifying colors for
 benefits and risks.
 Default is c("#0571b0", "#ca0020").}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 A grid arrangement of three panels showing: (1) Normalized

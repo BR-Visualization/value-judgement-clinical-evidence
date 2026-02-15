@@ -111,7 +111,7 @@ cumulative_excess_plot <- gensurv_combined(
   mar = 30,
   mab = 10,
   mcd = 15,
-  titlename_p = "Cumulative Excess # of Subjects w/ Events (per 1000 Subjects)",
+  titlename_p = "",
   base_font_size = fonts_7x7$p
 )
 
@@ -286,29 +286,35 @@ ggsave_custom(
   dpi = 600
 )
 
-# Value function types comparison (14×5)
-fonts_14x5 <- font_config(14, 5)
+# Value function types comparison — square panels via coord_fixed()
+# Figure width is proportional to combined axis ranges so each panel
+# is physically square. Both axes use 0-100 range so panels are equal size.
+vft_benefit_range <- 100
+vft_risk_range <- 100
+vft_height <- 5
+vft_width <- vft_height * (vft_benefit_range + vft_risk_range) / 100
+fonts_vft <- font_config(vft_width, vft_height)
 value_func_types_comparison <- compare_value_function_types(
   benefit_name = "Efficacy",
   benefit_min = 0,
-  benefit_max = 100,
+  benefit_max = vft_benefit_range,
   benefit_label = "Response Rate (%)",
   risk_name = "Safety",
   risk_min = 0,
-  risk_max = 50,
+  risk_max = vft_risk_range,
   risk_label = "Adverse Event Rate (%)",
   power = 2,
   show_titles = FALSE,
   show_legend = TRUE,
-  base_font_size = fonts_14x5$p
+  base_font_size = fonts_vft$p
 )
 
 ggsave_custom(
   "inst/img/value_function_types_comparison.png",
   imgpath = "./",
   inplot = value_func_types_comparison,
-  wdth = 14,
-  hght = 5,
+  wdth = vft_width,
+  hght = vft_height,
   unts = "in",
   dpi = 600
 )
@@ -543,7 +549,7 @@ message("  7×5 plots:  ", round(fonts_7x5$p, 1), "pt")
 message("  7×7 plots:  ", round(fonts_7x7$p, 1), "pt (reference)")
 message("  8×8 plots:  ", round(fonts_8x8$p, 1), "pt")
 message(" 10×4 plots:  ", round(fonts_10x4$p, 1), "pt")
+message("  ", vft_width, "×", vft_height, " plots:  ", round(fonts_vft$p, 1), "pt")
 message(" 10×6 plots:  ", round(fonts_10x6$p, 1), "pt")
 message(" 12×6 plots:  ", round(fonts_12x6$p, 1), "pt")
-message(" 14×5 plots:  ", round(fonts_14x5$p, 1), "pt")
 message(" 16×6 plots:  ", round(fonts_16x6$p, 1), "pt")

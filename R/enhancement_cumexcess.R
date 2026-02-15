@@ -165,7 +165,7 @@ gensurv_plot <- function(
     cowplot::draw_label(
       titlename,
       fontface = "bold",
-      size = 12
+      size = control_fonts(base_font_size = base_font_size)$h1
     )
 
   window_size <- 5
@@ -271,7 +271,8 @@ gensurv_plot <- function(
         ymax = upper_ci * base_subjects
       ),
       fill = "#0571b0",
-      alpha = 0.2
+      alpha = 0.2,
+      na.rm = TRUE
     ) +
     geom_ribbon(
       data = df_ben |> filter(diff * base_subjects < mab),
@@ -281,7 +282,8 @@ gensurv_plot <- function(
         ymax = upper_ci * base_subjects
       ),
       fill = "#504D4E",
-      alpha = 0.2
+      alpha = 0.2,
+      na.rm = TRUE
     ) +
     geom_ribbon(
       data = df_risk |> filter(diff * base_subjects <= mar),
@@ -291,7 +293,8 @@ gensurv_plot <- function(
         ymax = upper_ci * base_subjects
       ),
       fill = "#ca0020",
-      alpha = 0.2
+      alpha = 0.2,
+      na.rm = TRUE
     ) +
     geom_ribbon(
       data = df_risk |> filter(diff * base_subjects > mar),
@@ -301,7 +304,8 @@ gensurv_plot <- function(
         ymax = upper_ci * base_subjects
       ),
       fill = "#504D4E",
-      alpha = 0.2
+      alpha = 0.2,
+      na.rm = TRUE
     ) +
     geom_text(
       data = df_ben |>
@@ -611,8 +615,7 @@ gensurv_table <- function(
       y = "y"
     ),
     color = df_table1$color_ctrl_var,
-    family = "sans",
-    size = 3
+    size = base_font_size * 0.35
   )
 
   x_ctrl <- list(
@@ -702,8 +705,7 @@ gensurv_table <- function(
       y = "z"
     ),
     color = "black",
-    family = "sans",
-    size = 3
+    size = base_font_size * 0.35
   )
 
   extra_code1 <- labs(titles = "Number of Subjects")
@@ -913,7 +915,7 @@ gensurv_combined <- function(
     cowplot::draw_label(
       titlename_p,
       fontface = "bold",
-      size = 12
+      size = control_fonts(base_font_size = base_font_size)$h1
     )
 
   plot <- cowplot::plot_grid(

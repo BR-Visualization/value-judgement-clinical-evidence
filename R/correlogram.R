@@ -23,7 +23,7 @@
 #' @import tibble
 #' @import rcompanion
 #' @import ggcorrplot
-#' @import stringr
+
 #' @importFrom ggforce geom_ellipse
 #' @importFrom stats cor
 #' @importFrom dplyr rename filter mutate
@@ -267,8 +267,8 @@ create_correlogram <- function(
     fig_colors[2]
   )
 
-  labels_x <- str_wrap(colnames(mat), width = 7)
-  labels_y <- str_wrap(colnames(mat), width = 7)
+  labels_x <- colnames(mat)
+  labels_y <- colnames(mat)
 
   fig <- ggplot(corr_df, aes(x0 = x0, y0 = y0, a = a, b = b, angle = angle)) +
     coord_fixed() +

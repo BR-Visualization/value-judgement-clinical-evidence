@@ -7,6 +7,8 @@
 font_config(
   width,
   height,
+  ncol = 1,
+  nrow = 1,
   reference_font_size = 9,
   reference_width = 7,
   reference_height = 7,
@@ -18,6 +20,12 @@ font_config(
 \item{width}{Figure width in inches}
 
 \item{height}{Figure height in inches}
+
+\item{ncol}{Number of panel columns in a combined layout (default: 1).
+For example, a 2-column patchwork layout should use \code{ncol = 2}.}
+
+\item{nrow}{Number of panel rows in a combined layout (default: 1).
+For example, a 2-row cowplot layout should use \code{nrow = 2}.}
 
 \item{reference_font_size}{Base font size for reference dimensions (default: 9pt)}
 
@@ -36,6 +44,11 @@ List containing font configuration from control_fonts()
 Scales font size proportionally to figure dimensions to maintain
 visual consistency across plots of different sizes. Font size scales with the
 square root of the area to ensure readability.
+
+For combined plots (e.g., patchwork or cowplot layouts), use \code{ncol} and
+\code{nrow} to specify the panel grid. The function will compute the effective
+per-panel dimensions and size the font accordingly, so text remains
+appropriately sized after the layout engine shrinks each panel.
 }
 \examples{
 # Font config for a small 5×4 plot
@@ -43,4 +56,11 @@ font_config(5, 4)
 
 # Font config for a large 16×6 plot
 font_config(16, 6)
+
+# Font config for a 16×6 figure with 4 side-by-side panels
+# (each panel is effectively 4×6)
+font_config(16, 6, ncol = 4)
+
+# Font config for a 14×5 figure with 2 side-by-side panels
+font_config(14, 5, ncol = 2)
 }
