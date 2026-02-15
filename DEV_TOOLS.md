@@ -4,7 +4,28 @@ Development scripts and tools are in the **`dev/`** folder.
 
 ## 🤖 Automated Checks (Recommended)
 
-Install Git hooks to automate checks:
+### Lintr Pre-commit Hook ✅
+
+**Status: All 190 linting issues fixed!** Your code will now pass GitHub
+CI/CD.
+
+The pre-commit hook catches linting issues before they reach GitHub:
+
+``` bash
+# Verify everything is ready:
+Rscript verify-precommit-ready.R
+
+# The hook runs automatically on every commit:
+git add .
+git commit -m "your message"
+```
+
+See `LINTR_FIXES_SUMMARY.md` for what was fixed, or `PRECOMMIT_SETUP.md`
+for troubleshooting.
+
+### Other Git Hooks
+
+Install additional Git hooks:
 
 ``` bash
 ./dev/setup-git-hooks.sh

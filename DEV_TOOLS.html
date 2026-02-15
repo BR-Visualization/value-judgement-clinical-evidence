@@ -42,14 +42,29 @@
 <p>Development scripts and tools are in the <strong><code>dev/</code></strong> folder.</p>
 <div class="section level2">
 <h2 id="id_-automated-checks-recommended">🤖 Automated Checks (Recommended)<a class="anchor" aria-label="anchor" href="#id_-automated-checks-recommended"></a></h2>
-<p>Install Git hooks to automate checks:</p>
-<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="ex">./dev/setup-git-hooks.sh</span></span></code></pre></div>
+<div class="section level3">
+<h3 id="lintr-pre-commit-hook-">Lintr Pre-commit Hook ✅<a class="anchor" aria-label="anchor" href="#lintr-pre-commit-hook-"></a></h3>
+<p><strong>Status: All 190 linting issues fixed!</strong> Your code will now pass GitHub CI/CD.</p>
+<p>The pre-commit hook catches linting issues before they reach GitHub:</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb1-1"><a href="#cb1-1" tabindex="-1"></a><span class="co"># Verify everything is ready:</span></span>
+<span id="cb1-2"><a href="#cb1-2" tabindex="-1"></a><span class="ex">Rscript</span> verify-precommit-ready.R</span>
+<span id="cb1-3"><a href="#cb1-3" tabindex="-1"></a></span>
+<span id="cb1-4"><a href="#cb1-4" tabindex="-1"></a><span class="co"># The hook runs automatically on every commit:</span></span>
+<span id="cb1-5"><a href="#cb1-5" tabindex="-1"></a><span class="fu">git</span> add .</span>
+<span id="cb1-6"><a href="#cb1-6" tabindex="-1"></a><span class="fu">git</span> commit <span class="at">-m</span> <span class="st">"your message"</span></span></code></pre></div>
+<p>See <code>LINTR_FIXES_SUMMARY.md</code> for what was fixed, or <code>PRECOMMIT_SETUP.md</code> for troubleshooting.</p>
+</div>
+<div class="section level3">
+<h3 id="other-git-hooks">Other Git Hooks<a class="anchor" aria-label="anchor" href="#other-git-hooks"></a></h3>
+<p>Install additional Git hooks:</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">./dev/setup-git-hooks.sh</span></span></code></pre></div>
 <p>This will: - ✅ Run checks automatically before every commit - ✅ Regenerate plots before every push - ✅ Catch 95% of CI/CD issues before they reach GitHub!</p>
+</div>
 </div>
 <div class="section level2">
 <h2 id="id_-manual-checks">🔧 Manual Checks<a class="anchor" aria-label="anchor" href="#id_-manual-checks"></a></h2>
 <p>Or run checks manually:</p>
-<div class="sourceCode" id="cb2"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb2-1"><a href="#cb2-1" tabindex="-1"></a><span class="ex">Rscript</span> dev/quick-check.R  <span class="co"># Quick (~1 minute)</span></span></code></pre></div>
+<div class="sourceCode" id="cb3"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb3-1"><a href="#cb3-1" tabindex="-1"></a><span class="ex">Rscript</span> dev/quick-check.R  <span class="co"># Quick (~1 minute)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="full-documentation">Full Documentation<a class="anchor" aria-label="anchor" href="#full-documentation"></a></h2>
@@ -79,12 +94,12 @@
 <div class="section level2">
 <h2 id="common-workflows">Common Workflows<a class="anchor" aria-label="anchor" href="#common-workflows"></a></h2>
 <p><strong>Before committing:</strong></p>
-<div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
+<div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="fu">devtools</span><span class="fu">::</span><span class="fu">document</span><span class="op">(</span><span class="op">)</span>  <span class="co"># Update documentation</span></span></code></pre></div>
 <p><strong>Before pushing:</strong></p>
-<div class="sourceCode" id="cb5"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb5-1"><a href="#cb5-1" tabindex="-1"></a><span class="ex">Rscript</span> dev/quick-check.R  <span class="co"># Quick validation</span></span></code></pre></div>
+<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">Rscript</span> dev/quick-check.R  <span class="co"># Quick validation</span></span></code></pre></div>
 <p><strong>For thorough testing:</strong></p>
-<div class="sourceCode" id="cb6"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb6-1"><a href="#cb6-1" tabindex="-1"></a><span class="ex">Rscript</span> dev/pre-push-check.R  <span class="co"># Comprehensive checks</span></span></code></pre></div>
+<div class="sourceCode" id="cb7"><pre class="sourceCode bash"><code class="sourceCode bash"><span id="cb7-1"><a href="#cb7-1" tabindex="-1"></a><span class="ex">Rscript</span> dev/pre-push-check.R  <span class="co"># Comprehensive checks</span></span></code></pre></div>
 <hr><p><strong>See <code>dev/README.md</code> for complete documentation.</strong></p>
 </div>
 </div>
