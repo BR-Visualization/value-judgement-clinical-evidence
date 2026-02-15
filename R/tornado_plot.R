@@ -420,7 +420,7 @@ mcda_tornado <- function(
 
   p_table <- ggplot2::ggplot(
     weight_table,
-    ggplot2::aes(x = scenario, y = label_y - 0.07)
+    ggplot2::aes(x = scenario, y = label_y)
   ) +
     ggplot2::geom_hline(
       ggplot2::aes(yintercept = label_y + 0.40),
@@ -436,10 +436,12 @@ mcda_tornado <- function(
     ) +
     ggplot2::geom_text(
       ggplot2::aes(label = paste0(weight_pct, "%")),
-      hjust = 0.5
+      hjust = 0.5,
+      size = base_font_size * 0.35
     ) +
     ggplot2::scale_x_discrete(
-      name = "Weight Change", position = "top"
+      name = "Weight Change", position = "top",
+      expand = c(0.1, 0.1)
     ) +
     ggplot2::scale_y_continuous(
       breaks = unique(df_bars$label_y),
@@ -450,18 +452,19 @@ mcda_tornado <- function(
         max(weight_table$label_y) + 0.40
       )
     ) +
-    ggplot2::theme_void() +
+    ggplot2::theme_void(base_size = base_font_size) +
     ggplot2::theme(
       axis.title.x.top = ggplot2::element_text(
         color = "black", face = "bold", size = base_font_size * 1.11,
-        margin = ggplot2::margin(b = 0)
+        margin = ggplot2::margin(b = 5, t = 0)
       ),
       axis.text.x.top = ggplot2::element_text(
         color = "black", face = "bold", size = base_font_size * 1.11,
-        margin = ggplot2::margin(b = -5)
+        margin = ggplot2::margin(b = 5, t = 5),
+        vjust = 0.5
       ),
       axis.text.y = ggplot2::element_blank(),
-      plot.margin = grid::unit(c(0, 0, 0, 0), "cm")
+      plot.margin = grid::unit(c(0.3, 0, 0, 0), "cm")
     ) +
     ggplot2::geom_hline(
       yintercept = min(weight_table$label_y) - 0.40,
@@ -469,7 +472,7 @@ mcda_tornado <- function(
     )
 
   p_combined <- p_tornado + p_table +
-    patchwork::plot_layout(ncol = 2, widths = c(3, 1))
+    patchwork::plot_layout(ncol = 2, widths = c(2.5, 1.5))
 
   p_combined
 
