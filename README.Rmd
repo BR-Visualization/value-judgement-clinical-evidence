@@ -74,6 +74,9 @@ remotes::install_github("BR-Visualization/brpubVJCE")
 # Load the package and create the plot
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(12, 8)
+
 # Prepare the data and create the visualization
 prepared_data <- prepare_forest_dot_data(effects_table)
 result_plot <- create_forest_dot_plot(
@@ -83,7 +86,8 @@ result_plot <- create_forest_dot_plot(
     "Benefit 2" = -20,
     "Risk 1" = -0.05,
     "Risk 2" = -0.07
-  )
+  ),
+  base_font_size = fonts$p
 )
 
 # Display the plot
@@ -122,6 +126,9 @@ result_plot
 ```{r tradeoff_plot, fig.width=7, fig.height=7, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(7, 7)
+
 effects_table_filtered <- effects_table |>
   dplyr::filter(Outcome %in% c("Risk 1", "Benefit 1"))
 
@@ -148,7 +155,8 @@ generate_tradeoff_plot(
   type_scale = "Free",
   lower_x = 0, upper_x = 0.5,
   lower_y = 0, upper_y = 0.5,
-  chartcolors = colfun()$fig7_colors
+  chartcolors = colfun()$fig7_colors,
+  base_font_size = fonts$p
 )
 ```
 
@@ -203,7 +211,10 @@ generate_tradeoff_plot(
 ```{r correlogram, fig.width=12, fig.height=8, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
-create_correlogram(corr)
+# Configure fonts for plot dimensions
+fonts <- font_config(12, 8)
+
+create_correlogram(corr, base_font_size = fonts$p)
 ```
 
 <details>
@@ -230,8 +241,11 @@ create_correlogram(corr)
 ```{r scatter_plot, fig.width=7, fig.height=7, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(7, 7)
+
 outcome <- c("Benefit", "Risk")
-scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
+scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6, base_font_size = fonts$p)
 ```
 
 <details>
@@ -259,6 +273,9 @@ scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
 ```{r divergent_stacked_barchart, fig.width=7, fig.height=7, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(7, 7)
+
 divergent_stacked_barchart(
   data = comp_outcome,
   chartcolors = colfun()$fig12_colors,
@@ -271,7 +288,8 @@ divergent_stacked_barchart(
     "Benefit less than threshold, w/o AE",
     "Benefit less than threshold, with AE"
   ),
-  ylabel = "Study Week"
+  ylabel = "Study Week",
+  base_font_size = fonts$p
 )
 ```
 
@@ -312,6 +330,9 @@ divergent_stacked_barchart(
 ```{r cumulative_excess_plot, fig.width=12, fig.height=8, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(12, 8)
+
 gensurv_combined(
   df_plot = cumexcess, subjects_pt = 100, visits_pt = 6,
   df_table = cumexcess, fig_colors_pt = colfun()$fig13_colors,
@@ -321,7 +342,8 @@ gensurv_combined(
     "Cumulative Excess # of Subjects w/ Events (per 100 Subjects)",
   mar = 32,
   mab = 15,
-  mcd = 22
+  mcd = 22,
+  base_font_size = fonts$p
 )
 ```
 
@@ -359,6 +381,9 @@ gensurv_combined(
 ```{r value_function_types, fig.width=10, fig.height=5, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(10, 5)
+
 compare_value_function_types(
   benefit_name = "Efficacy",
   benefit_min = 0,
@@ -370,7 +395,8 @@ compare_value_function_types(
   risk_label = "Adverse Event Rate (%)",
   power = 2,
   show_titles = FALSE,
-  show_legend = TRUE
+  show_legend = TRUE,
+  base_font_size = fonts$p
 )
 ```
 
@@ -410,6 +436,9 @@ compare_value_function_types(
 ```{r mcda_barplot, fig.width=16, fig.height=6, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(16, 6)
+
 clinical_scales <- list(
   `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
   `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
@@ -430,7 +459,8 @@ create_mcda_barplot_comparison(
   risk_criteria = c("Risk 1", "Risk 2"),
   comparison_drug = "Drug A",
   clinical_scales = clinical_scales,
-  weights = weights
+  weights = weights,
+  base_font_size = fonts$p
 )
 ```
 
@@ -466,13 +496,17 @@ create_mcda_barplot_comparison(
 ```{r mcda_waterfall, fig.width=16, fig.height=6, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(16, 6)
+
 create_mcda_waterfall(
   data = mcda_data,
   comparator_name = "Placebo",
   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
   risk_criteria = c("Risk 1", "Risk 2"),
   weights = weights,
-  clinical_scales = clinical_scales
+  clinical_scales = clinical_scales,
+  base_font_size = fonts$p
 )
 ```
 
@@ -507,6 +541,9 @@ create_mcda_waterfall(
 ```{r mcda_brmap, fig.width=8, fig.height=8, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(8, 8)
+
 create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
@@ -515,7 +552,8 @@ create_mcda_brmap(
   weights = weights,
   clinical_scales = clinical_scales,
   show_frontier = TRUE,
-  show_labels = TRUE
+  show_labels = TRUE,
+  base_font_size = fonts$p
 )
 ```
 
@@ -552,12 +590,16 @@ create_mcda_brmap(
 ```{r mcda_tornado, fig.width=10, fig.height=6, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
+# Configure fonts for plot dimensions
+fonts <- font_config(10, 6)
+
 mcda_tornado(
   data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
   comparator_name = "Placebo",
   comparison_drug = "Drug A",
   weights = weights,
-  clinical_scales = clinical_scales
+  clinical_scales = clinical_scales,
+  base_font_size = fonts$p
 )
 ```
 
