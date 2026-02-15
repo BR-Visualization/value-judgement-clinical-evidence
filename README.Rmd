@@ -587,11 +587,11 @@ create_mcda_brmap(
 
 ## Figure - MCDA Tornado Plot
 
-```{r mcda_tornado, fig.width=10, fig.height=6, message = FALSE, echo = FALSE}
+```{r mcda_tornado, fig.width=14, fig.height=6, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
 # Configure fonts for plot dimensions
-fonts <- font_config(10, 6)
+fonts <- font_config(14, 6)
 
 mcda_tornado(
   data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
