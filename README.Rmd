@@ -70,12 +70,12 @@ remotes::install_github("BR-Visualization/brpubVJCE")
 
 ## Figure - Dot-Forest Plot
 
-```{r dot_forest_plot, fig.width=12, fig.height=8, message = FALSE, echo = FALSE}
+```{r dot_forest_plot, fig.width=7, fig.height=5, message = FALSE, echo = FALSE}
 # Load the package and create the plot
 library(brpubVJCE)
 
 # Configure fonts for plot dimensions
-fonts <- font_config(12, 8)
+fonts <- font_config(7, 5)
 
 # Prepare the data and create the visualization
 prepared_data <- prepare_forest_dot_data(effects_table)
@@ -123,11 +123,11 @@ result_plot
 
 ## Figure - Trade-off Plot
 
-```{r tradeoff_plot, fig.width=7, fig.height=7, message = FALSE, echo = FALSE}
+```{r tradeoff_plot, fig.width=5, fig.height=5, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
 # Configure fonts for plot dimensions
-fonts <- font_config(7, 7)
+fonts <- font_config(5, 5)
 
 effects_table_filtered <- effects_table |>
   dplyr::filter(Outcome %in% c("Risk 1", "Benefit 1"))
@@ -208,11 +208,11 @@ generate_tradeoff_plot(
 
 ## Figure - Correlogram
 
-```{r correlogram, fig.width=12, fig.height=8, message = FALSE, echo = FALSE}
+```{r correlogram, fig.width=7, fig.height=7, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
 # Configure fonts for plot dimensions
-fonts <- font_config(12, 8)
+fonts <- font_config(7, 7)
 
 create_correlogram(corr, base_font_size = fonts$p)
 ```
@@ -327,22 +327,19 @@ divergent_stacked_barchart(
 
 ## Figure - Cumulative Excess Plot
 
-```{r cumulative_excess_plot, fig.width=12, fig.height=8, message = FALSE, echo = FALSE}
+```{r cumulative_excess_plot, fig.width=7, fig.height=7, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
 # Configure fonts for plot dimensions
-fonts <- font_config(12, 8)
+fonts <- font_config(7, 7)
 
 gensurv_combined(
   df_plot = cumexcess, subjects_pt = 100, visits_pt = 6,
   df_table = cumexcess, fig_colors_pt = colfun()$fig13_colors,
-  rel_heights_table = c(1, 0.5),
-  legend_position_p = c(.1, 1.56),
-  titlename =
-    "Cumulative Excess # of Subjects w/ Events (per 100 Subjects)",
-  mar = 32,
-  mab = 15,
-  mcd = 22,
+  mar = 30,
+  mab = 10,
+  mcd = 15,
+  titlename_p = "",
   base_font_size = fonts$p
 )
 ```
@@ -381,7 +378,7 @@ gensurv_combined(
 ```{r value_function_types, fig.width=10, fig.height=5, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
-# Configure fonts for plot dimensions
+# Configure fonts for plot dimensions (both axes 0-100, so width = height * 2)
 fonts <- font_config(10, 5)
 
 compare_value_function_types(
@@ -587,11 +584,11 @@ create_mcda_brmap(
 
 ## Figure - MCDA Tornado Plot
 
-```{r mcda_tornado, fig.width=14, fig.height=6, message = FALSE, echo = FALSE}
+```{r mcda_tornado, fig.width=10, fig.height=6, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
 # Configure fonts for plot dimensions
-fonts <- font_config(14, 6)
+fonts <- font_config(10, 6)
 
 mcda_tornado(
   data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
