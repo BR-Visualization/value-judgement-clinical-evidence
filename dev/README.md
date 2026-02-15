@@ -53,8 +53,7 @@ This folder contains development scripts, tools, and documentation that are not 
 
 ### Example Scripts
 
-- **`generate_publication_plots_with_fonts.R`** - Examples using font scaling
-- **`generate_publication_plots.R`** - Original plotting examples
+- **`generate_publication_plots.R`** - Complete examples with font scaling
 - **`verify_tirs_fonts.R`** - Font rendering verification
 
 ## 🚀 Quick Start
