@@ -14,6 +14,8 @@
 #' @param type_c Allows user to revise the display. Default is "lower".
 #' @param method Allows user to modify the visualization method of the
 #' correlogram. Default is "square".
+#' @param base_font_size Numeric; base font size in points for all text
+#' elements in the plot (default: 9).
 #'
 #' @return A correlogram.
 #' @export
@@ -54,7 +56,8 @@ create_correlogram <- function(
   diagonal = FALSE,
   method = "square",
   type_c = "lower",
-  fig_colors = c("#0571b0", "#ca0020")
+  fig_colors = c("#0571b0", "#ca0020"),
+  base_font_size = 9
 ) {
   classes <- numeric()
   shortcs <- numeric()
@@ -277,7 +280,7 @@ create_correlogram <- function(
       breaks = seq_len(ncol(mat)),
       labels = labels_y
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     labs(x = NULL, y = NULL) +
     theme(
       axis.text.x = element_text(
@@ -309,7 +312,7 @@ create_correlogram <- function(
       panel.grid.minor = element_blank()
     ) +
     ggforce::geom_ellipse(color = "black", fill = "white") +
-    geom_text(aes(x = x0, y = y0, label = label), size = 3)
+    geom_text(aes(x = x0, y = y0, label = label), size = base_font_size * 0.35)
 
   fig
 }

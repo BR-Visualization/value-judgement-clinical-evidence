@@ -183,6 +183,8 @@
 #' @param lower_x,upper_x,lower_y,upper_y (`numeric`) specified axis limits
 #' @param chartcolors (`vector`) a vector of colors, the same number of levels
 #' as the number of treatments
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return a ggplot object
 #' @import shiny
@@ -275,7 +277,8 @@ generate_tradeoff_plot <- function(
   upper_x,
   lower_y,
   upper_y,
-  chartcolors
+  chartcolors,
+  base_font_size = 9
 ) {
   # preparing data for the tradeoff plot
   df_br <- prepare_tradeoff_data(
@@ -711,6 +714,7 @@ generate_tradeoff_plot <- function(
 
   myplot +
     br_charts_theme(
+      base_font_size = base_font_size,
       axis_line = element_blank(),
       axis.ticks.x = element_blank(),
       axis.ticks.y = element_blank()

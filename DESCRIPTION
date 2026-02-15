@@ -1,6 +1,7 @@
 Package: brpubVJCE
 Title: Charts to Integrate Value Judgement with Clinical Evidence
 Version: 0.0.1
+Date: 2026-02-14
 Authors@R: 
   c(person(given = "Lovemore",
            family = "Gakava",
@@ -58,7 +59,6 @@ Imports:
     ggcorrplot,
     stringr,
     ggforce,
-    ggh4x,
     gridExtra,
     tidyr
 Depends: 

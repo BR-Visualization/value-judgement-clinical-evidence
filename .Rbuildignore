@@ -21,3 +21,4 @@
 ^generate_publication_plots\.R$
 ^\.positai$
 ^CORRELOGRAM_DIAGNOSTIC_RESULTS\.md$
+^DEV_TOOLS\.md$

@@ -30,6 +30,8 @@
 #'   criterion_name. Default is NULL.
 #' @param y_label Character string for the y-axis label. Default is
 #'   "Value (0-100)".
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A ggplot object showing the value function transformation.
 #' @export
@@ -73,7 +75,8 @@ create_value_function_plot <- function(
   show_title = TRUE,
   show_reference_line = TRUE,
   x_label = NULL,
-  y_label = "Value (0-100)"
+  y_label = "Value (0-100)",
+  base_font_size = 9
 ) {
   # Input validation
   if (is.null(criterion_name)) {
@@ -156,10 +159,10 @@ create_value_function_plot <- function(
   # Apply labels and theme
   p <- p +
     do.call(labs, labs_args) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
-      plot.title = element_text(size = 12, face = "bold"),
-      axis.title = element_text(size = 11),
+      plot.title = element_text(size = base_font_size * 1.33, face = "bold"),
+      axis.title = element_text(size = base_font_size * 1.22),
       panel.grid.major = element_line(color = "lightgray"),
       panel.grid.minor = element_line(color = "gray95")
     )
@@ -196,6 +199,8 @@ create_value_function_plot <- function(
 #'   Default is TRUE.
 #' @param show_reference_lines Logical indicating whether to show horizontal
 #'   reference lines at value = 50. Default is TRUE.
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A combined plot (using patchwork) showing both value functions
 #'   side by side.
@@ -235,7 +240,8 @@ compare_value_functions <- function(
   risk_max = 50,
   risk_label = NULL,
   show_titles = TRUE,
-  show_reference_lines = TRUE
+  show_reference_lines = TRUE,
+  base_font_size = 9
 ) {
   # Create benefit plot (increasing direction)
   p_benefit <- create_value_function_plot(
@@ -246,7 +252,8 @@ compare_value_functions <- function(
     color = "#0571b0",
     show_title = show_titles,
     show_reference_line = show_reference_lines,
-    x_label = benefit_label
+    x_label = benefit_label,
+    base_font_size = base_font_size
   )
 
   # Create risk plot (decreasing direction)
@@ -258,7 +265,8 @@ compare_value_functions <- function(
     color = "#ca0020",
     show_title = show_titles,
     show_reference_line = show_reference_lines,
-    x_label = risk_label
+    x_label = risk_label,
+    base_font_size = base_font_size
   )
 
   # Combine plots side by side
@@ -287,6 +295,8 @@ compare_value_functions <- function(
 #'   titles. Default is TRUE.
 #' @param show_reference_lines Logical indicating whether to show horizontal
 #'   reference lines at value = 50. Default is TRUE.
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A combined plot (using patchwork) showing all value functions
 #'   in a grid layout.
@@ -321,7 +331,8 @@ plot_multiple_value_functions <- function(
   criteria = NULL,
   ncol = 2,
   show_titles = TRUE,
-  show_reference_lines = TRUE
+  show_reference_lines = TRUE,
+  base_font_size = 9
 ) {
   # Input validation
   if (is.null(clinical_scales)) {
@@ -368,7 +379,8 @@ plot_multiple_value_functions <- function(
       direction = scale$direction,
       color = plot_color,
       show_title = show_titles,
-      show_reference_line = show_reference_lines
+      show_reference_line = show_reference_lines,
+      base_font_size = base_font_size
     )
 
     plots_list[[criterion]] <- p
@@ -419,6 +431,8 @@ plot_multiple_value_functions <- function(
 #'   Default is TRUE.
 #' @param power Numeric value for the power/exponential function exponent.
 #'   Default is 2 (risk-averse, diminishing returns).
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A combined plot (using patchwork) showing value function type
 #'   comparisons for both benefits and risks side by side.
@@ -460,7 +474,8 @@ compare_value_function_types <- function(
   n_points = 100,
   show_titles = TRUE,
   show_legend = TRUE,
-  power = 2
+  power = 2,
+  base_font_size = 9
 ) {
   # Helper functions for different value function types
   linear_increasing <- function(x, min_val, max_val) {
@@ -664,10 +679,10 @@ compare_value_function_types <- function(
       y = "Value (0-100)",
       color = "Function Type"
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
-      plot.title = element_text(face = "bold", size = 11),
-      plot.subtitle = element_text(size = 9),
+      plot.title = element_text(face = "bold", size = base_font_size * 1.22),
+      plot.subtitle = element_text(size = base_font_size),
       legend.position = if (show_legend) "bottom" else "none",
       panel.grid.major = element_line(color = "lightgray")
     )
@@ -689,10 +704,10 @@ compare_value_function_types <- function(
       y = "Value (0-100)",
       color = "Function Type"
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
-      plot.title = element_text(face = "bold", size = 11),
-      plot.subtitle = element_text(size = 9),
+      plot.title = element_text(face = "bold", size = base_font_size * 1.22),
+      plot.subtitle = element_text(size = base_font_size),
       legend.position = if (show_legend) "bottom" else "none",
       panel.grid.major = element_line(color = "lightgray")
     )

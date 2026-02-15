@@ -14,7 +14,8 @@ compare_value_functions(
   risk_max = 50,
   risk_label = NULL,
   show_titles = TRUE,
-  show_reference_lines = TRUE
+  show_reference_lines = TRUE,
+  base_font_size = 9
 )
 }
 \arguments{
@@ -47,6 +48,9 @@ Default is TRUE.}
 
 \item{show_reference_lines}{Logical indicating whether to show horizontal
 reference lines at value = 50. Default is TRUE.}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 A combined plot (using patchwork) showing both value functions

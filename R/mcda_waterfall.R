@@ -38,6 +38,8 @@
 #'   Default is TRUE.
 #' @param label_threshold Minimum contribution value to show label.
 #'   Default is 0.5.
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A ggplot object showing the waterfall chart, or NULL if data
 #'   is not provided.
@@ -113,7 +115,8 @@ create_mcda_waterfall <- function(
   fig_colors = NULL,
   show_total = TRUE,
   show_labels = TRUE,
-  label_threshold = 0.5
+  label_threshold = 0.5,
+  base_font_size = 9
 ) {
   # Check if data is provided
   if (is.null(data)) {
@@ -655,10 +658,10 @@ create_mcda_waterfall <- function(
       x = "Cumulative Weighted Score Difference",
       y = NULL
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
       legend.position = "none",
-      axis.text.y = element_text(size = 9, hjust = 1, face = "bold"),
+      axis.text.y = element_text(size = base_font_size, hjust = 1, face = "bold"),
       panel.grid.major.y = element_blank(),
       panel.grid.minor.y = element_blank(),
       panel.grid.major.x = element_line(color = "grey92"),
@@ -669,7 +672,7 @@ create_mcda_waterfall <- function(
         linewidth = 1
       ),
       panel.spacing = unit(0, "lines"),
-      strip.text = element_text(size = 11, face = "bold"),
+      strip.text = element_text(size = base_font_size * 1.22, face = "bold"),
       strip.background = element_rect(fill = "white", color = NA)
     )
 
@@ -687,7 +690,7 @@ create_mcda_waterfall <- function(
           hjust = ifelse(Contribution < 0, 1.2, -0.1)
         ),
         inherit.aes = FALSE,
-        size = 3.5
+        size = base_font_size * 0.39
       )
 
     # Labels for total scores (if showing total)
@@ -702,7 +705,7 @@ create_mcda_waterfall <- function(
             hjust = ifelse(Contribution < 0, 1.2, -0.1)
           ),
           inherit.aes = FALSE,
-          size = 3.5
+          size = base_font_size * 0.39
         )
     }
   }

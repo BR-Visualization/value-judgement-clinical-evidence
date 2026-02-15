@@ -45,7 +45,8 @@ generate_tradeoff_plot(
   upper_x,
   lower_y,
   upper_y,
-  chartcolors
+  chartcolors,
+  base_font_size = 9
 )
 }
 \arguments{
@@ -252,6 +253,9 @@ specified risk tolerance}
 
 \item{chartcolors}{(\code{vector}) a vector of colors, the same number of levels
 as the number of treatments}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 a ggplot object

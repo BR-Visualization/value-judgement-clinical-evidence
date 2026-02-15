@@ -11,7 +11,8 @@ mcda_tornado(
   weights,
   clinical_scales,
   fig_colors = c("#0571b0", "#ca0020"),
-  weight_change = 20
+  weight_change = 20,
+  base_font_size = 9
 )
 }
 \arguments{
@@ -42,6 +43,9 @@ correlogram colors.}
 
 \item{weight_change}{A numerical input specifying the percentage change in
 weight that will be observed across the criterion. Default is 20.}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 A ggplot object displaying criterion-specific weights toggled by

@@ -9,6 +9,8 @@
 #' @param chartcolors `vector` a vector of colors, the same number of levels as
 #' the brcat variable
 #' @param ylabel `character` y label name, default is "Visit"
+#' @param base_font_size Numeric; base font size in points for all text
+#' elements in the plot (default: 9).
 #'
 #' @return a ggplot object
 #' @importFrom dplyr summarise
@@ -21,7 +23,7 @@
 #'   ylabel = "Study Week"
 #' )
 #'
-stacked_barchart <- function(data, chartcolors, ylabel = "Visit") {
+stacked_barchart <- function(data, chartcolors, ylabel = "Visit", base_font_size = 9) {
   all_columns <- c(
     "usubjid", "visit", "trt", "brcat"
   )
@@ -60,7 +62,7 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit") {
     geom_text(aes(label = round(percentage, 0)),
               color = ifelse(df_stacked$brcat == "Withdrew", "white", "black"),
               position = position_stack(vjust = 0.5),
-              size = control_fonts()$p * 0.45
+              size = base_font_size * 0.45
     ) +
     scale_x_continuous(expand = c(0.015, 0)) +
     xlab("Percentage") +
@@ -68,6 +70,7 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit") {
     guides(fill = guide_legend(title = "Outcome", nrow = 3, byrow = TRUE)) +
     labs(color = NULL) +
     br_charts_theme(
+      base_font_size = base_font_size,
       strip.text.x = element_text(hjust = 0.5),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
@@ -93,6 +96,8 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit") {
 #' @param unfavcat `vector` a vector of unfavorable categories in the desired
 #' plot order
 #' @param ylabel `character` y label name, default is "Visit"
+#' @param base_font_size Numeric; base font size in points for all text
+#' elements in the plot (default: 9).
 #'
 #' @return a ggplot object
 #' @importFrom dplyr summarise
@@ -111,7 +116,7 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit") {
 #' )
 #'
 divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
-                                       ylabel = "Visit") {
+                                       ylabel = "Visit", base_font_size = 9) {
   all_columns <- c(
     "usubjid", "visit", "trt", "brcat"
   )
@@ -155,7 +160,7 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
     geom_text(aes(label = ifelse(side == "Left", -percentage, percentage)),
               color = ifelse(df_stacked$brcat == "Withdrew", "white", "black"),
               position = position_stack(vjust = 0.5),
-              size = control_fonts()$p * 0.45) +
+              size = base_font_size * 0.45) +
     scale_x_continuous(breaks = seq(-100, 100, 20),
                        limits = c(-100, 100),
                        expand = c(0, 0),
@@ -168,6 +173,7 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
     guides(fill = guide_legend(title = "Outcome", nrow = 3, byrow = TRUE)) +
     labs(color = NULL) +
     br_charts_theme(
+      base_font_size = base_font_size,
       strip.text.x = element_text(hjust = 0.5),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),

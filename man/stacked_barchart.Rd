@@ -4,7 +4,7 @@
 \alias{stacked_barchart}
 \title{Stacked Bar Chart}
 \usage{
-stacked_barchart(data, chartcolors, ylabel = "Visit")
+stacked_barchart(data, chartcolors, ylabel = "Visit", base_font_size = 9)
 }
 \arguments{
 \item{data}{\code{dataframe} a data frame with a minimum of 4 variables named the
@@ -20,6 +20,9 @@ following:
 the brcat variable}
 
 \item{ylabel}{\code{character} y label name, default is "Visit"}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 a ggplot object

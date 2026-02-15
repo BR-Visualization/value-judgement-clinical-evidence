@@ -21,6 +21,8 @@
 #'   correlogram colors.
 #' @param weight_change A numerical input specifying the percentage change in
 #'   weight that will be observed across the criterion. Default is 20.
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A ggplot object displaying criterion-specific weights toggled by
 #' a specified percentage (default is 20), and the corresponding difference in
@@ -73,7 +75,8 @@ mcda_tornado <- function(
     weights,
     clinical_scales,
     fig_colors = c("#0571b0", "#ca0020"),
-    weight_change = 20
+    weight_change = 20,
+    base_font_size = 9
 ) {
 
   df_brscore <- tidyr::pivot_longer(
@@ -393,7 +396,7 @@ mcda_tornado <- function(
       labels = unique_lab,
       values = vec_color
     ) +
-    ggplot2::theme_minimal() +
+    ggplot2::theme_minimal(base_size = base_font_size) +
     ggplot2::labs(
       x = paste0(
         "BRScore (", comparison_drug, "-", comparator_name, ")"
@@ -407,8 +410,8 @@ mcda_tornado <- function(
       axis.line.x = ggplot2::element_line("black", size = 1),
       axis.ticks.x = ggplot2::element_line("black", size = 1),
       axis.ticks.length = grid::unit(0.2, "cm"),
-      axis.text.x = ggplot2::element_text(color = "black", size = 10),
-      axis.text.y = ggplot2::element_text(color = "black", size = 10)
+      axis.text.x = ggplot2::element_text(color = "black", size = base_font_size * 1.11),
+      axis.text.y = ggplot2::element_text(color = "black", size = base_font_size * 1.11)
     ) +
     ggplot2::scale_x_continuous(
       sec.axis = ggplot2::dup_axis(name = NULL)
@@ -450,11 +453,11 @@ mcda_tornado <- function(
     ggplot2::theme_void() +
     ggplot2::theme(
       axis.title.x.top = ggplot2::element_text(
-        color = "black", face = "bold", size = 10,
+        color = "black", face = "bold", size = base_font_size * 1.11,
         margin = ggplot2::margin(b = 0)
       ),
       axis.text.x.top = ggplot2::element_text(
-        color = "black", face = "bold", size = 10,
+        color = "black", face = "bold", size = base_font_size * 1.11,
         margin = ggplot2::margin(b = -5)
       ),
       axis.text.y = ggplot2::element_blank(),

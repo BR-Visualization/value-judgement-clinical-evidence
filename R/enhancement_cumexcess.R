@@ -46,6 +46,9 @@
 #' @import colorBlindness
 #' @import ggtext
 #'
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
+#'
 #' @examples
 #' gensurv_plot(cumexcess, 100, 6,
 #'   titlename =
@@ -65,7 +68,8 @@ gensurv_plot <- function(
   legend_position = c(-0.03, 1.15),
   mar,
   mab,
-  mcd
+  mcd,
+  base_font_size = 9
 ) {
   outcome <- active <- control <- sd_diff <- lower_ci <- upper_ci <- NULL
   eventtime <- obsv_duration <- obsv_unit <- eff_diff_lbl <- color_group <- NULL
@@ -366,7 +370,7 @@ gensurv_plot <- function(
       title = paste0(ben_name, "\n(>0: Favours ", active, ")"),
       subtitle = paste0(risk_name, "\n(>0: Favours ", control, ")")
     ) +
-    br_charts_theme() +
+    br_charts_theme(base_font_size = base_font_size) +
     theme(
       axis.ticks.x = element_blank(),
       axis.ticks.y = element_blank(),
@@ -478,6 +482,8 @@ gensurv_plot <- function(
 #' @param fig_colors Allows the user to change the colors of the table
 #' (defaults are provided). Must be vector of length 2, with color corresponding
 #' to benefit second and risk first.
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A table.
 #' @export
@@ -487,7 +493,8 @@ gensurv_table <- function(
   df_table,
   base_subjects,
   visits,
-  fig_colors = c("#0571b0", "#ca0020")
+  fig_colors = c("#0571b0", "#ca0020"),
+  base_font_size = 9
 ) {
   effect <- outcome <- visit <- y <- color_ctrl_var <- z <- NULL
   eff_code <- eventtime <- obsv_duration <- subjects <- NULL
@@ -643,7 +650,7 @@ gensurv_table <- function(
     scale_x_control +
     scale_y_control +
     extra_code2 +
-    br_charts_theme() +
+    br_charts_theme(base_font_size = base_font_size) +
     theme(
       plot.title = ggplot2::element_text(size = 8),
       axis.ticks.x = element_blank(),
@@ -729,7 +736,7 @@ gensurv_table <- function(
     scale_x_control1 +
     scale_y_control1 +
     extra_code1 +
-    br_charts_theme() +
+    br_charts_theme(base_font_size = base_font_size) +
     theme(
       plot.title = ggplot2::element_text(size = 8),
       axis.ticks.x = element_blank(),
@@ -802,6 +809,8 @@ gensurv_table <- function(
 #' the team, must be numerical.
 #' @param mcd The minimum clinically important difference of the treatment, as
 #' discussed by the team, must be numerical.
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A combined cumulative excess plot and table.
 #' @export
@@ -829,7 +838,8 @@ gensurv_combined <- function(
   rel_heights_table = c(1, 0.4),
   ben_name_p = "Primary Efficacy",
   risk_name_p = "Recurring AE",
-  legend_position_p = c(-0.03, 1.15)
+  legend_position_p = c(-0.03, 1.15),
+  base_font_size = 9
 ) {
   if (!is.null(df_table$eventtime)) {
     all_columns <- c(
@@ -895,7 +905,8 @@ gensurv_combined <- function(
     legend_position = legend_position_p,
     mab = mab,
     mar = mar,
-    mcd = mcd
+    mcd = mcd,
+    base_font_size = base_font_size
   )
 
   mytitle <- cowplot::ggdraw() +
@@ -918,7 +929,8 @@ gensurv_combined <- function(
     df_table,
     subjects_pt,
     visits_pt,
-    fig_colors = fig_colors_pt
+    fig_colors = fig_colors_pt,
+    base_font_size = base_font_size
   )
 
   plot <- cowplot::plot_grid(

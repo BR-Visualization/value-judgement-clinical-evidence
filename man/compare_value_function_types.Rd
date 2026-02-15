@@ -16,7 +16,8 @@ compare_value_function_types(
   n_points = 100,
   show_titles = TRUE,
   show_legend = TRUE,
-  power = 2
+  power = 2,
+  base_font_size = 9
 )
 }
 \arguments{
@@ -55,6 +56,9 @@ Default is TRUE.}
 
 \item{power}{Numeric value for the power/exponential function exponent.
 Default is 2 (risk-averse, diminishing returns).}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 A combined plot (using patchwork) showing value function type
