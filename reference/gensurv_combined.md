@@ -148,10 +148,6 @@ gensurv_combined(
 #> ℹ Please use `linewidth` instead.
 #> ℹ The deprecated feature was likely used in the brpubVJCE package.
 #>   Please report the issue to the authors.
-#> Warning: Removed 4 rows containing missing values or values outside the scale range
-#> (`geom_ribbon()`).
-#> Warning: Removed 4 rows containing missing values or values outside the scale range
-#> (`geom_ribbon()`).
 #> Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
 #> ℹ Please use tidy evaluation idioms with `aes()`.
 #> ℹ See also `vignette("ggplot2-in-packages")` for more information.

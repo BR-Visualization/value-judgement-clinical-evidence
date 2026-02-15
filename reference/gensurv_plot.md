@@ -112,8 +112,4 @@ gensurv_plot(cumexcess, 100, 6,
   mab = 10,
   mcd = 20
 )
-#> Warning: Removed 4 rows containing missing values or values outside the scale range
-#> (`geom_ribbon()`).
-#> Warning: Removed 4 rows containing missing values or values outside the scale range
-#> (`geom_ribbon()`).
 ```
