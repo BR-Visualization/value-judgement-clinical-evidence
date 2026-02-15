@@ -635,7 +635,7 @@ create_forest_dot_plot <- function(
         shape_scale +
         fill_scale +
         labs(x = if (is_last_plot) "<br>Treatment Response" else NULL) +
-        theme_minimal(base_size = base_font_size, base_family = "sans") +
+        theme_minimal(base_size = base_font_size) +
         theme(
           panel.border = element_rect(
             color = "gray90",

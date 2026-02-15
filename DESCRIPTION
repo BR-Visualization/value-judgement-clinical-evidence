@@ -57,7 +57,6 @@ Imports:
     tibble,
     rcompanion,
     ggcorrplot,
-    stringr,
     ggforce,
     gridExtra,
     tidyr

@@ -690,7 +690,7 @@ create_mcda_waterfall <- function(
           hjust = ifelse(Contribution < 0, 1.2, -0.1)
         ),
         inherit.aes = FALSE,
-        size = base_font_size * 0.39
+        size = base_font_size * 0.35
       )
 
     # Labels for total scores (if showing total)
@@ -705,7 +705,7 @@ create_mcda_waterfall <- function(
             hjust = ifelse(Contribution < 0, 1.2, -0.1)
           ),
           inherit.aes = FALSE,
-          size = base_font_size * 0.39
+          size = base_font_size * 0.35
         )
     }
   }

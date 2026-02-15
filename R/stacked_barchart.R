@@ -62,7 +62,7 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit", base_font_size
     geom_text(aes(label = round(percentage, 0)),
               color = ifelse(df_stacked$brcat == "Withdrew", "white", "black"),
               position = position_stack(vjust = 0.5),
-              size = base_font_size * 0.45
+              size = base_font_size * 0.35
     ) +
     scale_x_continuous(expand = c(0.015, 0)) +
     xlab("Percentage") +
@@ -160,7 +160,7 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
     geom_text(aes(label = ifelse(side == "Left", -percentage, percentage)),
               color = ifelse(df_stacked$brcat == "Withdrew", "white", "black"),
               position = position_stack(vjust = 0.5),
-              size = base_font_size * 0.45) +
+              size = base_font_size * 0.35) +
     scale_x_continuous(breaks = seq(-100, 100, 20),
                        limits = c(-100, 100),
                        expand = c(0, 0),

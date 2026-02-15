@@ -539,11 +539,16 @@ compare_value_function_types <- function(
   benefit_bp2 <- benefit_min + 0.6 * benefit_range
 
   # For piecewise increasing: slow start, faster middle, slower end
+  # Intercepts ensure continuity: seg1 ends at slope1*bp1 + int1,
+
+  # seg2 starts there, seg3 starts where seg2 ends.
+  seg1_end <- 0.5 * (benefit_bp1 - benefit_min) + 0
+  seg2_end <- 2 * (benefit_bp2 - benefit_bp1) + seg1_end
   benefit_piecewise <- piecewise_linear(
     x_benefit,
     c(benefit_bp1, benefit_bp2),
-    c(0.5, 2, 0.5),  # slopes
-    c(0, 10, 70)     # intercepts
+    c(0.5, 2, 0.5),              # slopes
+    c(0, seg1_end, seg2_end)     # intercepts (continuous)
   )
 
   # Calculate midpoint for sigmoid
@@ -604,11 +609,15 @@ compare_value_function_types <- function(
   risk_bp2 <- risk_min + 0.5 * risk_range
 
   # For piecewise decreasing (risks)
+  # Compute intercepts to ensure continuity at breakpoints
+  risk_seg1_start <- 100
+  risk_seg1_end <- -2 * (risk_bp1 - risk_min) + risk_seg1_start
+  risk_seg2_end <- -3 * (risk_bp2 - risk_bp1) + risk_seg1_end
   risk_piecewise <- piecewise_linear(
     x_risk,
     c(risk_bp1, risk_bp2),
-    c(-2, -3, -5),         # slopes (increasing concern)
-    c(100, 80, 35)         # intercepts
+    c(-2, -3, -5),                                    # slopes (increasing concern)
+    c(risk_seg1_start, risk_seg1_end, risk_seg2_end)  # intercepts (continuous)
   )
 
   # Calculate midpoint for sigmoid
@@ -670,10 +679,19 @@ compare_value_function_types <- function(
     "Step"
   )
 
+  # Compute coord_fixed ratio so each panel is square.
+  # ratio = (x_range / y_range) keeps 1 data-unit on x equal in physical
+
+  # length to (x_range / y_range) data-units on y, producing a square plot
+  # when the y-range is 0-100.
+  benefit_ratio <- benefit_range / 100
+  risk_ratio <- risk_range / 100
+
   # Create benefit plot
   p_benefit <- ggplot(benefit_comparison, aes(x = x, y = value, color = type)) +
     geom_line(linewidth = 1.2) +
     scale_color_manual(values = colors) +
+    coord_fixed(ratio = benefit_ratio) +
     labs(
       x = benefit_label,
       y = "Value (0-100)",
@@ -699,6 +717,7 @@ compare_value_function_types <- function(
   p_risk <- ggplot(risk_comparison, aes(x = x, y = value, color = type)) +
     geom_line(linewidth = 1.2) +
     scale_color_manual(values = colors) +
+    coord_fixed(ratio = risk_ratio) +
     labs(
       x = risk_label,
       y = "Value (0-100)",

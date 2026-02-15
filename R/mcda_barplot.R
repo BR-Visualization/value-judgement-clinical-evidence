@@ -339,7 +339,7 @@ create_mcda_barplot_comparison <- function(
       ),
       position = position_dodge(width = 0.8),
       hjust = -0.1,
-      size = base_font_size * 0.39,
+      size = base_font_size * 0.35,
       show.legend = FALSE
     ) +
     scale_fill_manual(
@@ -417,7 +417,7 @@ create_mcda_barplot_comparison <- function(
     geom_text(
       aes(label = sprintf("%.0f", Value)),
       hjust = ifelse(diff_data$Value < 0, 1.2, -0.1),
-      size = base_font_size * 0.44
+      size = base_font_size * 0.35
     ) +
     coord_cartesian(clip = "off")
 
@@ -467,7 +467,7 @@ create_mcda_barplot_comparison <- function(
         linewidth = 1
       )
     ) +
-    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = base_font_size * 0.44) +
+    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = base_font_size * 0.35) +
     coord_cartesian(clip = "off")
 
   # Plot 4: Benefit-Risk (Weighted Contributions)
@@ -527,7 +527,7 @@ create_mcda_barplot_comparison <- function(
         label = sprintf("%.1f", Contribution),
         hjust = ifelse(Contribution < 0, 1.2, -0.1)
       ),
-      size = base_font_size * 0.44
+      size = base_font_size * 0.35
     ) +
     coord_cartesian(clip = "off")
 
@@ -576,6 +576,8 @@ create_mcda_barplot_comparison <- function(
 #' @param fig_colors A vector of length 2 specifying colors for
 #'   benefits and risks.
 #'   Default is c("#0571b0", "#ca0020").
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A grid arrangement of three panels showing: (1) Normalized
 #'   Difference (on 0-100 scale: Drug normalized - Comparator normalized),
@@ -686,7 +688,8 @@ create_mcda_walkthrough <- function(
   risk_criteria = NULL,
   weights = NULL,
   clinical_scales = NULL,
-  fig_colors = c("#0571b0", "#ca0020")
+  fig_colors = c("#0571b0", "#ca0020"),
+  base_font_size = 9
 ) {
   # Check if data is provided
   if (is.null(data)) {
@@ -1086,14 +1089,14 @@ create_mcda_walkthrough <- function(
       x = NULL,
       y = NULL
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
-      axis.text.y = element_text(size = 12, face = "bold"),
-      axis.text.x = element_text(size = 10),
+      axis.text.y = element_text(size = base_font_size * 1.33, face = "bold"),
+      axis.text.x = element_text(size = base_font_size * 1.11),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = 10, hjust = 0.5),
+      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = base_font_size * 1.11, hjust = 0.5),
       plot.margin = margin(5, 0, 5, 5),
       panel.border = element_rect(
         color = "darkgray",
@@ -1106,7 +1109,7 @@ create_mcda_walkthrough <- function(
         label = sprintf("%.0f", Value),
         hjust = ifelse(Value < 0, 1.2, -0.1)
       ),
-      size = 4
+      size = base_font_size * 0.35
     ) +
     coord_cartesian(clip = "off")
 
@@ -1139,14 +1142,14 @@ create_mcda_walkthrough <- function(
       x = NULL,
       y = NULL
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = 10),
+      axis.text.x = element_text(size = base_font_size * 1.11),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = 10, hjust = 0.5),
+      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = base_font_size * 1.11, hjust = 0.5),
       plot.margin = margin(5, 0, 5, 0),
       panel.border = element_rect(
         color = "darkgray",
@@ -1154,7 +1157,7 @@ create_mcda_walkthrough <- function(
         linewidth = 1
       )
     ) +
-    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = 4) +
+    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = base_font_size * 0.35) +
     coord_cartesian(clip = "off")
 
   # Panel 3: Weighted Contributions (Benefit-Risk)
@@ -1192,14 +1195,14 @@ create_mcda_walkthrough <- function(
       x = NULL,
       y = NULL
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = 10),
+      axis.text.x = element_text(size = base_font_size * 1.11),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = 10, hjust = 0.5),
+      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = base_font_size * 1.11, hjust = 0.5),
       plot.margin = margin(5, 15, 5, 0),
       panel.border = element_rect(
         color = "darkgray",
@@ -1212,7 +1215,7 @@ create_mcda_walkthrough <- function(
         label = sprintf("%.1f", Contribution),
         hjust = ifelse(Contribution < 0, 1.2, -0.1)
       ),
-      size = 4
+      size = base_font_size * 0.35
     ) +
     coord_cartesian(clip = "off")
 
