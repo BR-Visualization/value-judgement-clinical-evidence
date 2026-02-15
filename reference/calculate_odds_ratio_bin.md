@@ -43,7 +43,7 @@ calculate_odds_ratio_bin(
   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
   cl = 0.95
 )
-#> [2026-02-15 19:44:00] > CI for odds ratio for binary outcomes is calculated and saved
+#> [2026-02-15 19:55:33] > CI for odds ratio for binary outcomes is calculated and saved
 #>         or        se    lower    upper
 #> 1 2.454545 0.1369214 1.876823 3.210102
 ```

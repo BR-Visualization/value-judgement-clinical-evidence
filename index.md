@@ -280,7 +280,7 @@ compare_value_function_types(
   benefit_label = "Response Rate (%)",
   risk_name = "Safety",
   risk_min = 0,
-  risk_max = 50,
+  risk_max = 100,
   risk_label = "Adverse Event Rate (%)",
   power = 2,
   show_titles = FALSE,
