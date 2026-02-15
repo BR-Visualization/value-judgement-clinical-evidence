@@ -17,6 +17,7 @@
 │                              │                          │
 │                              ├─ Full R CMD check       │
 │                              ├─ Regenerate plots       │
+│                              ├─ Render README.md       │
 │                              ├─ Check TODOs            │
 │                              └─ Offer to stage plots   │
 │                                                         │
@@ -73,6 +74,7 @@ git push
 ```
 - ✅ Full R CMD check (--as-cran)
 - ✅ Regenerate all publication plots
+- ✅ Render README.md (if README.Rmd changed)
 - ✅ Check for TODO/FIXME comments
 - ✅ Offer to stage updated plots
 
