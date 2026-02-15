@@ -7,7 +7,7 @@ echo "=================================="
 echo ""
 echo "This will install Git hooks that automatically:"
 echo "  • Pre-commit:  Update docs, run quick checks"
-echo "  • Pre-push:    Run full checks, regenerate plots"
+echo "  • Pre-push:    Run full checks, regenerate plots, render README"
 echo ""
 echo "Options:"
 echo "  1) Install both hooks (recommended)"
@@ -67,10 +67,10 @@ echo "Running R CMD check..."
 Rscript dev/quick-check.R 2>&1 || exit 1
 
 # Regenerate plots
-if [ -f "dev/generate_publication_plots_with_fonts.R" ]; then
+if [ -f "dev/generate_publication_plots.R" ]; then
     echo ""
     echo "Regenerating plots..."
-    Rscript dev/generate_publication_plots_with_fonts.R > /dev/null 2>&1
+    Rscript dev/generate_publication_plots.R > /dev/null 2>&1
     
     if git diff --name-only inst/img/ | grep -q .; then
         echo "⚠️  Plots updated but not committed!"
@@ -81,6 +81,14 @@ if [ -f "dev/generate_publication_plots_with_fonts.R" ]; then
             git add inst/img/ && git commit --amend --no-edit
         fi
     fi
+fi
+
+# Render README if changed
+if [ -f "README.Rmd" ] && git diff --cached --name-only | grep -q "README.Rmd"; then
+    echo ""
+    echo "Rendering README..."
+    Rscript -e "rmarkdown::render('README.Rmd', quiet = TRUE)" > /dev/null 2>&1
+    git diff --name-only README.md | grep -q . && git add README.md
 fi
 
 echo ""

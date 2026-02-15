@@ -43,8 +43,9 @@ git commit -m "Update function"
 **What it does:**
 1. ✅ Runs full R CMD check (`--as-cran`)
 2. ✅ Regenerates publication plots
-3. ✅ Checks for TODO/FIXME comments
-4. ✅ Offers to stage updated plots
+3. ✅ Renders README.md (if README.Rmd changed)
+4. ✅ Checks for TODO/FIXME comments
+5. ✅ Offers to stage updated plots
 
 **Time:** ~2-3 minutes
 
