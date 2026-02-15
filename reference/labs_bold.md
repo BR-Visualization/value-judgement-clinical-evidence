@@ -58,7 +58,7 @@ ggplot(xxx, aes_string(x = "x", y = "z")) +
   scale_y_discrete(
     label = labs_bold(cond = xxx[["y"]], xxx[["z"]], nonbold = xxx[["w"]])
   )
-#> [2026-02-14 18:31:00] > Dataout object from
+#> [2026-02-15 16:48:35] > Dataout object from
 #> the labs_bold function is created
 
 ```

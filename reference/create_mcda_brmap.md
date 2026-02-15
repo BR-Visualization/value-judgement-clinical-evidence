@@ -29,7 +29,8 @@ create_mcda_brmap(
   show_labels = TRUE,
   show_title = FALSE,
   show_subtitle = FALSE,
-  fig_colors = NULL
+  fig_colors = NULL,
+  base_font_size = 9
 )
 ```
 
@@ -103,6 +104,11 @@ create_mcda_brmap(
 
   A vector specifying colors for each treatment. If NULL, uses default
   color palette.
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

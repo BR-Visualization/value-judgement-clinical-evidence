@@ -1,8 +1,8 @@
 <urlset xmlns = 'http://www.sitemaps.org/schemas/sitemap/0.9'>
 <url><loc>https://pkgdown.r-lib.org/404.html</loc></url>
-<url><loc>https://pkgdown.r-lib.org/CLAUDE.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/CODE_OF_CONDUCT.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/CONTRIBUTING.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/DEV_TOOLS.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/LICENSE-text.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/LICENSE.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/articles/brpubVJCE.html</loc></url>
@@ -42,6 +42,7 @@
 <url><loc>https://pkgdown.r-lib.org/reference/cumexcess.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/divergent_stacked_barchart.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/effects_table.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/font_config.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/forest_dot_plot_imports.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/generate_tradeoff_plot.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/gensurv.html</loc></url>

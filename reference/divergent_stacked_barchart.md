@@ -10,7 +10,8 @@ divergent_stacked_barchart(
   chartcolors,
   favcat,
   unfavcat,
-  ylabel = "Visit"
+  ylabel = "Visit",
+  base_font_size = 9
 )
 ```
 
@@ -45,6 +46,11 @@ divergent_stacked_barchart(
 - ylabel:
 
   `character` y label name, default is "Visit"
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

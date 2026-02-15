@@ -15,6 +15,8 @@ ggsave_custom(
   bgcol = "white",
   dpi = 600,
   web_suffix = FALSE,
+  scale_fonts = FALSE,
+  base_font_size = NULL,
   ...
 )
 ```
@@ -58,6 +60,16 @@ ggsave_custom(
 
   If TRUE, also saves a low-res version with "\_web" suffix (default:
   FALSE).
+
+- scale_fonts:
+
+  Deprecated parameter. Font scaling is now handled by passing
+  base_font_size directly to plotting functions.
+
+- base_font_size:
+
+  Deprecated parameter. Font scaling is now handled by passing
+  base_font_size directly to plotting functions.
 
 - ...:
 

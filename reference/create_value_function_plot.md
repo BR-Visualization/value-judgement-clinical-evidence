@@ -20,7 +20,8 @@ create_value_function_plot(
   show_title = TRUE,
   show_reference_line = TRUE,
   x_label = NULL,
-  y_label = "Value (0-100)"
+  y_label = "Value (0-100)",
+  base_font_size = 9
 )
 ```
 
@@ -75,6 +76,11 @@ create_value_function_plot(
 - y_label:
 
   Character string for the y-axis label. Default is "Value (0-100)".
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

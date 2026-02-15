@@ -5,7 +5,7 @@ Stacked Bar Chart
 ## Usage
 
 ``` r
-stacked_barchart(data, chartcolors, ylabel = "Visit")
+stacked_barchart(data, chartcolors, ylabel = "Visit", base_font_size = 9)
 ```
 
 ## Arguments
@@ -31,6 +31,11 @@ stacked_barchart(data, chartcolors, ylabel = "Visit")
 - ylabel:
 
   `character` y label name, default is "Visit"
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

@@ -13,7 +13,8 @@ plot_multiple_value_functions(
   criteria = NULL,
   ncol = 2,
   show_titles = TRUE,
-  show_reference_lines = TRUE
+  show_reference_lines = TRUE,
+  base_font_size = 9
 )
 ```
 
@@ -44,6 +45,11 @@ plot_multiple_value_functions(
 
   Logical indicating whether to show horizontal reference lines at value
   = 50. Default is TRUE.
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

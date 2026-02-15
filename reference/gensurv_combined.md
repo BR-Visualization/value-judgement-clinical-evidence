@@ -20,7 +20,8 @@ gensurv_combined(
   rel_heights_table = c(1, 0.4),
   ben_name_p = "Primary Efficacy",
   risk_name_p = "Recurring AE",
-  legend_position_p = c(-0.03, 1.15)
+  legend_position_p = c(-0.03, 1.15),
+  base_font_size = 9
 )
 ```
 
@@ -125,6 +126,11 @@ gensurv_combined(
   with the first value corresponding to the position of the legend
   relative to the x-axis, and the second corresponding to the position
   of the legend relative to the y-axis (numeric).
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

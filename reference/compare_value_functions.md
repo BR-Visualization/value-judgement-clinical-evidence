@@ -19,7 +19,8 @@ compare_value_functions(
   risk_max = 50,
   risk_label = NULL,
   show_titles = TRUE,
-  show_reference_lines = TRUE
+  show_reference_lines = TRUE,
+  base_font_size = 9
 )
 ```
 
@@ -68,6 +69,11 @@ compare_value_functions(
 
   Logical indicating whether to show horizontal reference lines at value
   = 50. Default is TRUE.
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

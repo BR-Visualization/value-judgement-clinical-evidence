@@ -64,6 +64,8 @@
   : Divergent Stacked Bar Chart
 - [`effects_table`](https://pkgdown.r-lib.org/reference/effects_table.md)
   : Example treatment effect table
+- [`font_config()`](https://pkgdown.r-lib.org/reference/font_config.md)
+  : Calculate Font Size Based on Figure Dimensions
 - [`generate_tradeoff_plot()`](https://pkgdown.r-lib.org/reference/generate_tradeoff_plot.md)
   : Trade-off plot
 - [`gensurv()`](https://pkgdown.r-lib.org/reference/gensurv.md) :

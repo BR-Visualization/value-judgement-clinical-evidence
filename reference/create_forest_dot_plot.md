@@ -20,7 +20,8 @@ create_forest_dot_plot(
   treatment2 = "Placebo",
   filter_value = "None",
   precalculated_stats = FALSE,
-  forest_upper_limit = NULL
+  forest_upper_limit = NULL,
+  base_font_size = 9
 )
 ```
 
@@ -62,6 +63,11 @@ create_forest_dot_plot(
 
   Numeric; optional upper limit for the forest plot, adds a reference
   line at this value if provided.
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

@@ -13,7 +13,8 @@ scatter_plot(
   ellipse_type = "t",
   ellipse_level = 0.95,
   marginal_type = "densigram",
-  fig_colors = colfun()$fig11_colors
+  fig_colors = colfun()$fig11_colors,
+  base_font_size = 9
 )
 ```
 
@@ -65,6 +66,11 @@ scatter_plot(
   Must be a vector of length 3, with the first color corresponding to
   the scatter plot points, the second corresponding to the overall mean,
   and third to the written probability text color.
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

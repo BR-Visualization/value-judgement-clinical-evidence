@@ -23,7 +23,8 @@ compare_value_function_types(
   n_points = 100,
   show_titles = TRUE,
   show_legend = TRUE,
-  power = 2
+  power = 2,
+  base_font_size = 9
 )
 ```
 
@@ -80,6 +81,11 @@ compare_value_function_types(
 
   Numeric value for the power/exponential function exponent. Default is
   2 (risk-averse, diminishing returns).
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

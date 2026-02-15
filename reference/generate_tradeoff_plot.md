@@ -46,7 +46,8 @@ generate_tradeoff_plot(
   upper_x,
   lower_y,
   upper_y,
-  chartcolors
+  chartcolors,
+  base_font_size = 9
 )
 ```
 
@@ -355,6 +356,11 @@ generate_tradeoff_plot(
 
   (`vector`) a vector of colors, the same number of levels as the number
   of treatments
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

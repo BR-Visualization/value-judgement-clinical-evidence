@@ -14,7 +14,8 @@ create_mcda_barplot_comparison(
   risk_criteria = NULL,
   clinical_scales = NULL,
   weights = NULL,
-  fig_colors = c("#0571b0", "#ca0020")
+  fig_colors = c("#0571b0", "#ca0020"),
+  base_font_size = 9
 )
 ```
 
@@ -69,6 +70,11 @@ create_mcda_barplot_comparison(
 
   A vector of length 2 specifying colors for benefits and risks. Default
   is c("#0571b0", "#ca0020") to match correlogram colors.
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 

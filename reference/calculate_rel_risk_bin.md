@@ -43,7 +43,7 @@ calculate_rel_risk_bin(
   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
   cl = 0.95
 )
-#> [2026-02-14 18:30:44] > CI for relative risk for binary outcomes is calculated
+#> [2026-02-15 16:48:20] > CI for relative risk for binary outcomes is calculated
 #>    rr         se    lower    upper
 #> 1 1.8 0.09189366 1.503324 2.155225
 ```

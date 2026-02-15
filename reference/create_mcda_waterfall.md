@@ -22,7 +22,8 @@ create_mcda_waterfall(
   fig_colors = NULL,
   show_total = TRUE,
   show_labels = TRUE,
-  label_threshold = 0.5
+  label_threshold = 0.5,
+  base_font_size = 9
 )
 ```
 
@@ -89,6 +90,11 @@ create_mcda_waterfall(
 - label_threshold:
 
   Minimum contribution value to show label. Default is 0.5.
+
+- base_font_size:
+
+  Numeric; base font size in points for all text elements in the plot
+  (default: 9).
 
 ## Value
 
