@@ -584,7 +584,7 @@ create_mcda_brmap(
 
 ## Figure - MCDA Tornado Plot
 
-```{r mcda_tornado, fig.width=10, fig.height=6, message = FALSE, echo = FALSE}
+```{r mcda_tornado, fig.width=10, fig.height=6, fig.retina=1, dpi=600, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 
 # Configure fonts for plot dimensions
