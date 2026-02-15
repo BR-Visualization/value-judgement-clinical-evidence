@@ -54,7 +54,7 @@ remotes::install_github("BR-Visualization/brpubVJCE")
 
 ## Figure - Dot-Forest Plot
 
-<img src="man/figures/README-dot_forest_plot-1.png" alt="" width="100%" />
+<img src="man/figures/README-dot_forest_plot-1.png" width="100%" />
 
 <details>
 
@@ -99,7 +99,7 @@ result_plot
 
 ## Figure - Trade-off Plot
 
-<img src="man/figures/README-tradeoff_plot-1.png" alt="" width="100%" />
+<img src="man/figures/README-tradeoff_plot-1.png" width="100%" />
 
 <details>
 
@@ -164,7 +164,7 @@ generate_tradeoff_plot(
 
 ## Figure - Correlogram
 
-<img src="man/figures/README-correlogram-1.png" alt="" width="100%" />
+<img src="man/figures/README-correlogram-1.png" width="100%" />
 
 <details>
 
@@ -201,7 +201,7 @@ create_correlogram(corr)
 
 ## Figure - Scatter Plot
 
-<img src="man/figures/README-scatter_plot-1.png" alt="" width="100%" />
+<img src="man/figures/README-scatter_plot-1.png" width="100%" />
 
 <details>
 
@@ -239,7 +239,7 @@ scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
 
 ## Figure - Divergent Stacked Bar Chart
 
-<img src="man/figures/README-divergent_stacked_barchart-1.png" alt="" width="100%" />
+<img src="man/figures/README-divergent_stacked_barchart-1.png" width="100%" />
 
 <details>
 
@@ -290,7 +290,7 @@ divergent_stacked_barchart(
 
 ## Figure - Cumulative Excess Plot
 
-<img src="man/figures/README-cumulative_excess_plot-1.png" alt="" width="100%" />
+<img src="man/figures/README-cumulative_excess_plot-1.png" width="100%" />
 
 <details>
 
@@ -337,7 +337,7 @@ gensurv_combined(
 
 ## Figure - Value Function Types
 
-<img src="man/figures/README-value_function_types-1.png" alt="" width="100%" />
+<img src="man/figures/README-value_function_types-1.png" width="100%" />
 
 <details>
 
@@ -375,7 +375,7 @@ compare_value_function_types(
   benefit_label = "Response Rate (%)",
   risk_name = "Safety",
   risk_min = 0,
-  risk_max = 50,
+  risk_max = 100,
   risk_label = "Adverse Event Rate (%)",
   power = 2,
   show_titles = FALSE,
@@ -387,7 +387,7 @@ compare_value_function_types(
 
 ## Figure - MCDA Comparison Plot
 
-<img src="man/figures/README-mcda_barplot-1.png" alt="" width="100%" />
+<img src="man/figures/README-mcda_barplot-1.png" width="100%" />
 
 <details>
 
@@ -433,7 +433,7 @@ create_mcda_barplot_comparison(
 
 ## Figure - MCDA Waterfall Plot
 
-<img src="man/figures/README-mcda_waterfall-1.png" alt="" width="100%" />
+<img src="man/figures/README-mcda_waterfall-1.png" width="100%" />
 
 <details>
 
@@ -477,7 +477,7 @@ create_mcda_waterfall(
 
 ## Figure - MCDA Benefit-Risk Map
 
-<img src="man/figures/README-mcda_brmap-1.png" alt="" width="100%" />
+<img src="man/figures/README-mcda_brmap-1.png" width="100%" />
 
 <details>
 
@@ -523,7 +523,7 @@ create_mcda_brmap(
 
 ## Figure - MCDA Tornado Plot
 
-<img src="man/figures/README-mcda_tornado-1.png" alt="" width="100%" />
+<img src="man/figures/README-mcda_tornado-1.png" width="100%" />
 
 <details>
 
