@@ -85,5 +85,11 @@ utils::globalVariables(c(
   "y",
   "Label",
   "value",
-  "type"
+  "type",
+  # Functions from imported packages
+  "desc",
+  "left_join",
+  "row_number",
+  "summarise",
+  "ungroup"
 ))
