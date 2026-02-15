@@ -16,7 +16,8 @@ create_mcda_brmap(
   show_labels = TRUE,
   show_title = FALSE,
   show_subtitle = FALSE,
-  fig_colors = NULL
+  fig_colors = NULL,
+  base_font_size = 9
 )
 }
 \arguments{
@@ -65,6 +66,9 @@ Default is FALSE.}
 
 \item{fig_colors}{A vector specifying colors for each treatment. If NULL,
 uses default color palette.}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 A ggplot object showing the benefit-risk map, or NULL if data

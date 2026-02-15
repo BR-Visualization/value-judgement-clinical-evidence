@@ -121,6 +121,50 @@ control_fonts <- function(
   )
 }
 
+
+#' Calculate Font Size Based on Figure Dimensions
+#'
+#' @description Scales font size proportionally to figure dimensions to maintain
+#' visual consistency across plots of different sizes. Font size scales with the
+#' square root of the area to ensure readability.
+#'
+#' @param width Figure width in inches
+#' @param height Figure height in inches
+#' @param reference_font_size Base font size for reference dimensions (default: 9pt)
+#' @param reference_width Reference width in inches (default: 7)
+#' @param reference_height Reference height in inches (default: 7)
+#' @param min_font_size Minimum font size to prevent text being too small (default: 6)
+#' @param max_font_size Maximum font size to prevent text being too large (default: 14)
+#'
+#' @return List containing font configuration from control_fonts()
+#' @export
+#'
+#' @examples
+#' # Font config for a small 5×4 plot
+#' font_config(5, 4)
+#'
+#' # Font config for a large 16×6 plot
+#' font_config(16, 6)
+font_config <- function(
+  width,
+  height,
+  reference_font_size = 9,
+  reference_width = 7,
+  reference_height = 7,
+  min_font_size = 6,
+  max_font_size = 14
+) {
+  # Calculate area ratio and scale by square root for proportional sizing
+  area_ratio <- sqrt((width * height) / (reference_width * reference_height))
+  base_font_size <- reference_font_size * area_ratio
+  
+  # Apply bounds
+  base_font_size <- max(min_font_size, min(max_font_size, base_font_size))
+  
+  # Return font configuration
+  control_fonts(base_font_size = base_font_size)
+}
+
 #' BR charts theme
 #'
 #' @param base_family - font
@@ -574,6 +618,10 @@ relmax <- function(rmax, type_scale) {
 #' @param dpi Resolution in dots per inch (default: 600).
 #' @param web_suffix If TRUE, also saves a low-res version with "_web" suffix
 #' (default: FALSE).
+#' @param scale_fonts Deprecated parameter. Font scaling is now handled
+#' by passing base_font_size directly to plotting functions.
+#' @param base_font_size Deprecated parameter. Font scaling is now handled
+#' by passing base_font_size directly to plotting functions.
 #' @param ... Other arguments passed on to the graphics device function,
 #' as specified by device.
 #' @param wdth width of plot
@@ -592,6 +640,8 @@ ggsave_custom <- function(
   bgcol = "white",
   dpi = 600,
   web_suffix = FALSE,
+  scale_fonts = FALSE,
+  base_font_size = NULL,
   ...
 ) {
   if (is.null(inplot)) {

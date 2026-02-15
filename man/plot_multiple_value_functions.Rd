@@ -9,7 +9,8 @@ plot_multiple_value_functions(
   criteria = NULL,
   ncol = 2,
   show_titles = TRUE,
-  show_reference_lines = TRUE
+  show_reference_lines = TRUE,
+  base_font_size = 9
 )
 }
 \arguments{
@@ -29,6 +30,9 @@ titles. Default is TRUE.}
 
 \item{show_reference_lines}{Logical indicating whether to show horizontal
 reference lines at value = 50. Default is TRUE.}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 A combined plot (using patchwork) showing all value functions

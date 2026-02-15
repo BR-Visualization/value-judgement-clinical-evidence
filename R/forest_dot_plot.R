@@ -41,6 +41,8 @@ library(rlang)
 #'   provided statistics.
 #' @param forest_upper_limit Numeric; optional upper limit for the forest
 #'   plot, adds a reference line at this value if provided.
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A patchwork object containing combined dot and forest plots with a
 #'   shared legend.
@@ -121,7 +123,8 @@ create_forest_dot_plot <- function(
   treatment2 = "Placebo",
   filter_value = "None",
   precalculated_stats = FALSE,
-  forest_upper_limit = NULL
+  forest_upper_limit = NULL,
+  base_font_size = 9
 ) {
   # Define arrow symbols to avoid issues with LaTeX documentation
   # Use UTF-8 encoded Unicode arrows for proper display in all contexts
@@ -632,7 +635,7 @@ create_forest_dot_plot <- function(
         shape_scale +
         fill_scale +
         labs(x = if (is_last_plot) "<br>Treatment Response" else NULL) +
-        theme_minimal(base_family = "sans") +
+        theme_minimal(base_size = base_font_size, base_family = "sans") +
         theme(
           panel.border = element_rect(
             color = "gray90",
@@ -795,7 +798,7 @@ create_forest_dot_plot <- function(
           }
         ) +
         # Apply theme
-        theme_minimal() +
+        theme_minimal(base_size = base_font_size) +
         theme(
           legend.key = element_rect(fill = "white", color = NA),
           panel.border = element_rect(

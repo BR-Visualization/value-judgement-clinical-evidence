@@ -28,6 +28,8 @@
 #' first color corresponding to the scatter plot points, the second
 #' corresponding to the overall mean, and third to the written
 #' probability text color.
+#' @param base_font_size Numeric; base font size in points for all text
+#' elements in the plot (default: 9).
 #'
 #'
 #' @return A scatterplot.
@@ -47,7 +49,8 @@ scatter_plot <- function(
   ellipse_type = "t",
   ellipse_level = 0.95,
   marginal_type = "densigram",
-  fig_colors = colfun()$fig11_colors
+  fig_colors = colfun()$fig11_colors,
+  base_font_size = 9
 ) {
   mdiff1 <- mdiff2 <- label <- NULL
 
@@ -198,7 +201,7 @@ scatter_plot <- function(
       y = mar + 0.01,
       label = "MAR",
       color = colfun()$fig11_colors[3],
-      size = 9 * 0.35,
+      size = base_font_size * 0.35,
       vjust = -0.25
     ) +
     annotate(
@@ -207,7 +210,7 @@ scatter_plot <- function(
       y = min(diff1, diff2) - 0.1,
       label = "MAB",
       color = colfun()$fig11_colors[3],
-      size = 9 * 0.35,
+      size = base_font_size * 0.35,
       hjust = -0.25
     ) +
     labs(y = paste("Predicted Incremental", outcome[2], " ")) +
@@ -219,7 +222,7 @@ scatter_plot <- function(
       label = paste0("Prob.==", sprintf("%1.1f", 100 * prob_good), "*\'%\'"),
       parse = TRUE,
       color = fig_colors[3],
-      size = 9 * 0.35,
+      size = base_font_size * 0.35,
       fontface = "bold"
     ) +
     annotate(
@@ -236,7 +239,7 @@ scatter_plot <- function(
       ),
       parse = TRUE,
       color = colfun()$fig11_colors[3],
-      size = 9 * 0.35,
+      size = base_font_size * 0.35,
       fontface = "bold"
     ) +
     coord_fixed(5.3 / 5) +
@@ -246,11 +249,11 @@ scatter_plot <- function(
       y = 0.89 * max1,
       label = "Benefit = Risk",
       color = fig_colors[3],
-      size = 9 * 0.35,
+      size = base_font_size * 0.35,
       vjust = 0,
       angle = 45
     ) +
-    br_charts_theme() +
+    br_charts_theme(base_font_size = base_font_size) +
     theme(
       axis.line.x = element_blank(),
       axis.line.y = element_blank(),

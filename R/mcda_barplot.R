@@ -25,6 +25,8 @@
 #' @param fig_colors A vector of length 2 specifying colors for benefits
 #'   and risks. Default is c("#0571b0", "#ca0020") to match
 #'   correlogram colors.
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A patchwork object showing four panels: Normalized
 #'   Values (side-by-side bars for Comparator and Drug), Difference
@@ -95,7 +97,8 @@ create_mcda_barplot_comparison <- function(
   risk_criteria = NULL,
   clinical_scales = NULL,
   weights = NULL,
-  fig_colors = c("#0571b0", "#ca0020")
+  fig_colors = c("#0571b0", "#ca0020"),
+  base_font_size = 9
 ) {
   # Check if data is provided
   if (is.null(data)) {
@@ -336,7 +339,7 @@ create_mcda_barplot_comparison <- function(
       ),
       position = position_dodge(width = 0.8),
       hjust = -0.1,
-      size = 3.5,
+      size = base_font_size * 0.39,
       show.legend = FALSE
     ) +
     scale_fill_manual(
@@ -353,7 +356,7 @@ create_mcda_barplot_comparison <- function(
       x = NULL,
       y = NULL
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
       legend.position = c(0.98, 0.98),
       legend.justification = c("right", "top"),
@@ -362,10 +365,10 @@ create_mcda_barplot_comparison <- function(
       ),
       legend.margin = margin(4, 6, 4, 6),
       legend.key.size = unit(0.8, "lines"),
-      legend.text = element_text(size = 9),
-      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      axis.text.y = element_text(size = 12, face = "bold"),
-      axis.text.x = element_text(size = 10),
+      legend.text = element_text(size = base_font_size),
+      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
+      axis.text.y = element_text(size = base_font_size * 1.33, face = "bold"),
+      axis.text.x = element_text(size = base_font_size * 1.11),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
@@ -394,12 +397,12 @@ create_mcda_barplot_comparison <- function(
       x = NULL,
       y = NULL
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
       legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = 10),
+      axis.text.x = element_text(size = base_font_size * 1.11),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
@@ -414,7 +417,7 @@ create_mcda_barplot_comparison <- function(
     geom_text(
       aes(label = sprintf("%.0f", Value)),
       hjust = ifelse(diff_data$Value < 0, 1.2, -0.1),
-      size = 4
+      size = base_font_size * 0.44
     ) +
     coord_cartesian(clip = "off")
 
@@ -447,12 +450,12 @@ create_mcda_barplot_comparison <- function(
       x = NULL,
       y = NULL
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
       legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
+      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = 10),
+      axis.text.x = element_text(size = base_font_size * 1.11),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
@@ -464,7 +467,7 @@ create_mcda_barplot_comparison <- function(
         linewidth = 1
       )
     ) +
-    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = 4) +
+    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = base_font_size * 0.44) +
     coord_cartesian(clip = "off")
 
   # Plot 4: Benefit-Risk (Weighted Contributions)
@@ -501,13 +504,13 @@ create_mcda_barplot_comparison <- function(
       x = NULL,
       y = NULL
     ) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
       legend.position = "none",
-      plot.title = element_text(size = 12, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = 10, hjust = 0.5),
+      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = base_font_size * 1.11, hjust = 0.5),
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = 10),
+      axis.text.x = element_text(size = base_font_size * 1.11),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
@@ -524,7 +527,7 @@ create_mcda_barplot_comparison <- function(
         label = sprintf("%.1f", Contribution),
         hjust = ifelse(Contribution < 0, 1.2, -0.1)
       ),
-      size = 4
+      size = base_font_size * 0.44
     ) +
     coord_cartesian(clip = "off")
 

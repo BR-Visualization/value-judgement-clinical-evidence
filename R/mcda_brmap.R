@@ -46,6 +46,8 @@
 #'   Default is FALSE.
 #' @param fig_colors A vector specifying colors for each treatment. If NULL,
 #'   uses default color palette.
+#' @param base_font_size Numeric; base font size in points for all text
+#'   elements in the plot (default: 9).
 #'
 #' @return A ggplot object showing the benefit-risk map, or NULL if data
 #'   is not provided.
@@ -137,7 +139,8 @@ create_mcda_brmap <- function(
   show_labels = TRUE,
   show_title = FALSE,
   show_subtitle = FALSE,
-  fig_colors = NULL
+  fig_colors = NULL,
+  base_font_size = 9
 ) {
   # Check if data is provided
   if (is.null(data)) {
@@ -619,7 +622,7 @@ create_mcda_brmap <- function(
 
   # Add points
   p_brmap <- p_brmap +
-    geom_point(size = 8, alpha = 0.8)
+    geom_point(size = base_font_size * 0.89, alpha = 0.8)
 
   # Add labels if requested
   if (show_labels) {
@@ -627,7 +630,7 @@ create_mcda_brmap <- function(
       geom_text(
         aes(label = Label),
         color = "black",
-        size = 5,
+        size = base_font_size * 0.56,
         fontface = "bold"
       )
   }
@@ -663,14 +666,14 @@ create_mcda_brmap <- function(
 
   p_brmap <- p_brmap +
     do.call(labs, labs_args) +
-    theme_minimal() +
+    theme_minimal(base_size = base_font_size) +
     theme(
       panel.grid.major = element_line(color = "lightgray"),
-      plot.title = element_text(size = 14, face = "bold"),
-      plot.subtitle = element_text(size = 11),
+      plot.title = element_text(size = base_font_size * 1.56, face = "bold"),
+      plot.subtitle = element_text(size = base_font_size * 1.22),
       legend.position = "right",
       legend.title = element_text(face = "bold"),
-      axis.title = element_text(size = 12)
+      axis.title = element_text(size = base_font_size * 1.33)
     )
 
   p_brmap

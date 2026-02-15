@@ -10,7 +10,8 @@ create_correlogram(
   diagonal = FALSE,
   method = "square",
   type_c = "lower",
-  fig_colors = c("#0571b0", "#ca0020")
+  fig_colors = c("#0571b0", "#ca0020"),
+  base_font_size = 9
 )
 }
 \arguments{
@@ -33,6 +34,9 @@ correlogram. Default is "square".}
 \item{fig_colors}{Allows the user to change the colors of the figure
 (defaults are provided). Must be vector of length 2, with the first color
 corresponding to benefits, the second to risks.}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 A correlogram.
