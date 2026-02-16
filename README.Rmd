@@ -270,13 +270,13 @@ scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
 
 ## Figure - Divergent Stacked Bar Chart
 
-```{r divergent_stacked_barchart, fig.width=14, fig.height=7, message = FALSE, echo = FALSE}
+```{r divergent_stacked_barchart, fig.width=14, fig.height=9, message = FALSE, echo = FALSE}
 library(brpubVJCE)
 library(cowplot)
 library(gtable)
 
 # Configure fonts for plot dimensions
-fonts <- font_config(14, 7)
+fonts <- font_config(14, 9)
 
 # Create both plots
 stacked_bar_fig <- stacked_barchart(
