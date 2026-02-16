@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# brpubVJCE
+# brpubVJCE �
 
 <!-- badges: start -->
 
@@ -194,7 +194,7 @@ Click to view sample code
 ``` r
 library(brpubVJCE)
 
-create_correlogram(corr)
+create_correlogram(corr2)
 ```
 
 </details>
