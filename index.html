@@ -229,7 +229,7 @@ Click to view sample code
 Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
-<li>Documentation: Use <code><a href="reference/divergent_stacked_barchart.html">?divergent_stacked_barchart</a></code> for detailed function help</li>
+<li>Documentation: Use <code><a href="reference/divergent_stacked_barchart.html">?divergent_stacked_barchart</a></code> and <code><a href="reference/stacked_barchart.html">?stacked_barchart</a></code> for detailed function help</li>
 <li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
 </li>
 <li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
@@ -239,8 +239,17 @@ Click to learn more
 Click to view sample code
 </summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va">brpubVJCE</span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/cowplot/" class="external-link">cowplot</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gtable.r-lib.org" class="external-link">gtable</a></span><span class="op">)</span></span>
 <span></span>
-<span><span class="fu"><a href="reference/divergent_stacked_barchart.html">divergent_stacked_barchart</a></span><span class="op">(</span></span>
+<span><span class="co"># Create both plots</span></span>
+<span><span class="va">stacked_bar_fig</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/stacked_barchart.html">stacked_barchart</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">comp_outcome</span>,</span>
+<span>  chartcolors <span class="op">=</span> <span class="fu"><a href="reference/colfun.html">colfun</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">fig12_colors</span>,</span>
+<span>  ylabel <span class="op">=</span> <span class="st">"Study Week"</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">divergent_stacked_bar_fig</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/divergent_stacked_barchart.html">divergent_stacked_barchart</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">comp_outcome</span>,</span>
 <span>  chartcolors <span class="op">=</span> <span class="fu"><a href="reference/colfun.html">colfun</a></span><span class="op">(</span><span class="op">)</span><span class="op">$</span><span class="va">fig12_colors</span>,</span>
 <span>  favcat <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
@@ -253,7 +262,25 @@ Click to view sample code
 <span>    <span class="st">"Benefit less than threshold, with AE"</span></span>
 <span>  <span class="op">)</span>,</span>
 <span>  ylabel <span class="op">=</span> <span class="st">"Study Week"</span></span>
-<span><span class="op">)</span></span></code></pre></div>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Extract and combine with shared legend</span></span>
+<span><span class="va">stacked_bar_with_legend</span> <span class="op">&lt;-</span> <span class="va">stacked_bar_fig</span> <span class="op">+</span> </span>
+<span>  <span class="fu">labs</span><span class="op">(</span>fill <span class="op">=</span> <span class="st">"Outcome"</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"top"</span>,</span>
+<span>        legend.justification <span class="op">=</span> <span class="st">"center"</span>,</span>
+<span>        legend.box.just <span class="op">=</span> <span class="st">"center"</span>,</span>
+<span>        legend.title.align <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span> <span class="op">+</span></span>
+<span>  <span class="fu">guides</span><span class="op">(</span>fill <span class="op">=</span> <span class="fu">guide_legend</span><span class="op">(</span>nrow <span class="op">=</span> <span class="fl">2</span>, title.position <span class="op">=</span> <span class="st">"top"</span>, title.hjust <span class="op">=</span> <span class="fl">0.5</span><span class="op">)</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">g</span> <span class="op">&lt;-</span> <span class="fu">ggplotGrob</span><span class="op">(</span><span class="va">stacked_bar_with_legend</span><span class="op">)</span></span>
+<span><span class="va">legend</span> <span class="op">&lt;-</span> <span class="va">g</span><span class="op">$</span><span class="va">grobs</span><span class="op">[[</span><span class="fu"><a href="https://rdrr.io/r/base/which.html" class="external-link">which</a></span><span class="op">(</span><span class="va">g</span><span class="op">$</span><span class="va">layout</span><span class="op">$</span><span class="va">name</span> <span class="op">==</span> <span class="st">"guide-box-top"</span><span class="op">)</span><span class="op">]</span><span class="op">]</span></span>
+<span></span>
+<span><span class="va">stacked_bar_no_legend</span> <span class="op">&lt;-</span> <span class="va">stacked_bar_fig</span> <span class="op">+</span> <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span><span class="va">divergent_stacked_bar_no_legend</span> <span class="op">&lt;-</span> <span class="va">divergent_stacked_bar_fig</span> <span class="op">+</span> <span class="fu">theme</span><span class="op">(</span>legend.position <span class="op">=</span> <span class="st">"none"</span><span class="op">)</span></span>
+<span></span>
+<span><span class="va">combined_plots</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">stacked_bar_no_legend</span>, <span class="va">divergent_stacked_bar_no_legend</span>, ncol <span class="op">=</span> <span class="fl">2</span><span class="op">)</span></span>
+<span><span class="fu"><a href="https://wilkelab.org/cowplot/reference/plot_grid.html" class="external-link">plot_grid</a></span><span class="op">(</span><span class="va">legend</span>, <span class="va">combined_plots</span>, ncol <span class="op">=</span> <span class="fl">1</span>, rel_heights <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="fl">0.2</span>, <span class="fl">1</span><span class="op">)</span><span class="op">)</span></span></code></pre></div>
 </details>
 </div>
 <div class="section level2">
