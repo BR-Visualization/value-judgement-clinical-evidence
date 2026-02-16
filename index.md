@@ -1,4 +1,4 @@
-# brpubVJCE
+# brpubVJCE �
 
 The goal of brpubVJCE is to generate benefit-risk visualizations for the
 publication “How to visually integrate value judgment with clinical
@@ -149,7 +149,7 @@ Click to view sample code
 ``` r
 library(brpubVJCE)
 
-create_correlogram(corr)
+create_correlogram(corr2)
 ```
 
 ## Figure - Scatter Plot
