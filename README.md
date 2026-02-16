@@ -250,8 +250,8 @@ Click to learn more
 
 **Getting Help**
 
-- Documentation: Use `?divergent_stacked_barchart` for detailed function
-  help
+- Documentation: Use `?divergent_stacked_barchart` and
+  `?stacked_barchart` for detailed function help
 - Issues: Report bugs at [GitHub
   Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
@@ -269,8 +269,17 @@ Click to view sample code
 
 ``` r
 library(brpubVJCE)
+library(cowplot)
+library(gtable)
 
-divergent_stacked_barchart(
+# Create both plots
+stacked_bar_fig <- stacked_barchart(
+  data = comp_outcome,
+  chartcolors = colfun()$fig12_colors,
+  ylabel = "Study Week"
+)
+
+divergent_stacked_bar_fig <- divergent_stacked_barchart(
   data = comp_outcome,
   chartcolors = colfun()$fig12_colors,
   favcat = c(
@@ -284,6 +293,24 @@ divergent_stacked_barchart(
   ),
   ylabel = "Study Week"
 )
+
+# Extract and combine with shared legend
+stacked_bar_with_legend <- stacked_bar_fig + 
+  labs(fill = "Outcome") +
+  theme(legend.position = "top",
+        legend.justification = "center",
+        legend.box.just = "center",
+        legend.title.align = 0.5) +
+  guides(fill = guide_legend(nrow = 2, title.position = "top", title.hjust = 0.5))
+
+g <- ggplotGrob(stacked_bar_with_legend)
+legend <- g$grobs[[which(g$layout$name == "guide-box-top")]]
+
+stacked_bar_no_legend <- stacked_bar_fig + theme(legend.position = "none")
+divergent_stacked_bar_no_legend <- divergent_stacked_bar_fig + theme(legend.position = "none")
+
+combined_plots <- plot_grid(stacked_bar_no_legend, divergent_stacked_bar_no_legend, ncol = 2)
+plot_grid(legend, combined_plots, ncol = 1, rel_heights = c(0.2, 1))
 ```
 
 </details>
