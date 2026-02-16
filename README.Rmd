@@ -24,7 +24,7 @@ Sys.setlocale("LC_CTYPE", "C.UTF-8")
 options(encoding = "UTF-8")
 ```
 
-# brpubVJCE �
+# brpubVJCE
 
 <!-- badges: start -->
 [![Codecov test coverage](https://codecov.io/gh/BR-Visualization/brpubVJCE/graph/badge.svg)](https://app.codecov.io/gh/BR-Visualization/brpubVJCE)
