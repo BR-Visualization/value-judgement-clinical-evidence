@@ -172,15 +172,15 @@ ggsave_custom(
   dpi = 600
 )
 
-# Stacked bar chart and divergent stacked bar chart combined (14×7)
+# Stacked bar chart and divergent stacked bar chart combined (14×9)
 data(comp_outcome)
-fonts_14x7 <- font_config(14, 7)
+fonts_14x9 <- font_config(14, 9)
 
 stacked_bar_fig <- stacked_barchart(
   data = comp_outcome,
   chartcolors = colfun()$fig12_colors,
   ylabel = "Study Week",
-  base_font_size = fonts_14x7$p
+  base_font_size = fonts_14x9$p
 )
 
 divergent_stacked_bar_fig <- divergent_stacked_barchart(
@@ -196,7 +196,7 @@ divergent_stacked_bar_fig <- divergent_stacked_barchart(
     "Benefit less than threshold, with AE"
   ),
   ylabel = "Study Week",
-  base_font_size = fonts_14x7$p
+  base_font_size = fonts_14x9$p
 )
 
 # Extract legend from one plot using ggplotGrob
@@ -241,7 +241,7 @@ ggsave_custom(
   imgpath = "./",
   inplot = combined_bar_charts,
   wdth = 14,
-  hght = 7,
+  hght = 9,
   unts = "in",
   dpi = 600
 )
@@ -616,5 +616,5 @@ message(" 10×4 plots:  ", round(fonts_10x4$p, 1), "pt")
 message("  ", vft_width, "×", vft_height, " plots:  ", round(fonts_vft$p, 1), "pt")
 message(" 10×6 plots:  ", round(fonts_10x6$p, 1), "pt")
 message(" 12×6 plots:  ", round(fonts_12x6$p, 1), "pt")
-message(" 14×7 plots:  ", round(fonts_14x7$p, 1), "pt")
+message(" 14×9 plots:  ", round(fonts_14x9$p, 1), "pt")
 message(" 16×6 plots:  ", round(fonts_16x6$p, 1), "pt")
