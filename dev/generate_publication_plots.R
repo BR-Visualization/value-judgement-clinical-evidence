@@ -3,8 +3,11 @@
 devtools::load_all()
 library(devtools)
 
-if (!dir.exists("inst/img")) {
-  dir.create("inst/img", recursive = TRUE)
+if (!dir.exists("inst/img/pub")) {
+  dir.create("inst/img/pub", recursive = TRUE)
+}
+if (!dir.exists("inst/img/other")) {
+  dir.create("inst/img/other", recursive = TRUE)
 }
 
 # Remove old image files before generating new ones
@@ -17,20 +20,20 @@ old_files <- c(
   "inst/img/cumulative_excess_plot.png",
   "inst/img/value_function_types_comparison.png",
   "inst/img/barplot_mcda_comparison_drug_a.png",
-  "inst/img/barplot_mcda_comparison_drug_b.png",
-  "inst/img/barplot_mcda_comparison_drug_c.png",
-  "inst/img/barplot_mcda_comparison_drug_d.png",
+  "inst/img/other/barplot_mcda_comparison_drug_b.png",
+  "inst/img/other/barplot_mcda_comparison_drug_c.png",
+  "inst/img/other/barplot_mcda_comparison_drug_d.png",
   "inst/img/mcda_waterfall_all_drugs.png",
   "inst/img/mcda_benefit_risk_map.png",
   "inst/img/mcda_tornado_drug_a.png",
-  "inst/img/mcda_tornado_drug_b.png",
-  "inst/img/mcda_tornado_drug_c.png",
-  "inst/img/mcda_tornado_drug_d.png",
-  "inst/img/stacked_barchart.png",
-  "inst/img/value_function_benefit_example.png",
-  "inst/img/value_function_risk_example.png",
-  "inst/img/value_function_comparison_benefit_risk.png",
-  "inst/img/value_function_multiple_criteria.png"
+  "inst/img/other/mcda_tornado_drug_b.png",
+  "inst/img/other/mcda_tornado_drug_c.png",
+  "inst/img/other/mcda_tornado_drug_d.png",
+  "inst/img/other/stacked_barchart.png",
+  "inst/img/other/value_function_benefit_example.png",
+  "inst/img/other/value_function_risk_example.png",
+  "inst/img/other/value_function_comparison_benefit_risk.png",
+  "inst/img/other/value_function_multiple_criteria.png"
 )
 
 for (f in old_files) {
@@ -57,7 +60,7 @@ outcome <- c("Benefit", "Risk")
 fonts_7x7 <- font_config(7, 7)
 scatter_plot_fig <- scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6, base_font_size = fonts_7x7$p)
 ggsave_custom(
-  "inst/img/image04_scatter.png",
+  "inst/img/pub/image04_scatter.png",
   imgpath = "./",
   inplot = scatter_plot_fig,
   wdth = 7,
@@ -82,7 +85,7 @@ dotforest_4pub <- create_forest_dot_plot(
 )
 
 ggsave_custom(
-  "inst/img/image01_dotforest.png",
+  "inst/img/pub/image01_dotforest.png",
   imgpath = "./",
   inplot = dotforest_4pub,
   wdth = 7,
@@ -124,7 +127,7 @@ tradeoff <- generate_tradeoff_plot(
 )
 
 ggsave_custom(
-  "inst/img/image02_tradeoff.png",
+  "inst/img/pub/image02_tradeoff.png",
   imgpath = "./",
   inplot = tradeoff,
   wdth = 5,
@@ -149,7 +152,7 @@ cumulative_excess_plot <- gensurv_combined(
 )
 
 ggsave_custom(
-  "inst/img/image06_cumulative_excess.png",
+  "inst/img/pub/image06_cumulative_excess.png",
   imgpath = "./",
   inplot = cumulative_excess_plot,
   wdth = 7,
@@ -160,7 +163,7 @@ ggsave_custom(
 
 # Correlogram (7×7)
 ggsave_custom(
-  "inst/img/image03_correlogram.png",
+  "inst/img/pub/image03_correlogram.png",
   imgpath = "./",
   inplot = create_correlogram(corr2, base_font_size = fonts_7x7$p),
   wdth = 7,
@@ -179,7 +182,7 @@ stacked_bar_fig <- stacked_barchart(
 )
 
 ggsave_custom(
-  "inst/img/stacked_barchart.png",
+  "inst/img/other/stacked_barchart.png",
   imgpath = "./",
   inplot = stacked_bar_fig,
   wdth = 7,
@@ -206,7 +209,7 @@ divergent_stacked_bar_fig <- divergent_stacked_barchart(
 )
 
 ggsave_custom(
-  "inst/img/image05_divergent_stacked_barchart.png",
+  "inst/img/pub/image05_divergent_stacked_barchart.png",
   imgpath = "./",
   inplot = divergent_stacked_bar_fig,
   wdth = 7,
@@ -234,7 +237,7 @@ value_func_benefit <- create_value_function_plot(
 )
 
 ggsave_custom(
-  "inst/img/value_function_benefit_example.png",
+  "inst/img/other/value_function_benefit_example.png",
   imgpath = "./",
   inplot = value_func_benefit,
   wdth = 5,
@@ -255,7 +258,7 @@ value_func_risk <- create_value_function_plot(
 )
 
 ggsave_custom(
-  "inst/img/value_function_risk_example.png",
+  "inst/img/other/value_function_risk_example.png",
   imgpath = "./",
   inplot = value_func_risk,
   wdth = 5,
@@ -281,7 +284,7 @@ value_func_comparison <- compare_value_functions(
 )
 
 ggsave_custom(
-  "inst/img/value_function_comparison_benefit_risk.png",
+  "inst/img/other/value_function_comparison_benefit_risk.png",
   imgpath = "./",
   inplot = value_func_comparison,
   wdth = 10,
@@ -310,7 +313,7 @@ value_func_multiple <- plot_multiple_value_functions(
 )
 
 ggsave_custom(
-  "inst/img/value_function_multiple_criteria.png",
+  "inst/img/other/value_function_multiple_criteria.png",
   imgpath = "./",
   inplot = value_func_multiple,
   wdth = 12,
@@ -343,7 +346,7 @@ value_func_types_comparison <- compare_value_function_types(
 )
 
 ggsave_custom(
-  "inst/img/image07_value_function_types_comparison.png",
+  "inst/img/pub/image07_value_function_types_comparison.png",
   imgpath = "./",
   inplot = value_func_types_comparison,
   wdth = vft_width,
@@ -376,7 +379,7 @@ barplot_comp_a <- create_mcda_barplot_comparison(
 )
 
 ggsave_custom(
-  "inst/img/image08_barplot_mcda_comparison_drug_a.png",
+  "inst/img/pub/image08_barplot_mcda_comparison_drug_a.png",
   imgpath = "./",
   inplot = barplot_comp_a,
   wdth = 16,
@@ -398,7 +401,7 @@ barplot_comp_b <- create_mcda_barplot_comparison(
 )
 
 ggsave_custom(
-  "inst/img/barplot_mcda_comparison_drug_b.png",
+  "inst/img/other/barplot_mcda_comparison_drug_b.png",
   imgpath = "./",
   inplot = barplot_comp_b,
   wdth = 16,
@@ -419,7 +422,7 @@ barplot_comp_c <- create_mcda_barplot_comparison(
 )
 
 ggsave_custom(
-  "inst/img/barplot_mcda_comparison_drug_c.png",
+  "inst/img/other/barplot_mcda_comparison_drug_c.png",
   imgpath = "./",
   inplot = barplot_comp_c,
   wdth = 16,
@@ -440,7 +443,7 @@ barplot_comp_d <- create_mcda_barplot_comparison(
 )
 
 ggsave_custom(
-  "inst/img/barplot_mcda_comparison_drug_d.png",
+  "inst/img/other/barplot_mcda_comparison_drug_d.png",
   imgpath = "./",
   inplot = barplot_comp_d,
   wdth = 16,
@@ -461,7 +464,7 @@ waterfall_all <- create_mcda_waterfall(
 )
 
 ggsave_custom(
-  "inst/img/image09_mcda_waterfall_all_drugs.png",
+  "inst/img/pub/image09_mcda_waterfall_all_drugs.png",
   imgpath = "./",
   inplot = waterfall_all,
   wdth = 16,
@@ -485,7 +488,7 @@ brmap_all <- create_mcda_brmap(
 )
 
 ggsave_custom(
-  "inst/img/image10_mcda_benefit_risk_map.png",
+  "inst/img/pub/image10_mcda_benefit_risk_map.png",
   imgpath = "./",
   inplot = brmap_all,
   wdth = 8,
@@ -507,7 +510,7 @@ tornado_a <- mcda_tornado(
 )
 
 ggsave_custom(
-  "inst/img/image11_tornado.png",
+  "inst/img/pub/image11_tornado.png",
   imgpath = "./",
   inplot = tornado_a,
   wdth = 10,
@@ -527,7 +530,7 @@ tornado_b <- mcda_tornado(
 )
 
 ggsave_custom(
-  "inst/img/mcda_tornado_drug_b.png",
+  "inst/img/other/mcda_tornado_drug_b.png",
   imgpath = "./",
   inplot = tornado_b,
   wdth = 10,
@@ -546,7 +549,7 @@ tornado_c <- mcda_tornado(
 )
 
 ggsave_custom(
-  "inst/img/mcda_tornado_drug_c.png",
+  "inst/img/other/mcda_tornado_drug_c.png",
   imgpath = "./",
   inplot = tornado_c,
   wdth = 10,
@@ -565,7 +568,7 @@ tornado_d <- mcda_tornado(
 )
 
 ggsave_custom(
-  "inst/img/mcda_tornado_drug_d.png",
+  "inst/img/other/mcda_tornado_drug_d.png",
   imgpath = "./",
   inplot = tornado_d,
   wdth = 10,
