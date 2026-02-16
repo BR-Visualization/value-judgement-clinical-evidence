@@ -43,7 +43,7 @@ calculate_diff_rates(
   rate1 = 152.17, rate2 = 65.21, py1 = 230, py2 = 230,
   cl = 0.95
 )
-#> [2026-02-16 00:08:41] > CI for treatment difference in exposure-adjusted rates is calculated and saved in a dataframe
+#> [2026-02-16 12:49:07] > CI for treatment difference in exposure-adjusted rates is calculated and saved in a dataframe
 #>    diff        se    lower    upper
 #> 1 86.96 0.9721782 85.05457 88.86543
 ```
