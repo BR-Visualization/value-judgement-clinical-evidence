@@ -172,26 +172,17 @@ ggsave_custom(
   dpi = 600
 )
 
-# Stacked bar chart (7×7)
+# Stacked bar chart and divergent stacked bar chart combined (14×7)
 data(comp_outcome)
+fonts_14x7 <- font_config(14, 7)
+
 stacked_bar_fig <- stacked_barchart(
   data = comp_outcome,
   chartcolors = colfun()$fig12_colors,
   ylabel = "Study Week",
-  base_font_size = fonts_7x7$p
+  base_font_size = fonts_14x7$p
 )
 
-ggsave_custom(
-  "inst/img/other/stacked_barchart.png",
-  imgpath = "./",
-  inplot = stacked_bar_fig,
-  wdth = 7,
-  hght = 7,
-  unts = "in",
-  dpi = 600
-)
-
-# Divergent stacked bar chart (7×7)
 divergent_stacked_bar_fig <- divergent_stacked_barchart(
   data = comp_outcome,
   chartcolors = colfun()$fig12_colors,
@@ -205,14 +196,51 @@ divergent_stacked_bar_fig <- divergent_stacked_barchart(
     "Benefit less than threshold, with AE"
   ),
   ylabel = "Study Week",
-  base_font_size = fonts_7x7$p
+  base_font_size = fonts_14x7$p
+)
+
+# Extract legend from one plot using ggplotGrob
+library(cowplot)
+library(gtable)
+
+# Create plot with legend at top with proper label and 2 rows, centered
+stacked_bar_with_legend <- stacked_bar_fig + 
+  labs(fill = "Outcome") +
+  theme(legend.position = "top",
+        legend.justification = "center",
+        legend.box.just = "center",
+        legend.title.align = 0.5) +
+  guides(fill = guide_legend(nrow = 2, title.position = "top", title.hjust = 0.5))
+
+# Extract legend using ggplotGrob
+g <- ggplotGrob(stacked_bar_with_legend)
+legend_index <- which(g$layout$name == "guide-box-top")
+legend <- g$grobs[[legend_index]]
+
+# Remove legends from both plots
+stacked_bar_no_legend <- stacked_bar_fig + theme(legend.position = "none")
+divergent_stacked_bar_no_legend <- divergent_stacked_bar_fig + theme(legend.position = "none")
+
+# Combine plots side by side
+combined_plots <- plot_grid(
+  stacked_bar_no_legend, 
+  divergent_stacked_bar_no_legend, 
+  ncol = 2
+)
+
+# Add legend on top (increased height for 2 rows)
+combined_bar_charts <- plot_grid(
+  legend, 
+  combined_plots, 
+  ncol = 1, 
+  rel_heights = c(0.2, 1)
 )
 
 ggsave_custom(
   "inst/img/pub/image05_divergent_stacked_barchart.png",
   imgpath = "./",
-  inplot = divergent_stacked_bar_fig,
-  wdth = 7,
+  inplot = combined_bar_charts,
+  wdth = 14,
   hght = 7,
   unts = "in",
   dpi = 600
@@ -588,4 +616,5 @@ message(" 10×4 plots:  ", round(fonts_10x4$p, 1), "pt")
 message("  ", vft_width, "×", vft_height, " plots:  ", round(fonts_vft$p, 1), "pt")
 message(" 10×6 plots:  ", round(fonts_10x6$p, 1), "pt")
 message(" 12×6 plots:  ", round(fonts_12x6$p, 1), "pt")
+message(" 14×7 plots:  ", round(fonts_14x7$p, 1), "pt")
 message(" 16×6 plots:  ", round(fonts_16x6$p, 1), "pt")
