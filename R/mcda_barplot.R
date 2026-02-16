@@ -315,6 +315,12 @@ create_mcda_barplot_comparison <- function(
   )
   diff_data$Criterion <- factor(diff_data$Criterion, levels = rev(all_criteria))
 
+  # Set treatment factor levels - reversed for position_dodge to show correctly
+  # (position_dodge displays in reverse order for horizontal bars)
+  combined_data$Treatment <- factor(
+    combined_data$Treatment, levels = c(comparison_drug, comparator_name)
+  )
+
   # Define colors for treatments (active vs comparator)
   # Contrasting colors: neutral gray for comparator, orange for active
   # These complement the blue (#0571b0) and red (#ca0020) benefit-risk colors
@@ -344,7 +350,8 @@ create_mcda_barplot_comparison <- function(
     ) +
     scale_fill_manual(
       values = treatment_colors,
-      name = NULL
+      name = NULL,
+      breaks = c(comparator_name, comparison_drug)
     ) +
     scale_x_continuous(
       limits = norm_lim,
