@@ -15,7 +15,8 @@ gensurv_plot(
   legend_position = c(-0.03, 1.15),
   mar,
   mab,
-  mcd
+  mcd,
+  base_font_size = 9
 )
 }
 \arguments{
@@ -62,6 +63,9 @@ the team, must be numerical.}
 
 \item{mcd}{The minimum clinically important difference of the treatment, as
 discussed by the team, must be numerical.}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 A cumulative excess plot.

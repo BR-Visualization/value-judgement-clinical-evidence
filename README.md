@@ -1,7 +1,7 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# brpubVJCE �
+# brpubVJCE
 
 <!-- badges: start -->
 
@@ -19,7 +19,17 @@ evidence”.
 
 - [Installation](#installation)
 - [Figure - Dot-Forest Plot](#figure---dot-forest-plot)
+- [Figure - Trade-off Plot](#figure---trade-off-plot)
+- [Figure - Correlogram](#figure---correlogram)
+- [Figure - Scatter Plot](#figure---scatter-plot)
+- [Figure - Divergent Stacked Bar
+  Chart](#figure---divergent-stacked-bar-chart)
 - [Figure - Cumulative Excess Plot](#figure---cumulative-excess-plot)
+- [Figure - Value Function Types](#figure---value-function-types)
+- [Figure - MCDA Comparison Plot](#figure---mcda-comparison-plot)
+- [Figure - MCDA Waterfall Plot](#figure---mcda-waterfall-plot)
+- [Figure - MCDA Benefit-Risk Map](#figure---mcda-benefit-risk-map)
+- [Figure - MCDA Tornado Plot](#figure---mcda-tornado-plot)
 
 ## Installation
 
@@ -31,18 +41,7 @@ You can install the development version of brpubVJCE from
 ``` r
 # Install using pak (recommended)
 install.packages("pak")
-#> The following package(s) will be installed:
-#> - pak [0.9.0]
-#> These packages will be installed into "C:/Users/aemab/AppData/Local/R/cache/R/renv/library/brpubVJCE-f8740ab8/windows/R-4.5/x86_64-w64-mingw32".
-#> 
-#> # Installing packages --------------------------------------------------------
-#> - Installing pak ...                            OK [linked from cache]
-#> Successfully installed 1 package in 19 milliseconds.
 pak::pak("BR-Visualization/brpubVJCE")
-#> ℹ Loading metadata database✔ Loading metadata database ... done
-#>  
-#> ℹ No downloads are needed
-#> ✔ 1 pkg + 43 deps: kept 36 [7.8s]
 ```
 
 ### Alternative Installation
@@ -50,17 +49,7 @@ pak::pak("BR-Visualization/brpubVJCE")
 ``` r
 # Install using remotes
 install.packages("remotes")
-#> The following package(s) will be installed:
-#> - remotes [2.5.0]
-#> These packages will be installed into "C:/Users/aemab/AppData/Local/R/cache/R/renv/library/brpubVJCE-f8740ab8/windows/R-4.5/x86_64-w64-mingw32".
-#> 
-#> # Installing packages --------------------------------------------------------
-#> - Installing remotes ...                        OK [linked from cache]
-#> Successfully installed 1 package in 17 milliseconds.
 remotes::install_github("BR-Visualization/brpubVJCE")
-#> Using GitHub PAT from the git credential store.
-#> Skipping install of 'brpubVJCE' from a github remote, the SHA1 (3d136d27) has not changed since last install.
-#>   Use `force = TRUE` to force installation
 ```
 
 ## Figure - Dot-Forest Plot
@@ -108,6 +97,224 @@ result_plot
 
 </details>
 
+## Figure - Trade-off Plot
+
+<img src="man/figures/README-tradeoff_plot-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?generate_tradeoff_plot` for detailed function
+  help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+
+effects_table_filtered <- effects_table |>
+  dplyr::filter(Outcome %in% c("Risk 1", "Benefit 1"))
+
+generate_tradeoff_plot(
+  data = effects_table_filtered,
+  filter = "None",
+  category = "All",
+  benefit = "Benefit 1",
+  risk = "Risk 1",
+  type_risk = "Crude proportions",
+  type_graph = "Absolute risk",
+  ci = "Yes",
+  ci_method = "Calculated",
+  cl = 0.95,
+  mab = 0.05,
+  mar = 0.45,
+  threshold = "Segmented line",
+  ratio = 4,
+  b1 = 0.05, b2 = 0.1, b3 = 0.15, b4 = 0.2, b5 = 0.25,
+  b6 = 0.3, b7 = 0.35, b8 = 0.4, b9 = 0.45, b10 = 0.5,
+  r1 = 0.09, r2 = 0.17, r3 = 0.24, r4 = 0.3, r5 = 0.35,
+  r6 = 0.39, r7 = 0.42, r8 = 0.44, r9 = 0.45, r10 = 0.45,
+  testdrug = "Yes",
+  type_scale = "Free",
+  lower_x = 0, upper_x = 0.5,
+  lower_y = 0, upper_y = 0.5,
+  chartcolors = colfun()$fig7_colors
+)
+```
+
+</details>
+
+## Figure - Correlogram
+
+<img src="man/figures/README-correlogram-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?create_correlogram` for detailed function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+
+create_correlogram(corr2)
+```
+
+</details>
+
+## Figure - Scatter Plot
+
+<img src="man/figures/README-scatter_plot-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?scatter_plot` for detailed function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+
+outcome <- c("Benefit", "Risk")
+scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
+```
+
+</details>
+
+## Figure - Divergent Stacked Bar Chart
+
+<img src="man/figures/README-divergent_stacked_barchart-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?divergent_stacked_barchart` and
+  `?stacked_barchart` for detailed function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+library(cowplot)
+library(gtable)
+
+# Create both plots
+stacked_bar_fig <- stacked_barchart(
+  data = comp_outcome,
+  chartcolors = colfun()$fig12_colors,
+  ylabel = "Study Week"
+)
+
+divergent_stacked_bar_fig <- divergent_stacked_barchart(
+  data = comp_outcome,
+  chartcolors = colfun()$fig12_colors,
+  favcat = c(
+    "Benefit larger than threshold, with AE",
+    "Benefit larger than threshold, w/o AE"
+  ),
+  unfavcat = c(
+    "Withdrew",
+    "Benefit less than threshold, w/o AE",
+    "Benefit less than threshold, with AE"
+  ),
+  ylabel = "Study Week"
+)
+
+# Extract and combine with shared legend
+stacked_bar_with_legend <- stacked_bar_fig + 
+  labs(fill = "Outcome") +
+  theme(legend.position = "top",
+        legend.justification = "center",
+        legend.box.just = "center",
+        legend.title.align = 0.5) +
+  guides(fill = guide_legend(nrow = 2, title.position = "top", title.hjust = 0.5))
+
+g <- ggplotGrob(stacked_bar_with_legend)
+legend <- g$grobs[[which(g$layout$name == "guide-box-top")]]
+
+stacked_bar_no_legend <- stacked_bar_fig + theme(legend.position = "none")
+divergent_stacked_bar_no_legend <- divergent_stacked_bar_fig + theme(legend.position = "none")
+
+combined_plots <- plot_grid(stacked_bar_no_legend, divergent_stacked_bar_no_legend, ncol = 2)
+plot_grid(legend, combined_plots, ncol = 1, rel_heights = c(0.2, 1))
+```
+
+</details>
+
 ## Figure - Cumulative Excess Plot
 
 <img src="man/figures/README-cumulative_excess_plot-1.png" width="100%" />
@@ -132,6 +339,8 @@ Click to learn more
 
 <details>
 
+<summary>
+
 Click to view sample code
 </summary>
 
@@ -148,6 +357,235 @@ gensurv_combined(
   mar = 32,
   mab = 15,
   mcd = 22
+)
+```
+
+</details>
+
+## Figure - Value Function Types
+
+<img src="man/figures/README-value_function_types-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?compare_value_function_types` for detailed
+  function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+
+compare_value_function_types(
+  benefit_name = "Efficacy",
+  benefit_min = 0,
+  benefit_max = 100,
+  benefit_label = "Response Rate (%)",
+  risk_name = "Safety",
+  risk_min = 0,
+  risk_max = 100,
+  risk_label = "Adverse Event Rate (%)",
+  power = 2,
+  show_titles = FALSE,
+  show_legend = TRUE
+)
+```
+
+</details>
+
+## Figure - MCDA Comparison Plot
+
+<img src="man/figures/README-mcda_barplot-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?create_mcda_barplot_comparison` for detailed
+  function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+
+create_mcda_barplot_comparison(
+  data = mcda_data,
+  study = "Study 1",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  comparison_drug = "Drug A",
+  clinical_scales = clinical_scales,
+  weights = weights
+)
+```
+
+</details>
+
+## Figure - MCDA Waterfall Plot
+
+<img src="man/figures/README-mcda_waterfall-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?create_mcda_waterfall` for detailed function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+
+create_mcda_waterfall(
+  data = mcda_data,
+  comparator_name = "Placebo",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+```
+
+</details>
+
+## Figure - MCDA Benefit-Risk Map
+
+<img src="man/figures/README-mcda_brmap-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?create_mcda_brmap` for detailed function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+
+create_mcda_brmap(
+  data = mcda_data,
+  comparator_name = "Placebo",
+  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
+  risk_criteria = c("Risk 1", "Risk 2"),
+  weights = weights,
+  clinical_scales = clinical_scales,
+  show_frontier = TRUE,
+  show_labels = TRUE
+)
+```
+
+</details>
+
+## Figure - MCDA Tornado Plot
+
+<img src="man/figures/README-mcda_tornado-1.png" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**Getting Help**
+
+- Documentation: Use `?mcda_tornado` for detailed function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(brpubVJCE)
+
+mcda_tornado(
+  data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
+  comparator_name = "Placebo",
+  comparison_drug = "Drug A",
+  weights = weights,
+  clinical_scales = clinical_scales
 )
 ```
 
