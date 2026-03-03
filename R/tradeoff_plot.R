@@ -372,14 +372,14 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     myplot <- myplot +
       annotate("rect",
         xmin = x_min, xmax = mab, ymin = y_min,
-        ymax = y_max, fill = "grey", alpha = 0.7
+        ymax = y_max, fill = "gray60", alpha = 0.7
       )
   }
   if (!is.na(mar)) {
     myplot <- myplot +
       annotate("rect",
         xmin = x_min, xmax = x_max, ymin = mar,
-        ymax = y_max, fill = "grey", alpha = 0.7
+        ymax = y_max, fill = "gray60", alpha = 0.7
       )
   }
 
@@ -415,7 +415,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
       ) +
       geom_ribbon(aes(x = x_line, ymin = y_line, ymax = y_max),
         data = df_line,
-        fill = "grey", alpha = 0.7
+        fill = "gray60", alpha = 0.7
       )
   } else {
     x_curve <- c(b1, b2, b3, b4, b5, b6, b7, b8, b9, b10)
@@ -459,7 +459,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
           colour = "black", size = 2, shape = 15
         ) +
         geom_ribbon(aes(x = x_curve, ymin = y_curve, ymax = y_max),
-          data = df_curve, fill = "grey", alpha = 0.7
+          data = df_curve, fill = "gray60", alpha = 0.7
         )
     } else if (threshold == "Smooth curve") {
       # display the threshold as a smooth curve
@@ -483,7 +483,7 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
             ymin = y_curve,
             ymax = y_max
           ),
-          data = new_df_curve, fill = "grey",
+          data = new_df_curve, fill = "gray60",
           alpha = 0.7
         )
     }
@@ -522,12 +522,12 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
   if (!is.na(mar)) {
     myplot <- myplot +
       geom_text(aes(label = "MAR", x = x_max, y = mar), size = control_fonts()$p
-        * 0.35, hjust = -0.15)
+        * 0.4, hjust = -0.15)
   }
   if (!is.na(mab)) {
     myplot <- myplot +
       geom_text(aes(label = "MAB", x = mab, y = y_max), size = control_fonts()$p
-        * 0.35, vjust = -0.3)
+        * 0.4, vjust = -0.3)
   }
   myplot <- myplot + xlab(benefit) + ylab(risk)
 
@@ -566,7 +566,13 @@ generate_tradeoff_plot <- function(data, filter, category, benefit, risk,
     br_charts_theme(
       axis_line = element_blank(),
       axis.ticks.x = element_blank(),
-      axis.ticks.y = element_blank()
+      axis.ticks.y = element_blank(),
+      axis.text.x = element_text(size = 10),
+      axis.text.y = element_text(size = 10),
+      axis.title.x = element_text(size = 12),
+      axis.title.y = element_text(size = 12),
+      legend.size = element_text(size = 10),
+      legend.title = element_text(size = 10)
     ) +
     coord_cartesian(clip = "off") +
     guides(
