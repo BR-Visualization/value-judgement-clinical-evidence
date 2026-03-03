@@ -45,7 +45,8 @@ generate_tradeoff_plot(
   upper_x,
   lower_y,
   upper_y,
-  chartcolors
+  chartcolors,
+  base_font_size = 9
 )
 }
 \arguments{
@@ -252,6 +253,9 @@ specified risk tolerance}
 
 \item{chartcolors}{(\code{vector}) a vector of colors, the same number of levels
 as the number of treatments}
+
+\item{base_font_size}{Numeric; base font size in points for all text
+elements in the plot (default: 9).}
 }
 \value{
 a ggplot object
@@ -260,8 +264,13 @@ a ggplot object
 Generate trade-off plot
 }
 \examples{
+\dontrun{
+# Filter data for a specific treatment to ensure unique outcome combinations
+library(dplyr)
+effects_table_filtered <- effects_table |> filter(Trt1 == "Drug A")
+
 generate_tradeoff_plot(
-  data = effects_table, filter = "None", category = "All",
+  data = effects_table_filtered, filter = "None", category = "All",
   benefit = "Benefit 1", risk = "Risk 1",
   type_risk = "Crude proportions", type_graph = "Absolute risk",
   ci = "Yes", ci_method = "Calculated", cl = 0.95,
@@ -297,5 +306,6 @@ generate_tradeoff_plot(
   upper_y = 0.5,
   chartcolors = colfun()$fig7_colors
 )
+}
 
 }

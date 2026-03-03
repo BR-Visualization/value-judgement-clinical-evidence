@@ -1,0 +1,841 @@
+---
+title: "MCDA Value Function Types"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{MCDA Value Function Types}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.width = 10,
+  fig.height = 6,
+  echo = FALSE,
+  message = FALSE,
+  warning = FALSE
+)
+```
+
+```{r setup, message=FALSE, warning=FALSE}
+library(brpubVJCE)
+library(ggplot2)
+library(dplyr)
+library(tidyr)
+library(patchwork)
+```
+
+## Introduction
+
+Value functions are mathematical transformations that convert raw clinical outcome values into a standardized scale (typically 0-100) representing "value" or "desirability" from a decision-making perspective. The choice of value function reflects stakeholder preferences about how outcomes are valued.
+
+## Why Value Functions Matter
+
+Consider an adverse event rate:
+- **Linear**: Going from 10% to 20% AE rate has the same negative value as 20% to 30%
+- **Exponential**: Going from 10% to 20% is concerning, but 20% to 30% is dramatically worse
+- **Threshold**: Below 15% is acceptable (value=100), above 15% is unacceptable (value=0)
+
+The choice affects benefit-risk conclusions and should reflect clinical reality and stakeholder preferences.
+
+## Value Function Types
+
+### 1. Linear Value Functions (Current Standard)
+
+**Description**: Constant marginal value - each unit change has equal importance
+
+**Increasing direction** (higher is better, e.g., efficacy):
+$$v(x) = 100 \times \frac{x - \text{min}}{\text{max} - \text{min}}$$
+
+**Decreasing direction** (lower is better, e.g., adverse events):
+$$v(x) = 100 \times \frac{\text{max} - x}{\text{max} - \text{min}}$$
+
+```{r linear-example}
+# Define linear value functions
+linear_increasing <- function(x, min_val, max_val) {
+  100 * (x - min_val) / (max_val - min_val)
+}
+
+linear_decreasing <- function(x, min_val, max_val) {
+  100 * (max_val - x) / (max_val - min_val)
+}
+
+# Example: Efficacy (0-100% response rate)
+x_efficacy <- seq(0, 100, by = 1)
+value_efficacy <- linear_increasing(x_efficacy, min_val = 0, max_val = 100)
+
+# Example: Adverse events (0-50% AE rate)
+x_ae <- seq(0, 50, by = 0.5)
+value_ae <- linear_decreasing(x_ae, min_val = 0, max_val = 50)
+
+# Create plots
+p_efficacy <- ggplot(data.frame(x = x_efficacy, value = value_efficacy),
+                     aes(x = x, y = value)) +
+  geom_line(color = "#0571b0", linewidth = 1.2) +
+  geom_hline(yintercept = 50, linetype = "dashed", color = "gray50") +
+  labs(
+    title = "Linear Increasing: Efficacy",
+    x = "Response Rate (%)",
+    y = "Value (0-100)"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))
+
+p_ae <- ggplot(data.frame(x = x_ae, value = value_ae),
+               aes(x = x, y = value)) +
+  geom_line(color = "#ca0020", linewidth = 1.2) +
+  geom_hline(yintercept = 50, linetype = "dashed", color = "gray50") +
+  labs(
+    title = "Linear Decreasing: Adverse Events",
+    x = "AE Rate (%)",
+    y = "Value (0-100)"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))
+
+p_efficacy + p_ae
+```
+
+**When to use:**
+- Default choice (FDA/EMA recommendation)
+- No strong evidence of non-linear preferences
+- Transparency and simplicity are priorities
+- Most clinical outcomes
+
+**Advantages:**
+- Simple and interpretable
+- Transparent calculations
+- Regulatory acceptance
+- Conservative (neutral) assumptions
+
+**Disadvantages:**
+- May not reflect true stakeholder preferences
+- Assumes equal marginal value across range
+
+---
+
+### 2. Piecewise Linear Value Functions
+
+**Description**: Different slopes in different regions, connected at breakpoints
+
+```{r piecewise-example}
+# Piecewise linear function with 3 segments
+piecewise_linear <- function(x, breakpoints, slopes, intercepts) {
+  value <- numeric(length(x))
+  for (i in seq_along(x)) {
+    if (x[i] < breakpoints[1]) {
+      value[i] <- slopes[1] * x[i] + intercepts[1]
+    } else if (x[i] < breakpoints[2]) {
+      value[i] <- slopes[2] * (x[i] - breakpoints[1]) + intercepts[2]
+    } else {
+      value[i] <- slopes[3] * (x[i] - breakpoints[2]) + intercepts[3]
+    }
+  }
+  # Constrain to 0-100
+  pmax(0, pmin(100, value))
+}
+
+# Example: AE severity with different concern levels
+# Mild (0-10%): slope = -2
+# Moderate (10-25%): slope = -3
+# Severe (>25%): slope = -5
+
+x_ae_pw <- seq(0, 40, by = 0.5)
+
+# Calculate intercepts to ensure continuity
+# At x 0: score 100
+# At x 10: score 80 (100 - 2*10)
+# At x 25: score 35 (80 - 3*15)
+
+breakpoints <- c(10, 25)
+slopes <- c(-2, -3, -5)
+intercepts <- c(100, 80, 35)
+
+value_ae_pw <- piecewise_linear(x_ae_pw, breakpoints, slopes, intercepts)
+
+# Compare with linear
+value_ae_linear <- linear_decreasing(x_ae_pw, min_val = 0, max_val = 50)
+
+comparison_df <- data.frame(
+  x = rep(x_ae_pw, 2),
+  value = c(value_ae_pw, value_ae_linear),
+  type = rep(c("Piecewise", "Linear"), each = length(x_ae_pw))
+)
+
+ggplot(comparison_df, aes(x = x, y = value, color = type, linetype = type)) +
+  geom_line(linewidth = 1.2) +
+  geom_vline(xintercept = breakpoints, linetype = "dotted", color = "gray40") +
+  annotate(
+    "text", x = 5, y = 95,
+    label = "Mild", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 17.5, y = 95,
+    label = "Moderate", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 32, y = 95,
+    label = "Severe", size = 3.5, color = "gray30"
+  ) +
+  scale_color_manual(
+    values = c("Piecewise" = "#ca0020", "Linear" = "gray50")
+  ) +
+  scale_linetype_manual(
+    values = c("Piecewise" = "solid", "Linear" = "dashed")
+  ) +
+  labs(
+    title = "Piecewise Linear: AE Severity Regions",
+    x = "Adverse Event Rate (%)",
+    y = "Value (0-100)",
+    color = "Function",
+    linetype = "Function"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+**When to use:**
+- Clinical guidelines define severity categories (mild/moderate/severe)
+- Regulatory thresholds exist (acceptable/concerning/unacceptable)
+- Stakeholders value ranges differently
+- MCID (Minimally Clinically Important Difference) creates natural breakpoints
+
+**Example applications:**
+- QoL scales with clinical interpretation bands
+- Lab values with normal/borderline/abnormal ranges
+- Dose levels with safety thresholds
+
+**Advantages:**
+- Captures clinical interpretation thresholds
+- More flexible than linear
+- Still relatively transparent
+- Can match stakeholder preferences better
+
+**Disadvantages:**
+- More parameters to justify
+- Arbitrary breakpoint placement needs rationale
+- More complex than linear
+
+---
+
+### 3. Exponential/Power Value Functions
+
+**Description**: Curved relationship reflecting risk attitudes
+
+**Risk-averse (diminishing returns)**, b > 1:
+$$v(x) = 100 \times \left(\frac{x - \text{min}}{\text{max} - \text{min}}\right)^b$$
+
+**Risk-seeking (increasing returns)**, 0 < b < 1:
+$$v(x) = 100 \times \left(\frac{x - \text{min}}{\text{max} - \text{min}}\right)^b$$
+
+```{r exponential-example}
+# Power/exponential functions
+power_function <- function(x, min_val, max_val, power) {
+  normalized <- (x - min_val) / (max_val - min_val)
+  100 * normalized^power
+}
+
+x_vals <- seq(0, 100, by = 1)
+
+# Different power values
+powers <- c(0.5, 1, 2, 3)
+power_data <- data.frame()
+
+for (p in powers) {
+  values <- power_function(x_vals, min_val = 0, max_val = 100, power = p)
+  power_data <- rbind(
+    power_data,
+    data.frame(
+      x = x_vals,
+      value = values,
+      power = as.factor(sprintf("b = %.1f", p))
+    )
+  )
+}
+
+ggplot(power_data, aes(x = x, y = value, color = power)) +
+  geom_line(linewidth = 1.2) +
+  geom_abline(slope = 1, intercept = 0, linetype = "dashed", color = "gray50") +
+  annotate(
+    "text", x = 75, y = 85,
+    label = "b < 1: Risk-seeking\n(increasing returns)",
+    size = 3.5, color = "gray30", hjust = 0
+  ) +
+  annotate(
+    "text", x = 25, y = 20,
+    label = "b > 1: Risk-averse\n(diminishing returns)",
+    size = 3.5, color = "gray30", hjust = 0
+  ) +
+  scale_color_manual(values = c(
+    "b = 0.5" = "#2c7bb6",
+    "b = 1.0" = "gray50",
+    "b = 2.0" = "#fdae61",
+    "b = 3.0" = "#d7191c"
+  )) +
+  labs(
+    title = "Power Functions: Risk Attitudes",
+    subtitle = "b = 1 is linear (neutral)",
+    x = "Raw Outcome Value",
+    y = "Value (0-100)",
+    color = "Power"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+**When to use:**
+- Stakeholder elicitation reveals non-linear preferences
+- Diminishing returns clinically meaningful (first 50% efficacy more valuable)
+- Severity increases exponentially (rare but catastrophic events)
+- Utility theory supports risk attitudes
+
+**Example applications:**
+- Mortality (each life equally valuable - linear or power=1)
+- Quality of life (diminishing returns at high levels)
+- Rare serious AEs (exponential concern)
+
+**Advantages:**
+- Captures risk attitudes
+- Single parameter (power) to adjust
+- Smooth and differentiable
+
+**Disadvantages:**
+- Requires justification for non-linearity
+- Power parameter selection subjective
+- Less transparent than linear
+
+---
+
+### 4. Sigmoid (S-shaped) Value Functions
+
+**Description**: Slow change at extremes, rapid change in middle
+
+$$v(x) = \frac{100}{1 + \exp(-k \times (x - \text{midpoint}))}$$
+
+```{r sigmoid-example}
+# Sigmoid/logistic function
+sigmoid_function <- function(x, min_val, max_val, midpoint, steepness) {
+  # Normalize x to midpoint
+  x_centered <- x - midpoint
+  # Apply logistic function
+  100 / (1 + exp(-steepness * x_centered))
+}
+
+x_vals <- seq(0, 100, by = 0.5)
+
+# Different steepness values (k parameter)
+steepness_vals <- c(0.05, 0.1, 0.2)
+sigmoid_data <- data.frame()
+
+for (k in steepness_vals) {
+  values <- sigmoid_function(x_vals, min_val = 0, max_val = 100,
+                             midpoint = 50, steepness = k)
+  sigmoid_data <- rbind(
+    sigmoid_data,
+    data.frame(
+      x = x_vals,
+      value = values,
+      steepness = as.factor(sprintf("k = %.2f", k))
+    )
+  )
+}
+
+# Add linear for comparison
+sigmoid_data <- rbind(
+  sigmoid_data,
+  data.frame(
+    x = x_vals,
+    value = linear_increasing(x_vals, 0, 100),
+    steepness = "Linear"
+  )
+)
+
+ggplot(
+  sigmoid_data,
+  aes(
+    x = x, y = value,
+    color = steepness, linetype = steepness
+  )
+) +
+  geom_line(linewidth = 1.2) +
+  geom_vline(
+    xintercept = 50, linetype = "dotted", color = "gray40"
+  ) +
+  geom_hline(
+    yintercept = 50, linetype = "dotted", color = "gray40"
+  ) +
+  annotate(
+    "text", x = 50, y = 5,
+    label = "Midpoint", size = 3, color = "gray30"
+  ) +
+  scale_color_manual(values = c(
+    "k = 0.05" = "#2c7bb6",
+    "k = 0.10" = "#fdae61",
+    "k = 0.20" = "#d7191c",
+    "Linear" = "gray50"
+  )) +
+  scale_linetype_manual(values = c(
+    "k = 0.05" = "solid",
+    "k = 0.10" = "solid",
+    "k = 0.20" = "solid",
+    "Linear" = "dashed"
+  )) +
+  labs(
+    title = "Sigmoid (S-shaped) Value Functions",
+    subtitle = "Threshold effect centered at midpoint = 50",
+    x = "Raw Outcome Value",
+    y = "Value (0-100)",
+    color = "Steepness",
+    linetype = "Steepness"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+**When to use:**
+- Threshold effects (outcome "tips" at clinical cutpoint)
+- Very low/high values matter less than mid-range
+- Psychological preferences show S-shaped patterns
+- Binary clinical decisions with gray zone
+
+**Example applications:**
+- Biomarkers with clinical interpretation thresholds
+- PROs with "clinically meaningful change" bands
+- Dose-response with therapeutic window
+
+**Advantages:**
+- Captures threshold effects
+- Smooth transition (no sharp jumps)
+- Biologically/clinically realistic for many outcomes
+
+**Disadvantages:**
+- Two parameters (midpoint, steepness) to justify
+- Can be complex to explain
+- Requires clear rationale for threshold location
+
+---
+
+### 5. Step Functions (Discrete Categories)
+
+**Description**: Discrete value levels for categorical outcomes
+
+```{r step-example}
+# Step function for severity categories
+step_function <- function(x, thresholds, values) {
+  result <- numeric(length(x))
+  for (i in seq_along(x)) {
+    # Find which category x[i] falls into
+    category <- sum(x[i] >= thresholds) + 1
+    result[i] <- values[category]
+  }
+  result
+}
+
+x_vals <- seq(0, 50, by = 0.5)
+
+# Example: AE severity categories
+# None (0-5%): score 100
+# Mild (5-15%): score 75
+# Moderate (15-30%): score 40
+# Severe (>30%): score 0
+
+thresholds <- c(5, 15, 30)
+values <- c(100, 75, 40, 0)
+
+value_step <- step_function(x_vals, thresholds, values)
+value_linear <- linear_decreasing(x_vals, 0, 50)
+
+comparison_step <- data.frame(
+  x = rep(x_vals, 2),
+  value = c(value_step, value_linear),
+  type = rep(c("Step", "Linear"), each = length(x_vals))
+)
+
+ggplot(comparison_step, aes(x = x, y = value, color = type, linetype = type)) +
+  geom_line(linewidth = 1.2) +
+  geom_vline(xintercept = thresholds, linetype = "dotted", color = "gray40") +
+  annotate(
+    "text", x = 2.5, y = 105,
+    label = "None", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 10, y = 105,
+    label = "Mild", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 22.5, y = 105,
+    label = "Moderate", size = 3.5, color = "gray30"
+  ) +
+  annotate(
+    "text", x = 40, y = 105,
+    label = "Severe", size = 3.5, color = "gray30"
+  ) +
+  scale_color_manual(values = c("Step" = "#ca0020", "Linear" = "gray50")) +
+  scale_linetype_manual(values = c("Step" = "solid", "Linear" = "dashed")) +
+  labs(
+    title = "Step Function: Discrete Severity Categories",
+    x = "Adverse Event Rate (%)",
+    y = "Value (0-100)",
+    color = "Function",
+    linetype = "Function"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+**When to use:**
+- Outcomes are inherently categorical (CTCAE grades)
+- Clinical practice uses discrete classifications
+- No meaningful distinction within categories
+- Regulatory guidance defines categories
+
+**Example applications:**
+- CTCAE toxicity grades (1-5)
+- ECOG performance status (0-4)
+- Disease severity classifications
+
+**Advantages:**
+- Matches clinical practice
+- Simple interpretation
+- Natural for categorical data
+
+**Disadvantages:**
+- Ignores variation within categories
+- Sharp discontinuities may not reflect reality
+- Can be sensitive to threshold placement
+
+---
+
+## Comparing Value Functions
+
+Let's visualize all function types for the same outcome:
+
+```{r comparison-all}
+x_vals <- seq(0, 50, by = 0.5)
+
+# Generate all function types
+comparison_all <- data.frame(
+  x = rep(x_vals, 5),
+  value = c(
+    linear_decreasing(x_vals, 0, 50),
+    piecewise_linear(x_vals, c(10, 25), c(-2, -3, -5), c(100, 80, 35)),
+    power_function(50 - x_vals, 0, 50, 2),
+    100 - sigmoid_function(x_vals, 0, 50, 25, 0.15),
+    step_function(x_vals, c(5, 15, 30), c(100, 75, 40, 0))
+  ),
+  type = rep(
+    c("Linear", "Piecewise Linear", "Exponential (b=2)",
+      "Sigmoid", "Step"),
+    each = length(x_vals)
+  )
+)
+
+comparison_all$type <- factor(
+  comparison_all$type,
+  levels = c("Linear", "Piecewise Linear", "Exponential (b=2)",
+             "Sigmoid", "Step")
+)
+
+ggplot(comparison_all, aes(x = x, y = value, color = type)) +
+  geom_line(linewidth = 1.2) +
+  scale_color_manual(values = c(
+    "Linear" = "gray50",
+    "Piecewise Linear" = "#2c7bb6",
+    "Exponential (b=2)" = "#fdae61",
+    "Sigmoid" = "#d7191c",
+    "Step" = "#542788"
+  )) +
+  labs(
+    title = "Comparison of Value Function Types",
+    subtitle = "Adverse event rate: Lower is better",
+    x = "Adverse Event Rate (%)",
+    y = "Value (0-100)",
+    color = "Function Type"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+```
+
+**Key observations:**
+- **Linear**: Constant concern across all levels
+- **Piecewise**: Different concern in different ranges
+- **Exponential**: Increasing concern (risk-averse)
+- **Sigmoid**: Threshold effect at ~25%
+- **Step**: Categorical interpretation
+
+---
+
+## Regulatory and Practical Considerations
+
+### FDA/EMA Guidance
+
+**Default recommendation: Linear value functions**
+- Transparent and conservative
+- Neutral assumption (no risk attitude imposed)
+- Easiest to justify and explain
+
+**When non-linear may be acceptable:**
+1. Strong clinical/theoretical rationale
+2. Validated through stakeholder elicitation
+3. Pre-specified in analysis plan
+4. Sensitivity analysis shows robustness
+5. Documented justification
+
+### Selection Criteria
+
+**Clinical validity:**
+- Does the function match clinical understanding?
+- Are there clinical thresholds or categories?
+- Do clinicians think linearly or non-linearly about this outcome?
+
+**Stakeholder preferences:**
+- Elicit preferences using standard techniques
+- Choice experiments
+- Swing weighting
+- Direct function specification
+
+**Data requirements:**
+- Linear: Only min/max thresholds
+- Piecewise: Breakpoints and slopes
+- Exponential: Power parameter
+- Sigmoid: Midpoint and steepness
+- Step: Category thresholds and values
+
+**Interpretability:**
+- Can you explain it to regulators?
+- Can patients understand it?
+- Does it make intuitive sense?
+
+### Sensitivity Analysis
+
+Always perform sensitivity analysis:
+
+```{r sensitivity-example, fig.height=8}
+# Sensitivity to power parameter
+x_vals <- seq(0, 100, by = 1)
+powers <- c(0.5, 1, 1.5, 2, 2.5, 3)
+
+sensitivity_data <- data.frame()
+for (p in powers) {
+  values <- power_function(x_vals, 0, 100, p)
+  sensitivity_data <- rbind(
+    sensitivity_data,
+    data.frame(
+      x = x_vals,
+      value = values,
+      power = p,
+      power_label = sprintf("b = %.1f", p)
+    )
+  )
+}
+
+# Calculate area under curve as a sensitivity metric
+auc_values <- sensitivity_data |>
+  group_by(power_label) |>
+  summarise(auc = sum(value) / n(), .groups = "drop")
+
+p1 <- ggplot(
+  sensitivity_data,
+  aes(x = x, y = value, color = as.factor(power))
+) +
+  geom_line(linewidth = 1.2) +
+  scale_color_brewer(palette = "RdYlBu", direction = -1) +
+  labs(
+    title = "Sensitivity to Power Parameter",
+    x = "Raw Outcome Value",
+    y = "Value (0-100)",
+    color = "Power (b)"
+  ) +
+  theme_minimal() +
+  theme(plot.title = element_text(face = "bold"))
+
+p2 <- ggplot(auc_values, aes(x = power_label, y = auc, fill = power_label)) +
+  geom_col() +
+  geom_text(aes(label = sprintf("%.1f", auc)), vjust = -0.5, size = 3.5) +
+  scale_fill_brewer(palette = "RdYlBu", direction = -1) +
+  labs(
+    title = "Average Value (Area Under Curve)",
+    x = "Power Parameter",
+    y = "Mean Value"
+  ) +
+  theme_minimal() +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "none"
+  )
+
+p1 / p2
+```
+
+---
+
+## Recommendations
+
+### 1. Start with Linear
+- Default choice unless clear rationale for non-linear
+- Easiest to justify and defend
+- Regulatory preference
+
+### 2. Consider Non-linear When:
+- Clinical thresholds exist (→ piecewise or step)
+- Stakeholder preferences clearly non-linear (→ power or sigmoid)
+- Strong theoretical rationale (→ appropriate function type)
+- Validated through preference elicitation
+
+### 3. Document Everything
+- Rationale for function choice
+- Parameter selection process
+- Stakeholder input
+- Sensitivity analyses
+- Clinical interpretation
+
+### 4. Validate Choices
+- Face validity with clinicians
+- Stakeholder review
+- Sensitivity analysis
+- Comparison with alternative functions
+
+### 5. Be Conservative
+- When in doubt, use linear
+- Simpler is better for communication
+- Consider audience (regulators, patients, clinicians)
+
+---
+
+## References
+
+### Methodological
+
+- Thokala P, et al. (2016). Multiple criteria decision analysis for health care decision making. *Value in Health*, 19(1):1-13.
+- Keeney RL, Raiffa H. (1993). *Decisions with Multiple Objectives: Preferences and Value Trade-Offs*. Cambridge University Press.
+- Dyer JS, Sarin RK. (1979). Measurable multiattribute value functions. *Operations Research*, 27(4):810-822.
+
+### Regulatory
+
+- FDA. (2013). Structured Approach to Benefit-Risk Assessment in Drug Regulatory Decision-Making.
+- EMA. (2011). Benefit-Risk Methodology Project: Report of the BRMWP Task Force.
+- PROTECT. (2012). Work Package 5: Benefit-Risk Integration and Representation.
+
+### Applications
+
+- Mussen F, et al. (2007). Structured benefit-risk assessment for medicinal products. *Pharmacoepidemiol Drug Saf*, 16(S1):S2-15.
+- Mt-Isa S, et al. (2014). Balancing benefit and risk of medicines. *Clinical Pharmacology & Therapeutics*, 96(4):438-446.
+- Levitan B, et al. (2018). Application of the BRAT framework to case studies. *Pharmacoepidemiol Drug Saf*, 27(11):1223-1234.
+
+---
+
+## Implementation Note
+
+The current `brpubVJCE` package implements **linear value functions** by default, which is consistent with FDA/EMA guidance and provides a transparent, conservative approach to benefit-risk assessment.
+
+If you need to implement alternative value functions for specific applications, the examples in this vignette provide the mathematical framework. Always ensure proper documentation and justification for non-linear choices.
+
+---
+
+## Package Functions for Value Function Visualization
+
+The `brpubVJCE` package now includes dedicated functions for visualizing linear value functions used in MCDA analyses:
+
+### Single Value Function Plot
+
+Create a plot showing how raw values transform to normalized scores (0-100):
+
+```{r value-function-single, fig.height=4, fig.width=5}
+# Benefit criterion: higher efficacy is better
+create_value_function_plot(
+  criterion_name = "Response Rate (%)",
+  min_val = 0,
+  max_val = 100,
+  direction = "increasing"
+)
+```
+
+### Compare Benefits vs Risks
+
+Create side-by-side comparison showing the different normalization directions:
+
+```{r value-function-comparison, fig.height=4, fig.width=10}
+# Compare benefit (increasing) and risk (decreasing) value functions
+compare_value_functions(
+  benefit_name = "Efficacy",
+  benefit_min = 0,
+  benefit_max = 100,
+  benefit_label = "Response Rate (%)",
+  risk_name = "Safety",
+  risk_min = 0,
+  risk_max = 50,
+  risk_label = "Adverse Event Rate (%)"
+)
+```
+
+### Visualize All MCDA Criteria
+
+Create a multi-panel plot for all criteria in your clinical scales:
+
+```{r value-function-multiple, fig.height=6, fig.width=10}
+# Define clinical scales
+clinical_scales <- list(
+  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
+  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
+  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
+  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+)
+
+# Plot all value functions
+plot_multiple_value_functions(
+  clinical_scales = clinical_scales,
+  ncol = 3
+)
+```
+
+### Compare Linear to Alternative Value Function Types
+
+Create comparison plots showing how linear functions compare to other approaches (piecewise, exponential, sigmoid, step) for both benefits and risks:
+
+```{r value-function-comparison-types, fig.height=5, fig.width=12}
+# Compare different value function types
+compare_value_function_types(
+  benefit_name = "Efficacy",
+  benefit_min = 0,
+  benefit_max = 100,
+  benefit_label = "Response Rate (%)",
+  risk_name = "Safety",
+  risk_min = 0,
+  risk_max = 50,
+  risk_label = "Adverse Event Rate (%)",
+  power = 2
+)
+```
+
+This visualization helps stakeholders understand:
+- How the **linear function** (current standard, shown in gray) provides a neutral, transparent approach
+- How **alternative functions** would transform the same clinical data differently
+- Why regulatory agencies prefer linear functions (simplicity, transparency, no imposed risk attitudes)
+- The potential impact of choosing non-linear approaches on benefit-risk conclusions
+
+**Key observations:**
+- **Linear (Current Standard)**: Equal marginal value across all levels - regulatory preference
+- **Piecewise Linear**: Different slopes in different regions - useful when clinical thresholds exist
+- **Exponential**: Captures diminishing returns or increasing concern - requires stakeholder justification
+- **Sigmoid**: Threshold effects with smooth transitions - useful for binary clinical interpretations
+- **Step**: Discrete categories - matches categorical clinical practice (e.g., CTCAE grades)
+
+These functions help communicate the MCDA normalization process to stakeholders and demonstrate the linear value function approach used throughout the package.

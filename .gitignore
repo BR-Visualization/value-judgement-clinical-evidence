@@ -67,3 +67,13 @@ inst/doc
 
 # air setup
 .vscode/
+
+# R default plot file
+Rplots.pdf
+README.html
+
+# Posit Assistant settings
+.positai/
+
+# Diagnostic/scratch files
+CORRELOGRAM_DIAGNOSTIC_RESULTS.md

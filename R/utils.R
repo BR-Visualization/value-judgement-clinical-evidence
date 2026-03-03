@@ -1,7 +1,6 @@
 #' Function for colors
 #'
 #' @return figure colors
-#' @import colorBlindness
 #' @export
 #'
 colfun <- function() {
@@ -53,7 +52,7 @@ colfun <- function() {
   fig7_colors <- c("#f8766d", "#ffc300", "#00bfc4", "#c77cff")
   fig10_colors <- c("#0571b0", "white", "#ca0020")
   fig11_colors <- c("#00AFBB", "red", "blue")
-  fig12_colors <- c("#0571b0", "#92c5de", "#f7f7f7", "#f4a582", "#ca0020")
+  fig12_colors <- c("chartreuse3", "yellow", "gray85", "red2", "black")
   fig13_colors <- c("#0571b0", "#ca0020")
 
   list(
@@ -75,14 +74,12 @@ colfun <- function() {
 #'
 #' @description `control_fonts()` calculates font-sizes depending on output size
 #'
-#' @param base_font_size (unit)\cr Font-size of normal paragraph text.
+#' @param base_font_size (unit)\cr Font-size of normal paragraph
+#'   text. By default is 9pt. By editing this value, all the other
+#'   parameters get updated too.
 #'
-#'   By default is 9pt.
-#'
-#'   By editing this value, all the other parameters get updated too.
-#'
-#' @param h1 (unit)\cr Font-size of title of the graph,
-#'   dependent of `base_font_size`. By default, 12pt.
+#' @param h1 (unit)\cr Font-size of title of the graph, dependent
+#'   of `base_font_size`. By default, 12pt.
 #'
 #' @param h2 (unit)\cr Font-size of subtitle of the graph,
 #'   dependent of `base_font_size`. By default, 10pt.
@@ -107,10 +104,12 @@ colfun <- function() {
 #' @export
 #' @examples
 #' control_fonts(base_font_size = 10)
-control_fonts <- function(base_font_size = 9,
-                          h1 = 12,
-                          h2 = 10,
-                          label = base_font_size + 1) {
+control_fonts <- function(
+  base_font_size = 9,
+  h1 = 12,
+  h2 = 10,
+  label = base_font_size + 1
+) {
   rel <- 7.253 / base_font_size
 
   list(
@@ -120,6 +119,73 @@ control_fonts <- function(base_font_size = 9,
     label = label * rel * 0.423,
     rel = base_font_size * rel
   )
+}
+
+
+#' Calculate Font Size Based on Figure Dimensions
+#'
+#' @description Scales font size proportionally to figure dimensions to maintain
+#' visual consistency across plots of different sizes. Font size scales with the
+#' square root of the area to ensure readability.
+#'
+#' For combined plots (e.g., patchwork or cowplot layouts), use \code{ncol} and
+#' \code{nrow} to specify the panel grid. The function will compute the effective
+#' per-panel dimensions and size the font accordingly, so text remains
+#' appropriately sized after the layout engine shrinks each panel.
+#'
+#' @param width Figure width in inches
+#' @param height Figure height in inches
+#' @param ncol Number of panel columns in a combined layout (default: 1).
+#'   For example, a 2-column patchwork layout should use \code{ncol = 2}.
+#' @param nrow Number of panel rows in a combined layout (default: 1).
+#'   For example, a 2-row cowplot layout should use \code{nrow = 2}.
+#' @param reference_font_size Base font size for reference dimensions (default: 9pt)
+#' @param reference_width Reference width in inches (default: 7)
+#' @param reference_height Reference height in inches (default: 7)
+#' @param min_font_size Minimum font size to prevent text being too small (default: 6)
+#' @param max_font_size Maximum font size to prevent text being too large (default: 14)
+#'
+#' @return List containing font configuration from control_fonts()
+#' @export
+#'
+#' @examples
+#' # Font config for a small 5×4 plot
+#' font_config(5, 4)
+#'
+#' # Font config for a large 16×6 plot
+#' font_config(16, 6)
+#'
+#' # Font config for a 16×6 figure with 4 side-by-side panels
+#' # (each panel is effectively 4×6)
+#' font_config(16, 6, ncol = 4)
+#'
+#' # Font config for a 14×5 figure with 2 side-by-side panels
+#' font_config(14, 5, ncol = 2)
+font_config <- function(
+  width,
+  height,
+  ncol = 1,
+  nrow = 1,
+  reference_font_size = 9,
+  reference_width = 7,
+  reference_height = 7,
+  min_font_size = 6,
+  max_font_size = 14
+) {
+  # Compute effective per-panel dimensions for combined layouts
+  panel_width <- width / ncol
+  panel_height <- height / nrow
+
+  # Calculate area ratio and scale by square root for proportional sizing
+  area_ratio <- sqrt((panel_width * panel_height) /
+    (reference_width * reference_height))
+  base_font_size <- reference_font_size * area_ratio
+
+  # Apply bounds
+  base_font_size <- max(min_font_size, min(max_font_size, base_font_size))
+
+  # Return font configuration
+  control_fonts(base_font_size = base_font_size)
 }
 
 #' BR charts theme
@@ -142,41 +208,43 @@ control_fonts <- function(base_font_size = 9,
 #'
 #' @return theme for chart
 #' @export
-br_charts_theme <- function(base_family = "",
-                            base_font_size = 9,
-                            base_stroke = 1,
-                            margin = 1,
-                            get_fonts = control_fonts,
-                            get_colors = colfun()[["control_palettes"]],
-                            axis_text_x = ggplot2::element_text(
-                              colour = black
-                            ),
-                            axis_line = ggplot2::element_line(
-                              colour = black,
-                              size = stroke_size
-                            ),
-                            axis_title_y = ggplot2::element_text(),
-                            axis_text_y_left = ggplot2::element_text(
-                              margin = ggplot2::margin(
-                                t = 0,
-                                r = spacing / 2,
-                                l = 0,
-                                b = 0,
-                                unit = "pt"
-                              )
-                            ),
-                            legend_position = "top",
-                            panel_grid_minor = ggplot2::element_line(
-                              colour = grey_2,
-                              size = stroke_size / 2,
-                              linetype = "dashed"
-                            ),
-                            panel_grid_major = ggplot2::element_line(
-                              colour = grey_2,
-                              size = stroke_size / 2,
-                              linetype = "dashed"
-                            ),
-                            ...) {
+br_charts_theme <- function(
+  base_family = "",
+  base_font_size = 9,
+  base_stroke = 1,
+  margin = 1,
+  get_fonts = control_fonts,
+  get_colors = colfun()[["control_palettes"]],
+  axis_text_x = ggplot2::element_text(
+    colour = black
+  ),
+  axis_line = ggplot2::element_line(
+    colour = black,
+    size = stroke_size
+  ),
+  axis_title_y = ggplot2::element_text(),
+  axis_text_y_left = ggplot2::element_text(
+    margin = ggplot2::margin(
+      t = 0,
+      r = spacing / 2,
+      l = 0,
+      b = 0,
+      unit = "pt"
+    )
+  ),
+  legend_position = "top",
+  panel_grid_minor = ggplot2::element_line(
+    colour = grey_2,
+    size = stroke_size / 2,
+    linetype = "dashed"
+  ),
+  panel_grid_major = ggplot2::element_line(
+    colour = grey_2,
+    size = stroke_size / 2,
+    linetype = "dashed"
+  ),
+  ...
+) {
   # stroke size
   stroke_size <- base_stroke * 0.47
 
@@ -196,7 +264,6 @@ br_charts_theme <- function(base_family = "",
 
   # Change ggplot theme ---------------------------
   ggplot2::theme(
-
     # Elements in the first block are not used directly,
     # but are inherited by others
     line = ggplot2::element_line(
@@ -296,7 +363,6 @@ br_charts_theme <- function(base_family = "",
     legend.box = NULL,
     legend.spacing.x = ggplot2::unit(spacing / 2, "pt"),
 
-
     # 4 Title & subtitle =======================
     # it changes the font, size, weight and colour
     plot.title.position = "plot",
@@ -343,11 +409,13 @@ br_charts_theme <- function(base_family = "",
       hjust = 0,
       margin = ggplot2::margin(t = 0, r = 0, l = 0, b = spacing, unit = "pt")
     )
-  ) + ggplot2::theme(...)
+  ) +
+    ggplot2::theme(...)
 }
 
-#' Prepare data for binary and continuous outcomes with Supplied
-#' confidence intervals
+#' Prepare data analysis for binary and continuous outcomes with Supplied
+#' interval confidence
+#' identifies whether the dataframe is for Benefit or Risk analysis
 #' @param df (`data.frame`) dataset
 #' either `df_benefit` (selected benefit)
 #' or `df_risk` (select risk).
@@ -358,9 +426,9 @@ br_charts_theme <- function(base_family = "",
 #' either `Diff`, `RelRisk`, `OddsRatio`, `Diff_Rates`
 #' @param func (`function`) function used to calculate metrics (or BR points)
 #' @return data frame for specified type of analysis
+#' @details DETAILS
 #' @rdname prepare_br_supplied_ci
 #' @export
-
 
 prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
   outcome <- sub(".*_", "", deparse(substitute(df)))
@@ -383,8 +451,9 @@ prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
   output
 }
 
-#' Prepare data for binary and continuous outcomes with Calculated
-#' confidence intervals
+#' Prepare data analysis for binary and continuous outcomes with Calculated
+#' interval confidence
+#' identifies whether the dataframe is for Benefit or Risk analysis
 #' @param df (`data.frame`) dataset
 #' either `df_benefit` (selected benefit)
 #' or `df_risk` (select risk).
@@ -395,10 +464,9 @@ prepare_br_supplied_ci <- function(df, colname, metric_name, func) {
 #' @param func (`function`) function used to calculate metrics (or BR points)
 #' @param cl (`numeric`) confidence level
 #' @return data frame for specified type of analysis
+#' @details DETAILS
 #' @rdname prepare_br_calculated_ci
 #' @export
-
-
 
 prepare_br_calculated_ci <- function(df, colname1, colname2, cl = 0.95, func) {
   outcome <- sub(".*_", "", deparse(substitute(df)))
@@ -451,8 +519,8 @@ add_exprs <- function(...) {
 #' @details The function bold text in variable (`bold`) and concatenates it
 #' with string in (`nonbold`) and returns a `dataframe`.
 #'
-#' @import magrittr dplyr
-#' @importFrom glue glue
+#' @import magrittr
+#' @importFrom dplyr %>% mutate if_else arrange
 #'
 #' @seealso `?plotmath`.
 #'
@@ -485,14 +553,17 @@ labs_bold <- function(cond, bold, nonbold) {
   }
 
   # Writing a message that will be displayed in the log
-  message(glue('[{format(Sys.time(),"%F %T")}] > Dataout object from
-               the labs_bold function is created'))
+  message(glue::glue(
+    '[{format(Sys.time(),"%F %T")}] > Dataout object from
+               the labs_bold function is created'
+  ))
 
   # Returning the dataout object
   gout
 }
 
-#' Derive minimum boundary value for axis to include all values
+#' Derive minimum boundary value for axis
+#' Derive boundary value to include all values
 #'
 #' @param rmin (`numeric`) number to evaluate
 #' @param type_scale (`character`) selected scale display type
@@ -506,7 +577,8 @@ labs_bold <- function(cond, bold, nonbold) {
 #' relmin(-0.3, "Fixed")
 relmin <- function(rmin, type_scale) {
   if (type_scale == "Fixed") {
-    ifelse(rmin >= 0,
+    ifelse(
+      rmin >= 0,
       0,
       ifelse(
         rmin >= -1,
@@ -515,17 +587,16 @@ relmin <- function(rmin, type_scale) {
       )
     )
   } else {
-    ifelse(rmin >= 1,
+    ifelse(
+      rmin >= 1,
       floor(rmin),
-      ifelse(rmin >= -1,
-        floor(10 * rmin) / 10,
-        floor(rmin)
-      )
+      ifelse(rmin >= -1, floor(10 * rmin) / 10, floor(rmin))
     )
   }
 }
 
-#' Derive maximum boundary value for axis to include all values
+#' Derive maximum boundary value for axis
+#' Derive boundary value to include all values
 #'
 #' @param rmax (`numeric`) number to evaluate
 #' @param type_scale (`character`) selected scale display type
@@ -539,7 +610,8 @@ relmin <- function(rmin, type_scale) {
 #' relmax(-0.3, "Fixed")
 relmax <- function(rmax, type_scale) {
   if (type_scale == "Fixed") {
-    ifelse(rmax <= 0,
+    ifelse(
+      rmax <= 0,
       0,
       ifelse(
         rmax <= 1,
@@ -548,12 +620,10 @@ relmax <- function(rmax, type_scale) {
       )
     )
   } else {
-    ifelse(rmax <= -1,
+    ifelse(
+      rmax <= -1,
       ceiling(rmax),
-      ifelse(rmax <= 1,
-        ceiling(10 * rmax) / 10,
-        ceiling(rmax)
-      )
+      ifelse(rmax <= 1, ceiling(10 * rmax) / 10, ceiling(rmax))
     )
   }
 }
@@ -571,6 +641,10 @@ relmax <- function(rmax, type_scale) {
 #' @param dpi Resolution in dots per inch (default: 600).
 #' @param web_suffix If TRUE, also saves a low-res version with "_web" suffix
 #' (default: FALSE).
+#' @param scale_fonts Deprecated parameter. Font scaling is now handled
+#' by passing base_font_size directly to plotting functions.
+#' @param base_font_size Deprecated parameter. Font scaling is now handled
+#' by passing base_font_size directly to plotting functions.
 #' @param ... Other arguments passed on to the graphics device function,
 #' as specified by device.
 #' @param wdth width of plot
@@ -579,16 +653,20 @@ relmax <- function(rmax, type_scale) {
 #'
 #' @export
 #'
-ggsave_custom <- function(save_name,
-                          inplot = NULL,
-                          imgpath = ".",
-                          wdth = 7,
-                          hght = 4.1,
-                          unts = "in",
-                          bgcol = "white",
-                          dpi = 600,
-                          web_suffix = FALSE,
-                          ...) {
+ggsave_custom <- function(
+  save_name,
+  inplot = NULL,
+  imgpath = ".",
+  wdth = 7,
+  hght = 4.1,
+  unts = "in",
+  bgcol = "white",
+  dpi = 600,
+  web_suffix = FALSE,
+  scale_fonts = FALSE,
+  base_font_size = NULL,
+  ...
+) {
   if (is.null(inplot)) {
     inplot <- ggplot2::last_plot()
   }
@@ -598,18 +676,73 @@ ggsave_custom <- function(save_name,
   # Determine file extension and use appropriate device
   ext <- tools::file_ext(save_name)
 
+  # Check if the plot is a grob/gtable object from gridExtra::arrangeGrob
+  is_grob <- inherits(inplot, c("grob", "gtable", "gTree", "arrangeGrob"))
+
   # Save main high-resolution version
-  ggplot2::ggsave(
-    filename = file_path,
-    plot = inplot,
-    width = wdth,
-    height = hght,
-    units = unts,
-    dpi = dpi,
-    bg = bgcol,
-    device = ext,
-    ...
-  )
+  if (is_grob) {
+    # For grid objects, open device, draw, and close properly
+    # Record current device to restore later
+    current_dev <- grDevices::dev.cur()
+
+    switch(
+      ext,
+      png = grDevices::png(
+        filename = file_path,
+        width = wdth,
+        height = hght,
+        units = unts,
+        res = dpi,
+        bg = bgcol,
+        ...
+      ),
+      pdf = grDevices::pdf(
+        file = file_path,
+        width = wdth,
+        height = hght,
+        bg = bgcol,
+        ...
+      ),
+      jpeg = grDevices::jpeg(
+        filename = file_path,
+        width = wdth,
+        height = hght,
+        units = unts,
+        res = dpi,
+        bg = bgcol,
+        ...
+      ),
+      grDevices::png(
+        filename = file_path,
+        width = wdth,
+        height = hght,
+        units = unts,
+        res = dpi,
+        bg = bgcol,
+        ...
+      )
+    )
+    grid::grid.draw(inplot)
+    invisible(grDevices::dev.off())
+
+    # Restore previous device if it wasn't null device
+    if (current_dev > 1) {
+      grDevices::dev.set(current_dev)
+    }
+  } else {
+    # For ggplot objects, use ggsave
+    ggplot2::ggsave(
+      filename = file_path,
+      plot = inplot,
+      width = wdth,
+      height = hght,
+      units = unts,
+      dpi = dpi,
+      bg = bgcol,
+      device = ext,
+      ...
+    )
+  }
 
   # Save web-optimized version (if enabled)
   if (web_suffix) {
@@ -617,20 +750,69 @@ ggsave_custom <- function(save_name,
       imgpath,
       paste0(
         tools::file_path_sans_ext(save_name),
-        "_web.", ext
+        "_web.",
+        ext
       )
     )
-    ggplot2::ggsave(
-      filename = web_path,
-      plot = inplot,
-      width = wdth,
-      height = hght,
-      units = unts,
-      dpi = 120,
-      bg = bgcol,
-      device = ext,
-      ...
-    )
+    if (is_grob) {
+      current_dev <- grDevices::dev.cur()
+
+      switch(
+        ext,
+        png = grDevices::png(
+          filename = web_path,
+          width = wdth,
+          height = hght,
+          units = unts,
+          res = 120,
+          bg = bgcol,
+          ...
+        ),
+        pdf = grDevices::pdf(
+          file = web_path,
+          width = wdth,
+          height = hght,
+          bg = bgcol,
+          ...
+        ),
+        jpeg = grDevices::jpeg(
+          filename = web_path,
+          width = wdth,
+          height = hght,
+          units = unts,
+          res = 120,
+          bg = bgcol,
+          ...
+        ),
+        grDevices::png(
+          filename = web_path,
+          width = wdth,
+          height = hght,
+          units = unts,
+          res = 120,
+          bg = bgcol,
+          ...
+        )
+      )
+      grid::grid.draw(inplot)
+      invisible(grDevices::dev.off())
+
+      if (current_dev > 1) {
+        grDevices::dev.set(current_dev)
+      }
+    } else {
+      ggplot2::ggsave(
+        filename = web_path,
+        plot = inplot,
+        width = wdth,
+        height = hght,
+        units = unts,
+        dpi = 120,
+        bg = bgcol,
+        device = ext,
+        ...
+      )
+    }
     message("Web version saved to: ", normalizePath(web_path))
   }
 

@@ -7,14 +7,12 @@
 control_fonts(base_font_size = 9, h1 = 12, h2 = 10, label = base_font_size + 1)
 }
 \arguments{
-\item{base_font_size}{(unit)\cr Font-size of normal paragraph text.
+\item{base_font_size}{(unit)\cr Font-size of normal paragraph
+text. By default is 9pt. By editing this value, all the other
+parameters get updated too.}
 
-By default is 9pt.
-
-By editing this value, all the other parameters get updated too.}
-
-\item{h1}{(unit)\cr Font-size of title of the graph,
-dependent of \code{base_font_size}. By default, 12pt.}
+\item{h1}{(unit)\cr Font-size of title of the graph, dependent
+of \code{base_font_size}. By default, 12pt.}
 
 \item{h2}{(unit)\cr Font-size of subtitle of the graph,
 dependent of \code{base_font_size}. By default, 10pt.}
