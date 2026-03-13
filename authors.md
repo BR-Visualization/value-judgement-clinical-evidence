@@ -16,11 +16,12 @@
 
 Gakava L, Chen C, Mabe A, Colopy M, Waterhouse B (2026). *brpubVJCE:
 Charts to Integrate Value Judgement with Clinical Evidence*. R package
-version 0.0.1.
+version 0.0.1, <https://br-visualization.github.io/brpubVJCE/>.
 
     @Manual{,
       title = {brpubVJCE: Charts to Integrate Value Judgement with Clinical Evidence},
       author = {Lovemore Gakava and Chen Chen and Abigail Mabe and Michael Colopy and Brian Waterhouse},
       year = {2026},
       note = {R package version 0.0.1},
+      url = {https://br-visualization.github.io/brpubVJCE/},
     }
