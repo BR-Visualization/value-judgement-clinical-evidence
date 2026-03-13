@@ -49,7 +49,7 @@ colfun <- function() {
   fig3_colors <- colorBlindness::Blue2DarkOrange18Steps[12:18]
   fig4_colors <- c("#ABDDA4", "#66C2A5", "#3288BD")
   fig6_colors <- c("#d7191c", "#009292", "#ff6db6", "#490092", "#006ddb")
-  fig7_colors <- c("#009292", "#ff6db6", "#490092", "#006ddb")
+  fig7_colors <- c("#f8766d", "#ffc300", "#00bfc4", "#c77cff")
   fig10_colors <- c("#0571b0", "white", "#ca0020")
   fig11_colors <- c("#00AFBB", "red", "blue")
   fig12_colors <- c("chartreuse3", "yellow", "gray85", "red2", "black")
