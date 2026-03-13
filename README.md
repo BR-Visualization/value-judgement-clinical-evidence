@@ -54,7 +54,7 @@ remotes::install_github("BR-Visualization/brpubVJCE")
 
 ## Figure - Dot-Forest Plot
 
-<img src="man/figures/README-dot_forest_plot-1.png" width="100%" />
+<img src="man/figures/README-dot_forest_plot-1.png" alt="" width="100%" />
 
 <details>
 
@@ -68,7 +68,7 @@ Click to learn more
 - Documentation: Use `?create_forest_dot_plot` or
   `?prepare_forest_dot_data` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -99,7 +99,7 @@ result_plot
 
 ## Figure - Trade-off Plot
 
-<img src="man/figures/README-tradeoff_plot-1.png" width="100%" />
+<img src="man/figures/README-tradeoff_plot-1.png" alt="" width="100%" />
 
 <details>
 
@@ -113,7 +113,7 @@ Click to learn more
 - Documentation: Use `?generate_tradeoff_plot` for detailed function
   help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -164,7 +164,7 @@ generate_tradeoff_plot(
 
 ## Figure - Correlogram
 
-<img src="man/figures/README-correlogram-1.png" width="100%" />
+<img src="man/figures/README-correlogram-1.png" alt="" width="100%" />
 
 <details>
 
@@ -177,7 +177,7 @@ Click to learn more
 
 - Documentation: Use `?create_correlogram` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -201,7 +201,7 @@ create_correlogram(corr2)
 
 ## Figure - Scatter Plot
 
-<img src="man/figures/README-scatter_plot-1.png" width="100%" />
+<img src="man/figures/README-scatter_plot-1.png" alt="" width="100%" />
 
 <details>
 
@@ -214,7 +214,7 @@ Click to learn more
 
 - Documentation: Use `?scatter_plot` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -239,7 +239,7 @@ scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
 
 ## Figure - Divergent Stacked Bar Chart
 
-<img src="man/figures/README-divergent_stacked_barchart-1.png" width="100%" />
+<img src="man/figures/README-divergent_stacked_barchart-1.png" alt="" width="100%" />
 
 <details>
 
@@ -253,7 +253,7 @@ Click to learn more
 - Documentation: Use `?divergent_stacked_barchart` and
   `?stacked_barchart` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -317,7 +317,7 @@ plot_grid(legend, combined_plots, ncol = 1, rel_heights = c(0.2, 1))
 
 ## Figure - Cumulative Excess Plot
 
-<img src="man/figures/README-cumulative_excess_plot-1.png" width="100%" />
+<img src="man/figures/README-cumulative_excess_plot-1.png" alt="" width="100%" />
 
 <details>
 
@@ -330,7 +330,7 @@ Click to learn more
 
 - Documentation: Use `?gensurv_combined` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -364,7 +364,7 @@ gensurv_combined(
 
 ## Figure - Value Function Types
 
-<img src="man/figures/README-value_function_types-1.png" width="100%" />
+<img src="man/figures/README-value_function_types-1.png" alt="" width="100%" />
 
 <details>
 
@@ -378,7 +378,7 @@ Click to learn more
 - Documentation: Use `?compare_value_function_types` for detailed
   function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -414,7 +414,7 @@ compare_value_function_types(
 
 ## Figure - MCDA Comparison Plot
 
-<img src="man/figures/README-mcda_barplot-1.png" width="100%" />
+<img src="man/figures/README-mcda_barplot-1.png" alt="" width="100%" />
 
 <details>
 
@@ -428,7 +428,7 @@ Click to learn more
 - Documentation: Use `?create_mcda_barplot_comparison` for detailed
   function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -460,7 +460,7 @@ create_mcda_barplot_comparison(
 
 ## Figure - MCDA Waterfall Plot
 
-<img src="man/figures/README-mcda_waterfall-1.png" width="100%" />
+<img src="man/figures/README-mcda_waterfall-1.png" alt="" width="100%" />
 
 <details>
 
@@ -473,7 +473,7 @@ Click to learn more
 
 - Documentation: Use `?create_mcda_waterfall` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -504,7 +504,7 @@ create_mcda_waterfall(
 
 ## Figure - MCDA Benefit-Risk Map
 
-<img src="man/figures/README-mcda_brmap-1.png" width="100%" />
+<img src="man/figures/README-mcda_brmap-1.png" alt="" width="100%" />
 
 <details>
 
@@ -517,7 +517,7 @@ Click to learn more
 
 - Documentation: Use `?create_mcda_brmap` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -550,7 +550,7 @@ create_mcda_brmap(
 
 ## Figure - MCDA Tornado Plot
 
-<img src="man/figures/README-mcda_tornado-1.png" width="100%" />
+<img src="man/figures/README-mcda_tornado-1.png" alt="" width="100%" />
 
 <details>
 
@@ -563,7 +563,7 @@ Click to learn more
 
 - Documentation: Use `?mcda_tornado` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
