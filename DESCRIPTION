@@ -25,6 +25,7 @@ Authors@R:
            role = c("aut"),
            comment = c(ORCID = "")))
 Description: This package supports the visual integration of clinical evidence and value judgments, as demonstrated in the related publication.
+URL: https://br-visualization.github.io/brpubVJCE/
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
