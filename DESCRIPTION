@@ -61,7 +61,7 @@ Imports:
     ggforce,
     gridExtra,
     tidyr
-Depends: 
-    R (>= 3.5)
+Depends:
+    R (>= 4.5.0)
 LazyData: true
 Config/testthat/edition: 3
