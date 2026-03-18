@@ -217,14 +217,22 @@ g <- ggplotGrob(stacked_bar_with_legend)
 legend_index <- which(g$layout$name == "guide-box-top")
 legend <- g$grobs[[legend_index]]
 
-# Remove legends from both plots
-stacked_bar_no_legend <- stacked_bar_fig + theme(legend.position = "none")
-divergent_stacked_bar_no_legend <- divergent_stacked_bar_fig + theme(legend.position = "none")
+# Remove legends from both plots and add a single frame around each full plot
+stacked_bar_no_legend <- stacked_bar_fig +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(color = "black", fill = NA, linewidth = 0.5)
+  )
+divergent_stacked_bar_no_legend <- divergent_stacked_bar_fig +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(color = "black", fill = NA, linewidth = 0.5)
+  )
 
 # Combine plots side by side
 combined_plots <- plot_grid(
-  stacked_bar_no_legend, 
-  divergent_stacked_bar_no_legend, 
+  stacked_bar_no_legend,
+  divergent_stacked_bar_no_legend,
   ncol = 2
 )
 
