@@ -68,7 +68,7 @@ Click to learn more
 - Documentation: Use `?create_forest_dot_plot` or
   `?prepare_forest_dot_data` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -113,7 +113,7 @@ Click to learn more
 - Documentation: Use `?generate_tradeoff_plot` for detailed function
   help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -177,7 +177,7 @@ Click to learn more
 
 - Documentation: Use `?create_correlogram` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -214,7 +214,7 @@ Click to learn more
 
 - Documentation: Use `?scatter_plot` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -253,7 +253,7 @@ Click to learn more
 - Documentation: Use `?divergent_stacked_barchart` and
   `?stacked_barchart` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -306,8 +306,16 @@ stacked_bar_with_legend <- stacked_bar_fig +
 g <- ggplotGrob(stacked_bar_with_legend)
 legend <- g$grobs[[which(g$layout$name == "guide-box-top")]]
 
-stacked_bar_no_legend <- stacked_bar_fig + theme(legend.position = "none")
-divergent_stacked_bar_no_legend <- divergent_stacked_bar_fig + theme(legend.position = "none")
+stacked_bar_no_legend <- stacked_bar_fig +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(color = "black", fill = NA, linewidth = 0.5)
+  )
+divergent_stacked_bar_no_legend <- divergent_stacked_bar_fig +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(color = "black", fill = NA, linewidth = 0.5)
+  )
 
 combined_plots <- plot_grid(stacked_bar_no_legend, divergent_stacked_bar_no_legend, ncol = 2)
 plot_grid(legend, combined_plots, ncol = 1, rel_heights = c(0.2, 1))
@@ -330,7 +338,7 @@ Click to learn more
 
 - Documentation: Use `?gensurv_combined` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -378,7 +386,7 @@ Click to learn more
 - Documentation: Use `?compare_value_function_types` for detailed
   function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -428,7 +436,7 @@ Click to learn more
 - Documentation: Use `?create_mcda_barplot_comparison` for detailed
   function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -473,7 +481,7 @@ Click to learn more
 
 - Documentation: Use `?create_mcda_waterfall` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -517,7 +525,7 @@ Click to learn more
 
 - Documentation: Use `?create_mcda_brmap` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -563,7 +571,7 @@ Click to learn more
 
 - Documentation: Use `?mcda_tornado` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)\
+  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
 - Contact: Reach out to the package maintainers via GitHub

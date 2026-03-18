@@ -644,13 +644,21 @@ create_mcda_brmap <- function(
         " (", br_map_df$Label, ")"
       )
     ) +
-    xlim(0, 100) +
-    ylim(0, 100)
+    coord_cartesian(
+      xlim = c(
+        max(0, floor(min(br_map_df$Benefits) - 5)),
+        min(100, ceiling(max(br_map_df$Benefits) + 5))
+      ),
+      ylim = c(
+        max(0, floor(min(br_map_df$Risks) - 5)),
+        min(100, ceiling(max(br_map_df$Risks) + 5))
+      )
+    )
 
   # Build labs() arguments dynamically based on show_title and show_subtitle
   labs_args <- list(
     x = "Benefits \u2192",
-    y = "Risks \u2192"
+    y = "\u2190 Risks"
   )
 
   if (show_title) {
