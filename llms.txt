@@ -238,8 +238,16 @@ stacked_bar_with_legend <- stacked_bar_fig +
 g <- ggplotGrob(stacked_bar_with_legend)
 legend <- g$grobs[[which(g$layout$name == "guide-box-top")]]
 
-stacked_bar_no_legend <- stacked_bar_fig + theme(legend.position = "none")
-divergent_stacked_bar_no_legend <- divergent_stacked_bar_fig + theme(legend.position = "none")
+stacked_bar_no_legend <- stacked_bar_fig +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(color = "black", fill = NA, linewidth = 0.5)
+  )
+divergent_stacked_bar_no_legend <- divergent_stacked_bar_fig +
+  theme(
+    legend.position = "none",
+    plot.background = element_rect(color = "black", fill = NA, linewidth = 0.5)
+  )
 
 combined_plots <- plot_grid(stacked_bar_no_legend, divergent_stacked_bar_no_legend, ncol = 2)
 plot_grid(legend, combined_plots, ncol = 1, rel_heights = c(0.2, 1))
