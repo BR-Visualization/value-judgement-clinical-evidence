@@ -269,6 +269,11 @@ create_correlogram <- function(
 
   labels_x <- colnames(mat)
   labels_y <- colnames(mat)
+  typography <- publication_typography(
+    base_font_size = base_font_size,
+    axis_title_ratio = 1.15,
+    annotation_ratio = 1.05
+  )
 
   fig <- ggplot(corr_df, aes(x0 = x0, y0 = y0, a = a, b = b, angle = angle)) +
     coord_fixed() +
@@ -286,20 +291,20 @@ create_correlogram <- function(
       axis.text.x = element_text(
         angle = 0,
         hjust = 0.5,
-        size = rel(1.2),
+        size = typography$axis_title,
         color = label_colors_x
       ),
       axis.text.y = element_text(
         angle = 0,
         hjust = 0.5,
-        size = rel(1.2),
+        size = typography$axis_title,
         color = label_colors_y
       ),
       plot.margin = margin(0, 0, 0, 0, unit = "cm"),
       legend.position = "top",
       legend.title = element_blank(),
       legend.text = element_text(
-        size = rel(1.2),
+        size = typography$legend_text,
         margin = margin(t = 7),
         color = "black"
       ),
@@ -312,7 +317,10 @@ create_correlogram <- function(
       panel.grid.minor = element_blank()
     ) +
     ggforce::geom_ellipse(color = "black", fill = "white") +
-    geom_text(aes(x = x0, y = y0, label = label), size = base_font_size * 0.35)
+    geom_text(
+      aes(x = x0, y = y0, label = label),
+      size = publication_geom_text_size(typography$data_label)
+    )
 
   fig
 }

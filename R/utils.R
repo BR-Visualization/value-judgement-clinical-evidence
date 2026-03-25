@@ -121,6 +121,50 @@ control_fonts <- function(
   )
 }
 
+#' Publication Typography Profile
+#'
+#' @description Defines a consistent publication typography scale for common
+#' plot element classes.
+#'
+#' @param base_font_size Base printed font size in points.
+#' @param title_ratio Ratio for plot titles.
+#' @param subtitle_ratio Ratio for subtitles and strip labels.
+#' @param axis_title_ratio Ratio for axis and legend titles.
+#' @param annotation_ratio Ratio for annotations and in-panel value labels.
+#'
+#' @return Named list of point sizes for publication text elements.
+#' @export
+publication_typography <- function(
+  base_font_size = 9,
+  title_ratio = 1.15,
+  subtitle_ratio = 1.05,
+  axis_title_ratio = 1.05,
+  annotation_ratio = 0.95
+) {
+  list(
+    base = base_font_size,
+    tick = base_font_size,
+    axis_title = base_font_size * axis_title_ratio,
+    legend_text = base_font_size,
+    legend_title = base_font_size * axis_title_ratio,
+    plot_title = base_font_size * title_ratio,
+    plot_subtitle = base_font_size * subtitle_ratio,
+    strip_text = base_font_size * subtitle_ratio,
+    annotation = base_font_size * annotation_ratio,
+    data_label = base_font_size * annotation_ratio
+  )
+}
+
+#' Convert points to ggplot geom text size units
+#'
+#' @param point_size Font size in points.
+#'
+#' @return Numeric size value for `geom_text(size = ...)`.
+#' @export
+publication_geom_text_size <- function(point_size) {
+  point_size / 2.845276
+}
+
 
 #' Calculate Font Size Based on Figure Dimensions
 #'
@@ -214,6 +258,7 @@ br_charts_theme <- function(
   base_stroke = 1,
   margin = 1,
   get_fonts = control_fonts,
+  get_typography = publication_typography,
   get_colors = colfun()[["control_palettes"]],
   axis_text_x = ggplot2::element_text(
     colour = black
@@ -250,6 +295,7 @@ br_charts_theme <- function(
 
   # fonts
   fonts <- get_fonts(base_font_size = base_font_size)
+  typography <- get_typography(base_font_size = base_font_size)
 
   # in pt
   spacing <- fonts$rel
@@ -279,11 +325,11 @@ br_charts_theme <- function(
       linetype = 1
     ),
     text = ggplot2::element_text(
-      size = fonts$p,
+      size = typography$base,
       family = base_family,
       colour = black
     ),
-    axis.text = ggplot2::element_text(size = fonts$p, colour = grey_4),
+    axis.text = ggplot2::element_text(size = typography$tick, colour = grey_4),
 
     # 1 Axis format ===============================
     # sets the text font, size and colour for the axis test, and margins
@@ -298,7 +344,7 @@ br_charts_theme <- function(
     axis.title = ggplot2::element_text(
       colour = black,
       face = "bold",
-      size = fonts$p
+      size = typography$axis_title
     ),
     axis.title.y = axis_title_y,
     axis.text.x = axis_text_x,
@@ -343,14 +389,14 @@ br_charts_theme <- function(
     legend.key = ggplot2::element_blank(),
     legend.key.size = ggplot2::unit(spacing * 1.5, "pt"),
     legend.title = ggplot2::element_text(
-      size = fonts$p,
+      size = typography$legend_title,
       colour = grey_4,
       margin = ggplot2::margin(r = spacing / 2, unit = "pt")
     ),
     legend.text.align = 0,
     legend.text = ggplot2::element_text(
       colour = grey_4,
-      size = fonts$p,
+      size = typography$legend_text,
       hjust = 0,
       margin = ggplot2::margin(
         t = 0,
@@ -367,7 +413,7 @@ br_charts_theme <- function(
     # it changes the font, size, weight and colour
     plot.title.position = "plot",
     plot.title = ggplot2::element_text(
-      size = fonts$h1,
+      size = typography$plot_title,
       face = "bold",
       colour = black,
       margin = ggplot2::margin(
@@ -379,7 +425,7 @@ br_charts_theme <- function(
       )
     ),
     plot.subtitle = ggplot2::element_text(
-      size = fonts$h2,
+      size = typography$plot_subtitle,
       colour = black,
       hjust = 0,
       margin = ggplot2::margin(
@@ -404,7 +450,7 @@ br_charts_theme <- function(
 
     # titles of the facets
     strip.text = ggplot2::element_text(
-      size = fonts$h2,
+      size = typography$strip_text,
       face = "bold",
       hjust = 0,
       margin = ggplot2::margin(t = 0, r = 0, l = 0, b = spacing, unit = "pt")
@@ -674,7 +720,7 @@ ggsave_custom <- function(
   file_path <- file.path(imgpath, save_name)
 
   # Determine file extension and use appropriate device
-  ext <- tools::file_ext(save_name)
+  ext <- tolower(tools::file_ext(save_name))
 
   # Check if the plot is a grob/gtable object from gridExtra::arrangeGrob
   is_grob <- inherits(inplot, c("grob", "gtable", "gTree", "arrangeGrob"))
@@ -701,6 +747,34 @@ ggsave_custom <- function(
         width = wdth,
         height = hght,
         bg = bgcol,
+        ...
+      ),
+      tiff = grDevices::tiff(
+        filename = file_path,
+        width = wdth,
+        height = hght,
+        units = unts,
+        res = dpi,
+        compression = "lzw",
+        bg = bgcol,
+        ...
+      ),
+      tif = grDevices::tiff(
+        filename = file_path,
+        width = wdth,
+        height = hght,
+        units = unts,
+        res = dpi,
+        compression = "lzw",
+        bg = bgcol,
+        ...
+      ),
+      eps = grDevices::cairo_ps(
+        filename = file_path,
+        width = wdth,
+        height = hght,
+        bg = bgcol,
+        onefile = FALSE,
         ...
       ),
       jpeg = grDevices::jpeg(
@@ -730,18 +804,41 @@ ggsave_custom <- function(
       grDevices::dev.set(current_dev)
     }
   } else {
-    # For ggplot objects, use ggsave
-    ggplot2::ggsave(
-      filename = file_path,
-      plot = inplot,
-      width = wdth,
-      height = hght,
-      units = unts,
-      dpi = dpi,
-      bg = bgcol,
-      device = ext,
-      ...
+    device_spec <- switch(
+      ext,
+      eps = grDevices::cairo_ps,
+      tiff = "tiff",
+      tif = "tiff",
+      ext
     )
+
+    # For ggplot objects, use ggsave
+    if (identical(device_spec, grDevices::cairo_ps)) {
+      ggplot2::ggsave(
+        filename = file_path,
+        plot = inplot,
+        width = wdth,
+        height = hght,
+        units = unts,
+        dpi = dpi,
+        bg = bgcol,
+        device = device_spec,
+        onefile = FALSE,
+        ...
+      )
+    } else {
+      ggplot2::ggsave(
+        filename = file_path,
+        plot = inplot,
+        width = wdth,
+        height = hght,
+        units = unts,
+        dpi = dpi,
+        bg = bgcol,
+        device = device_spec,
+        ...
+      )
+    }
   }
 
   # Save web-optimized version (if enabled)
@@ -775,6 +872,35 @@ ggsave_custom <- function(
           bg = bgcol,
           ...
         ),
+        tiff = grDevices::tiff(
+          filename = web_path,
+          width = wdth,
+          height = hght,
+          units = unts,
+          res = 120,
+          compression = "lzw",
+          bg = bgcol,
+          ...
+        ),
+        tif = grDevices::tiff(
+          filename = web_path,
+          width = wdth,
+          height = hght,
+          units = unts,
+          res = 120,
+          compression = "lzw",
+          bg = bgcol,
+          ...
+        ),
+        eps = grDevices::png(
+          filename = web_path,
+          width = wdth,
+          height = hght,
+          units = unts,
+          res = 120,
+          bg = bgcol,
+          ...
+        ),
         jpeg = grDevices::jpeg(
           filename = web_path,
           width = wdth,
@@ -801,6 +927,14 @@ ggsave_custom <- function(
         grDevices::dev.set(current_dev)
       }
     } else {
+      web_device <- switch(
+        ext,
+        eps = "png",
+        tiff = "tiff",
+        tif = "tiff",
+        ext
+      )
+
       ggplot2::ggsave(
         filename = web_path,
         plot = inplot,
@@ -809,7 +943,7 @@ ggsave_custom <- function(
         units = unts,
         dpi = 120,
         bg = bgcol,
-        device = ext,
+        device = web_device,
         ...
       )
     }

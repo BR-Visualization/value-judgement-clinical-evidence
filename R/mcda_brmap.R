@@ -142,6 +142,8 @@ create_mcda_brmap <- function(
   fig_colors = NULL,
   base_font_size = 9
 ) {
+  typography <- publication_typography(base_font_size = base_font_size)
+
   # Check if data is provided
   if (is.null(data)) {
     warning(
@@ -548,7 +550,6 @@ create_mcda_brmap <- function(
     Treatment = rownames(weighted_contributions),
     Benefits = benefits_scaled,
     Risks = risks_scaled,
-    Label = seq_len(nrow(weighted_contributions)),
     stringsAsFactors = FALSE
   )
 
@@ -622,28 +623,25 @@ create_mcda_brmap <- function(
 
   # Add points
   p_brmap <- p_brmap +
-    geom_point(size = base_font_size * 0.89, alpha = 0.8)
+    geom_point(size = base_font_size * 0.75, alpha = 0.8, show.legend = FALSE)
 
   # Add labels if requested
   if (show_labels) {
     p_brmap <- p_brmap +
       geom_text(
-        aes(label = Label),
+        aes(label = Treatment),
         color = "black",
-        size = base_font_size * 0.56,
-        fontface = "bold"
+        nudge_x = 0.8,
+        hjust = 0,
+        size = publication_geom_text_size(typography$data_label * 1.1),
+        fontface = "bold",
+        show.legend = FALSE
       )
   }
 
   # Add color scale and theme
   p_brmap <- p_brmap +
-    scale_color_manual(
-      values = fig_colors,
-      labels = paste0(
-        br_map_df$Treatment,
-        " (", br_map_df$Label, ")"
-      )
-    ) +
+    scale_color_manual(values = fig_colors) +
     coord_cartesian(
       xlim = c(
         max(0, floor(min(br_map_df$Benefits) - 5)),
@@ -677,11 +675,11 @@ create_mcda_brmap <- function(
     theme_minimal(base_size = base_font_size) +
     theme(
       panel.grid.major = element_line(color = "lightgray"),
-      plot.title = element_text(size = base_font_size * 1.56, face = "bold"),
-      plot.subtitle = element_text(size = base_font_size * 1.22),
-      legend.position = "right",
-      legend.title = element_text(face = "bold"),
-      axis.title = element_text(size = base_font_size * 1.33)
+      plot.title = element_text(size = typography$plot_title, face = "bold"),
+      plot.subtitle = element_text(size = typography$plot_subtitle),
+      legend.position = "none",
+      axis.title = element_text(size = typography$axis_title * 1.08),
+      axis.text = element_text(size = typography$tick * 1.08)
     )
 
   p_brmap

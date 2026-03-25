@@ -698,11 +698,12 @@ create_forest_dot_plot <- function(
           fill = "black",
           size = 3
         ) +
-        geom_errorbarh(
+        geom_errorbar(
           data = type_data,
           aes(y = Outcome, xmin = Diff_LowerCI, xmax = Diff_UpperCI),
           color = "black",
-          height = 0.2
+          width = 0.2,
+          orientation = "y"
         )
 
       # Add threshold points (only if thresholds are shown)
@@ -737,7 +738,13 @@ create_forest_dot_plot <- function(
           guide = "none"
         ) +
         guides(
-          shape = guide_legend(override.aes = list(bg = "white"))
+          shape = guide_legend(
+            override.aes = list(
+              fill = NA,
+              color = "black",
+              stroke = 1
+            )
+          )
         ) +
         scale_y_discrete(limits = y_levels)
 
