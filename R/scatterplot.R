@@ -52,6 +52,11 @@ scatter_plot <- function(
   fig_colors = colfun()$fig11_colors,
   base_font_size = 9
 ) {
+  typography <- publication_typography(
+    base_font_size = base_font_size,
+    annotation_ratio = 1.15
+  )
+
   mdiff1 <- mdiff2 <- label <- NULL
 
   df_diff <- as.data.frame(df_diff)
@@ -201,7 +206,7 @@ scatter_plot <- function(
       y = mar + 0.01,
       label = "MAR",
       color = colfun()$fig11_colors[3],
-      size = base_font_size * 0.35,
+      size = publication_geom_text_size(typography$annotation),
       vjust = -0.25
     ) +
     annotate(
@@ -210,7 +215,7 @@ scatter_plot <- function(
       y = min(diff1, diff2) - 0.1,
       label = "MAB",
       color = colfun()$fig11_colors[3],
-      size = base_font_size * 0.35,
+      size = publication_geom_text_size(typography$annotation),
       hjust = -0.25
     ) +
     labs(y = paste("Predicted Incremental", outcome[2], " ")) +
@@ -222,7 +227,7 @@ scatter_plot <- function(
       label = paste0("Prob.==", sprintf("%1.1f", 100 * prob_good), "*\'%\'"),
       parse = TRUE,
       color = fig_colors[3],
-      size = base_font_size * 0.35,
+      size = publication_geom_text_size(typography$annotation),
       fontface = "bold"
     ) +
     annotate(
@@ -239,7 +244,7 @@ scatter_plot <- function(
       ),
       parse = TRUE,
       color = colfun()$fig11_colors[3],
-      size = base_font_size * 0.35,
+      size = publication_geom_text_size(typography$annotation),
       fontface = "bold"
     ) +
     coord_fixed(5.3 / 5) +
@@ -249,7 +254,7 @@ scatter_plot <- function(
       y = 0.89 * max1,
       label = "Benefit = Risk",
       color = fig_colors[3],
-      size = base_font_size * 0.35,
+      size = publication_geom_text_size(typography$annotation),
       vjust = 0,
       angle = 45
     ) +

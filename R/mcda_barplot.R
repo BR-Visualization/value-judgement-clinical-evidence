@@ -100,6 +100,9 @@ create_mcda_barplot_comparison <- function(
   fig_colors = c("#0571b0", "#ca0020"),
   base_font_size = 9
 ) {
+  typography <- publication_typography(base_font_size = base_font_size)
+  side_label_size <- publication_geom_text_size(typography$data_label * 1.08)
+
   # Check if data is provided
   if (is.null(data)) {
     warning(
@@ -345,7 +348,7 @@ create_mcda_barplot_comparison <- function(
       ),
       position = position_dodge(width = 0.8),
       hjust = -0.1,
-      size = base_font_size * 0.35,
+      size = publication_geom_text_size(typography$data_label),
       show.legend = FALSE
     ) +
     scale_fill_manual(
@@ -370,12 +373,12 @@ create_mcda_barplot_comparison <- function(
       legend.background = element_rect(
         fill = "white", color = "darkgray", linewidth = 0.5
       ),
-      legend.margin = margin(4, 6, 4, 6),
-      legend.key.size = unit(0.8, "lines"),
-      legend.text = element_text(size = base_font_size),
-      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
-      axis.text.y = element_text(size = base_font_size * 1.33, face = "bold"),
-      axis.text.x = element_text(size = base_font_size * 1.11),
+      legend.margin = margin(2, 4, 2, 4),
+      legend.key.size = unit(0.55, "lines"),
+      legend.text = element_text(size = typography$legend_text * 0.9),
+      plot.title = element_text(size = typography$plot_title, face = "bold", hjust = 0.5),
+      axis.text.y = element_text(size = typography$tick, face = "bold"),
+      axis.text.x = element_text(size = typography$tick),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
@@ -407,9 +410,9 @@ create_mcda_barplot_comparison <- function(
     theme_minimal(base_size = base_font_size) +
     theme(
       legend.position = "none",
-      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
+      plot.title = element_text(size = typography$plot_title, face = "bold", hjust = 0.5),
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = base_font_size * 1.11),
+      axis.text.x = element_text(size = typography$tick),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
@@ -424,7 +427,7 @@ create_mcda_barplot_comparison <- function(
     geom_text(
       aes(label = sprintf("%.0f", Value)),
       hjust = ifelse(diff_data$Value < 0, 1.2, -0.1),
-      size = base_font_size * 0.35
+      size = side_label_size
     ) +
     coord_cartesian(clip = "off")
 
@@ -460,9 +463,9 @@ create_mcda_barplot_comparison <- function(
     theme_minimal(base_size = base_font_size) +
     theme(
       legend.position = "none",
-      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
+      plot.title = element_text(size = typography$plot_title, face = "bold", hjust = 0.5),
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = base_font_size * 1.11),
+      axis.text.x = element_text(size = typography$tick),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
@@ -474,7 +477,11 @@ create_mcda_barplot_comparison <- function(
         linewidth = 1
       )
     ) +
-    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = base_font_size * 0.35) +
+    geom_text(
+      aes(label = sprintf("%.0f", Weight)),
+      hjust = -0.1,
+      size = side_label_size
+    ) +
     coord_cartesian(clip = "off")
 
   # Plot 4: Benefit-Risk (Weighted Contributions)
@@ -514,10 +521,10 @@ create_mcda_barplot_comparison <- function(
     theme_minimal(base_size = base_font_size) +
     theme(
       legend.position = "none",
-      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = base_font_size * 1.11, hjust = 0.5),
+      plot.title = element_text(size = typography$plot_title, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = typography$plot_subtitle * 0.9, hjust = 0.5),
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = base_font_size * 1.11),
+      axis.text.x = element_text(size = typography$tick),
       axis.ticks.y = element_blank(),
       axis.ticks.x = element_line(color = "grey92"),
       panel.grid.major.y = element_blank(),
@@ -534,7 +541,7 @@ create_mcda_barplot_comparison <- function(
         label = sprintf("%.1f", Contribution),
         hjust = ifelse(Contribution < 0, 1.2, -0.1)
       ),
-      size = base_font_size * 0.35
+      size = side_label_size
     ) +
     coord_cartesian(clip = "off")
 
@@ -698,6 +705,8 @@ create_mcda_walkthrough <- function(
   fig_colors = c("#0571b0", "#ca0020"),
   base_font_size = 9
 ) {
+  typography <- publication_typography(base_font_size = base_font_size)
+
   # Check if data is provided
   if (is.null(data)) {
     warning(
@@ -1098,12 +1107,12 @@ create_mcda_walkthrough <- function(
     ) +
     theme_minimal(base_size = base_font_size) +
     theme(
-      axis.text.y = element_text(size = base_font_size * 1.33, face = "bold"),
-      axis.text.x = element_text(size = base_font_size * 1.11),
+      axis.text.y = element_text(size = typography$tick, face = "bold"),
+      axis.text.x = element_text(size = typography$tick),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
-      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = base_font_size * 1.11, hjust = 0.5),
+      plot.title = element_text(size = typography$plot_title, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = typography$plot_subtitle, hjust = 0.5),
       plot.margin = margin(5, 0, 5, 5),
       panel.border = element_rect(
         color = "darkgray",
@@ -1116,7 +1125,7 @@ create_mcda_walkthrough <- function(
         label = sprintf("%.0f", Value),
         hjust = ifelse(Value < 0, 1.2, -0.1)
       ),
-      size = base_font_size * 0.35
+      size = publication_geom_text_size(typography$data_label)
     ) +
     coord_cartesian(clip = "off")
 
@@ -1152,11 +1161,11 @@ create_mcda_walkthrough <- function(
     theme_minimal(base_size = base_font_size) +
     theme(
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = base_font_size * 1.11),
+      axis.text.x = element_text(size = typography$tick),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
-      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = base_font_size * 1.11, hjust = 0.5),
+      plot.title = element_text(size = typography$plot_title, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = typography$plot_subtitle, hjust = 0.5),
       plot.margin = margin(5, 0, 5, 0),
       panel.border = element_rect(
         color = "darkgray",
@@ -1164,7 +1173,11 @@ create_mcda_walkthrough <- function(
         linewidth = 1
       )
     ) +
-    geom_text(aes(label = sprintf("%.0f", Weight)), hjust = -0.1, size = base_font_size * 0.35) +
+    geom_text(
+      aes(label = sprintf("%.0f", Weight)),
+      hjust = -0.1,
+      size = publication_geom_text_size(typography$data_label)
+    ) +
     coord_cartesian(clip = "off")
 
   # Panel 3: Weighted Contributions (Benefit-Risk)
@@ -1205,11 +1218,11 @@ create_mcda_walkthrough <- function(
     theme_minimal(base_size = base_font_size) +
     theme(
       axis.text.y = element_blank(),
-      axis.text.x = element_text(size = base_font_size * 1.11),
+      axis.text.x = element_text(size = typography$tick),
       axis.ticks.x = element_line(color = "grey92"),
       legend.position = "none",
-      plot.title = element_text(size = base_font_size * 1.33, face = "bold", hjust = 0.5),
-      plot.subtitle = element_text(size = base_font_size * 1.11, hjust = 0.5),
+      plot.title = element_text(size = typography$plot_title, face = "bold", hjust = 0.5),
+      plot.subtitle = element_text(size = typography$plot_subtitle, hjust = 0.5),
       plot.margin = margin(5, 15, 5, 0),
       panel.border = element_rect(
         color = "darkgray",
@@ -1222,7 +1235,7 @@ create_mcda_walkthrough <- function(
         label = sprintf("%.1f", Contribution),
         hjust = ifelse(Contribution < 0, 1.2, -0.1)
       ),
-      size = base_font_size * 0.35
+      size = publication_geom_text_size(typography$data_label)
     ) +
     coord_cartesian(clip = "off")
 

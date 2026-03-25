@@ -71,6 +71,8 @@ gensurv_plot <- function(
   mcd,
   base_font_size = 9
 ) {
+  typography <- publication_typography(base_font_size = base_font_size)
+
   outcome <- active <- control <- sd_diff <- lower_ci <- upper_ci <- NULL
   eventtime <- obsv_duration <- obsv_unit <- eff_diff_lbl <- color_group <- NULL
 
@@ -500,6 +502,7 @@ gensurv_table <- function(
   fig_colors = c("#0571b0", "#ca0020"),
   base_font_size = 9
 ) {
+  typography <- publication_typography(base_font_size = base_font_size)
   effect <- outcome <- visit <- y <- color_ctrl_var <- z <- NULL
   eff_code <- eventtime <- obsv_duration <- subjects <- NULL
 
@@ -655,7 +658,7 @@ gensurv_table <- function(
     extra_code2 +
     br_charts_theme(base_font_size = base_font_size) +
     theme(
-      plot.title = ggplot2::element_text(size = 8),
+      plot.title = ggplot2::element_text(size = typography$plot_title),
       axis.ticks.x = element_blank(),
       axis.ticks.y = element_blank(),
       panel.grid.major = element_blank(),
@@ -705,7 +708,7 @@ gensurv_table <- function(
       y = "z"
     ),
     color = "black",
-    size = base_font_size * 0.35
+    size = publication_geom_text_size(typography$data_label)
   )
 
   extra_code1 <- labs(titles = "Number of Subjects")
@@ -740,7 +743,7 @@ gensurv_table <- function(
     extra_code1 +
     br_charts_theme(base_font_size = base_font_size) +
     theme(
-      plot.title = ggplot2::element_text(size = 8),
+      plot.title = ggplot2::element_text(size = typography$plot_title),
       axis.ticks.x = element_blank(),
       axis.ticks.y = element_blank(),
       panel.grid.major = element_blank(),

@@ -78,6 +78,8 @@ create_value_function_plot <- function(
   y_label = "Value (0-100)",
   base_font_size = 9
 ) {
+  typography <- publication_typography(base_font_size = base_font_size)
+
   # Input validation
   if (is.null(criterion_name)) {
     stop("criterion_name is required")
@@ -161,8 +163,9 @@ create_value_function_plot <- function(
     do.call(labs, labs_args) +
     theme_minimal(base_size = base_font_size) +
     theme(
-      plot.title = element_text(size = base_font_size * 1.33, face = "bold"),
-      axis.title = element_text(size = base_font_size * 1.22),
+      plot.title = element_text(size = typography$plot_title, face = "bold"),
+      axis.title = element_text(size = typography$axis_title),
+      axis.text = element_text(size = typography$tick),
       panel.grid.major = element_line(color = "lightgray"),
       panel.grid.minor = element_line(color = "gray95")
     )
@@ -477,6 +480,13 @@ compare_value_function_types <- function(
   power = 2,
   base_font_size = 9
 ) {
+  typography <- publication_typography(
+    base_font_size = base_font_size,
+    annotation_ratio = 1
+  )
+  legend_text_size <- typography$legend_text * 1.15
+  legend_title_size <- typography$legend_title * 1.15
+
   # Helper functions for different value function types
   linear_increasing <- function(x, min_val, max_val) {
     100 * (x - min_val) / (max_val - min_val)
@@ -678,6 +688,13 @@ compare_value_function_types <- function(
     "Sigmoid",
     "Step"
   )
+  legend_labels <- c(
+    "Linear",
+    "Piecewise",
+    "Exponential",
+    "Sigmoid",
+    "Step"
+  )
 
   # Compute coord_fixed ratio so each panel is square.
   # ratio = (x_range / y_range) keeps 1 data-unit on x equal in physical
@@ -690,18 +707,23 @@ compare_value_function_types <- function(
   # Create benefit plot
   p_benefit <- ggplot(benefit_comparison, aes(x = x, y = value, color = type)) +
     geom_line(linewidth = 1.2) +
-    scale_color_manual(values = colors) +
+    scale_color_manual(values = colors, labels = legend_labels) +
     coord_fixed(ratio = benefit_ratio) +
     labs(
       x = benefit_label,
       y = "Value (0-100)",
-      color = "Function Type"
+      color = NULL
     ) +
+    guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
     theme_minimal(base_size = base_font_size) +
     theme(
-      plot.title = element_text(face = "bold", size = base_font_size * 1.22),
-      plot.subtitle = element_text(size = base_font_size),
+      plot.title = element_text(face = "bold", size = typography$plot_title),
+      plot.subtitle = element_text(size = typography$plot_subtitle),
+      axis.title = element_text(size = typography$axis_title),
+      axis.text = element_text(size = typography$tick),
       legend.position = if (show_legend) "bottom" else "none",
+      legend.text = element_text(size = legend_text_size),
+      legend.title = element_text(size = legend_title_size),
       panel.grid.major = element_line(color = "lightgray")
     )
 
@@ -716,18 +738,23 @@ compare_value_function_types <- function(
   # Create risk plot
   p_risk <- ggplot(risk_comparison, aes(x = x, y = value, color = type)) +
     geom_line(linewidth = 1.2) +
-    scale_color_manual(values = colors) +
+    scale_color_manual(values = colors, labels = legend_labels) +
     coord_fixed(ratio = risk_ratio) +
     labs(
       x = risk_label,
       y = "Value (0-100)",
-      color = "Function Type"
+      color = NULL
     ) +
+    guides(color = guide_legend(nrow = 2, byrow = TRUE)) +
     theme_minimal(base_size = base_font_size) +
     theme(
-      plot.title = element_text(face = "bold", size = base_font_size * 1.22),
-      plot.subtitle = element_text(size = base_font_size),
+      plot.title = element_text(face = "bold", size = typography$plot_title),
+      plot.subtitle = element_text(size = typography$plot_subtitle),
+      axis.title = element_text(size = typography$axis_title),
+      axis.text = element_text(size = typography$tick),
       legend.position = if (show_legend) "bottom" else "none",
+      legend.text = element_text(size = legend_text_size),
+      legend.title = element_text(size = legend_title_size),
       panel.grid.major = element_line(color = "lightgray")
     )
 
@@ -742,7 +769,11 @@ compare_value_function_types <- function(
   # Combine plots side by side
   combined_plot <- patchwork::wrap_plots(p_benefit, p_risk, ncol = 2) +
     patchwork::plot_layout(guides = "collect") &
-    theme(legend.position = "bottom")
+    theme(
+      legend.position = "bottom",
+      legend.text = element_text(size = legend_text_size),
+      legend.title = element_text(size = legend_title_size)
+    )
 
   combined_plot
 }
