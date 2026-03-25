@@ -39,6 +39,8 @@ top, right, bottom, and left margins)}
 
 \item{get_fonts}{fonts}
 
+\item{get_typography}{typography helper used to derive publication text sizes}
+
 \item{get_colors}{colors}
 
 \item{axis_text_x}{tick labels along axes}

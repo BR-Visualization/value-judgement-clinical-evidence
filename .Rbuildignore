@@ -22,3 +22,11 @@
 ^\.positai$
 ^CORRELOGRAM_DIAGNOSTIC_RESULTS\.md$
 ^DEV_TOOLS\.md$
+^\.lintr$
+^drug_safety_figure_specs\.md$
+^LINTR_FIXES_SUMMARY\.md$
+^PRECOMMIT_SETUP\.md$
+^QUICK_START_LINTR\.md$
+^setup-git-hooks\.R$
+^test-lintr-hook\.R$
+^verify-precommit-ready\.R$

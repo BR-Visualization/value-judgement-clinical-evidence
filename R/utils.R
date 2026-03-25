@@ -240,6 +240,7 @@ font_config <- function(
 #' @param margin (unit)\cr margin around entire plot (unit with the sizes of the
 #'  top, right, bottom, and left margins)
 #' @param get_fonts fonts
+#' @param get_typography typography helper used to derive publication text sizes
 #' @param get_colors colors
 #' @param axis_text_x tick labels along axes
 #' @param axis_line all line elements
