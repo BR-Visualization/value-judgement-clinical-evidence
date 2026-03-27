@@ -1,4 +1,4 @@
-# Font Scaling Proposal for brpubVJCE
+# Font Scaling Proposal for valueJudgementCE
 
 ## Problem
 

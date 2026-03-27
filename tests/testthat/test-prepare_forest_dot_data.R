@@ -20,7 +20,7 @@ testthat::test_that("prepare_forest_dot_data computes CIs correctly", {
     stringsAsFactors = FALSE
   )
 
-  result <- brpubVJCE::prepare_forest_dot_data(
+  result <- valueJudgementCE::prepare_forest_dot_data(
     test_data,
     outcomes_of_interest = c("Benefit 1", "Benefit 2", "Risk 1", "Risk 2"),
     treatment1 = "Drug A",
@@ -55,7 +55,7 @@ testthat::test_that("prepare_forest_dot_data handles binary data", {
     stringsAsFactors = FALSE
   )
 
-  result <- brpubVJCE::prepare_forest_dot_data(test_data_bin)
+  result <- valueJudgementCE::prepare_forest_dot_data(test_data_bin)
   testthat::expect_equal(nrow(result), 2)
 })
 
@@ -81,7 +81,7 @@ testthat::test_that("prepare_forest_dot_data validates precalculated data", {
   bad_data <- test_data_bin[, -which(names(test_data_bin) == "Prop1")]
 
   testthat::expect_error(
-    brpubVJCE::prepare_forest_dot_data(bad_data, precalculated_stats = TRUE),
+    valueJudgementCE::prepare_forest_dot_data(bad_data, precalculated_stats = TRUE),
     "Missing required precalculated columns"
   )
 })
@@ -108,7 +108,7 @@ testthat::test_that("prepare_forest_dot_data works with precalculated stats", {
     stringsAsFactors = FALSE
   )
 
-  result <- brpubVJCE::prepare_forest_dot_data(
+  result <- valueJudgementCE::prepare_forest_dot_data(
     test_data,
     precalculated_stats = TRUE
   )

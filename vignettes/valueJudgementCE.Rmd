@@ -1,8 +1,8 @@
 ---
-title: "brpubVJCE"
+title: "valueJudgementCE"
 output: rmarkdown::html_vignette
 vignette: >
-  %\VignetteIndexEntry{brpubVJCE}
+  %\VignetteIndexEntry{valueJudgementCE}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -15,5 +15,5 @@ knitr::opts_chunk$set(
 ```
 
 ```{r setup}
-library(brpubVJCE)
+library(valueJudgementCE)
 ```

@@ -6,7 +6,7 @@
 ^\.github$
 ^CODE_OF_CONDUCT\.md$
 ^.devcontainer$
-^brpubVJCE.Rproj$
+^valueJudgementCE.Rproj$
 ^data-raw$
 ^codecov\.yml$
 ^README\.Rmd$

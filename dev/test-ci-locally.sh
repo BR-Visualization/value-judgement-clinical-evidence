@@ -2,7 +2,7 @@
 # Script to test CI/CD workflows locally before pushing to GitHub
 
 echo "=========================================="
-echo "Testing brpubVJCE CI/CD Workflows Locally"
+echo "Testing valueJudgementCE CI/CD Workflows Locally"
 echo "=========================================="
 echo ""
 

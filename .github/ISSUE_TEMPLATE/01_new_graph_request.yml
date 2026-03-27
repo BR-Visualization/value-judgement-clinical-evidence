@@ -1,5 +1,5 @@
 name: New Graph Request
-description: New graph to brpubVJCE repository
+description: New graph to valueJudgementCE repository
 title: "New Graph Request:  <Insert Issue Title Here>"
 labels: ["new graph", "programming"]
 assignees:
@@ -8,7 +8,7 @@ body:
   - type: markdown
     attributes:
       value: |
-        Thanks for taking the time to fill out this new graph request!  We love keeping brpubVJCE fresh!
+        Thanks for taking the time to fill out this new graph request!  We love keeping valueJudgementCE fresh!
   - type: textarea
     id: shell
     attributes:

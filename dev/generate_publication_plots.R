@@ -1,4 +1,4 @@
-# Generate publication plots for brpubVJCE package WITH CONSISTENT FONT SCALING
+# Generate publication plots for valueJudgementCE package WITH CONSISTENT FONT SCALING
 # This script creates PNG files with properly scaled fonts based on figure dimensions
 devtools::load_all()
 library(devtools)
