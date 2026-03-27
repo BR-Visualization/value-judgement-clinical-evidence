@@ -1,4 +1,4 @@
-# Git Hooks Guide for brpubVJCE
+# Git Hooks Guide for valueJudgementCE
 
 Git hooks automatically run scripts at key points in your Git workflow. This ensures code quality and prevents issues before they reach GitHub.
 

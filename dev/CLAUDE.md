@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Overview
 
-`brpubVJCE` is an R package that generates benefit-risk visualizations for clinical trial data. The package supports the publication "How to visually integrate value judgment with clinical evidence" and provides various specialized visualization types including forest/dot plots, cumulative excess plots, correlograms, scatter plots, trade-off plots, and MCDA (Multi-Criteria Decision Analysis) visualizations.
+`valueJudgementCE` is an R package that generates benefit-risk visualizations for clinical trial data. The package supports the publication "How to visually integrate value judgment with clinical evidence" and provides various specialized visualization types including forest/dot plots, cumulative excess plots, correlograms, scatter plots, trade-off plots, and MCDA (Multi-Criteria Decision Analysis) visualizations.
 
 ## Development Commands
 

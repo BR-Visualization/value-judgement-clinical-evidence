@@ -2,7 +2,7 @@
 # Setup script for Git hooks
 # Run this once to install automated checks
 
-echo "🔧 Git Hooks Setup for brpubVJCE"
+echo "🔧 Git Hooks Setup for valueJudgementCE"
 echo "=================================="
 echo ""
 echo "This will install Git hooks that automatically:"

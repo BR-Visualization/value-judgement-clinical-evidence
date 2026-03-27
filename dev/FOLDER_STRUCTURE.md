@@ -3,7 +3,7 @@
 ## Overview
 
 ```
-brpubVJCE/
+valueJudgementCE/
 ├── .github/workflows/           # CI/CD workflows (GitHub Actions)
 ├── R/                          # Package R code
 ├── man/                        # Documentation (auto-generated)
@@ -64,7 +64,7 @@ brpubVJCE/
 
 ### ❌ Root Directory (Old Approach)
 ```
-brpubVJCE/
+valueJudgementCE/
 ├── generate_publication_plots.R     # ❌ Clutters root
 ├── pre-push-check.R                # ❌ Clutters root
 ├── FONT_SCALING_PROPOSAL.md        # ❌ Clutters root
@@ -78,7 +78,7 @@ Problems:
 
 ### ✅ dev/ Folder (Current Approach)
 ```
-brpubVJCE/
+valueJudgementCE/
 ├── dev/                            # ✅ All dev files here
 │   ├── generate_publication_plots.R
 │   ├── pre-push-check.R
@@ -95,7 +95,7 @@ Benefits:
 
 ### 🗂️ inst/ Folder (Alternative)
 ```
-brpubVJCE/
+valueJudgementCE/
 └── inst/
     └── dev/                        # Alternative location
 ```

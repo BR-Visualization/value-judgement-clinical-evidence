@@ -11,7 +11,7 @@ if (!file.exists("DESCRIPTION")) {
 }
 
 # Load the package
-cat("Loading brpubVJCE...\n")
+cat("Loading valueJudgementCE...\n")
 devtools::load_all(quiet = TRUE)
 
 # Track success

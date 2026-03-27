@@ -1,4 +1,4 @@
-# brpubVJCE (Development)
+# valueJudgementCE (Development)
 
 ## ✨ New Features
 
@@ -38,11 +38,11 @@
 
 ---
 
-# brpubVJCE 0.0.0.1
+# valueJudgementCE 0.0.0.1
 
 ## 📦 Initial Release
 
-This version introduces the first implementation of the `brpubVJCE` package, providing visualization tools for treatment effect analysis.
+This version introduces the first implementation of the `valueJudgementCE` package, providing visualization tools for treatment effect analysis.
 
 ### ✨ New Features
 

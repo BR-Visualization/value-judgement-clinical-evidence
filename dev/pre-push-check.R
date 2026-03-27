@@ -4,7 +4,7 @@
 
 cat("\n")
 cat("========================================\n")
-cat("Pre-Push CI/CD Checks for brpubVJCE\n")
+cat("Pre-Push CI/CD Checks for valueJudgementCE\n")
 cat("========================================\n\n")
 
 # Track overall success
