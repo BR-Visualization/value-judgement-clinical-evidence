@@ -11,9 +11,9 @@ coverage](https://codecov.io/gh/BR-Visualization/value-judgement-clinical-eviden
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of valueJudgementCE is to generate benefit-risk visualizations for the
-publication “How to visually integrate value judgment with clinical
-evidence”.
+The goal of valueJudgementCE is to generate benefit-risk visualizations
+for the publication “How to visually integrate value judgment with
+clinical evidence”.
 
 # Table of Contents
 
