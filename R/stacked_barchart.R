@@ -24,6 +24,12 @@
 #' )
 #'
 stacked_barchart <- function(data, chartcolors, ylabel = "Visit", base_font_size = 9) {
+  typography <- publication_typography(
+    base_font_size = base_font_size,
+    annotation_ratio = 1.15
+  )
+  strip_text_size <- typography$strip_text * 1.05
+
   all_columns <- c(
     "usubjid", "visit", "trt", "brcat"
   )
@@ -59,10 +65,10 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit", base_font_size
     geom_bar(stat = "identity", color = "black") +
     scale_fill_manual(values = chartcolors,
                       breaks = rev(levels(df_stacked$brcat))) +
-    geom_text(aes(label = round(percentage, 0)),
+    geom_text(aes(label = ifelse(percentage >= 7, round(percentage, 0), "")),
               color = ifelse(df_stacked$brcat == "Withdrew", "white", "black"),
               position = position_stack(vjust = 0.5),
-              size = base_font_size * 0.35
+              size = publication_geom_text_size(typography$data_label)
     ) +
     scale_x_continuous(expand = c(0.015, 0)) +
     xlab("Percentage") +
@@ -71,10 +77,11 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit", base_font_size
     labs(color = NULL) +
     br_charts_theme(
       base_font_size = base_font_size,
-      strip.text.x = element_text(hjust = 0.5),
+      strip.text.x = element_text(size = strip_text_size, hjust = 0.5),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
       axis.ticks.y = element_blank(),
+      axis.line.y = element_blank(),
       plot.title = element_text(hjust = 0.5)
     )
 
@@ -117,6 +124,12 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit", base_font_size
 #'
 divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
                                        ylabel = "Visit", base_font_size = 9) {
+  typography <- publication_typography(
+    base_font_size = base_font_size,
+    annotation_ratio = 1.15
+  )
+  strip_text_size <- typography$strip_text * 1.05
+
   all_columns <- c(
     "usubjid", "visit", "trt", "brcat"
   )
@@ -157,10 +170,12 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
     geom_bar(stat = "identity", color = "black") +
     scale_fill_manual(values = chartcolors,
                       breaks = rev(levels(df_stacked$brcat))) +
-    geom_text(aes(label = ifelse(side == "Left", -percentage, percentage)),
+    geom_text(aes(label = ifelse(abs(percentage) >= 7,
+                                 ifelse(side == "Left", -percentage, percentage),
+                                 "")),
               color = ifelse(df_stacked$brcat == "Withdrew", "white", "black"),
               position = position_stack(vjust = 0.5),
-              size = base_font_size * 0.35) +
+              size = publication_geom_text_size(typography$data_label)) +
     scale_x_continuous(breaks = seq(-100, 100, 20),
                        limits = c(-100, 100),
                        expand = c(0, 0),
@@ -174,10 +189,10 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
     labs(color = NULL) +
     br_charts_theme(
       base_font_size = base_font_size,
-      strip.text.x = element_text(hjust = 0.5),
+      strip.text.x = element_text(size = strip_text_size, hjust = 0.5),
       panel.grid.major = element_blank(),
       panel.grid.minor = element_blank(),
-      axis.line.y = element_blank(),
+      axis.ticks.y = element_blank(),
       plot.title = element_text(hjust = 0.5)
     )
 

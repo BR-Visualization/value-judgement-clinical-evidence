@@ -1,19 +1,19 @@
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
-# brpubVJCE
+# valueJudgementCE
 
 <!-- badges: start -->
 
 [![Codecov test
-coverage](https://codecov.io/gh/BR-Visualization/brpubVJCE/graph/badge.svg)](https://app.codecov.io/gh/BR-Visualization/brpubVJCE)
+coverage](https://codecov.io/gh/BR-Visualization/value-judgement-clinical-evidence/graph/badge.svg)](https://app.codecov.io/gh/BR-Visualization/value-judgement-clinical-evidence)
 [![Lifecycle:
 experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of brpubVJCE is to generate benefit-risk visualizations for the
-publication “How to visually integrate value judgment with clinical
-evidence”.
+The goal of valueJudgementCE is to generate benefit-risk visualizations
+for the publication “How to visually integrate value judgment with
+clinical evidence”.
 
 # Table of Contents
 
@@ -33,7 +33,7 @@ evidence”.
 
 ## Installation
 
-You can install the development version of brpubVJCE from
+You can install the development version of valueJudgementCE from
 [GitHub](https://github.com/) using the following methods:
 
 ### Recommended Installation
@@ -41,7 +41,7 @@ You can install the development version of brpubVJCE from
 ``` r
 # Install using pak (recommended)
 install.packages("pak")
-pak::pak("BR-Visualization/brpubVJCE")
+pak::pak("BR-Visualization/value-judgement-clinical-evidence")
 ```
 
 ### Alternative Installation
@@ -49,7 +49,7 @@ pak::pak("BR-Visualization/brpubVJCE")
 ``` r
 # Install using remotes
 install.packages("remotes")
-remotes::install_github("BR-Visualization/brpubVJCE")
+remotes::install_github("BR-Visualization/value-judgement-clinical-evidence")
 ```
 
 ## Figure - Dot-Forest Plot
@@ -68,9 +68,9 @@ Click to learn more
 - Documentation: Use `?create_forest_dot_plot` or
   `?prepare_forest_dot_data` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -84,7 +84,7 @@ Click to view sample code
 
 ``` r
 # Load the package and create the plot
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Prepare the data and create the visualization
 result_plot <- create_forest_dot_plot(
@@ -113,9 +113,9 @@ Click to learn more
 - Documentation: Use `?generate_tradeoff_plot` for detailed function
   help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -128,7 +128,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 
 effects_table_filtered <- effects_table |>
   dplyr::filter(Outcome %in% c("Risk 1", "Benefit 1"))
@@ -177,9 +177,9 @@ Click to learn more
 
 - Documentation: Use `?create_correlogram` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -192,7 +192,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 
 create_correlogram(corr2)
 ```
@@ -214,9 +214,9 @@ Click to learn more
 
 - Documentation: Use `?scatter_plot` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -229,7 +229,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 
 outcome <- c("Benefit", "Risk")
 scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
@@ -253,9 +253,9 @@ Click to learn more
 - Documentation: Use `?divergent_stacked_barchart` and
   `?stacked_barchart` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -268,7 +268,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 library(cowplot)
 library(gtable)
 
@@ -338,9 +338,9 @@ Click to learn more
 
 - Documentation: Use `?gensurv_combined` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -353,7 +353,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 
 gensurv_combined(
   df_plot = cumexcess, subjects_pt = 100, visits_pt = 6,
@@ -386,9 +386,9 @@ Click to learn more
 - Documentation: Use `?compare_value_function_types` for detailed
   function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -401,7 +401,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 
 compare_value_function_types(
   benefit_name = "Efficacy",
@@ -436,9 +436,9 @@ Click to learn more
 - Documentation: Use `?create_mcda_barplot_comparison` for detailed
   function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -451,7 +451,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 
 create_mcda_barplot_comparison(
   data = mcda_data,
@@ -481,9 +481,9 @@ Click to learn more
 
 - Documentation: Use `?create_mcda_waterfall` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -496,7 +496,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 
 create_mcda_waterfall(
   data = mcda_data,
@@ -525,9 +525,9 @@ Click to learn more
 
 - Documentation: Use `?create_mcda_brmap` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -540,7 +540,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 
 create_mcda_brmap(
   data = mcda_data,
@@ -571,9 +571,9 @@ Click to learn more
 
 - Documentation: Use `?mcda_tornado` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
 - Discussions: Join discussions at [GitHub
-  Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 
 </details>
@@ -586,7 +586,7 @@ Click to view sample code
 </summary>
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 
 mcda_tornado(
   data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
@@ -604,7 +604,7 @@ mcda_tornado(
 If you use this package in your research, please cite:
 
 ``` r
-citation("brpubVJCE")
+citation("valueJudgementCE")
 ```
 
 ## License

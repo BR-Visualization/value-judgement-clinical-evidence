@@ -1,4 +1,4 @@
-Package: brpubVJCE
+Package: valueJudgementCE
 Title: Charts to Integrate Value Judgement with Clinical Evidence
 Version: 0.0.1
 Date: 2026-02-14
@@ -25,7 +25,7 @@ Authors@R:
            role = c("aut"),
            comment = c(ORCID = "")))
 Description: This package supports the visual integration of clinical evidence and value judgments, as demonstrated in the related publication.
-URL: https://br-visualization.github.io/brpubVJCE/
+URL: https://br-visualization.github.io/value-judgement-clinical-evidence/
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)

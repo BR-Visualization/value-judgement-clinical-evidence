@@ -640,15 +640,22 @@ generate_tradeoff_plot <- function(
     )
 
   # labels
+  fonts <- control_fonts(base_font_size = base_font_size)
   if (!is.na(mar)) {
     myplot <- myplot +
-      geom_text(aes(label = "MAR", x = x_max, y = mar), size = control_fonts()$p
-        * 0.4, hjust = -0.15)
+      geom_text(
+        aes(label = "MAR", x = x_max, y = mar),
+        size = fonts$label,
+        hjust = -0.15
+      )
   }
   if (!is.na(mab)) {
     myplot <- myplot +
-      geom_text(aes(label = "MAB", x = mab, y = y_max), size = control_fonts()$p
-        * 0.4, vjust = -0.3)
+      geom_text(
+        aes(label = "MAB", x = mab, y = y_max),
+        size = fonts$label,
+        vjust = -0.3
+      )
   }
   myplot <- myplot + xlab(benefit) + ylab(risk)
 
@@ -697,12 +704,12 @@ generate_tradeoff_plot <- function(
       axis_line = element_blank(),
       axis.ticks.x = element_blank(),
       axis.ticks.y = element_blank(),
-      axis.text.x = element_text(size = 10),
-      axis.text.y = element_text(size = 10),
-      axis.title.x = element_text(size = 12),
-      axis.title.y = element_text(size = 12),
-      legend.size = element_text(size = 10),
-      legend.title = element_text(size = 10)
+      axis.text.x = element_text(size = fonts$p),
+      axis.text.y = element_text(size = fonts$p),
+      axis.title.x = element_text(size = fonts$h2),
+      axis.title.y = element_text(size = fonts$h2),
+      legend.text = element_text(size = fonts$p),
+      legend.title = element_text(size = fonts$p, face = "bold")
     ) +
     coord_cartesian(clip = "off") +
     guides(
@@ -783,16 +790,15 @@ prepare_tradeoff_plot <- function(
     guide = guide_legend(title = "Treatment")
   )
 
-  # set a shape for each category
-  my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[
-    seq_along(nlevels(as.factor(data$Category)))
-  ]
-  names(my_shapes) <- c(levels(as.factor(data$Category)))
+  # set a shape for each treatment shown in the plot
+  treatment_levels <- levels(df_br_status$treatment)
+  my_shapes <- c(16, 17, 15, 18, 3, 4, 8, 11)[seq_along(treatment_levels)]
+  names(my_shapes) <- treatment_levels
 
   # map the shape with the different category
   shape_scale <- scale_shape_manual(
     name = "treatment",
-    values = as.vector(my_shapes[as.character(df_br_status$category)]),
+    values = my_shapes,
     guide = guide_legend(title = "Treatment")
   )
 

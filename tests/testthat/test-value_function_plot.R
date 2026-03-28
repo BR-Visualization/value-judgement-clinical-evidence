@@ -1,5 +1,5 @@
 library(testthat)
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Helper function to create sample clinical scales
 create_sample_clinical_scales <- function() {
@@ -372,7 +372,7 @@ test_that("plot_multiple_value_functions handles both directions", {
 # Integration tests
 test_that("Integration: Full workflow with example data", {
   # Load example MCDA data
-  data("mcda_data", package = "brpubVJCE")
+  data("mcda_data", package = "valueJudgementCE")
 
   # Define clinical scales
   clinical_scales <- list(

@@ -78,6 +78,8 @@ mcda_tornado <- function(
     weight_change = 20,
     base_font_size = 9
 ) {
+  typography <- publication_typography(base_font_size = base_font_size)
+
 
   df_brscore <- tidyr::pivot_longer(
     data,
@@ -257,10 +259,7 @@ mcda_tornado <- function(
       TRUE ~ NA_character_
     ))
 
-  unique_lab <- df_bars |>
-    dplyr::filter(!is.na(ind)) |>
-    dplyr::pull(ind) |>
-    unique()
+  unique_lab <- c("low", "high")
 
   vec_color <- fig_colors
   if (length(vec_color) < length(unique_lab)) {
@@ -270,7 +269,10 @@ mcda_tornado <- function(
   colors2 <- stats::setNames(vec_color, unique_lab)
 
   df_bars <- df_bars |>
-    dplyr::mutate(color = as.character(colors2[ind])) |>
+    dplyr::mutate(
+      ind = factor(ind, levels = unique_lab),
+      color = as.character(colors2[as.character(ind)])
+    ) |>
     dplyr::mutate(
       delta = diff_tot - central_val,
       pos = dplyr::case_when(
@@ -384,7 +386,7 @@ mcda_tornado <- function(
       data = df_bars,
       ggplot2::aes(
         xmin = xmin, xmax = xmax,
-        ymin = ymin, ymax = ymax, fill = color
+        ymin = ymin, ymax = ymax, fill = ind
       )
     ) +
     ggplot2::scale_y_continuous(
@@ -392,9 +394,10 @@ mcda_tornado <- function(
       labels = unique(df_final$Endpoint)
     ) +
     ggplot2::scale_fill_manual(
-      name = "Weight Change",
+      name = NULL,
+      breaks = unique_lab,
       labels = unique_lab,
-      values = vec_color
+      values = colors2
     ) +
     ggplot2::theme_minimal(base_size = base_font_size) +
     ggplot2::labs(
@@ -410,8 +413,10 @@ mcda_tornado <- function(
       axis.line.x = ggplot2::element_line("black", size = 1),
       axis.ticks.x = ggplot2::element_line("black", size = 1),
       axis.ticks.length = grid::unit(0.2, "cm"),
-      axis.text.x = ggplot2::element_text(color = "black", size = base_font_size * 1.11),
-      axis.text.y = ggplot2::element_text(color = "black", size = base_font_size * 1.11)
+      axis.text.x = ggplot2::element_text(color = "black", size = typography$tick),
+      axis.text.y = ggplot2::element_text(color = "black", size = typography$tick),
+      legend.text = ggplot2::element_text(size = typography$legend_text),
+      legend.title = ggplot2::element_blank()
     ) +
     ggplot2::scale_x_continuous(
       sec.axis = ggplot2::dup_axis(name = NULL)
@@ -437,7 +442,7 @@ mcda_tornado <- function(
     ggplot2::geom_text(
       ggplot2::aes(label = paste0(weight_pct, "%")),
       hjust = 0.5,
-      size = base_font_size * 0.35
+      size = publication_geom_text_size(typography$data_label)
     ) +
     ggplot2::scale_x_discrete(
       name = "Weight Change", position = "top",
@@ -455,11 +460,11 @@ mcda_tornado <- function(
     ggplot2::theme_void(base_size = base_font_size) +
     ggplot2::theme(
       axis.title.x.top = ggplot2::element_text(
-        color = "black", face = "bold", size = base_font_size * 1.11,
+        color = "black", face = "bold", size = typography$axis_title * 0.92,
         margin = ggplot2::margin(b = 5, t = 0)
       ),
       axis.text.x.top = ggplot2::element_text(
-        color = "black", face = "bold", size = base_font_size * 1.11,
+        color = "black", face = "bold", size = typography$tick * 0.98,
         margin = ggplot2::margin(b = 5, t = 5),
         vjust = 0.5
       ),

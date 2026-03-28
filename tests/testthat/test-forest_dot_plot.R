@@ -30,7 +30,7 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
   full_data <- dplyr::bind_rows(test_data, test_data_bin)
 
   # Prepare the data using the package function
-  prepared <- brpubVJCE::prepare_forest_dot_data(full_data)
+  prepared <- valueJudgementCE::prepare_forest_dot_data(full_data)
 
   # Use outcomes_with_thresholds with explicit directions
   # instead of direction parameter
@@ -42,7 +42,7 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
   )
 
   # Create the plot with the correct parameter
-  plot <- brpubVJCE::create_forest_dot_plot(
+  plot <- valueJudgementCE::create_forest_dot_plot(
     prepared,
     outcomes_with_thresholds = outcomes_with_thresholds
   )
@@ -71,7 +71,7 @@ testthat::test_that(paste(
   )
 
   # Prepare the data using the package function
-  prepared <- brpubVJCE::prepare_forest_dot_data(test_data_benefit)
+  prepared <- valueJudgementCE::prepare_forest_dot_data(test_data_benefit)
 
   # Use thresholds with direction = "less" for benefit outcomes
   # This should trigger axis reversal
@@ -82,7 +82,7 @@ testthat::test_that(paste(
 
   # Create the plot - should reverse axis
   # for benefit + direction "less"
-  plot <- brpubVJCE::create_forest_dot_plot(
+  plot <- valueJudgementCE::create_forest_dot_plot(
     prepared,
     outcomes_with_thresholds = outcomes_with_thresholds
   )

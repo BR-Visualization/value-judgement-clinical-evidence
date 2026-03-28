@@ -118,6 +118,9 @@ create_mcda_waterfall <- function(
   label_threshold = 0.5,
   base_font_size = 9
 ) {
+  typography <- publication_typography(base_font_size = base_font_size)
+  waterfall_label_size <- publication_geom_text_size(typography$data_label * 1.1)
+
   # Check if data is provided
   if (is.null(data)) {
     warning(
@@ -653,7 +656,7 @@ create_mcda_waterfall <- function(
       },
       expand = c(0.02, 0.02)
     ) +
-    scale_x_continuous(expand = expansion(mult = c(0.15, 0.15))) +
+    scale_x_continuous(expand = expansion(mult = c(0.3, 0.15))) +
     labs(
       x = "Cumulative Weighted Score Difference",
       y = NULL
@@ -661,7 +664,9 @@ create_mcda_waterfall <- function(
     theme_minimal(base_size = base_font_size) +
     theme(
       legend.position = "none",
-      axis.text.y = element_text(size = base_font_size, hjust = 1, face = "bold"),
+      axis.text.y = element_text(size = typography$tick, hjust = 1, face = "bold"),
+      axis.text.x = element_text(size = typography$tick),
+      axis.title.x = element_text(size = typography$axis_title),
       panel.grid.major.y = element_blank(),
       panel.grid.minor.y = element_blank(),
       panel.grid.major.x = element_line(color = "grey92"),
@@ -671,8 +676,8 @@ create_mcda_waterfall <- function(
         fill = NA,
         linewidth = 1
       ),
-      panel.spacing = unit(0, "lines"),
-      strip.text = element_text(size = base_font_size * 1.22, face = "bold"),
+      panel.spacing = unit(0.5, "lines"),
+      strip.text = element_text(size = typography$strip_text, face = "bold"),
       strip.background = element_rect(fill = "white", color = NA)
     )
 
@@ -687,10 +692,10 @@ create_mcda_waterfall <- function(
           x = end,
           y = id,
           label = sprintf("%.1f", Contribution),
-          hjust = ifelse(Contribution < 0, 1.2, -0.1)
+          hjust = ifelse(Contribution < 0, 1.35, -0.2)
         ),
         inherit.aes = FALSE,
-        size = base_font_size * 0.35
+        size = waterfall_label_size
       )
 
     # Labels for total scores (if showing total)
@@ -702,10 +707,10 @@ create_mcda_waterfall <- function(
             x = end,
             y = id,
             label = sprintf("%.1f", Contribution),
-            hjust = ifelse(Contribution < 0, 1.2, -0.1)
+            hjust = ifelse(Contribution < 0, 1.35, -0.2)
           ),
           inherit.aes = FALSE,
-          size = base_font_size * 0.35
+          size = waterfall_label_size
         )
     }
   }

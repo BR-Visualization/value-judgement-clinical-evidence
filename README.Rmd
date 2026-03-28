@@ -2,7 +2,7 @@
 output: 
   github_document:
     html_preview: true
-    pandoc_args: --metadata=pagetitle:brpubVJCE
+    pandoc_args: --metadata=pagetitle:valueJudgementCE
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -24,14 +24,14 @@ Sys.setlocale("LC_CTYPE", "C.UTF-8")
 options(encoding = "UTF-8")
 ```
 
-# brpubVJCE
+# valueJudgementCE
 
 <!-- badges: start -->
-[![Codecov test coverage](https://codecov.io/gh/BR-Visualization/brpubVJCE/graph/badge.svg)](https://app.codecov.io/gh/BR-Visualization/brpubVJCE)
+[![Codecov test coverage](https://codecov.io/gh/BR-Visualization/value-judgement-clinical-evidence/graph/badge.svg)](https://app.codecov.io/gh/BR-Visualization/value-judgement-clinical-evidence)
 [![Lifecycle: experimental](https://img.shields.io/badge/lifecycle-experimental-orange.svg)](https://lifecycle.r-lib.org/articles/stages.html#experimental)
 <!-- badges: end -->
 
-The goal of brpubVJCE is to generate benefit-risk visualizations for the publication “How to visually integrate value judgment with clinical evidence”.
+The goal of valueJudgementCE is to generate benefit-risk visualizations for the publication “How to visually integrate value judgment with clinical evidence”.
 
 # Table of Contents
 
@@ -50,14 +50,14 @@ The goal of brpubVJCE is to generate benefit-risk visualizations for the publica
 
 ## Installation
 
-You can install the development version of brpubVJCE from [GitHub](https://github.com/) using the following methods:
+You can install the development version of valueJudgementCE from [GitHub](https://github.com/) using the following methods:
 
 ### Recommended Installation
 
 ```{r, eval=FALSE}
 # Install using pak (recommended)
 install.packages("pak")
-pak::pak("BR-Visualization/brpubVJCE")
+pak::pak("BR-Visualization/value-judgement-clinical-evidence")
 ```
 
 ### Alternative Installation  
@@ -65,14 +65,14 @@ pak::pak("BR-Visualization/brpubVJCE")
 ```{r, eval=FALSE}
 # Install using remotes
 install.packages("remotes")
-remotes::install_github("BR-Visualization/brpubVJCE")
+remotes::install_github("BR-Visualization/value-judgement-clinical-evidence")
 ```
 
 ## Figure - Dot-Forest Plot
 
 ```{r dot_forest_plot, fig.width=7, fig.height=5, message = FALSE, echo = FALSE}
 # Load the package and create the plot
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
 fonts <- font_config(7, 5)
@@ -99,8 +99,8 @@ result_plot
 **Getting Help**
 
 - Documentation: Use `?create_forest_dot_plot` or `?prepare_forest_dot_data` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
@@ -108,7 +108,7 @@ result_plot
 <summary>Click to view sample code</summary>
 ```{r, echo =TRUE, eval = FALSE}
 # Load the package and create the plot
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Prepare the data and create the visualization
 result_plot <- create_forest_dot_plot(
@@ -124,7 +124,7 @@ result_plot
 ## Figure - Trade-off Plot
 
 ```{r tradeoff_plot, fig.width=5, fig.height=5, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
 fonts <- font_config(5, 5)
@@ -165,15 +165,15 @@ generate_tradeoff_plot(
 **Getting Help**
 
 - Documentation: Use `?generate_tradeoff_plot` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 effects_table_filtered <- effects_table |>
   dplyr::filter(Outcome %in% c("Risk 1", "Benefit 1"))
@@ -209,7 +209,7 @@ generate_tradeoff_plot(
 ## Figure - Correlogram
 
 ```{r correlogram, fig.width=7, fig.height=7, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
 fonts <- font_config(7, 7)
@@ -222,15 +222,15 @@ create_correlogram(corr2, base_font_size = fonts$p)
 **Getting Help**
 
 - Documentation: Use `?create_correlogram` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval=FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 create_correlogram(corr2)
 ```
@@ -239,7 +239,7 @@ create_correlogram(corr2)
 ## Figure - Scatter Plot
 
 ```{r scatter_plot, fig.width=7, fig.height=7, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
 fonts <- font_config(7, 7)
@@ -253,15 +253,15 @@ scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6, base_font_size = fonts$
 **Getting Help**
 
 - Documentation: Use `?scatter_plot` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 outcome <- c("Benefit", "Risk")
 scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
@@ -271,7 +271,7 @@ scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6)
 ## Figure - Divergent Stacked Bar Chart
 
 ```{r divergent_stacked_barchart, fig.width=14, fig.height=9, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 library(cowplot)
 library(gtable)
 
@@ -350,15 +350,15 @@ combined_bar_charts
 **Getting Help**
 
 - Documentation: Use `?divergent_stacked_barchart` and `?stacked_barchart` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 library(cowplot)
 library(gtable)
 
@@ -415,7 +415,7 @@ plot_grid(legend, combined_plots, ncol = 1, rel_heights = c(0.2, 1))
 ## Figure - Cumulative Excess Plot
 
 ```{r cumulative_excess_plot, fig.width=7, fig.height=7, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
 fonts <- font_config(7, 7)
@@ -436,15 +436,15 @@ gensurv_combined(
 **Getting Help**
 
 - Documentation: Use `?gensurv_combined` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval=FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 gensurv_combined(
   df_plot = cumexcess, subjects_pt = 100, visits_pt = 6,
@@ -463,7 +463,7 @@ gensurv_combined(
 ## Figure - Value Function Types
 
 ```{r value_function_types, fig.width=10, fig.height=5, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions (both axes 0-100, so width = height * 2)
 fonts <- font_config(10, 5)
@@ -489,15 +489,15 @@ compare_value_function_types(
 **Getting Help**
 
 - Documentation: Use `?compare_value_function_types` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 compare_value_function_types(
   benefit_name = "Efficacy",
@@ -518,7 +518,7 @@ compare_value_function_types(
 ## Figure - MCDA Comparison Plot
 
 ```{r mcda_barplot, fig.width=16, fig.height=6, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
 fonts <- font_config(16, 6)
@@ -553,15 +553,15 @@ create_mcda_barplot_comparison(
 **Getting Help**
 
 - Documentation: Use `?create_mcda_barplot_comparison` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 create_mcda_barplot_comparison(
   data = mcda_data,
@@ -578,7 +578,7 @@ create_mcda_barplot_comparison(
 ## Figure - MCDA Waterfall Plot
 
 ```{r mcda_waterfall, fig.width=16, fig.height=6, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
 fonts <- font_config(16, 6)
@@ -599,15 +599,15 @@ create_mcda_waterfall(
 **Getting Help**
 
 - Documentation: Use `?create_mcda_waterfall` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 create_mcda_waterfall(
   data = mcda_data,
@@ -623,7 +623,7 @@ create_mcda_waterfall(
 ## Figure - MCDA Benefit-Risk Map
 
 ```{r mcda_brmap, fig.width=8, fig.height=8, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
 fonts <- font_config(8, 8)
@@ -646,15 +646,15 @@ create_mcda_brmap(
 **Getting Help**
 
 - Documentation: Use `?create_mcda_brmap` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 create_mcda_brmap(
   data = mcda_data,
@@ -672,7 +672,7 @@ create_mcda_brmap(
 ## Figure - MCDA Tornado Plot
 
 ```{r mcda_tornado, fig.width=10, fig.height=6, fig.retina=1, dpi=600, message = FALSE, echo = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
 fonts <- font_config(10, 6)
@@ -692,15 +692,15 @@ mcda_tornado(
 **Getting Help**
 
 - Documentation: Use `?mcda_tornado` for detailed function help
-- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/brpubVJCE/issues)  
-- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/brpubVJCE/discussions)
+- Issues: Report bugs at [GitHub Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
 </details>
 
 <details>
 <summary>Click to view sample code</summary>
 ```{r, echo = TRUE, eval = FALSE}
-library(brpubVJCE)
+library(valueJudgementCE)
 
 mcda_tornado(
   data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
@@ -717,7 +717,7 @@ mcda_tornado(
 If you use this package in your research, please cite:
 
 ```{r citation, eval=FALSE}
-citation("brpubVJCE")
+citation("valueJudgementCE")
 ```
 
 ## License

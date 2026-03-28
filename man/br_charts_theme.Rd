@@ -10,6 +10,7 @@ br_charts_theme(
   base_stroke = 1,
   margin = 1,
   get_fonts = control_fonts,
+  get_typography = publication_typography,
   get_colors = colfun()[["control_palettes"]],
   axis_text_x = ggplot2::element_text(colour = black),
   axis_line = ggplot2::element_line(colour = black, size = stroke_size),
@@ -37,6 +38,8 @@ br_charts_theme(
 top, right, bottom, and left margins)}
 
 \item{get_fonts}{fonts}
+
+\item{get_typography}{typography helper used to derive publication text sizes}
 
 \item{get_colors}{colors}
 

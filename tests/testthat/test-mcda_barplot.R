@@ -1,5 +1,5 @@
 library(testthat)
-library(brpubVJCE)
+library(valueJudgementCE)
 
 # Create sample data for MCDA barplot tests
 create_sample_mcda_data <- function() {
@@ -29,7 +29,7 @@ create_sample_clinical_scales <- function() {
 # Test mcda_data dataset structure
 test_that("mcda_data has correct structure", {
   # Load the mcda_data
-  data("mcda_data", package = "brpubVJCE")
+  data("mcda_data", package = "valueJudgementCE")
 
   # Check that result is a data frame
   expect_true(is.data.frame(mcda_data))
@@ -383,7 +383,7 @@ test_that(paste(
 # Integration tests with actual effects_table data
 test_that("Integration: Full workflow with effects_table", {
   # Step 1: Load MCDA data
-  data("mcda_data", package = "brpubVJCE")
+  data("mcda_data", package = "valueJudgementCE")
   expect_true(is.data.frame(mcda_data))
 
   # Step 2: Get available criteria (exclude Treatment and Study columns)
