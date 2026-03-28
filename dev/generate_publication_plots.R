@@ -1,4 +1,4 @@
-# Generate publication plots for brpubVJCE package WITH CONSISTENT FONT SCALING
+# Generate publication plots for valueJudgementCE package WITH CONSISTENT FONT SCALING
 # This script creates PNG files with properly scaled fonts based on figure dimensions
 devtools::load_all()
 library(devtools)
@@ -33,13 +33,116 @@ old_files <- c(
   "inst/img/other/value_function_benefit_example.png",
   "inst/img/other/value_function_risk_example.png",
   "inst/img/other/value_function_comparison_benefit_risk.png",
-  "inst/img/other/value_function_multiple_criteria.png"
+  "inst/img/other/value_function_multiple_criteria.png",
+  "inst/img/pub/image01_dotforest.tiff",
+  "inst/img/pub/image02_tradeoff.tiff",
+  "inst/img/pub/image03_correlogram.tiff",
+  "inst/img/pub/image04_scatter.tiff",
+  "inst/img/pub/image05_divergent_stacked_barchart.tiff",
+  "inst/img/pub/image06_cumulative_excess.tiff",
+  "inst/img/pub/image07_value_function_types_comparison.tiff",
+  "inst/img/pub/image08_barplot_mcda_comparison_drug_a.tiff",
+  "inst/img/pub/image09_mcda_waterfall_all_drugs.tiff",
+  "inst/img/pub/image10_mcda_benefit_risk_map.tiff",
+  "inst/img/pub/image11_tornado.tiff"
 )
 
 for (f in old_files) {
   if (file.exists(f)) {
     file.remove(f)
     message("Removed old file: ", f)
+  }
+}
+
+# ============================================================================
+# JOURNAL EXPORT CONFIGURATION
+# ============================================================================
+# Drug Safety / Springer targets:
+# - single column: 84 mm
+# - double column: 174 mm
+# - final printed text target: ~7-9 pt
+
+journal_single_width_mm <- 84
+journal_double_width_mm <- 174
+journal_reference_height_mm <- 120
+
+mm_to_in <- function(mm) {
+  mm / 25.4
+}
+
+journal_dims <- function(layout = c("single", "double"), original_width_in, original_height_in) {
+  layout <- match.arg(layout)
+  target_width_mm <- if (layout == "single") {
+    journal_single_width_mm
+  } else {
+    journal_double_width_mm
+  }
+  target_width_in <- mm_to_in(target_width_mm)
+
+  list(
+    width_mm = target_width_mm,
+    height_mm = target_width_mm * (original_height_in / original_width_in),
+    width_in = target_width_in,
+    height_in = target_width_in * (original_height_in / original_width_in)
+  )
+}
+
+journal_fonts <- function(
+  layout = c("single", "double"),
+  original_width_in,
+  original_height_in,
+  ncol = 1,
+  nrow = 1,
+  target_font_size = 8
+) {
+  dims <- journal_dims(layout, original_width_in, original_height_in)
+  font_config(
+    width = dims$width_in,
+    height = dims$height_in,
+    ncol = ncol,
+    nrow = nrow,
+    reference_font_size = target_font_size,
+    reference_width = mm_to_in(journal_double_width_mm),
+    reference_height = mm_to_in(journal_reference_height_mm),
+    min_font_size = 7,
+    max_font_size = 9
+  )
+}
+
+save_pub_plot <- function(
+  save_name,
+  inplot,
+  layout = c("single", "double"),
+  original_width_in,
+  original_height_in,
+  width_mm = NULL,
+  height_mm = NULL,
+  dpi = 600
+) {
+  dims <- journal_dims(layout, original_width_in, original_height_in)
+  out_width_mm <- if (is.null(width_mm)) dims$width_mm else width_mm
+  out_height_mm <- if (is.null(height_mm)) dims$height_mm else height_mm
+  ggsave_custom(
+    save_name = save_name,
+    imgpath = "./",
+    inplot = inplot,
+    wdth = out_width_mm,
+    hght = out_height_mm,
+    unts = "mm",
+    dpi = dpi
+  )
+
+  png_name <- sub("\\.[Tt][Ii][Ff]{1,2}$", ".png", save_name)
+  if (!identical(png_name, save_name)) {
+    ggsave_custom(
+      save_name = png_name,
+      imgpath = "./",
+      inplot = inplot,
+      wdth = out_width_mm,
+      hght = out_height_mm,
+      unts = "mm",
+      dpi = dpi
+    )
   }
 }
 
@@ -57,22 +160,28 @@ for (f in old_files) {
 # Scatter plot (7×7)
 data(scatterplot)
 outcome <- c("Benefit", "Risk")
-fonts_7x7 <- font_config(7, 7)
-scatter_plot_fig <- scatter_plot(scatterplot, outcome, mab = 0.2, mar = 0.6, base_font_size = fonts_7x7$p)
-ggsave_custom(
-  "inst/img/pub/image04_scatter.png",
-  imgpath = "./",
-  inplot = scatter_plot_fig,
-  wdth = 7,
-  hght = 7,
-  unts = "in",
-  dpi = 600
+fonts_7x7 <- journal_fonts("double", 7, 7)
+font_image03 <- max(11, fonts_7x7$p)
+scatter_plot_fig <- scatter_plot(
+  scatterplot,
+  outcome,
+  mab = 0.2,
+  mar = 0.6,
+  base_font_size = fonts_7x7$p
+)
+save_pub_plot(
+  "inst/img/pub/image04_scatter.tiff",
+  scatter_plot_fig,
+  layout = "double",
+  original_width_in = 7,
+  original_height_in = 7
 )
 
 # Forest dot plot (7×5)
 data(effects_table)
 prepared_data <- prepare_forest_dot_data(effects_table)
-fonts_7x5 <- font_config(7, 5)
+fonts_7x5 <- journal_fonts("double", 7, 5)
+font_image01 <- max(10, fonts_7x5$p)
 dotforest_4pub <- create_forest_dot_plot(
   prepared_data,
   outcomes_with_thresholds = list(
@@ -81,24 +190,23 @@ dotforest_4pub <- create_forest_dot_plot(
     "Risk 1" = -0.05,
     "Risk 2" = -0.07
   ),
-  base_font_size = fonts_7x5$p
+  base_font_size = font_image01
 )
 
-ggsave_custom(
-  "inst/img/pub/image01_dotforest.png",
-  imgpath = "./",
-  inplot = dotforest_4pub,
-  wdth = 7,
-  hght = 5,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image01_dotforest.tiff",
+  dotforest_4pub,
+  layout = "double",
+  original_width_in = 7,
+  original_height_in = 5
 )
 
 # Trade-off plot (5×5)
 effects_table_filtered <- effects_table %>%
   filter(Outcome %in% c("Risk 1", "Benefit 1"))
 
-fonts_5x5 <- font_config(5, 5)
+fonts_5x5 <- journal_fonts("double", 5, 5)
+font_image02 <- max(10, fonts_5x5$p)
 tradeoff <- generate_tradeoff_plot(
   data = effects_table_filtered,
   filter = "None",
@@ -123,17 +231,15 @@ tradeoff <- generate_tradeoff_plot(
   lower_x = 0, upper_x = 0.5,
   lower_y = 0, upper_y = 0.5,
   chartcolors = colfun()$fig7_colors,
-  base_font_size = fonts_5x5$p
+  base_font_size = font_image02
 )
 
-ggsave_custom(
-  "inst/img/pub/image02_tradeoff.png",
-  imgpath = "./",
-  inplot = tradeoff,
-  wdth = 5,
-  hght = 5,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image02_tradeoff.tiff",
+  tradeoff,
+  layout = "double",
+  original_width_in = 5,
+  original_height_in = 5
 )
 
 # Combined survival plot (7×7)
@@ -151,30 +257,26 @@ cumulative_excess_plot <- gensurv_combined(
   base_font_size = fonts_7x7$p
 )
 
-ggsave_custom(
-  "inst/img/pub/image06_cumulative_excess.png",
-  imgpath = "./",
-  inplot = cumulative_excess_plot,
-  wdth = 7,
-  hght = 7,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image06_cumulative_excess.tiff",
+  cumulative_excess_plot,
+  layout = "double",
+  original_width_in = 7,
+  original_height_in = 7
 )
 
 # Correlogram (7×7)
-ggsave_custom(
-  "inst/img/pub/image03_correlogram.png",
-  imgpath = "./",
-  inplot = create_correlogram(corr2, base_font_size = fonts_7x7$p),
-  wdth = 7,
-  hght = 7,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image03_correlogram.tiff",
+  create_correlogram(corr2, base_font_size = font_image03),
+  layout = "double",
+  original_width_in = 7,
+  original_height_in = 7
 )
 
 # Stacked bar chart and divergent stacked bar chart combined (14×9)
 data(comp_outcome)
-fonts_14x9 <- font_config(14, 9)
+fonts_14x9 <- journal_fonts("double", 14, 9, ncol = 2)
 
 stacked_bar_fig <- stacked_barchart(
   data = comp_outcome,
@@ -244,14 +346,13 @@ combined_bar_charts <- plot_grid(
   rel_heights = c(0.2, 1)
 )
 
-ggsave_custom(
-  "inst/img/pub/image05_divergent_stacked_barchart.png",
-  imgpath = "./",
-  inplot = combined_bar_charts,
-  wdth = 14,
-  hght = 9,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image05_divergent_stacked_barchart.tiff",
+  combined_bar_charts,
+  layout = "double",
+  original_width_in = 14,
+  original_height_in = 9,
+  height_mm = 145
 )
 
 # ============================================================================
@@ -365,7 +466,8 @@ vft_benefit_range <- 100
 vft_risk_range <- 100
 vft_height <- 5
 vft_width <- vft_height * (vft_benefit_range + vft_risk_range) / 100
-fonts_vft <- font_config(vft_width, vft_height)
+fonts_vft <- journal_fonts("double", vft_width, vft_height, ncol = 2)
+font_image07 <- max(10, fonts_vft$p)
 value_func_types_comparison <- compare_value_function_types(
   benefit_name = "Efficacy",
   benefit_min = 0,
@@ -378,17 +480,15 @@ value_func_types_comparison <- compare_value_function_types(
   power = 2,
   show_titles = FALSE,
   show_legend = TRUE,
-  base_font_size = fonts_vft$p
+  base_font_size = font_image07
 )
 
-ggsave_custom(
-  "inst/img/pub/image07_value_function_types_comparison.png",
-  imgpath = "./",
-  inplot = value_func_types_comparison,
-  wdth = vft_width,
-  hght = vft_height,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image07_value_function_types_comparison.tiff",
+  value_func_types_comparison,
+  layout = "double",
+  original_width_in = vft_width,
+  original_height_in = vft_height
 )
 
 # ============================================================================
@@ -401,7 +501,7 @@ weights <- c(
 )
 
 # MCDA Comparison Plots (16×6)
-fonts_16x6 <- font_config(16, 6)
+fonts_16x6 <- journal_fonts("double", 16, 6, ncol = 2)
 
 barplot_comp_a <- create_mcda_barplot_comparison(
   data = mcda_data,
@@ -414,14 +514,12 @@ barplot_comp_a <- create_mcda_barplot_comparison(
   base_font_size = fonts_16x6$p
 )
 
-ggsave_custom(
-  "inst/img/pub/image08_barplot_mcda_comparison_drug_a.png",
-  imgpath = "./",
-  inplot = barplot_comp_a,
-  wdth = 16,
-  hght = 6,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image08_barplot_mcda_comparison_drug_a.tiff",
+  barplot_comp_a,
+  layout = "double",
+  original_width_in = 16,
+  original_height_in = 6
 )
 
 # Similar for drugs B, C, D...
@@ -499,18 +597,16 @@ waterfall_all <- create_mcda_waterfall(
   base_font_size = fonts_16x6$p
 )
 
-ggsave_custom(
-  "inst/img/pub/image09_mcda_waterfall_all_drugs.png",
-  imgpath = "./",
-  inplot = waterfall_all,
-  wdth = 16,
-  hght = 6,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image09_mcda_waterfall_all_drugs.tiff",
+  waterfall_all,
+  layout = "double",
+  original_width_in = 16,
+  original_height_in = 6
 )
 
 # MCDA Benefit-Risk Map (8×8)
-fonts_8x8 <- font_config(8, 8)
+fonts_8x8 <- journal_fonts("double", 8, 8)
 brmap_all <- create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
@@ -520,21 +616,19 @@ brmap_all <- create_mcda_brmap(
   clinical_scales = clinical_scales,
   show_frontier = TRUE,
   show_labels = TRUE,
-  base_font_size = fonts_8x8$p
+  base_font_size = max(10, fonts_8x8$p)
 )
 
-ggsave_custom(
-  "inst/img/pub/image10_mcda_benefit_risk_map.png",
-  imgpath = "./",
-  inplot = brmap_all,
-  wdth = 8,
-  hght = 8,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image10_mcda_benefit_risk_map.tiff",
+  brmap_all,
+  layout = "double",
+  original_width_in = 8,
+  original_height_in = 8
 )
 
 # MCDA Tornado Plots (10×6)
-fonts_10x6 <- font_config(10, 6)
+fonts_10x6 <- journal_fonts("double", 10, 6)
 
 tornado_a <- mcda_tornado(
   data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
@@ -545,14 +639,12 @@ tornado_a <- mcda_tornado(
   base_font_size = fonts_10x6$p
 )
 
-ggsave_custom(
-  "inst/img/pub/image11_tornado.png",
-  imgpath = "./",
-  inplot = tornado_a,
-  wdth = 10,
-  hght = 6,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image11_tornado.tiff",
+  tornado_a,
+  layout = "double",
+  original_width_in = 10,
+  original_height_in = 6
 )
 
 # Similar for drugs B, C, D...
@@ -613,7 +705,7 @@ ggsave_custom(
   dpi = 600
 )
 
-message("All publication plots generated with consistent font scaling!")
+message("All publication plots generated with journal-ready widths and consistent font scaling.")
 message("\nFont sizes used:")
 message("  5×4 plots:  ", round(fonts_5x4$p, 1), "pt")
 message("  5×5 plots:  ", round(fonts_5x5$p, 1), "pt")

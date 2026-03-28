@@ -7,6 +7,6 @@
 # * https://testthat.r-lib.org/articles/special-files.html
 
 library(testthat)
-library(brpubVJCE)
+library(valueJudgementCE)
 
-test_check("brpubVJCE")
+test_check("valueJudgementCE")
