@@ -271,9 +271,10 @@ Always perform sensitivity analysis:
 
 ## Implementation Note
 
-The current `brpubVJCE` package implements **linear value functions** by
-default, which is consistent with FDA/EMA guidance and provides a
-transparent, conservative approach to benefit-risk assessment.
+The current `valueJudgementCE` package implements **linear value
+functions** by default, which is consistent with FDA/EMA guidance and
+provides a transparent, conservative approach to benefit-risk
+assessment.
 
 If you need to implement alternative value functions for specific
 applications, the examples in this vignette provide the mathematical
@@ -284,8 +285,8 @@ non-linear choices.
 
 ## Package Functions for Value Function Visualization
 
-The `brpubVJCE` package now includes dedicated functions for visualizing
-linear value functions used in MCDA analyses:
+The `valueJudgementCE` package now includes dedicated functions for
+visualizing linear value functions used in MCDA analyses:
 
 ### Single Value Function Plot
 

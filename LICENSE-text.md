@@ -1,4 +1,4 @@
 # License
 
     YEAR: 2025
-    COPYRIGHT HOLDER: brpubVJCE authors
+    COPYRIGHT HOLDER: valueJudgementCE authors

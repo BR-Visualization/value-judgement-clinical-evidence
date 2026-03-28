@@ -102,6 +102,10 @@
   : Prepare data for the tradeoff plot
 - [`prepare_tradeoff_plot()`](https://pkgdown.r-lib.org/reference/prepare_tradeoff_plot.md)
   : Prepare trade-off plot
+- [`publication_geom_text_size()`](https://pkgdown.r-lib.org/reference/publication_geom_text_size.md)
+  : Convert points to ggplot geom text size units
+- [`publication_typography()`](https://pkgdown.r-lib.org/reference/publication_typography.md)
+  : Publication Typography Profile
 - [`relmax()`](https://pkgdown.r-lib.org/reference/relmax.md) : Derive
   maximum boundary value for axis Derive boundary value to include all
   values

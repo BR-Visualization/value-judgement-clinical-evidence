@@ -1,9 +1,10 @@
-# Contributing to brpubVJCE
+# Contributing to valueJudgementCE
 
-This outlines how to propose a change to brpubVJCE. For a detailed
-discussion on contributing to this and other tidyverse packages, please
-see the [development contributing guide](https://rstd.io/tidy-contrib)
-and our [code review principles](https://code-review.tidyverse.org/).
+This outlines how to propose a change to valueJudgementCE. For a
+detailed discussion on contributing to this and other tidyverse
+packages, please see the [development contributing
+guide](https://rstd.io/tidy-contrib) and our [code review
+principles](https://code-review.tidyverse.org/).
 
 ## Fixing typos
 
@@ -29,7 +30,7 @@ advice.
 
 - Fork the package and clone onto your computer. If you haven’t done
   this before, we recommend using
-  `usethis::create_from_github("BR-Visualization/brpubVJCE", fork = TRUE)`.
+  `usethis::create_from_github("BR-Visualization/value-judgement-clinical-evidence", fork = TRUE)`.
 
 - Install all development dependencies with
   `devtools::install_dev_deps()`, and then make sure the package passes
@@ -67,6 +68,7 @@ advice.
 
 ## Code of Conduct
 
-Please note that the brpubVJCE project is released with a [Contributor
-Code of Conduct](https://pkgdown.r-lib.org/CODE_OF_CONDUCT.md). By
-contributing to this project you agree to abide by its terms.
+Please note that the valueJudgementCE project is released with a
+[Contributor Code of
+Conduct](https://pkgdown.r-lib.org/CODE_OF_CONDUCT.md). By contributing
+to this project you agree to abide by its terms.

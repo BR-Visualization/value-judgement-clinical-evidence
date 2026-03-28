@@ -2,16 +2,12 @@
 <url><loc>https://pkgdown.r-lib.org/404.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/CODE_OF_CONDUCT.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/CONTRIBUTING.html</loc></url>
-<url><loc>https://pkgdown.r-lib.org/DEV_TOOLS.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/LICENSE-text.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/LICENSE.html</loc></url>
-<url><loc>https://pkgdown.r-lib.org/LINTR_FIXES_SUMMARY.html</loc></url>
-<url><loc>https://pkgdown.r-lib.org/PRECOMMIT_SETUP.html</loc></url>
-<url><loc>https://pkgdown.r-lib.org/QUICK_START_LINTR.html</loc></url>
-<url><loc>https://pkgdown.r-lib.org/articles/brpubVJCE.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/articles/index.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/articles/mcda-value-function-types.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/articles/mcda-value-functions.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/articles/valueJudgementCE.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/authors.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/index.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/news/index.html</loc></url>
@@ -63,6 +59,8 @@
 <url><loc>https://pkgdown.r-lib.org/reference/prepare_forest_dot_data.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/prepare_tradeoff_data.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/prepare_tradeoff_plot.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/publication_geom_text_size.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/publication_typography.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/relmax.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/relmin.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/scatter_plot.html</loc></url>

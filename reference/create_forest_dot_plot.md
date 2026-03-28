@@ -90,8 +90,6 @@ ggsave_custom("dotforest.png", imgpath = "./", inplot = dotforest, dpi = 300)
 create_forest_dot_plot(prepared_data,
   outcomes_with_thresholds = c("Benefit 1", "Benefit 2")
 )
-#> `height` was translated to `width`.
-#> `height` was translated to `width`.
 
 
 # Custom thresholds with automatic direction detection
@@ -118,8 +116,6 @@ create_forest_dot_plot(prepared_data,
     "Risk 1" = list(threshold = -0.05, direction = "less")
   )
 )
-#> `height` was translated to `width`.
-#> `height` was translated to `width`.
 
 
 # AXIS REVERSAL: Benefit outcomes with direction "less"
@@ -133,8 +129,6 @@ create_forest_dot_plot(prepared_data,
     "Benefit 2" = list(threshold = -0.10, direction = "less")
   )
 )
-#> `height` was translated to `width`.
-#> `height` was translated to `width`.
 
 
 # Example: Lower cholesterol levels are better (benefit with negative

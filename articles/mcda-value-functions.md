@@ -1,7 +1,7 @@
 # MCDA Clinical Threshold-Based Normalization
 
 ``` r
-library(brpubVJCE)
+library(valueJudgementCE)
 ```
 
 ## Overview

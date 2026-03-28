@@ -1,6 +1,6 @@
 # MIT License
 
-Copyright (c) 2025 brpubVJCE authors
+Copyright (c) 2025 valueJudgementCE authors
 
 Permission is hereby granted, free of charge, to any person obtaining a
 copy of this software and associated documentation files (the

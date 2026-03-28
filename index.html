@@ -5,7 +5,7 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<title>Charts to Integrate Value Judgement with Clinical Evidence • brpubVJCE</title>
+<title>Charts to Integrate Value Judgement with Clinical Evidence • valueJudgementCE</title>
 <script src="deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <link href="deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
 <script src="deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
@@ -20,7 +20,7 @@
 
     <nav class="navbar navbar-expand-lg fixed-top bg-light" data-bs-theme="light" aria-label="Site navigation"><div class="container">
 
-    <a class="navbar-brand me-2" href="index.html">brpubVJCE</a>
+    <a class="navbar-brand me-2" href="index.html">valueJudgementCE</a>
 
     <small class="nav-text text-muted me-auto" data-bs-toggle="tooltip" data-bs-placement="bottom" title="">0.0.1</small>
 
@@ -31,7 +31,7 @@
 
     <div id="navbar" class="collapse navbar-collapse ms-3">
       <ul class="navbar-nav me-auto">
-<li class="nav-item"><a class="nav-link" href="articles/brpubVJCE.html">Get started</a></li>
+<li class="nav-item"><a class="nav-link" href="articles/valueJudgementCE.html">Get started</a></li>
 <li class="nav-item"><a class="nav-link" href="reference/index.html">Reference</a></li>
 <li class="nav-item dropdown">
   <button class="nav-link dropdown-toggle" type="button" id="dropdown-articles" data-bs-toggle="dropdown" aria-expanded="false" aria-haspopup="true">Articles</button>
@@ -54,11 +54,11 @@
 </nav><div class="container template-home">
 <div class="row">
   <main id="main" class="col-md-9"><div class="section level1">
-<div class="page-header"><h1 id="brpubvjce">brpubVJCE<a class="anchor" aria-label="anchor" href="#brpubvjce"></a>
+<div class="page-header"><h1 id="valuejudgementce">valueJudgementCE<a class="anchor" aria-label="anchor" href="#valuejudgementce"></a>
 </h1></div>
 <!-- badges: start -->
 
-<p>The goal of brpubVJCE is to generate benefit-risk visualizations for the publication “How to visually integrate value judgment with clinical evidence”.</p>
+<p>The goal of valueJudgementCE is to generate benefit-risk visualizations for the publication “How to visually integrate value judgment with clinical evidence”.</p>
 </div>
 <div class="section level1">
 <h1 id="table-of-contents">Table of Contents<a class="anchor" aria-label="anchor" href="#table-of-contents"></a>
@@ -80,14 +80,14 @@
 <div class="section level2">
 <h2 id="installation">Installation<a class="anchor" aria-label="anchor" href="#installation"></a>
 </h2>
-<p>You can install the development version of brpubVJCE from <a href="https://github.com/" class="external-link">GitHub</a> using the following methods:</p>
+<p>You can install the development version of valueJudgementCE from <a href="https://github.com/" class="external-link">GitHub</a> using the following methods:</p>
 <div class="section level3">
 <h3 id="recommended-installation">Recommended Installation<a class="anchor" aria-label="anchor" href="#recommended-installation"></a>
 </h3>
 <div class="sourceCode" id="cb1"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install using pak (recommended)</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"pak"</span><span class="op">)</span></span>
-<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"BR-Visualization/brpubVJCE"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">pak</span><span class="fu">::</span><span class="fu"><a href="https://pak.r-lib.org/reference/pak.html" class="external-link">pak</a></span><span class="op">(</span><span class="st">"BR-Visualization/value-judgement-clinical-evidence"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
 <h3 id="alternative-installation">Alternative Installation<a class="anchor" aria-label="anchor" href="#alternative-installation"></a>
@@ -95,7 +95,7 @@
 <div class="sourceCode" id="cb2"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Install using remotes</span></span>
 <span><span class="fu"><a href="https://rdrr.io/r/utils/install.packages.html" class="external-link">install.packages</a></span><span class="op">(</span><span class="st">"remotes"</span><span class="op">)</span></span>
-<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"BR-Visualization/brpubVJCE"</span><span class="op">)</span></span></code></pre></div>
+<span><span class="fu">remotes</span><span class="fu">::</span><span class="fu">install_github</span><span class="op">(</span><span class="st">"BR-Visualization/value-judgement-clinical-evidence"</span><span class="op">)</span></span></code></pre></div>
 </div>
 </div>
 <div class="section level2">
@@ -107,16 +107,16 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/create_forest_dot_plot.html">?create_forest_dot_plot</a></code> or <code><a href="reference/prepare_forest_dot_data.html">?prepare_forest_dot_data</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb3"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="co"># Load the package and create the plot</span></span>
-<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="co"># Prepare the data and create the visualization</span></span>
 <span><span class="va">result_plot</span> <span class="op">&lt;-</span> <span class="fu"><a href="reference/create_forest_dot_plot.html">create_forest_dot_plot</a></span><span class="op">(</span></span>
@@ -136,15 +136,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/generate_tradeoff_plot.html">?generate_tradeoff_plot</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb4"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">effects_table_filtered</span> <span class="op">&lt;-</span> <span class="va">effects_table</span> <span class="op">|&gt;</span></span>
 <span>  <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Outcome</span> <span class="op"><a href="https://rdrr.io/r/base/match.html" class="external-link">%in%</a></span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Benefit 1"</span><span class="op">)</span><span class="op">)</span></span>
@@ -185,15 +185,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/create_correlogram.html">?create_correlogram</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb5"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/create_correlogram.html">create_correlogram</a></span><span class="op">(</span><span class="va">corr2</span><span class="op">)</span></span></code></pre></div>
 </details>
@@ -207,15 +207,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/scatter_plot.html">?scatter_plot</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="va">outcome</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit"</span>, <span class="st">"Risk"</span><span class="op">)</span></span>
 <span><span class="fu"><a href="reference/scatter_plot.html">scatter_plot</a></span><span class="op">(</span><span class="va">scatterplot</span>, <span class="va">outcome</span>, mab <span class="op">=</span> <span class="fl">0.2</span>, mar <span class="op">=</span> <span class="fl">0.6</span><span class="op">)</span></span></code></pre></div>
@@ -230,15 +230,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/divergent_stacked_barchart.html">?divergent_stacked_barchart</a></code> and <code><a href="reference/stacked_barchart.html">?stacked_barchart</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://wilkelab.org/cowplot/" class="external-link">cowplot</a></span><span class="op">)</span></span>
 <span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://gtable.r-lib.org" class="external-link">gtable</a></span><span class="op">)</span></span>
 <span></span>
@@ -300,15 +300,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/gensurv_combined.html">?gensurv_combined</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb8"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/gensurv_combined.html">gensurv_combined</a></span><span class="op">(</span></span>
 <span>  df_plot <span class="op">=</span> <span class="va">cumexcess</span>, subjects_pt <span class="op">=</span> <span class="fl">100</span>, visits_pt <span class="op">=</span> <span class="fl">6</span>,</span>
@@ -332,15 +332,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/compare_value_function_types.html">?compare_value_function_types</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb9"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/compare_value_function_types.html">compare_value_function_types</a></span><span class="op">(</span></span>
 <span>  benefit_name <span class="op">=</span> <span class="st">"Efficacy"</span>,</span>
@@ -366,15 +366,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/create_mcda_barplot_comparison.html">?create_mcda_barplot_comparison</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb10"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/create_mcda_barplot_comparison.html">create_mcda_barplot_comparison</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
@@ -396,15 +396,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/create_mcda_waterfall.html">?create_mcda_waterfall</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb11"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/create_mcda_waterfall.html">create_mcda_waterfall</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
@@ -425,15 +425,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/create_mcda_brmap.html">?create_mcda_brmap</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb12"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/create_mcda_brmap.html">create_mcda_brmap</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
@@ -456,15 +456,15 @@ Click to learn more
 </summary><p><strong>Getting Help</strong></p>
 <ul>
 <li>Documentation: Use <code><a href="reference/mcda_tornado.html">?mcda_tornado</a></code> for detailed function help</li>
-<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/brpubVJCE/issues" class="external-link">GitHub Issues</a><br>
+<li>Issues: Report bugs at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues" class="external-link">GitHub Issues</a><br>
 </li>
-<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/brpubVJCE/discussions" class="external-link">GitHub Discussions</a>
+<li>Discussions: Join discussions at <a href="https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions" class="external-link">GitHub Discussions</a>
 </li>
 <li>Contact: Reach out to the package maintainers via GitHub</li>
 </ul></details><details><summary>
 Click to view sample code
 </summary><div class="sourceCode" id="cb13"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/brpubVJCE/" class="external-link">brpubVJCE</a></span><span class="op">)</span></span>
+<code class="sourceCode R"><span><span class="kw"><a href="https://rdrr.io/r/base/library.html" class="external-link">library</a></span><span class="op">(</span><span class="va"><a href="https://br-visualization.github.io/value-judgement-clinical-evidence/" class="external-link">valueJudgementCE</a></span><span class="op">)</span></span>
 <span></span>
 <span><span class="fu"><a href="reference/mcda_tornado.html">mcda_tornado</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Study</span> <span class="op">==</span> <span class="st">"Study 1"</span><span class="op">)</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/select.html" class="external-link">select</a></span><span class="op">(</span><span class="op">-</span><span class="va">Study</span><span class="op">)</span>,</span>
@@ -480,7 +480,7 @@ Click to view sample code
 </h2>
 <p>If you use this package in your research, please cite:</p>
 <div class="sourceCode" id="cb14"><pre class="downlit sourceCode r">
-<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"brpubVJCE"</span><span class="op">)</span></span></code></pre></div>
+<code class="sourceCode R"><span><span class="fu"><a href="https://rdrr.io/r/utils/citation.html" class="external-link">citation</a></span><span class="op">(</span><span class="st">"valueJudgementCE"</span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level2">
 <h2 id="license">License<a class="anchor" aria-label="anchor" href="#license"></a>
@@ -510,7 +510,7 @@ Click to view sample code
 <div class="citation">
 <h2 data-toc-skip>Citation</h2>
 <ul class="list-unstyled">
-<li><a href="authors.html#citation">Citing brpubVJCE</a></li>
+<li><a href="authors.html#citation">Citing valueJudgementCE</a></li>
 </ul>
 </div>
 
@@ -528,7 +528,7 @@ Click to view sample code
 <div class="dev-status">
 <h2 data-toc-skip>Dev status</h2>
 <ul class="list-unstyled">
-<li><a href="https://app.codecov.io/gh/BR-Visualization/brpubVJCE" class="external-link"><img src="https://codecov.io/gh/BR-Visualization/brpubVJCE/graph/badge.svg" alt="Codecov test coverage"></a></li>
+<li><a href="https://app.codecov.io/gh/BR-Visualization/value-judgement-clinical-evidence" class="external-link"><img src="https://codecov.io/gh/BR-Visualization/value-judgement-clinical-evidence/graph/badge.svg" alt="Codecov test coverage"></a></li>
 <li><a href="https://lifecycle.r-lib.org/articles/stages.html#experimental" class="external-link"><img src="https://img.shields.io/badge/lifecycle-experimental-orange.svg" alt="Lifecycle: experimental"></a></li>
 </ul>
 </div>
