@@ -38,7 +38,6 @@ VignetteBuilder: knitr
 Imports:
     dplyr,
     ggExtra,
-    ggplot2,
     ggtext,
     patchwork,
     rlang,
@@ -62,6 +61,7 @@ Imports:
     gridExtra,
     tidyr
 Depends:
-    R (>= 4.5.0)
+    R (>= 4.5.0),
+    ggplot2
 LazyData: true
 Config/testthat/edition: 3

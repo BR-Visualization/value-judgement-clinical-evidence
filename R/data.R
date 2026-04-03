@@ -102,6 +102,47 @@ NULL
 #'   \code{\link{create_mcda_walkthrough}}, \code{\link{create_mcda_waterfall}}
 NULL
 
+#' Example clinical scales for MCDA normalization
+#'
+#' @name clinical_scales
+#' @title Clinical Reference Scales for MCDA
+#' @description A named list of clinical reference levels used to normalize
+#'   each criterion in the \code{\link{mcda_data}} example dataset. Each
+#'   element specifies the minimum value, maximum value, and direction of
+#'   benefit for the corresponding criterion.
+#' @usage data(clinical_scales)
+#' @format A named list with 5 elements (one per criterion):
+#'   \describe{
+#'     \item{Benefit 1}{list(min = 0, max = 1,   direction = "increasing")}
+#'     \item{Benefit 2}{list(min = 0, max = 100, direction = "decreasing")}
+#'     \item{Benefit 3}{list(min = 0, max = 100, direction = "increasing")}
+#'     \item{Risk 1}{list(min = 0, max = 0.5, direction = "decreasing")}
+#'     \item{Risk 2}{list(min = 0, max = 0.3, direction = "decreasing")}
+#'   }
+#' @seealso \code{\link{mcda_data}}, \code{\link{weights}},
+#'   \code{\link{create_mcda_barplot_comparison}}
+"clinical_scales"
+
+#' Example criterion weights for MCDA scoring
+#'
+#' @name weights
+#' @title Criterion Weights for MCDA
+#' @description A named numeric vector of stakeholder-elicited weights for
+#'   each criterion in the \code{\link{mcda_data}} example dataset. Weights
+#'   sum to 1.
+#' @usage data(weights)
+#' @format A named numeric vector with 5 elements:
+#'   \describe{
+#'     \item{Benefit 1}{0.30}
+#'     \item{Benefit 2}{0.20}
+#'     \item{Benefit 3}{0.10}
+#'     \item{Risk 1}{0.30}
+#'     \item{Risk 2}{0.10}
+#'   }
+#' @seealso \code{\link{mcda_data}}, \code{\link{clinical_scales}},
+#'   \code{\link{create_mcda_barplot_comparison}}
+"weights"
+
 #' Example scatterplot data used for Figure 11
 #'
 #' @name scatterplot

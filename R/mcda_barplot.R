@@ -121,10 +121,19 @@ create_mcda_barplot_comparison <- function(
   }
 
   # Check if clinical scales are provided
-  if (is.null(clinical_scales)) {
+  if (is.null(clinical_scales) || !is.list(clinical_scales)) {
     stop(
-      "Clinical scales must be provided. Please define clinical",
-      "reference levels for normalization."
+      "`clinical_scales` must be a named list defining clinical reference levels. ",
+      "Ensure you have defined it, or load the example via data(clinical_scales)."
+    )
+  }
+
+  # Validate weights if provided
+  if (!is.null(weights) && !is.numeric(weights)) {
+    stop(
+      "`weights` must be a named numeric vector (e.g., c(`Benefit 1` = 0.3, ...)). ",
+      "The name `weights` conflicts with a base R function — ensure you have defined ",
+      "your own weights object, or load the example via data(weights)."
     )
   }
 

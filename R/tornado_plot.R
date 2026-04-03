@@ -80,6 +80,19 @@ mcda_tornado <- function(
 ) {
   typography <- publication_typography(base_font_size = base_font_size)
 
+  if (!is.numeric(weights)) {
+    stop(
+      "`weights` must be a named numeric vector (e.g., c(`Benefit 1` = 0.3, ...)). ",
+      "The name `weights` conflicts with a base R function — ensure you have defined ",
+      "your own weights object, or load the example via data(weights)."
+    )
+  }
+  if (!is.list(clinical_scales)) {
+    stop(
+      "`clinical_scales` must be a named list. ",
+      "Ensure you have defined it, or load the example via data(clinical_scales)."
+    )
+  }
 
   df_brscore <- tidyr::pivot_longer(
     data,
