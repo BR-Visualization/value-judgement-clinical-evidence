@@ -161,18 +161,18 @@ scatter_plot <- function(
     scale_shape_manual(values = 17, name = NULL) +
     scale_y_continuous(limits = c(min1 - 0.1, max1 + 0.1)) +
     scale_x_continuous(limits = c(min1 - 0.1, max1 + 0.1)) +
-    geom_hline(yintercept = 0, size = 1) +
-    geom_vline(xintercept = 0, size = 1) +
-    geom_abline(intercept = 0, slope = 1, linetype = 2, size = 1) +
+    geom_hline(yintercept = 0, linewidth = 1) +
+    geom_vline(xintercept = 0, linewidth = 1) +
+    geom_abline(intercept = 0, slope = 1, linetype = 2, linewidth = 1) +
     geom_hline(
       yintercept = mar,
-      size = 1,
+      linewidth = 1,
       linetype = 2,
       colour = "darkorange3"
     ) +
     geom_vline(
       xintercept = mab,
-      size = 1,
+      linewidth = 1,
       linetype = 2,
       colour = "darkorange3"
     ) +

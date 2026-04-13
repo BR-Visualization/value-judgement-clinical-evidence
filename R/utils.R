@@ -447,7 +447,7 @@ br_charts_theme <- function(
 
     # 6 Facets & small multiples ==================
     # background of the title facets
-    strip.background = ggplot2::element_rect(fill = white, size = 0),
+    strip.background = ggplot2::element_rect(fill = white, linewidth = 0),
 
     # titles of the facets
     strip.text = ggplot2::element_text(

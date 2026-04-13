@@ -490,7 +490,7 @@ generate_tradeoff_plot <- function(
         aes(x = x_line, y = y_line),
         data = df_line,
         linetype = 1,
-        size = 1.2,
+        linewidth = 1.2,
         colour = "maroon4"
       ) +
       geom_ribbon(
@@ -545,7 +545,7 @@ generate_tradeoff_plot <- function(
           aes(x = x_curve, y = y_curve),
           data = df_curve,
           linetype = 1,
-          size = 1.2,
+          linewidth = 1.2,
           colour = "maroon4"
         ) +
         geom_point(
@@ -572,7 +572,7 @@ generate_tradeoff_plot <- function(
           data = df_curve,
           se = FALSE,
           linetype = 1,
-          size = 1.2,
+          linewidth = 1.2,
           colour = "maroon4"
         ) +
         geom_point(
@@ -601,7 +601,7 @@ generate_tradeoff_plot <- function(
         aes(x = mab, xend = mab, y = y_min, yend = y_max),
         linetype = 2,
         colour = "darkorange3",
-        size = 1.2
+        linewidth = 1.2
       )
   }
   if (!is.na(mar)) {
@@ -610,7 +610,7 @@ generate_tradeoff_plot <- function(
         aes(x = x_min, xend = x_max, y = mar, yend = mar),
         linetype = 2,
         colour = "darkorange3",
-        size = 1.2
+        linewidth = 1.2
       )
   }
 
@@ -620,23 +620,23 @@ generate_tradeoff_plot <- function(
       aes(x = x_min, xend = x_max, y = y_max, yend = y_max),
       linetype = 2,
       colour = "darkorange3",
-      size = 1.2
+      linewidth = 1.2
     ) +
     geom_segment(
       aes(x = x_max, xend = x_max, y = y_min, yend = y_max),
       linetype = 2,
       colour = "darkorange3",
-      size = 1.2
+      linewidth = 1.2
     ) +
     geom_segment(
       aes(x = x_min, xend = x_min, y = y_min, yend = y_max),
       linetype = 1,
-      size = 1
+      linewidth = 1
     ) +
     geom_segment(
       aes(x = x_min, xend = x_max, y = y_min, yend = y_min),
       linetype = 1,
-      size = 1
+      linewidth = 1
     )
 
   # labels
@@ -811,11 +811,11 @@ prepare_tradeoff_plot <- function(
     # plotting their respective confidence intervals
     myplot +
       geom_point(
-        aes_string(
-          x = "benefit",
-          y = "risk",
-          colour = "treatment",
-          shape = "treatment"
+        aes(
+          x = benefit,
+          y = risk,
+          colour = treatment,
+          shape = treatment
         ),
         data = df_br_status,
         size = 3,
@@ -829,11 +829,11 @@ prepare_tradeoff_plot <- function(
     # create a scatterplot given the risk/benefit metrics
     myplot +
       geom_point(
-        aes_string(
-          x = "benefit",
-          y = "risk",
-          colour = "treatment",
-          shape = "treatment"
+        aes(
+          x = benefit,
+          y = risk,
+          colour = treatment,
+          shape = treatment
         ),
         data = df_br_status,
         size = 3,
@@ -843,51 +843,51 @@ prepare_tradeoff_plot <- function(
       # add a segment to each point representing the confidence intervals for
       # metrics
       geom_segment(
-        aes_string(
-          x = "benefit_lowerCI",
-          xend = "benefit",
-          y = "risk",
-          yend = "risk",
-          colour = "treatment"
+        aes(
+          x = benefit_lowerCI,
+          xend = benefit,
+          y = risk,
+          yend = risk,
+          colour = treatment
         ),
         data = df_br_status,
-        size = 1,
+        linewidth = 1,
         show.legend = FALSE
       ) +
       geom_segment(
-        aes_string(
-          x = "benefit_upperCI",
-          xend = "benefit",
-          y = "risk",
-          yend = "risk",
-          colour = "treatment"
+        aes(
+          x = benefit_upperCI,
+          xend = benefit,
+          y = risk,
+          yend = risk,
+          colour = treatment
         ),
         data = df_br_status,
-        size = 1,
+        linewidth = 1,
         show.legend = FALSE
       ) +
       geom_segment(
-        aes_string(
-          x = "benefit",
-          xend = "benefit",
-          y = "risk_lowerCI",
-          yend = "risk",
-          colour = "treatment"
+        aes(
+          x = benefit,
+          xend = benefit,
+          y = risk_lowerCI,
+          yend = risk,
+          colour = treatment
         ),
         data = df_br_status,
-        size = 1,
+        linewidth = 1,
         show.legend = FALSE
       ) +
       geom_segment(
-        aes_string(
-          x = "benefit",
-          xend = "benefit",
-          y = "risk_upperCI",
-          yend = "risk",
-          colour = "treatment"
+        aes(
+          x = benefit,
+          xend = benefit,
+          y = risk_upperCI,
+          yend = risk,
+          colour = treatment
         ),
         data = df_br_status,
-        size = 1,
+        linewidth = 1,
         show.legend = FALSE
       ) +
       col_scale +

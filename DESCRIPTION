@@ -27,6 +27,7 @@ Authors@R:
 Description: This package supports the visual integration of clinical evidence and value judgments, as demonstrated in the related publication.
 URL: https://br-visualization.github.io/value-judgement-clinical-evidence/
 License: MIT + file LICENSE
+SystemRequirements: pandoc (>= 1.12.3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.3.3

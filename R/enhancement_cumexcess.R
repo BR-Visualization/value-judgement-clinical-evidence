@@ -241,13 +241,13 @@ gensurv_plot <- function(
       yintercept = mab,
       color = "#0571b0",
       linetype = "dashed",
-      size = 1
+      linewidth = 1
     ) +
     geom_hline(
       yintercept = mar,
       color = "#ca0020",
       linetype = "dashed",
-      size = 1
+      linewidth = 1
     ) +
     annotate(
       "text",
@@ -326,7 +326,7 @@ gensurv_plot <- function(
     geom_line(
       data = legend_data,
       aes(x = eventtime, y = diff, color = color_group),
-      size = 0,
+      linewidth = 0,
       alpha = 0
     ) +
     scale_color_manual(
@@ -412,7 +412,7 @@ gensurv_plot <- function(
       data = df_risk |>
         filter(diff * base_subjects <= mar),
       aes(x = eventtime, y = diff * base_subjects, color = "Risk_Acceptable"),
-      size = 0.5
+      linewidth = 0.5
     ) +
     geom_line(
       data = df_ben |>
@@ -422,19 +422,19 @@ gensurv_plot <- function(
         y = diff * base_subjects,
         color = "Benefit_Acceptable"
       ),
-      size = 0.5
+      linewidth = 0.5
     ) +
     geom_line(
       data = df_risk |>
         filter(diff * base_subjects > mar),
       aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"),
-      size = 0.5
+      linewidth = 0.5
     ) +
     geom_line(
       data = df_ben |>
         filter(diff * base_subjects < mab),
       aes(x = eventtime, y = diff * base_subjects, color = "Nonacceptable"),
-      size = 0.5
+      linewidth = 0.5
     ) +
     geom_point(
       data = df_ben |>
@@ -612,10 +612,10 @@ gensurv_table <- function(
   }
 
   geom_text_ctrl <- list(
-    aes_string(
-      x = "visit",
-      label = "n",
-      y = "y"
+    aes(
+      x = visit,
+      label = n,
+      y = y
     ),
     color = df_table1$color_ctrl_var,
     size = base_font_size * 0.35
@@ -702,10 +702,10 @@ gensurv_table <- function(
   }
 
   geom_text_subjects_ctrl <- list(
-    aes_string(
-      x = "visit",
-      label = "subjects",
-      y = "z"
+    aes(
+      x = visit,
+      label = subjects,
+      y = z
     ),
     color = "black",
     size = publication_geom_text_size(typography$data_label)

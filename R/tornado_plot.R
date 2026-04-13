@@ -423,8 +423,8 @@ mcda_tornado <- function(
       legend.position = "top",   # move legend to top
       panel.grid.major.y = ggplot2::element_blank(),
       panel.grid.minor.y = ggplot2::element_blank(),
-      axis.line.x = ggplot2::element_line("black", size = 1),
-      axis.ticks.x = ggplot2::element_line("black", size = 1),
+      axis.line.x = ggplot2::element_line("black", linewidth = 1),
+      axis.ticks.x = ggplot2::element_line("black", linewidth = 1),
       axis.ticks.length = grid::unit(0.2, "cm"),
       axis.text.x = ggplot2::element_text(color = "black", size = typography$tick),
       axis.text.y = ggplot2::element_text(color = "black", size = typography$tick),
