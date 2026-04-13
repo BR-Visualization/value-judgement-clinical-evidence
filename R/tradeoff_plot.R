@@ -812,10 +812,10 @@ prepare_tradeoff_plot <- function(
     myplot +
       geom_point(
         aes(
-          x = benefit,
-          y = risk,
-          colour = treatment,
-          shape = treatment
+          x = .data$benefit,
+          y = .data$risk,
+          colour = .data$treatment,
+          shape = .data$treatment
         ),
         data = df_br_status,
         size = 3,
@@ -830,10 +830,10 @@ prepare_tradeoff_plot <- function(
     myplot +
       geom_point(
         aes(
-          x = benefit,
-          y = risk,
-          colour = treatment,
-          shape = treatment
+          x = .data$benefit,
+          y = .data$risk,
+          colour = .data$treatment,
+          shape = .data$treatment
         ),
         data = df_br_status,
         size = 3,
@@ -844,11 +844,11 @@ prepare_tradeoff_plot <- function(
       # metrics
       geom_segment(
         aes(
-          x = benefit_lowerCI,
-          xend = benefit,
-          y = risk,
-          yend = risk,
-          colour = treatment
+          x = .data$benefit_lowerCI,
+          xend = .data$benefit,
+          y = .data$risk,
+          yend = .data$risk,
+          colour = .data$treatment
         ),
         data = df_br_status,
         linewidth = 1,
@@ -856,11 +856,11 @@ prepare_tradeoff_plot <- function(
       ) +
       geom_segment(
         aes(
-          x = benefit_upperCI,
-          xend = benefit,
-          y = risk,
-          yend = risk,
-          colour = treatment
+          x = .data$benefit_upperCI,
+          xend = .data$benefit,
+          y = .data$risk,
+          yend = .data$risk,
+          colour = .data$treatment
         ),
         data = df_br_status,
         linewidth = 1,
@@ -868,11 +868,11 @@ prepare_tradeoff_plot <- function(
       ) +
       geom_segment(
         aes(
-          x = benefit,
-          xend = benefit,
-          y = risk_lowerCI,
-          yend = risk,
-          colour = treatment
+          x = .data$benefit,
+          xend = .data$benefit,
+          y = .data$risk_lowerCI,
+          yend = .data$risk,
+          colour = .data$treatment
         ),
         data = df_br_status,
         linewidth = 1,
@@ -880,11 +880,11 @@ prepare_tradeoff_plot <- function(
       ) +
       geom_segment(
         aes(
-          x = benefit,
-          xend = benefit,
-          y = risk_upperCI,
-          yend = risk,
-          colour = treatment
+          x = .data$benefit,
+          xend = .data$benefit,
+          y = .data$risk_upperCI,
+          yend = .data$risk,
+          colour = .data$treatment
         ),
         data = df_br_status,
         linewidth = 1,

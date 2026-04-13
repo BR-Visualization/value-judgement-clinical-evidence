@@ -132,7 +132,7 @@ create_mcda_barplot_comparison <- function(
   if (!is.null(weights) && !is.numeric(weights)) {
     stop(
       "`weights` must be a named numeric vector (e.g., c(`Benefit 1` = 0.3, ...)). ",
-      "The name `weights` conflicts with a base R function — ensure you have defined ",
+      "The name `weights` conflicts with a base R function \u2014 ensure you have defined ",
       "your own weights object, or load the example via data(weights)."
     )
   }
