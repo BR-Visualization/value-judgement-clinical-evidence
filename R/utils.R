@@ -266,7 +266,7 @@ br_charts_theme <- function(
   ),
   axis_line = ggplot2::element_line(
     colour = black,
-    size = stroke_size
+    linewidth = stroke_size
   ),
   axis_title_y = ggplot2::element_text(),
   axis_text_y_left = ggplot2::element_text(
@@ -281,12 +281,12 @@ br_charts_theme <- function(
   legend_position = "top",
   panel_grid_minor = ggplot2::element_line(
     colour = grey_2,
-    size = stroke_size / 2,
+    linewidth = stroke_size / 2,
     linetype = "dashed"
   ),
   panel_grid_major = ggplot2::element_line(
     colour = grey_2,
-    size = stroke_size / 2,
+    linewidth = stroke_size / 2,
     linetype = "dashed"
   ),
   ...
@@ -315,14 +315,14 @@ br_charts_theme <- function(
     # but are inherited by others
     line = ggplot2::element_line(
       colour = grey_2,
-      size = stroke_size,
+      linewidth = stroke_size,
       linetype = 1,
       lineend = "butt"
     ),
     rect = ggplot2::element_rect(
       fill = white,
       colour = black,
-      size = stroke_size,
+      linewidth = stroke_size,
       linetype = 1
     ),
     text = ggplot2::element_text(
