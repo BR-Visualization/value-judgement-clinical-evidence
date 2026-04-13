@@ -24,6 +24,7 @@
 <url><loc>https://pkgdown.r-lib.org/reference/check_effects_tables.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/check_feature.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/check_feature_string.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/clinical_scales.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/colfun.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/comp_outcome.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/compare_value_function_types.html</loc></url>
@@ -66,5 +67,6 @@
 <url><loc>https://pkgdown.r-lib.org/reference/scatter_plot.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/scatterplot.html</loc></url>
 <url><loc>https://pkgdown.r-lib.org/reference/stacked_barchart.html</loc></url>
+<url><loc>https://pkgdown.r-lib.org/reference/weights.html</loc></url>
 </urlset>
 

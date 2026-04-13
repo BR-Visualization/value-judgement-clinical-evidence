@@ -58,7 +58,10 @@ ggplot(xxx, aes_string(x = "x", y = "z")) +
   scale_y_discrete(
     label = labs_bold(cond = xxx[["y"]], xxx[["z"]], nonbold = xxx[["w"]])
   )
-#> [2026-04-03 10:48:18] > Dataout object from
+#> Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
+#> ℹ Please use tidy evaluation idioms with `aes()`.
+#> ℹ See also `vignette("ggplot2-in-packages")` for more information.
+#> [2026-04-13 15:55:57] > Dataout object from
 #> the labs_bold function is created
 
 ```

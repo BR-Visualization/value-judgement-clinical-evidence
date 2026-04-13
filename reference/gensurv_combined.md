@@ -144,15 +144,6 @@ gensurv_combined(
   df_table = cumexcess, fig_colors_pt = colfun()$fig13_colors,
   mar = 30, mab = 10, mcd = 15
 )
-#> Warning: Using `size` aesthetic for lines was deprecated in ggplot2 3.4.0.
-#> ℹ Please use `linewidth` instead.
-#> ℹ The deprecated feature was likely used in the valueJudgementCE package.
-#>   Please report the issue to the authors.
-#> Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
-#> ℹ Please use tidy evaluation idioms with `aes()`.
-#> ℹ See also `vignette("ggplot2-in-packages")` for more information.
-#> ℹ The deprecated feature was likely used in the valueJudgementCE package.
-#>   Please report the issue to the authors.
 #> Ignoring unknown labels:
 #> • titles : "Number of Subjects"
 #> Ignoring unknown labels:

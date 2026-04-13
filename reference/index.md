@@ -30,6 +30,8 @@
 - [`check_feature_string()`](https://pkgdown.r-lib.org/reference/check_feature_string.md)
   : intermediate function used to display log messages check if a
   specific feature exist in the data
+- [`clinical_scales`](https://pkgdown.r-lib.org/reference/clinical_scales.md)
+  : Clinical Reference Scales for MCDA
 - [`colfun()`](https://pkgdown.r-lib.org/reference/colfun.md) : Function
   for colors
 - [`comp_outcome`](https://pkgdown.r-lib.org/reference/comp_outcome.md)
@@ -118,3 +120,5 @@
   Example scatterplot data used for Figure 11
 - [`stacked_barchart()`](https://pkgdown.r-lib.org/reference/stacked_barchart.md)
   : Stacked Bar Chart
+- [`weights`](https://pkgdown.r-lib.org/reference/weights.md) :
+  Criterion Weights for MCDA
