@@ -61,7 +61,7 @@ ggplot(xxx, aes_string(x = "x", y = "z")) +
 #> Warning: `aes_string()` was deprecated in ggplot2 3.0.0.
 #> ℹ Please use tidy evaluation idioms with `aes()`.
 #> ℹ See also `vignette("ggplot2-in-packages")` for more information.
-#> [2026-04-13 15:55:57] > Dataout object from
+#> [2026-04-13 15:59:02] > Dataout object from
 #> the labs_bold function is created
 
 ```
