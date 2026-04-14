@@ -42,9 +42,7 @@
   : Compare Value Functions for Benefits and Risks
 - [`control_fonts()`](https://pkgdown.r-lib.org/reference/control_fonts.md)
   : Control Fonts
-- [`corr`](https://pkgdown.r-lib.org/reference/corr.md) : Example
-  correlation data for correlogram visualization
-- [`corr2`](https://pkgdown.r-lib.org/reference/corr2.md) : Simulated
+- [`corr`](https://pkgdown.r-lib.org/reference/corr.md) : Simulated
   benefit-risk correlation data for correlogram visualization
 - [`create_correlogram()`](https://pkgdown.r-lib.org/reference/create_correlogram.md)
   : Create a correlogram from a given dataframe

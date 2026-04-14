@@ -149,7 +149,7 @@ Click to view sample code
 ``` r
 library(valueJudgementCE)
 
-create_correlogram(corr2)
+create_correlogram(corr)
 ```
 
 ## Figure - Scatter Plot

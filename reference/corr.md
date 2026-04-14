@@ -1,6 +1,6 @@
-# Example correlation data for correlogram visualization
+# Simulated benefit-risk correlation data for correlogram visualization
 
-Example correlation data for correlogram visualization
+Simulated benefit-risk correlation data for correlogram visualization
 
 ## Usage
 
@@ -12,33 +12,38 @@ corr
 
 A data frame with 100 rows and 6 columns:
 
-- Primary Efficacy:
+- Benefit 1:
 
-  Continuous variable representing primary efficacy outcome
+  Continuous variable representing first benefit measure
 
-- Secondary Efficacy:
+- Benefit 2:
 
-  Continuous variable representing secondary efficacy outcome
+  Continuous variable representing second benefit measure, correlated
+  with Benefit 1 (r = 0.6)
 
-- Quality of Life:
+- Benefit 3:
 
-  Continuous variable representing quality of life outcome
+  Continuous variable representing third benefit measure
 
-- Recurring AE:
+- Risk 1:
 
-  Binary variable (0/1) representing recurring adverse events
+  Continuous variable representing first risk measure, correlated with
+  all three benefits (r = 0.3, 0.2, -0.5)
 
-- Rare SAE:
+- Risk 2:
 
-  Binary variable (0/1) representing rare serious adverse events
+  Continuous variable representing second risk measure, correlated with
+  benefits and Risk 1
 
-- Liver Toxicity:
+- Risk 3:
 
-  Binary variable (0/1) representing liver toxicity events
+  Continuous variable representing third risk measure, correlated with
+  all previous variables
 
 ## Details
 
-This dataset contains simulated clinical trial data with specific
-correlation structures between benefit and risk outcomes. It
-demonstrates mixed variable types (continuous and binary) suitable for
-correlogram analysis.
+This dataset contains simulated data with all continuous variables and
+controlled correlation structures. The data is generated using the faux
+package to create specific correlations between benefit and risk
+outcomes, demonstrating both positive and negative relationships
+suitable for correlogram analysis.
