@@ -1,77 +1,42 @@
 ## code to prepare `correlogram` dataset goes here
-library(dplyr)
 library(faux)
 
 set.seed(1234)
-corr <-
-  data.frame(matrix(
-    NA,
-    nrow = 100,
-    ncol = 31,
-    dimnames = list(
-      1:100,
-      c(
-        "subject_id",
-        paste0("Benefit ", 1:5),
-        paste0("Risk ", 6:10),
-        paste0("Benefit ", 11:15),
-        paste0("Risk ", 16:20),
-        paste0("Benefit ", 21:25),
-        paste0("Risk ", 26:30)
-      )
-    )
-  ))
 
-subject_id <- c(seq(1, 100))
-corr[, 1] <- subject_id
-for (i in seq(1, 10)) {
-  corr[, i + 1] <- c(rnorm(100, runif(1, 0, 100), runif(1, 0, 100)))
-  corr[, i + 11] <- c(rbinom(
-    n = 100,
-    size = 1,
-    prob = runif(1)
-  ))
-  corr[, i + 21] <-
-    c(sample(c("Low", "Medium", "High"), 100, replace = TRUE))
-}
+# Only generate the columns we actually need
+corr <- data.frame(
+  `Benefit 1` = rnorm(100, runif(1, 0, 100), runif(1, 0, 100)),
+  `Benefit 2` = rnorm(100, runif(1, 0, 100), runif(1, 0, 100)),
+  `Benefit 3` = rnorm(100, runif(1, 0, 100), runif(1, 0, 100)),
+  `Risk 1` = rnorm(100, runif(1, 0, 100), runif(1, 0, 100)),
+  `Risk 2` = rnorm(100, runif(1, 0, 100), runif(1, 0, 100)),
+  `Risk 3` = rnorm(100, runif(1, 0, 100), runif(1, 0, 100)),
+  check.names = FALSE
+)
 
-corr <- corr |>
-  select(subject_id:`Benefit.3`, `Risk.6`:`Risk.8`) |>
-  rename(
-    `Primary Efficacy` = `Benefit.1`,
-    `Secondary Efficacy` = `Benefit.2`,
-    `Quality of Life` = `Benefit.3`,
-    `Recurring AE` = `Risk.6`,
-    `Rare SAE` = `Risk.7`,
-    `Liver Toxicity` = `Risk.8`
-  )
-
-corr <- corr |> select(-subject_id)
-
-
-corr$`Secondary Efficacy` <- rnorm_pre(
-  corr[, 1],
-  mean(corr$`Secondary Efficacy`),
-  sd(corr$`Secondary Efficacy`),
+# Create correlations between variables
+corr$`Benefit 2` <- rnorm_pre(
+  corr$`Benefit 1`,
+  mean(corr$`Benefit 2`),
+  sd(corr$`Benefit 2`),
   r = 0.6
 )
-corr$`Recurring AE` <- rnorm_pre(
-  corr[, 1:3],
-  mean(corr$`Recurring AE`),
-  sd(corr$`Recurring AE`),
+corr$`Risk 1` <- rnorm_pre(
+  corr[, c("Benefit 1", "Benefit 2", "Benefit 3")],
+  mean(corr$`Risk 1`),
+  sd(corr$`Risk 1`),
   r = c(0.3, 0.2, -0.5)
 )
-corr$`Rare SAE` <- rnorm_pre(
-  corr[, 1:4],
-  mean(corr$`Rare SAE`),
-  sd(corr$`Rare SAE`),
+corr$`Risk 2` <- rnorm_pre(
+  corr[, c("Benefit 1", "Benefit 2", "Benefit 3", "Risk 1")],
+  mean(corr$`Risk 2`),
+  sd(corr$`Risk 2`),
   r = c(0.13, 0.3, -0.09, -0.1)
 )
-corr$`Liver Toxicity` <- rnorm_pre(
-  corr[, 1:5],
-  mean(corr$`Liver Toxicity`),
-  sd(corr$`Liver Toxicity`),
+corr$`Risk 3` <- rnorm_pre(
+  corr[, c("Benefit 1", "Benefit 2", "Benefit 3", "Risk 1", "Risk 2")],
+  mean(corr$`Risk 3`),
+  sd(corr$`Risk 3`),
   r = c(-0.13, -0.1, -0.5, -0.1, 0)
 )
-
 usethis::use_data(corr, overwrite = TRUE)

@@ -58,5 +58,5 @@ For one binary and one ordinal variable, Glass rank biserial correlation
 is implemented.
 }
 \examples{
-create_correlogram(corr2)
+create_correlogram(corr)
 }

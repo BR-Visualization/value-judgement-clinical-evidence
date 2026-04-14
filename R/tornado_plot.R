@@ -415,7 +415,7 @@ mcda_tornado <- function(
     ggplot2::theme_minimal(base_size = base_font_size) +
     ggplot2::labs(
       x = paste0(
-        "BRScore (", comparison_drug, "-", comparator_name, ")"
+        "Weighted Score Difference (", comparison_drug, "-", comparator_name, ")"
       ),
       y = NULL
     ) +

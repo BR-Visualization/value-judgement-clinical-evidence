@@ -371,7 +371,7 @@ create_mcda_barplot_comparison <- function(
       expand = expansion(mult = c(0.05, 0.15))
     ) +
     labs(
-      title = "Normalized Values",
+      title = "Normalized Score",
       x = NULL,
       y = NULL
     ) +
@@ -522,7 +522,7 @@ create_mcda_barplot_comparison <- function(
       expand = expansion(mult = c(0.15, 0.15))
     ) +
     labs(
-      title = "Benefit-Risk",
+      title = "Weighted Score Difference",
       subtitle = sprintf("Total = %.1f", total_score),
       x = NULL,
       y = NULL

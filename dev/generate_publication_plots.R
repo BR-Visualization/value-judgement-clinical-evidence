@@ -268,7 +268,7 @@ save_pub_plot(
 # Correlogram (7×7)
 save_pub_plot(
   "inst/img/pub/image03_correlogram.tiff",
-  create_correlogram(corr2, base_font_size = font_image03),
+  create_correlogram(corr, base_font_size = font_image03),
   layout = "double",
   original_width_in = 7,
   original_height_in = 7

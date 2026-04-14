@@ -42,7 +42,7 @@
 #' is implemented.
 #'
 #' @examples
-#' create_correlogram(corr2)
+#' create_correlogram(corr)
 create_correlogram <- function(
   df,
   br = c(
