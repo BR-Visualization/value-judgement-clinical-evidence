@@ -43,7 +43,7 @@ calculate_diff_bin(
   prop1 = .45, prop2 = 0.25, n1 = 500, n2 = 500,
   cl = 0.95
 )
-#> [2026-04-14 18:00:03] > absolute risk CI for binary outcomes is calculated and saved
+#> [2026-04-14 18:19:26] > absolute risk CI for binary outcomes is calculated and saved
 #>   diff         se     lower     upper
 #> 1  0.2 0.02949576 0.1421894 0.2578106
 ```
