@@ -26,7 +26,7 @@ test_that("create_mcda_waterfall returns ggplot object", {
     comparator_name = "Placebo",
     benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
     risk_criteria = c("Risk 1", "Risk 2"),
-    clinical_scales = create_sample_clinical_scales_gap()
+    clinical_scales = create_clinical_scales_gap()
   )
 
   expect_true(inherits(result, "ggplot"))
@@ -46,7 +46,7 @@ test_that("create_mcda_brmap validates missing data and returns ggplot", {
     comparator_name = "Placebo",
     benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
     risk_criteria = c("Risk 1", "Risk 2"),
-    clinical_scales = create_sample_clinical_scales_gap(),
+    clinical_scales = create_clinical_scales_gap(),
     show_title = TRUE,
     show_subtitle = TRUE
   )
@@ -62,7 +62,7 @@ test_that("mcda_tornado returns patchwork and validates weight type", {
       dplyr::filter(Study == "Study 1") |>
       dplyr::select(-Study),
     comparison_drug = "Drug A",
-    clinical_scales = create_sample_clinical_scales_gap(),
+    clinical_scales = create_clinical_scales_gap(),
     weights = create_sample_weights_gap()
   )
 
@@ -72,7 +72,7 @@ test_that("mcda_tornado returns patchwork and validates weight type", {
     mcda_tornado(
       data = create_sample_mcda_data_gap(),
       comparison_drug = "Drug A",
-      clinical_scales = create_sample_clinical_scales_gap(),
+      clinical_scales = create_clinical_scales_gap(),
       weights = stats::weights
     ),
     "`weights` must be a named numeric vector"

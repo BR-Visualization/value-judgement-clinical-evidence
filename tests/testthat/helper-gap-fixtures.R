@@ -11,7 +11,7 @@ create_sample_mcda_data_gap <- function() {
   )
 }
 
-create_sample_clinical_scales_gap <- function() {
+create_clinical_scales_gap <- function() {
   list(
     `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
     `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
