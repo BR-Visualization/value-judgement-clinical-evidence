@@ -131,14 +131,14 @@ Click to view sample code
 library(valueJudgementCE)
 
 effects_table_filtered <- effects_table |>
-  dplyr::filter(Outcome %in% c("Risk 1", "Benefit 1"))
+  dplyr::filter(Outcome %in% c("Recurring AE", "Primary Efficacy"))
 
 generate_tradeoff_plot(
   data = effects_table_filtered,
   filter = "None",
   category = "All",
-  benefit = "Benefit 1",
-  risk = "Risk 1",
+  benefit = "Primary Efficacy",
+  risk = "Recurring AE",
   type_risk = "Crude proportions",
   type_graph = "Absolute risk",
   ci = "Yes",
@@ -456,8 +456,8 @@ library(valueJudgementCE)
 create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 1",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug A",
   clinical_scales = clinical_scales,
   weights = weights
@@ -501,8 +501,8 @@ library(valueJudgementCE)
 create_mcda_waterfall(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales
 )
@@ -545,8 +545,8 @@ library(valueJudgementCE)
 create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales,
   show_frontier = TRUE,

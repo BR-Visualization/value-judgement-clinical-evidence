@@ -7,11 +7,11 @@
 \format{
 A named list with 5 elements (one per criterion):
 \describe{
-\item{Benefit 1}{list(min = 0, max = 1,   direction = "increasing")}
-\item{Benefit 2}{list(min = 0, max = 100, direction = "decreasing")}
-\item{Benefit 3}{list(min = 0, max = 100, direction = "increasing")}
-\item{Risk 1}{list(min = 0, max = 0.5, direction = "decreasing")}
-\item{Risk 2}{list(min = 0, max = 0.3, direction = "decreasing")}
+\item{Primary Efficacy}{list(min = 0, max = 1,   direction = "increasing")}
+\item{Secondary Efficacy}{list(min = 0, max = 100, direction = "decreasing")}
+\item{Quality of Life}{list(min = 0, max = 100, direction = "increasing")}
+\item{Recurring AE}{list(min = 0, max = 0.5, direction = "decreasing")}
+\item{Rare SAE}{list(min = 0, max = 0.3, direction = "decreasing")}
 }
 }
 \usage{

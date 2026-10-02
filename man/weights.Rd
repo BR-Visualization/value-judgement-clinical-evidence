@@ -7,11 +7,11 @@
 \format{
 A named numeric vector with 5 elements:
 \describe{
-\item{Benefit 1}{0.30}
-\item{Benefit 2}{0.20}
-\item{Benefit 3}{0.10}
-\item{Risk 1}{0.30}
-\item{Risk 2}{0.10}
+\item{Primary Efficacy}{0.30}
+\item{Secondary Efficacy}{0.20}
+\item{Quality of Life}{0.10}
+\item{Recurring AE}{0.30}
+\item{Rare SAE}{0.10}
 }
 }
 \usage{

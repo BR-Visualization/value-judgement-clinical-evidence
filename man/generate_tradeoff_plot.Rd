@@ -271,7 +271,7 @@ effects_table_filtered <- effects_table |> filter(Trt1 == "Drug A")
 
 generate_tradeoff_plot(
   data = effects_table_filtered, filter = "None", category = "All",
-  benefit = "Benefit 1", risk = "Risk 1",
+  benefit = "Primary Efficacy", risk = "Recurring AE",
   type_risk = "Crude proportions", type_graph = "Absolute risk",
   ci = "Yes", ci_method = "Calculated", cl = 0.95,
   mab = 0.05,

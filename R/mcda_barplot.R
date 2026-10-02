@@ -42,28 +42,29 @@
 #'
 #' # View the data structure - each study has comparator and active treatment
 #' head(mcda_data)
-#' #   Study      Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
-#' # 1 Study 1    Placebo      0.05        65         9   0.30  0.087
-#' # 2 Study 1    Drug A       0.46        20        60   0.46  0.100
-#' # 3 Study 2    Placebo      0.05        65         9   0.30  0.087
-#' # 4 Study 2    Drug B       ...          ...        ...  ...   ...
+#' #     Study Treatment Primary Efficacy Secondary Efficacy Quality of Life
+#' # 1 Study 1   Placebo             0.05                 65               9
+#' # 2 Study 1    Drug A             0.46                 20              60
+#' # 3 Study 2   Placebo             0.06                 50              15
+#' # 4 Study 2    Drug B             0.20                 14              18
+#' # (plus columns `Recurring AE` and `Rare SAE`)
 #'
 #' # Define clinical scales
 #' clinical_scales <- list(
-#'   `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-#'   `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-#'   `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-#'   `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-#'   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+#'   `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+#'   `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+#'   `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+#'   `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+#'   `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 #' )
 #'
 #' # Define weights from stakeholder elicitation
 #' weights <- c(
-#'   `Benefit 1` = 0.30,
-#'   `Benefit 2` = 0.20,
-#'   `Benefit 3` = 0.10,
-#'   `Risk 1` = 0.30,
-#'   `Risk 2` = 0.10
+#'   `Primary Efficacy` = 0.30,
+#'   `Secondary Efficacy` = 0.20,
+#'   `Quality of Life` = 0.10,
+#'   `Recurring AE` = 0.30,
+#'   `Rare SAE` = 0.10
 #' )
 #'
 #' # Create comparison barplot for a specific study
@@ -71,8 +72,8 @@
 #' barplot_comp_a <- create_mcda_barplot_comparison(
 #'   data = mcda_data,
 #'   study = "Study 1",
-#'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-#'   risk_criteria = c("Risk 1", "Risk 2"),
+#'   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+#'   risk_criteria = c("Recurring AE", "Rare SAE"),
 #'   comparison_drug = "Drug A",
 #'   clinical_scales = clinical_scales,
 #'   weights = weights
@@ -131,7 +132,7 @@ create_mcda_barplot_comparison <- function(
   # Validate weights if provided
   if (!is.null(weights) && !is.numeric(weights)) {
     stop(
-      "`weights` must be a named numeric vector (e.g., c(`Benefit 1` = 0.3, ...)). ",
+      "`weights` must be a named numeric vector (e.g., c(`Primary Efficacy` = 0.3, ...)). ",
       "The name `weights` conflicts with a base R function \u2014 ensure you have defined ",
       "your own weights object, or load the example via data(weights)."
     )
@@ -592,8 +593,8 @@ create_mcda_barplot_comparison <- function(
 #'   higher is better, "decreasing" for lower is better), and
 #'   optionally allow_extrapolation (default TRUE). If NULL, uses
 #'   data-driven normalization (not recommended per FDA/EMA guidance).
-#'   Example: \code{list(`Benefit 1` = list(min = 0, max = 1,
-#'   direction = "increasing"), `Risk 1` = list(min = 0, max = 0.5,
+#'   Example: \code{list(`Primary Efficacy` = list(min = 0, max = 1,
+#'   direction = "increasing"), `Recurring AE` = list(min = 0, max = 0.5,
 #'   direction = "decreasing"))} Based on FDA/EMA best practices and
 #'   PROTECT framework.
 #' @param fig_colors A vector of length 2 specifying colors for
@@ -618,25 +619,26 @@ create_mcda_barplot_comparison <- function(
 #'
 #' # View the data structure - each study has comparator and active treatment
 #' head(mcda_data)
-#' #   Study      Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
-#' # 1 Study 1    Placebo      0.05        65         9   0.30  0.087
-#' # 2 Study 1    Drug A       0.46        20        60   0.46  0.100
+#' #     Study Treatment Primary Efficacy Secondary Efficacy Quality of Life
+#' # 1 Study 1   Placebo             0.05                 65               9
+#' # 2 Study 1    Drug A             0.46                 20              60
+#' # (plus columns `Recurring AE` and `Rare SAE`)
 #'
 #' # Define clinical scales
 #' clinical_scales <- list(
-#'   `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-#'   `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-#'   `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-#'   `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-#'   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+#'   `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+#'   `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+#'   `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+#'   `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+#'   `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 #' )
 #'
 #' # Create walkthrough showing the MCDA calculation steps for Drug B
 #' barplot_walk <- create_mcda_walkthrough(
 #'   data = mcda_data,
 #'   study = "Study 2",
-#'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-#'   risk_criteria = c("Risk 1", "Risk 2"),
+#'   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+#'   risk_criteria = c("Recurring AE", "Rare SAE"),
 #'   comparison_drug = "Drug B",
 #'   clinical_scales = clinical_scales
 #' )
@@ -644,11 +646,11 @@ create_mcda_barplot_comparison <- function(
 #' # With custom weights and clinical scales for Drug A
 #' \dontrun{
 #' weights <- c(
-#'   `Benefit 1` = 0.30,
-#'   `Benefit 2` = 0.20,
-#'   `Benefit 3` = 0.10,
-#'   `Risk 1` = 0.30,
-#'   `Risk 2` = 0.10
+#'   `Primary Efficacy` = 0.30,
+#'   `Secondary Efficacy` = 0.20,
+#'   `Quality of Life` = 0.10,
+#'   `Recurring AE` = 0.30,
+#'   `Rare SAE` = 0.10
 #' )
 #'
 #' # Define clinical scales based on clinical guidelines, MCID, or
@@ -658,27 +660,27 @@ create_mcda_barplot_comparison <- function(
 #' #   - "increasing": higher values are better
 #' #   - "decreasing": lower values are better
 #' clinical_scales <- list(
-#'   `Benefit 1` = list(
+#'   `Primary Efficacy` = list(
 #'     min = 0, # No benefit (unacceptable)
 #'     max = 1, # Maximum expected benefit
 #'     direction = "increasing"
 #'   ),
-#'   `Benefit 2` = list(
+#'   `Secondary Efficacy` = list(
 #'     min = 0, # Best outcome (no symptoms)
 #'     max = 100, # Worst outcome (severe symptoms)
 #'     direction = "decreasing" # Lower is better (e.g., symptom severity)
 #'   ),
-#'   `Benefit 3` = list(
+#'   `Quality of Life` = list(
 #'     min = 0, # No improvement
 #'     max = 100, # Maximum improvement
 #'     direction = "increasing"
 #'   ),
-#'   `Risk 1` = list(
+#'   `Recurring AE` = list(
 #'     min = 0, # No adverse events (ideal)
 #'     max = 0.5, # 50% rate (unacceptable threshold)
 #'     direction = "decreasing"
 #'   ),
-#'   `Risk 2` = list(
+#'   `Rare SAE` = list(
 #'     min = 0, # No adverse events (ideal)
 #'     max = 0.3, # 30% rate (concerning threshold)
 #'     direction = "decreasing"
@@ -688,8 +690,8 @@ create_mcda_barplot_comparison <- function(
 #' barplot_walk_a <- create_mcda_walkthrough(
 #'   data = mcda_data,
 #'   study = "Study 1",
-#'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-#'   risk_criteria = c("Risk 1", "Risk 2"),
+#'   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+#'   risk_criteria = c("Recurring AE", "Rare SAE"),
 #'   comparison_drug = "Drug A",
 #'   weights = weights,
 #'   clinical_scales = clinical_scales

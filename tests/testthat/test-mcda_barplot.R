@@ -5,11 +5,11 @@ library(valueJudgementCE)
 create_sample_mcda_data <- function() {
   data.frame(
     Treatment = c("Placebo", "Drug A", "Drug B"),
-    `Benefit 1` = c(0.05, 0.46, 0.20),
-    `Benefit 2` = c(65, 20, 50),
-    `Benefit 3` = c(9, 60, 58),
-    `Risk 1` = c(0.03, 0.19, 0.18),
-    `Risk 2` = c(0.002, 0.015, 0.010),
+    `Primary Efficacy` = c(0.05, 0.46, 0.20),
+    `Secondary Efficacy` = c(65, 20, 50),
+    `Quality of Life` = c(9, 60, 58),
+    `Recurring AE` = c(0.03, 0.19, 0.18),
+    `Rare SAE` = c(0.002, 0.015, 0.010),
     check.names = FALSE,
     stringsAsFactors = FALSE
   )
@@ -18,11 +18,11 @@ create_sample_mcda_data <- function() {
 # Create sample clinical scales for testing
 create_sample_clinical_scales <- function() {
   list(
-    `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-    `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-    `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-    `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-    `Risk 2` = list(min = 0, max = 0.05, direction = "decreasing")
+    `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+    `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+    `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+    `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+    `Rare SAE` = list(min = 0, max = 0.05, direction = "decreasing")
   )
 }
 
@@ -66,7 +66,7 @@ test_that("create_mcda_barplot_comparison validates criteria parameters", {
     create_mcda_barplot_comparison(
       data = mcda_data,
       benefit_criteria = NULL,
-      risk_criteria = c("Risk 1", "Risk 2")
+      risk_criteria = c("Recurring AE", "Rare SAE")
     ),
     paste(
       "Both benefit_criteria and risk_criteria",
@@ -77,7 +77,7 @@ test_that("create_mcda_barplot_comparison validates criteria parameters", {
   expect_error(
     create_mcda_barplot_comparison(
       data = mcda_data,
-      benefit_criteria = c("Benefit 1", "Benefit 2"),
+      benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
       risk_criteria = NULL
     ),
     paste(
@@ -95,8 +95,8 @@ test_that("create_mcda_barplot_comparison validates treatment existence", {
   expect_error(
     create_mcda_barplot_comparison(
       data = mcda_data,
-      benefit_criteria = c("Benefit 1", "Benefit 2"),
-      risk_criteria = c("Risk 1", "Risk 2"),
+      benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
+      risk_criteria = c("Recurring AE", "Rare SAE"),
       comparison_drug = "Drug Z",
       clinical_scales = clinical_scales
     ),
@@ -107,8 +107,8 @@ test_that("create_mcda_barplot_comparison validates treatment existence", {
   expect_error(
     create_mcda_barplot_comparison(
       data = mcda_data,
-      benefit_criteria = c("Benefit 1", "Benefit 2"),
-      risk_criteria = c("Risk 1", "Risk 2"),
+      benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
+      risk_criteria = c("Recurring AE", "Rare SAE"),
       comparator_name = "Control",
       comparison_drug = "Drug A",
       clinical_scales = clinical_scales
@@ -125,7 +125,7 @@ test_that("create_mcda_barplot_comparison validates criteria columns", {
     create_mcda_barplot_comparison(
       data = mcda_data,
       benefit_criteria = c("Nonexistent Benefit"),
-      risk_criteria = c("Risk 1", "Risk 2"),
+      risk_criteria = c("Recurring AE", "Rare SAE"),
       comparison_drug = "Drug A",
       clinical_scales = clinical_scales
     ),
@@ -139,8 +139,8 @@ test_that("create_mcda_barplot_comparison returns patchwork object", {
 
   result <- create_mcda_barplot_comparison(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-    risk_criteria = c("Risk 1", "Risk 2"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+    risk_criteria = c("Recurring AE", "Rare SAE"),
     comparison_drug = "Drug A",
     clinical_scales = clinical_scales
   )
@@ -156,8 +156,8 @@ test_that("create_mcda_barplot_comparison works with different drugs", {
   # Test with Drug A
   result_a <- create_mcda_barplot_comparison(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1", "Benefit 2"),
-    risk_criteria = c("Risk 1"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
+    risk_criteria = c("Recurring AE"),
     comparison_drug = "Drug A",
     clinical_scales = clinical_scales
   )
@@ -166,8 +166,8 @@ test_that("create_mcda_barplot_comparison works with different drugs", {
   # Test with Drug B
   result_b <- create_mcda_barplot_comparison(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1", "Benefit 2"),
-    risk_criteria = c("Risk 1"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
+    risk_criteria = c("Recurring AE"),
     comparison_drug = "Drug B",
     clinical_scales = clinical_scales
   )
@@ -180,8 +180,8 @@ test_that("create_mcda_barplot_comparison handles custom colors", {
 
   result <- create_mcda_barplot_comparison(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1"),
-    risk_criteria = c("Risk 1"),
+    benefit_criteria = c("Primary Efficacy"),
+    risk_criteria = c("Recurring AE"),
     comparison_drug = "Drug A",
     fig_colors = c("#FF0000", "#0000FF"),
     clinical_scales = clinical_scales
@@ -206,7 +206,7 @@ test_that("create_mcda_walkthrough validates criteria parameters", {
     create_mcda_walkthrough(
       data = mcda_data,
       benefit_criteria = NULL,
-      risk_criteria = c("Risk 1", "Risk 2")
+      risk_criteria = c("Recurring AE", "Rare SAE")
     ),
     paste(
       "Both benefit_criteria and risk_criteria",
@@ -222,8 +222,8 @@ test_that("create_mcda_walkthrough validates treatment existence", {
   expect_error(
     create_mcda_walkthrough(
       data = mcda_data,
-      benefit_criteria = c("Benefit 1", "Benefit 2"),
-      risk_criteria = c("Risk 1", "Risk 2"),
+      benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
+      risk_criteria = c("Recurring AE", "Rare SAE"),
       comparison_drug = "Drug Z"
     ),
     "Comparison drug 'Drug Z' not found in data"
@@ -233,8 +233,8 @@ test_that("create_mcda_walkthrough validates treatment existence", {
   expect_error(
     create_mcda_walkthrough(
       data = mcda_data,
-      benefit_criteria = c("Benefit 1", "Benefit 2"),
-      risk_criteria = c("Risk 1", "Risk 2"),
+      benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
+      risk_criteria = c("Recurring AE", "Rare SAE"),
       comparator_name = "Control",
       comparison_drug = "Drug A"
     ),
@@ -249,7 +249,7 @@ test_that("create_mcda_walkthrough validates criteria columns", {
     create_mcda_walkthrough(
       data = mcda_data,
       benefit_criteria = c("Nonexistent Benefit"),
-      risk_criteria = c("Risk 1", "Risk 2"),
+      risk_criteria = c("Recurring AE", "Rare SAE"),
       comparison_drug = "Drug A"
     ),
     "The following criteria columns are not found in data"
@@ -261,8 +261,8 @@ test_that("create_mcda_walkthrough returns patchwork object", {
 
   result <- create_mcda_walkthrough(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-    risk_criteria = c("Risk 1", "Risk 2"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+    risk_criteria = c("Recurring AE", "Rare SAE"),
     comparison_drug = "Drug A"
   )
 
@@ -275,8 +275,8 @@ test_that("create_mcda_walkthrough uses default equal weights", {
 
   result <- create_mcda_walkthrough(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1", "Benefit 2"),
-    risk_criteria = c("Risk 1"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
+    risk_criteria = c("Recurring AE"),
     comparison_drug = "Drug A"
   )
 
@@ -287,15 +287,15 @@ test_that("create_mcda_walkthrough accepts custom weights", {
   mcda_data <- create_sample_mcda_data()
 
   weights <- c(
-    `Benefit 1` = 0.30,
-    `Benefit 2` = 0.30,
-    `Risk 1` = 0.40
+    `Primary Efficacy` = 0.30,
+    `Secondary Efficacy` = 0.30,
+    `Recurring AE` = 0.40
   )
 
   result <- create_mcda_walkthrough(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1", "Benefit 2"),
-    risk_criteria = c("Risk 1"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
+    risk_criteria = c("Recurring AE"),
     comparison_drug = "Drug A",
     weights = weights
   )
@@ -308,17 +308,17 @@ test_that("create_mcda_walkthrough validates weight sum", {
 
   # Weights that sum to 1 should work
   weights <- c(
-    `Benefit 1` = 0.25,
-    `Benefit 2` = 0.25,
-    `Benefit 3` = 0.25,
-    `Risk 1` = 0.15,
-    `Risk 2` = 0.10
+    `Primary Efficacy` = 0.25,
+    `Secondary Efficacy` = 0.25,
+    `Quality of Life` = 0.25,
+    `Recurring AE` = 0.15,
+    `Rare SAE` = 0.10
   )
 
   result <- create_mcda_walkthrough(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-    risk_criteria = c("Risk 1", "Risk 2"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+    risk_criteria = c("Recurring AE", "Rare SAE"),
     comparison_drug = "Drug A",
     weights = weights
   )
@@ -332,8 +332,8 @@ test_that("create_mcda_walkthrough works with different drugs", {
   # Test with Drug A
   result_a <- create_mcda_walkthrough(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1"),
-    risk_criteria = c("Risk 1"),
+    benefit_criteria = c("Primary Efficacy"),
+    risk_criteria = c("Recurring AE"),
     comparison_drug = "Drug A"
   )
   expect_true(inherits(result_a, "patchwork"))
@@ -341,8 +341,8 @@ test_that("create_mcda_walkthrough works with different drugs", {
   # Test with Drug B
   result_b <- create_mcda_walkthrough(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1"),
-    risk_criteria = c("Risk 1"),
+    benefit_criteria = c("Primary Efficacy"),
+    risk_criteria = c("Recurring AE"),
     comparison_drug = "Drug B"
   )
   expect_true(inherits(result_b, "patchwork"))
@@ -353,8 +353,8 @@ test_that("create_mcda_walkthrough handles custom colors", {
 
   result <- create_mcda_walkthrough(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1"),
-    risk_criteria = c("Risk 1"),
+    benefit_criteria = c("Primary Efficacy"),
+    risk_criteria = c("Recurring AE"),
     comparison_drug = "Drug A",
     fig_colors = c("#00FF00", "#FF00FF")
   )
@@ -372,8 +372,8 @@ test_that(paste(
   # higher for benefits, lower for risks (when clinical_scales not provided)
   result <- create_mcda_walkthrough(
     data = mcda_data,
-    benefit_criteria = c("Benefit 1", "Benefit 2"),
-    risk_criteria = c("Risk 1"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy"),
+    risk_criteria = c("Recurring AE"),
     comparison_drug = "Drug A"
   )
 
