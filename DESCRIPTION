@@ -30,7 +30,6 @@ License: MIT + file LICENSE
 SystemRequirements: pandoc (>= 1.12.3)
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.3
 Suggests:
     knitr,
     rmarkdown,
@@ -66,3 +65,4 @@ Depends:
     ggplot2
 LazyData: true
 Config/testthat/edition: 3
+Config/roxygen2/version: 8.1.0
