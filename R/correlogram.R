@@ -256,19 +256,27 @@ create_correlogram <- function(
  # ggforce::geom_ellipse() — when both are present, HTML span tags render
  # literally instead of being parsed. We use element_text() with color
   # vectors instead, which works reliably across all platforms and devices.
+  # Only label positions that are actually drawn, so colors stay aligned
+  # with their labels after the lower-triangle/diagonal filtering above.
+  breaks_x <- sort(unique(corr_df$x0))
+  breaks_y <- sort(unique(corr_df$y0))
   label_colors_x <- ifelse(
-    br[colnames(mat)] == "Benefit",
+    br[colnames(mat)[breaks_x]] == "Benefit",
     fig_colors[1],
     fig_colors[2]
   )
   label_colors_y <- ifelse(
-    br[colnames(mat)] == "Benefit",
+    br[colnames(mat)[breaks_y]] == "Benefit",
     fig_colors[1],
     fig_colors[2]
   )
 
-  labels_x <- colnames(mat)
-  labels_y <- colnames(mat)
+  # Wrap long outcome names onto two lines so adjacent labels don't overlap
+  wrap_label <- function(x) {
+    vapply(x, function(s) paste(strwrap(s, 10), collapse = "\n"), "")
+  }
+  labels_x <- wrap_label(colnames(mat)[breaks_x])
+  labels_y <- wrap_label(colnames(mat)[breaks_y])
   typography <- publication_typography(
     base_font_size = base_font_size,
     axis_title_ratio = 1.15,
@@ -278,11 +286,11 @@ create_correlogram <- function(
   fig <- ggplot(corr_df, aes(x0 = x0, y0 = y0, a = a, b = b, angle = angle)) +
     coord_fixed() +
     scale_x_continuous(
-      breaks = seq_len(ncol(mat)),
+      breaks = breaks_x,
       labels = labels_x
     ) +
     scale_y_continuous(
-      breaks = seq_len(ncol(mat)),
+      breaks = breaks_y,
       labels = labels_y
     ) +
     theme_minimal(base_size = base_font_size) +

@@ -656,7 +656,7 @@ create_mcda_waterfall <- function(
       },
       expand = c(0.02, 0.02)
     ) +
-    scale_x_continuous(expand = expansion(mult = c(0.3, 0.15))) +
+    scale_x_continuous(expand = expansion(mult = c(0.45, 0.25))) +
     labs(
       x = "Cumulative Weighted Score Difference",
       y = NULL

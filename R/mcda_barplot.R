@@ -520,7 +520,7 @@ create_mcda_barplot_comparison <- function(
     ) +
     scale_x_continuous(
       limits = contrib_lim,
-      expand = expansion(mult = c(0.15, 0.15))
+      expand = expansion(mult = c(0.3, 0.3))
     ) +
     labs(
       title = "Weighted Score Difference",
@@ -1218,7 +1218,7 @@ create_mcda_walkthrough <- function(
     ) +
     scale_x_continuous(
       limits = contrib_lim,
-      expand = expansion(mult = c(0.15, 0.15))
+      expand = expansion(mult = c(0.3, 0.3))
     ) +
     labs(
       title = "Benefit-Risk",
