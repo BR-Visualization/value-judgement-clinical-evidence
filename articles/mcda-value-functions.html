@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>MCDA Clinical Threshold-Based Normalization • valueJudgementCE</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="MCDA Clinical Threshold-Based Normalization">
 </head>
@@ -171,11 +171,11 @@ Important Difference (MCID), or regulatory precedents.</p>
 </h3>
 <div class="sourceCode" id="cb6"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">clinical_scales</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span></span>
-<span>  `Benefit 1` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, direction <span class="op">=</span> <span class="st">"increasing"</span><span class="op">)</span>,</span>
-<span>  `Benefit 2` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">100</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span>,</span>
-<span>  `Benefit 3` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">100</span>, direction <span class="op">=</span> <span class="st">"increasing"</span><span class="op">)</span>,</span>
-<span>  `Risk 1` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.5</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span>,</span>
-<span>  `Risk 2` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.3</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span></span>
+<span>  `Primary Efficacy` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">1</span>, direction <span class="op">=</span> <span class="st">"increasing"</span><span class="op">)</span>,</span>
+<span>  `Secondary Efficacy` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">100</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span>,</span>
+<span>  `Quality of Life` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">100</span>, direction <span class="op">=</span> <span class="st">"increasing"</span><span class="op">)</span>,</span>
+<span>  `Recurring AE` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.5</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span>,</span>
+<span>  `Rare SAE` <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/list.html" class="external-link">list</a></span><span class="op">(</span>min <span class="op">=</span> <span class="fl">0</span>, max <span class="op">=</span> <span class="fl">0.3</span>, direction <span class="op">=</span> <span class="st">"decreasing"</span><span class="op">)</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -183,11 +183,11 @@ Important Difference (MCID), or regulatory precedents.</p>
 </h3>
 <div class="sourceCode" id="cb7"><pre class="downlit sourceCode r">
 <code class="sourceCode R"><span><span class="va">weights</span> <span class="op">&lt;-</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span></span>
-<span>  `Benefit 1` <span class="op">=</span> <span class="fl">0.30</span>,</span>
-<span>  `Benefit 2` <span class="op">=</span> <span class="fl">0.20</span>,</span>
-<span>  `Benefit 3` <span class="op">=</span> <span class="fl">0.10</span>,</span>
-<span>  `Risk 1` <span class="op">=</span> <span class="fl">0.30</span>,</span>
-<span>  `Risk 2` <span class="op">=</span> <span class="fl">0.10</span></span>
+<span>  `Primary Efficacy` <span class="op">=</span> <span class="fl">0.30</span>,</span>
+<span>  `Secondary Efficacy` <span class="op">=</span> <span class="fl">0.20</span>,</span>
+<span>  `Quality of Life` <span class="op">=</span> <span class="fl">0.10</span>,</span>
+<span>  `Recurring AE` <span class="op">=</span> <span class="fl">0.30</span>,</span>
+<span>  `Rare SAE` <span class="op">=</span> <span class="fl">0.10</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </div>
 <div class="section level3">
@@ -199,8 +199,8 @@ difference</strong></p>
 <code class="sourceCode R"><span><span class="va">barplot_comparison</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_mcda_barplot_comparison.html">create_mcda_barplot_comparison</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
 <span>  study <span class="op">=</span> <span class="st">"Study 1"</span>,</span>
-<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
-<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
+<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Primary Efficacy"</span>, <span class="st">"Secondary Efficacy"</span>, <span class="st">"Quality of Life"</span><span class="op">)</span>,</span>
+<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Recurring AE"</span>, <span class="st">"Rare SAE"</span><span class="op">)</span>,</span>
 <span>  comparison_drug <span class="op">=</span> <span class="st">"Drug A"</span>,</span>
 <span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -213,8 +213,8 @@ calculation</strong></p>
 <code class="sourceCode R"><span><span class="va">barplot_walkthrough</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_mcda_walkthrough.html">create_mcda_walkthrough</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
 <span>  study <span class="op">=</span> <span class="st">"Study 1"</span>,</span>
-<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
-<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
+<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Primary Efficacy"</span>, <span class="st">"Secondary Efficacy"</span>, <span class="st">"Quality of Life"</span><span class="op">)</span>,</span>
+<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Recurring AE"</span>, <span class="st">"Rare SAE"</span><span class="op">)</span>,</span>
 <span>  comparison_drug <span class="op">=</span> <span class="st">"Drug A"</span>,</span>
 <span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
 <span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
@@ -225,8 +225,8 @@ calculation</strong></p>
 <span><span class="va">waterfall_all</span> <span class="op">&lt;-</span> <span class="fu"><a href="../reference/create_mcda_waterfall.html">create_mcda_waterfall</a></span><span class="op">(</span></span>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
 <span>  comparator_name <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
-<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
-<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
+<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Primary Efficacy"</span>, <span class="st">"Secondary Efficacy"</span>, <span class="st">"Quality of Life"</span><span class="op">)</span>,</span>
+<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Recurring AE"</span>, <span class="st">"Rare SAE"</span><span class="op">)</span>,</span>
 <span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
 <span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
 <span><span class="op">)</span></span>
@@ -236,8 +236,8 @@ calculation</strong></p>
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
 <span>  study <span class="op">=</span> <span class="st">"Study 1"</span>,</span>
 <span>  comparator_name <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
-<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Benefit 1"</span>, <span class="st">"Benefit 2"</span>, <span class="st">"Benefit 3"</span><span class="op">)</span>,</span>
-<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Risk 1"</span>, <span class="st">"Risk 2"</span><span class="op">)</span>,</span>
+<span>  benefit_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Primary Efficacy"</span>, <span class="st">"Secondary Efficacy"</span>, <span class="st">"Quality of Life"</span><span class="op">)</span>,</span>
+<span>  risk_criteria <span class="op">=</span> <span class="fu"><a href="https://rdrr.io/r/base/c.html" class="external-link">c</a></span><span class="op">(</span><span class="st">"Recurring AE"</span>, <span class="st">"Rare SAE"</span><span class="op">)</span>,</span>
 <span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
 <span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
 <span><span class="op">)</span></span></code></pre></div>
@@ -332,7 +332,7 @@ Suppl 1:S2-15</li>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

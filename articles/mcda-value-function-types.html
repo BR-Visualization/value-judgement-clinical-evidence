@@ -7,8 +7,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 <title>MCDA Value Function Types • valueJudgementCE</title>
 <script src="../deps/jquery-3.6.0/jquery-3.6.0.min.js"></script><meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-<link href="../deps/bootstrap-5.3.1/bootstrap.min.css" rel="stylesheet">
-<script src="../deps/bootstrap-5.3.1/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
+<link href="../deps/bootstrap-5.3.8/bootstrap.min.css" rel="stylesheet">
+<script src="../deps/bootstrap-5.3.8/bootstrap.bundle.min.js"></script><link href="../deps/font-awesome-6.5.2/css/all.min.css" rel="stylesheet">
 <link href="../deps/font-awesome-6.5.2/css/v4-shims.min.css" rel="stylesheet">
 <script src="../deps/headroom-0.11.0/headroom.min.js"></script><script src="../deps/headroom-0.11.0/jQuery.headroom.min.js"></script><script src="../deps/bootstrap-toc-1.0.1/bootstrap-toc.min.js"></script><script src="../deps/clipboard.js-2.0.11/clipboard.min.js"></script><script src="../deps/search-1.0.0/autocomplete.jquery.min.js"></script><script src="../deps/search-1.0.0/fuse.min.js"></script><script src="../deps/search-1.0.0/mark.min.js"></script><!-- pkgdown --><script src="../pkgdown.js"></script><meta property="og:title" content="MCDA Value Function Types">
 </head>
@@ -96,10 +96,10 @@ clinical reality and stakeholder preferences.</p>
 change has equal importance</p>
 <p><strong>Increasing direction</strong> (higher is better, e.g.,
 efficacy):
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>100</mn><mo>×</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow></mfrac></mrow><annotation encoding="application/x-tex">v(x) = 100 \times \frac{x - \text{min}}{\text{max} - \text{min}}</annotation></semantics></math></p>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>100</mn><mo>×</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow></mfrac></mrow><annotation encoding="application/x-tex">v(x) = 100 \times \frac{x - \text{min}}{\text{max} - \text{min}}</annotation></semantics></math></p>
 <p><strong>Decreasing direction</strong> (lower is better, e.g., adverse
 events):
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>100</mn><mo>×</mo><mfrac><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mi>x</mi></mrow><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow></mfrac></mrow><annotation encoding="application/x-tex">v(x) = 100 \times \frac{\text{max} - x}{\text{max} - \text{min}}</annotation></semantics></math></p>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>100</mn><mo>×</mo><mfrac><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mi>x</mi></mrow><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow></mfrac></mrow><annotation encoding="application/x-tex">v(x) = 100 \times \frac{\text{max} - x}{\text{max} - \text{min}}</annotation></semantics></math></p>
 <p><img src="mcda-value-function-types_files/figure-html/linear-example-1.png" class="r-plt" alt="" width="960"></p>
 <p><strong>When to use:</strong> - Default choice (FDA/EMA
 recommendation) - No strong evidence of non-linear preferences -
@@ -139,9 +139,9 @@ linear</p>
 <p><strong>Description</strong>: Curved relationship reflecting risk
 attitudes</p>
 <p><strong>Risk-averse (diminishing returns)</strong>, b &gt; 1:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>100</mn><mo>×</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>b</mi></msup></mrow><annotation encoding="application/x-tex">v(x) = 100 \times \left(\frac{x - \text{min}}{\text{max} - \text{min}}\right)^b</annotation></semantics></math></p>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>100</mn><mo>×</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>b</mi></msup></mrow><annotation encoding="application/x-tex">v(x) = 100 \times \left(\frac{x - \text{min}}{\text{max} - \text{min}}\right)^b</annotation></semantics></math></p>
 <p><strong>Risk-seeking (increasing returns)</strong>, 0 &lt; b &lt; 1:
-<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mn>100</mn><mo>×</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>b</mi></msup></mrow><annotation encoding="application/x-tex">v(x) = 100 \times \left(\frac{x - \text{min}}{\text{max} - \text{min}}\right)^b</annotation></semantics></math></p>
+<math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mn>100</mn><mo>×</mo><msup><mrow><mo stretchy="true" form="prefix">(</mo><mfrac><mrow><mi>x</mi><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow><mrow><mtext mathvariant="normal">max</mtext><mo>−</mo><mtext mathvariant="normal">min</mtext></mrow></mfrac><mo stretchy="true" form="postfix">)</mo></mrow><mi>b</mi></msup></mrow><annotation encoding="application/x-tex">v(x) = 100 \times \left(\frac{x - \text{min}}{\text{max} - \text{min}}\right)^b</annotation></semantics></math></p>
 <p><img src="mcda-value-function-types_files/figure-html/exponential-example-1.png" class="r-plt" alt="" width="960"></p>
 <p><strong>When to use:</strong> - Stakeholder elicitation reveals
 non-linear preferences - Diminishing returns clinically meaningful
@@ -163,7 +163,7 @@ than linear</p>
 </h3>
 <p><strong>Description</strong>: Slow change at extremes, rapid change
 in middle</p>
-<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo stretchy="true" form="postfix">)</mo></mrow><mo>=</mo><mfrac><mn>100</mn><mrow><mn>1</mn><mo>+</mo><mo>exp</mo><mrow><mo stretchy="true" form="prefix">(</mo><mo>−</mo><mi>k</mi><mo>×</mo><mrow><mo stretchy="true" form="prefix">(</mo><mi>x</mi><mo>−</mo><mtext mathvariant="normal">midpoint</mtext><mo stretchy="true" form="postfix">)</mo></mrow><mo stretchy="true" form="postfix">)</mo></mrow></mrow></mfrac></mrow><annotation encoding="application/x-tex">v(x) = \frac{100}{1 + \exp(-k \times (x - \text{midpoint}))}</annotation></semantics></math></p>
+<p><math display="block" xmlns="http://www.w3.org/1998/Math/MathML"><semantics><mrow><mi>v</mi><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo stretchy="false" form="postfix">)</mo><mo>=</mo><mfrac><mn>100</mn><mrow><mn>1</mn><mo>+</mo><mrow><mi mathvariant="normal">exp</mi><mo>⁡</mo></mrow><mo stretchy="false" form="prefix">(</mo><mi>−</mi><mi>k</mi><mo>×</mo><mo stretchy="false" form="prefix">(</mo><mi>x</mi><mo>−</mo><mtext mathvariant="normal">midpoint</mtext><mo stretchy="false" form="postfix">)</mo><mo stretchy="false" form="postfix">)</mo></mrow></mfrac></mrow><annotation encoding="application/x-tex">v(x) = \frac{100}{1 + \exp(-k \times (x - \text{midpoint}))}</annotation></semantics></math></p>
 <p><img src="mcda-value-function-types_files/figure-html/sigmoid-example-1.png" class="r-plt" alt="" width="960"></p>
 <p><strong>When to use:</strong> - Threshold effects (outcome “tips” at
 clinical cutpoint) - Very low/high values matter less than mid-range -
@@ -426,7 +426,7 @@ throughout the package.</p>
 </div>
 
 <div class="pkgdown-footer-right">
-  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 2.2.0.</p>
+  <p>Site built with <a href="https://pkgdown.r-lib.org/">pkgdown</a> 2.2.1.</p>
 </div>
 
     </footer>

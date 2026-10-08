@@ -12,30 +12,30 @@ corr
 
 A data frame with 100 rows and 6 columns:
 
-- Benefit 1:
+- Primary Efficacy:
 
   Continuous variable representing first benefit measure
 
-- Benefit 2:
+- Secondary Efficacy:
 
   Continuous variable representing second benefit measure, correlated
-  with Benefit 1 (r = 0.6)
+  with Primary Efficacy (r = 0.6)
 
-- Benefit 3:
+- Quality of Life:
 
   Continuous variable representing third benefit measure
 
-- Risk 1:
+- Recurring AE:
 
   Continuous variable representing first risk measure, correlated with
   all three benefits (r = 0.3, 0.2, -0.5)
 
-- Risk 2:
+- Rare SAE:
 
   Continuous variable representing second risk measure, correlated with
-  benefits and Risk 1
+  benefits and Recurring AE
 
-- Risk 3:
+- Liver Toxicity:
 
   Continuous variable representing third risk measure, correlated with
   all previous variables

@@ -57,27 +57,27 @@ intervals for plotting.
 ``` r
 # Load or create a sample dataset `effects_table`
 head(effects_table)
-#>    Factor     Grouped_Outcome   Outcome                Statistics       Type
-#> 1 Benefit Clinical Assessment Benefit 1     % Achieving Remission     Binary
-#> 2 Benefit Clinical Assessment Benefit 2 Mean Change from Baseline Continuous
-#> 3 Benefit     Quality of Life Benefit 3 Mean Change from Baseline Continuous
-#> 4    Risk       Adverse Event    Risk 1                Event Rate     Binary
-#> 5    Risk       Adverse Event    Risk 2            Incidence Rate     Binary
-#> 6    Risk            Toxicity    Risk 3            Incidence Rate     Binary
-#>   Rate_Type Outcome_Status Filter Category   Trt1 nSub1   N1 Prop1 Dur1
-#> 1      <NA>     Identified   None      All Drug A   300 1000 0.460  365
-#> 2      <NA>     Identified   None      All Drug A    NA 1000    NA  365
-#> 3      <NA>     Identified   None      All Drug A    NA 1000    NA   NA
-#> 4 EventRate     Identified   None      All Drug A   300 1000 0.190  365
-#> 5   IncRate     Identified   None      All Drug A    15 1000 0.015  365
-#> 6   IncRate      Potential   None      All Drug A     4 1000 0.004  365
-#>   100PYAR1 IncRate1 nEvent1 100PEY1 EventRate1 Mean1 Se1 Sd1 Drug_Status
-#> 1       NA       NA      NA      NA         NA    NA  NA  NA    Approved
-#> 2       NA       NA      NA      NA         NA    20  NA  16    Approved
-#> 3       NA       NA      NA      NA         NA    60  NA  60    Approved
-#> 4       NA       NA     750    1000       0.75    NA  NA  NA    Approved
-#> 5     1000    0.300      NA      NA         NA    NA  NA  NA    Approved
-#> 6     1000    0.015      NA      NA         NA    NA  NA  NA    Approved
+#>    Factor     Grouped_Outcome            Outcome                Statistics
+#> 1 Benefit Clinical Assessment   Primary Efficacy     % Achieving Remission
+#> 2 Benefit Clinical Assessment Secondary Efficacy Mean Change from Baseline
+#> 3 Benefit     Quality of Life    Quality of Life Mean Change from Baseline
+#> 4    Risk       Adverse Event       Recurring AE                Event Rate
+#> 5    Risk       Adverse Event           Rare SAE            Incidence Rate
+#> 6    Risk            Toxicity     Liver Toxicity            Incidence Rate
+#>         Type Rate_Type Outcome_Status Filter Category   Trt1 nSub1   N1 Prop1
+#> 1     Binary      <NA>     Identified   None      All Drug A   300 1000 0.460
+#> 2 Continuous      <NA>     Identified   None      All Drug A    NA 1000    NA
+#> 3 Continuous      <NA>     Identified   None      All Drug A    NA 1000    NA
+#> 4     Binary EventRate     Identified   None      All Drug A   300 1000 0.190
+#> 5     Binary   IncRate     Identified   None      All Drug A    15 1000 0.015
+#> 6     Binary   IncRate      Potential   None      All Drug A     4 1000 0.004
+#>   Dur1 100PYAR1 IncRate1 nEvent1 100PEY1 EventRate1 Mean1 Se1 Sd1 Drug_Status
+#> 1  365       NA       NA      NA      NA         NA    NA  NA  NA    Approved
+#> 2  365       NA       NA      NA      NA         NA    20  NA  16    Approved
+#> 3   NA       NA       NA      NA      NA         NA    60  NA  60    Approved
+#> 4  365       NA       NA     750    1000       0.75    NA  NA  NA    Approved
+#> 5  365     1000    0.300      NA      NA         NA    NA  NA  NA    Approved
+#> 6  365     1000    0.015      NA      NA         NA    NA  NA  NA    Approved
 #>      Trt2 nSub2   N2 Prop2 Dur2 100PYAR2 IncRate2 nEvent2 100PEY2 EventRate2
 #> 1 Placebo    50 1000 0.050  365       NA       NA      NA      NA         NA
 #> 2 Placebo    NA 1000    NA   NA       NA       NA      NA      NA         NA

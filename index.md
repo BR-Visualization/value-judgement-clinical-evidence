@@ -28,6 +28,7 @@ You can install the development version of valueJudgementCE from
 ### Recommended Installation
 
 ``` r
+
 # Install using pak (recommended)
 install.packages("pak")
 pak::pak("BR-Visualization/value-judgement-clinical-evidence")
@@ -36,6 +37,7 @@ pak::pak("BR-Visualization/value-judgement-clinical-evidence")
 ### Alternative Installation
 
 ``` r
+
 # Install using remotes
 install.packages("remotes")
 remotes::install_github("BR-Visualization/value-judgement-clinical-evidence")
@@ -63,6 +65,7 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 # Load the package and create the plot
 library(valueJudgementCE)
 
@@ -95,17 +98,18 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 
 effects_table_filtered <- effects_table |>
-  dplyr::filter(Outcome %in% c("Risk 1", "Benefit 1"))
+  dplyr::filter(Outcome %in% c("Recurring AE", "Primary Efficacy"))
 
 generate_tradeoff_plot(
   data = effects_table_filtered,
   filter = "None",
   category = "All",
-  benefit = "Benefit 1",
-  risk = "Risk 1",
+  benefit = "Primary Efficacy",
+  risk = "Recurring AE",
   type_risk = "Crude proportions",
   type_graph = "Absolute risk",
   ci = "Yes",
@@ -147,6 +151,7 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 
 create_correlogram(corr)
@@ -172,6 +177,7 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 
 outcome <- c("Benefit", "Risk")
@@ -200,6 +206,7 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 library(cowplot)
 library(gtable)
@@ -273,6 +280,7 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 
 gensurv_combined(
@@ -308,6 +316,7 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 
 compare_value_function_types(
@@ -345,13 +354,14 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 
 create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 1",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug A",
   clinical_scales = clinical_scales,
   weights = weights
@@ -378,13 +388,14 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 
 create_mcda_waterfall(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales
 )
@@ -410,13 +421,14 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 
 create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales,
   show_frontier = TRUE,
@@ -444,6 +456,7 @@ Click to learn more
 Click to view sample code
 
 ``` r
+
 library(valueJudgementCE)
 
 mcda_tornado(
@@ -460,6 +473,7 @@ mcda_tornado(
 If you use this package in your research, please cite:
 
 ``` r
+
 citation("valueJudgementCE")
 ```
 

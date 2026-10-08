@@ -109,11 +109,11 @@ data(mcda_data)
 
 # Define clinical scales
 clinical_scales <- list(
-  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+  `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+  `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+  `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+  `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
 # Create waterfall chart for a specific study
@@ -121,8 +121,8 @@ waterfall_plot <- create_mcda_waterfall(
   data = mcda_data,
   comparator_name = "Placebo",
   study = "Study 1",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   clinical_scales = clinical_scales
 )
 
@@ -131,19 +131,19 @@ waterfall_plot <- create_mcda_waterfall(
 waterfall_all <- create_mcda_waterfall(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   clinical_scales = clinical_scales
 )
 
 # With custom weights and colors
 if (FALSE) { # \dontrun{
 weights <- c(
-  `Benefit 1` = 0.30,
-  `Benefit 2` = 0.20,
-  `Benefit 3` = 0.10,
-  `Risk 1` = 0.30,
-  `Risk 2` = 0.10
+  `Primary Efficacy` = 0.30,
+  `Secondary Efficacy` = 0.20,
+  `Quality of Life` = 0.10,
+  `Recurring AE` = 0.30,
+  `Rare SAE` = 0.10
 )
 
 # Custom colors for benefits and risks
@@ -151,8 +151,8 @@ custom_colors <- c("Benefit" = "#4ECDC4", "Risk" = "#FF6B6B")
 
 waterfall_custom <- create_mcda_waterfall(
   data = mcda_data,
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales
 )

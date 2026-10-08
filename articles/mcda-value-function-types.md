@@ -27,10 +27,14 @@ reality and stakeholder preferences.
 importance
 
 **Increasing direction** (higher is better, e.g., efficacy):
-$$v(x) = 100 \times \frac{x - \text{min}}{\text{max} - \text{min}}$$
+``` math
+v(x) = 100 \times \frac{x - \text{min}}{\text{max} - \text{min}}
+```
 
 **Decreasing direction** (lower is better, e.g., adverse events):
-$$v(x) = 100 \times \frac{\text{max} - x}{\text{max} - \text{min}}$$
+``` math
+v(x) = 100 \times \frac{\text{max} - x}{\text{max} - \text{min}}
+```
 
 ![](mcda-value-function-types_files/figure-html/linear-example-1.png)
 
@@ -77,10 +81,14 @@ placement needs rationale - More complex than linear
 **Description**: Curved relationship reflecting risk attitudes
 
 **Risk-averse (diminishing returns)**, b \> 1:
-$$v(x) = 100 \times \left( \frac{x - \text{min}}{\text{max} - \text{min}} \right)^{b}$$
+``` math
+v(x) = 100 \times \left(\frac{x - \text{min}}{\text{max} - \text{min}}\right)^b
+```
 
 **Risk-seeking (increasing returns)**, 0 \< b \< 1:
-$$v(x) = 100 \times \left( \frac{x - \text{min}}{\text{max} - \text{min}} \right)^{b}$$
+``` math
+v(x) = 100 \times \left(\frac{x - \text{min}}{\text{max} - \text{min}}\right)^b
+```
 
 ![](mcda-value-function-types_files/figure-html/exponential-example-1.png)
 
@@ -105,7 +113,9 @@ parameter selection subjective - Less transparent than linear
 
 **Description**: Slow change at extremes, rapid change in middle
 
-$$v(x) = \frac{100}{1 + \exp\left( - k \times \left( x - \text{midpoint} \right) \right)}$$
+``` math
+v(x) = \frac{100}{1 + \exp(-k \times (x - \text{midpoint}))}
+```
 
 ![](mcda-value-function-types_files/figure-html/sigmoid-example-1.png)
 

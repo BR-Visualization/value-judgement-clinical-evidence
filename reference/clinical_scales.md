@@ -16,23 +16,23 @@ data(clinical_scales)
 
 A named list with 5 elements (one per criterion):
 
-- Benefit 1:
+- Primary Efficacy:
 
   list(min = 0, max = 1, direction = "increasing")
 
-- Benefit 2:
+- Secondary Efficacy:
 
   list(min = 0, max = 100, direction = "decreasing")
 
-- Benefit 3:
+- Quality of Life:
 
   list(min = 0, max = 100, direction = "increasing")
 
-- Risk 1:
+- Recurring AE:
 
   list(min = 0, max = 0.5, direction = "decreasing")
 
-- Risk 2:
+- Rare SAE:
 
   list(min = 0, max = 0.3, direction = "decreasing")
 

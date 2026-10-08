@@ -15,23 +15,23 @@ data(weights)
 
 A named numeric vector with 5 elements:
 
-- Benefit 1:
+- Primary Efficacy:
 
   0.30
 
-- Benefit 2:
+- Secondary Efficacy:
 
   0.20
 
-- Benefit 3:
+- Quality of Life:
 
   0.10
 
-- Risk 1:
+- Recurring AE:
 
   0.30
 
-- Risk 2:
+- Rare SAE:
 
   0.10
 

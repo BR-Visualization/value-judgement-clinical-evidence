@@ -123,19 +123,19 @@ data(mcda_data)
 
 # Define clinical scales
 clinical_scales <- list(
-  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+  `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+  `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+  `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+  `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
 # Create benefit-risk map (no title/subtitle by default)
 brmap_plot <- create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   clinical_scales = clinical_scales
 )
 
@@ -143,8 +143,8 @@ brmap_plot <- create_mcda_brmap(
 brmap_with_titles <- create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   clinical_scales = clinical_scales,
   show_title = TRUE,
   show_subtitle = TRUE
@@ -153,11 +153,11 @@ brmap_with_titles <- create_mcda_brmap(
 # With custom weights and colors
 if (FALSE) { # \dontrun{
 weights <- c(
-  `Benefit 1` = 0.30,
-  `Benefit 2` = 0.20,
-  `Benefit 3` = 0.10,
-  `Risk 1` = 0.30,
-  `Risk 2` = 0.10
+  `Primary Efficacy` = 0.30,
+  `Secondary Efficacy` = 0.20,
+  `Quality of Life` = 0.10,
+  `Recurring AE` = 0.30,
+  `Rare SAE` = 0.10
 )
 
 # Custom colors for treatments
@@ -170,8 +170,8 @@ custom_colors <- c(
 
 brmap_custom <- create_mcda_brmap(
   data = mcda_data,
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales,
   fig_colors = custom_colors,
@@ -182,8 +182,8 @@ brmap_custom <- create_mcda_brmap(
 brmap_title_only <- create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   clinical_scales = clinical_scales,
   show_title = TRUE,
   show_subtitle = FALSE

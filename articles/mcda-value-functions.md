@@ -1,6 +1,7 @@
 # MCDA Clinical Threshold-Based Normalization
 
 ``` r
+
 library(valueJudgementCE)
 ```
 
@@ -33,12 +34,14 @@ thresholds:
 **For “increasing” direction (higher is better):**
 
 ``` r
+
 v(x) = 100 * (x - min) / (max - min)
 ```
 
 **For “decreasing” direction (lower is better):**
 
 ``` r
+
 v(x) = 100 * (max - x) / (max - min)
 ```
 
@@ -65,6 +68,7 @@ treatment values.
 Each criterion requires three parameters:
 
 ``` r
+
 clinical_scales <- list(
   `Criterion Name` = list(
     min = 0,                  # Lower threshold
@@ -86,30 +90,33 @@ Important Difference (MCID), or regulatory precedents.
 ### Prepare Data
 
 ``` r
+
 mcda_data <- prepare_mcda_data(effects_table)
 ```
 
 ### Define Clinical Scales
 
 ``` r
+
 clinical_scales <- list(
-  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+  `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+  `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+  `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+  `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 ```
 
 ### Define Weights
 
 ``` r
+
 weights <- c(
-  `Benefit 1` = 0.30,
-  `Benefit 2` = 0.20,
-  `Benefit 3` = 0.10,
-  `Risk 1` = 0.30,
-  `Risk 2` = 0.10
+  `Primary Efficacy` = 0.30,
+  `Secondary Efficacy` = 0.20,
+  `Quality of Life` = 0.10,
+  `Recurring AE` = 0.30,
+  `Rare SAE` = 0.10
 )
 ```
 
@@ -118,11 +125,12 @@ weights <- c(
 **Comparison Plot: Shows normalized values and their difference**
 
 ``` r
+
 barplot_comparison <- create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 1",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug A",
   clinical_scales = clinical_scales
 )
@@ -135,11 +143,12 @@ Placebo)
 **Walkthrough Plot: Shows complete MCDA calculation**
 
 ``` r
+
 barplot_walkthrough <- create_mcda_walkthrough(
   data = mcda_data,
   study = "Study 1",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug A",
   weights = weights,
   clinical_scales = clinical_scales
@@ -149,12 +158,13 @@ barplot_walkthrough <- create_mcda_walkthrough(
 **Waterfall Plot: Shows cumulative contributions**
 
 ``` r
+
 # Show all active treatments compared to their study-specific comparators
 waterfall_all <- create_mcda_waterfall(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales
 )
@@ -164,8 +174,8 @@ waterfall_study1 <- create_mcda_waterfall(
   data = mcda_data,
   study = "Study 1",
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales
 )
@@ -216,6 +226,7 @@ across multiple drugs.
 Example: Drug has 19% adverse events, Placebo has 3% adverse events
 
 ``` r
+
 # Clinical scale: min=0%, max=50%, direction="decreasing"
 
 # Step 1: Normalize separately
