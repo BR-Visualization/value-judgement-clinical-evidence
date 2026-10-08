@@ -70,16 +70,16 @@ library(rlang)
 #'
 #' # Use only specific outcomes with no thresholds
 #' create_forest_dot_plot(prepared_data,
-#'   outcomes_with_thresholds = c("Benefit 1", "Benefit 2")
+#'   outcomes_with_thresholds = c("Primary Efficacy", "Secondary Efficacy")
 #' )
 #'
 #' # Custom thresholds with automatic direction detection
 #' dotforest_4pub <- create_forest_dot_plot(prepared_data,
 #'   outcomes_with_thresholds = list(
-#'     "Benefit 1" = 0.10,
-#'     "Benefit 2" = -20,
-#'     "Risk 1" = -0.05,
-#'     "Risk 2" = -0.07
+#'     "Primary Efficacy" = 0.10,
+#'     "Secondary Efficacy" = -20,
+#'     "Recurring AE" = -0.05,
+#'     "Rare SAE" = -0.07
 #'   )
 #' )
 #'
@@ -93,8 +93,8 @@ library(rlang)
 #' # Custom thresholds with explicit directions
 #' create_forest_dot_plot(prepared_data,
 #'   outcomes_with_thresholds = list(
-#'     "Benefit 1" = list(threshold = 0.10, direction = "greater"),
-#'     "Risk 1" = list(threshold = -0.05, direction = "less")
+#'     "Primary Efficacy" = list(threshold = 0.10, direction = "greater"),
+#'     "Recurring AE" = list(threshold = -0.05, direction = "less")
 #'   )
 #' )
 #'
@@ -105,8 +105,8 @@ library(rlang)
 #' # extends towards negative values (decreasing x direction)
 #' create_forest_dot_plot(prepared_data,
 #'   outcomes_with_thresholds = list(
-#'     "Benefit 1" = list(threshold = -0.15, direction = "less"),
-#'     "Benefit 2" = list(threshold = -0.10, direction = "less")
+#'     "Primary Efficacy" = list(threshold = -0.15, direction = "less"),
+#'     "Secondary Efficacy" = list(threshold = -0.10, direction = "less")
 #'   )
 #' )
 #'

@@ -47,10 +47,10 @@ all criteria.
 \examples{
 # Define clinical scales
 clinical_scales <- list(
-  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+  `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+  `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+  `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
 # Plot all criteria
@@ -62,7 +62,7 @@ all_plots <- plot_multiple_value_functions(
 \dontrun{
 selected_plots <- plot_multiple_value_functions(
   clinical_scales = clinical_scales,
-  criteria = c("Benefit 1", "Risk 1"),
+  criteria = c("Primary Efficacy", "Recurring AE"),
   ncol = 2
 )
 }

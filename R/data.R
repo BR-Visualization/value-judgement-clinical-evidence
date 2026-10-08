@@ -45,11 +45,11 @@ NULL
 #'     \item{Study}{Character: Study identifier (e.g., "Study 1", "Study 2")}
 #'     \item{Treatment}{Character: Treatment name (e.g., Placebo, Drug A,
 #'       Drug B, Drug C, Drug D)}
-#'     \item{Benefit 1}{Numeric: Binary benefit outcome (proportion scale 0-1)}
-#'     \item{Benefit 2}{Numeric: Continuous benefit outcome (original scale)}
-#'     \item{Benefit 3}{Numeric: Continuous benefit outcome (original scale)}
-#'     \item{Risk 1}{Numeric: Binary risk outcome (proportion scale 0-1)}
-#'     \item{Risk 2}{Numeric: Binary risk outcome (proportion scale 0-1)}
+#'     \item{Primary Efficacy}{Numeric: Binary benefit outcome (proportion scale 0-1)}
+#'     \item{Secondary Efficacy}{Numeric: Continuous benefit outcome (original scale)}
+#'     \item{Quality of Life}{Numeric: Continuous benefit outcome (original scale)}
+#'     \item{Recurring AE}{Numeric: Binary risk outcome (proportion scale 0-1)}
+#'     \item{Rare SAE}{Numeric: Binary risk outcome (proportion scale 0-1)}
 #'   }
 #' @details
 #'   This dataset contains raw values (not differences from comparator) for
@@ -72,11 +72,11 @@ NULL
 #'
 #' # Define clinical scales
 #' clinical_scales <- list(
-#'   `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-#'   `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-#'   `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-#'   `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-#'   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+#'   `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+#'   `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+#'   `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+#'   `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+#'   `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 #' )
 #'
 #' # Analyze a specific study
@@ -84,8 +84,8 @@ NULL
 #'   data = mcda_data,
 #'   study = "Study 1",
 #'   comparison_drug = "Drug A",
-#'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-#'   risk_criteria = c("Risk 1", "Risk 2"),
+#'   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+#'   risk_criteria = c("Recurring AE", "Rare SAE"),
 #'   clinical_scales = clinical_scales
 #' )
 #'
@@ -93,8 +93,8 @@ NULL
 #' waterfall_all <- create_mcda_waterfall(
 #'   data = mcda_data,
 #'   comparator_name = "Placebo",
-#'   benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-#'   risk_criteria = c("Risk 1", "Risk 2"),
+#'   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+#'   risk_criteria = c("Recurring AE", "Rare SAE"),
 #'   clinical_scales = clinical_scales
 #' )
 #' }
@@ -113,11 +113,11 @@ NULL
 #' @usage data(clinical_scales)
 #' @format A named list with 5 elements (one per criterion):
 #'   \describe{
-#'     \item{Benefit 1}{list(min = 0, max = 1,   direction = "increasing")}
-#'     \item{Benefit 2}{list(min = 0, max = 100, direction = "decreasing")}
-#'     \item{Benefit 3}{list(min = 0, max = 100, direction = "increasing")}
-#'     \item{Risk 1}{list(min = 0, max = 0.5, direction = "decreasing")}
-#'     \item{Risk 2}{list(min = 0, max = 0.3, direction = "decreasing")}
+#'     \item{Primary Efficacy}{list(min = 0, max = 1,   direction = "increasing")}
+#'     \item{Secondary Efficacy}{list(min = 0, max = 100, direction = "decreasing")}
+#'     \item{Quality of Life}{list(min = 0, max = 100, direction = "increasing")}
+#'     \item{Recurring AE}{list(min = 0, max = 0.5, direction = "decreasing")}
+#'     \item{Rare SAE}{list(min = 0, max = 0.3, direction = "decreasing")}
 #'   }
 #' @seealso \code{\link{mcda_data}}, \code{\link{weights}},
 #'   \code{\link{create_mcda_barplot_comparison}}
@@ -133,11 +133,11 @@ NULL
 #' @usage data(weights)
 #' @format A named numeric vector with 5 elements:
 #'   \describe{
-#'     \item{Benefit 1}{0.30}
-#'     \item{Benefit 2}{0.20}
-#'     \item{Benefit 3}{0.10}
-#'     \item{Risk 1}{0.30}
-#'     \item{Risk 2}{0.10}
+#'     \item{Primary Efficacy}{0.30}
+#'     \item{Secondary Efficacy}{0.20}
+#'     \item{Quality of Life}{0.10}
+#'     \item{Recurring AE}{0.30}
+#'     \item{Rare SAE}{0.10}
 #'   }
 #' @seealso \code{\link{mcda_data}}, \code{\link{clinical_scales}},
 #'   \code{\link{create_mcda_barplot_comparison}}
@@ -161,15 +161,15 @@ NULL
 #' @name corr
 #' @format A data frame with 100 rows and 6 columns:
 #'   \describe{
-#'   \item{Benefit 1}{Continuous variable representing first benefit measure}
-#'   \item{Benefit 2}{Continuous variable representing second benefit
-#'     measure, correlated with Benefit 1 (r = 0.6)}
-#'   \item{Benefit 3}{Continuous variable representing third benefit measure}
-#'   \item{Risk 1}{Continuous variable representing first risk measure,
+#'   \item{Primary Efficacy}{Continuous variable representing first benefit measure}
+#'   \item{Secondary Efficacy}{Continuous variable representing second benefit
+#'     measure, correlated with Primary Efficacy (r = 0.6)}
+#'   \item{Quality of Life}{Continuous variable representing third benefit measure}
+#'   \item{Recurring AE}{Continuous variable representing first risk measure,
 #'     correlated with all three benefits (r = 0.3, 0.2, -0.5)}
-#'   \item{Risk 2}{Continuous variable representing second risk measure,
-#'     correlated with benefits and Risk 1}
-#'   \item{Risk 3}{Continuous variable representing third risk measure,
+#'   \item{Rare SAE}{Continuous variable representing second risk measure,
+#'     correlated with benefits and Recurring AE}
+#'   \item{Liver Toxicity}{Continuous variable representing third risk measure,
 #'     correlated with all previous variables}
 #'   }
 #' @details This dataset contains simulated data with all continuous

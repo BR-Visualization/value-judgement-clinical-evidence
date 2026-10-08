@@ -11,11 +11,11 @@ treatment) and 7 columns:
 \item{Study}{Character: Study identifier (e.g., "Study 1", "Study 2")}
 \item{Treatment}{Character: Treatment name (e.g., Placebo, Drug A,
 Drug B, Drug C, Drug D)}
-\item{Benefit 1}{Numeric: Binary benefit outcome (proportion scale 0-1)}
-\item{Benefit 2}{Numeric: Continuous benefit outcome (original scale)}
-\item{Benefit 3}{Numeric: Continuous benefit outcome (original scale)}
-\item{Risk 1}{Numeric: Binary risk outcome (proportion scale 0-1)}
-\item{Risk 2}{Numeric: Binary risk outcome (proportion scale 0-1)}
+\item{Primary Efficacy}{Numeric: Binary benefit outcome (proportion scale 0-1)}
+\item{Secondary Efficacy}{Numeric: Continuous benefit outcome (original scale)}
+\item{Quality of Life}{Numeric: Continuous benefit outcome (original scale)}
+\item{Recurring AE}{Numeric: Binary risk outcome (proportion scale 0-1)}
+\item{Rare SAE}{Numeric: Binary risk outcome (proportion scale 0-1)}
 }
 }
 \usage{
@@ -48,11 +48,11 @@ head(mcda_data)
 
 # Define clinical scales
 clinical_scales <- list(
-  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+  `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+  `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+  `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+  `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
 # Analyze a specific study
@@ -60,8 +60,8 @@ barplot_study1 <- create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 1",
   comparison_drug = "Drug A",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   clinical_scales = clinical_scales
 )
 
@@ -69,8 +69,8 @@ barplot_study1 <- create_mcda_barplot_comparison(
 waterfall_all <- create_mcda_waterfall(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   clinical_scales = clinical_scales
 )
 }

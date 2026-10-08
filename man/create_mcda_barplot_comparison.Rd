@@ -70,28 +70,29 @@ data(mcda_data)
 
 # View the data structure - each study has comparator and active treatment
 head(mcda_data)
-#   Study      Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
-# 1 Study 1    Placebo      0.05        65         9   0.30  0.087
-# 2 Study 1    Drug A       0.46        20        60   0.46  0.100
-# 3 Study 2    Placebo      0.05        65         9   0.30  0.087
-# 4 Study 2    Drug B       ...          ...        ...  ...   ...
+#     Study Treatment Primary Efficacy Secondary Efficacy Quality of Life
+# 1 Study 1   Placebo             0.05                 65               9
+# 2 Study 1    Drug A             0.46                 20              60
+# 3 Study 2   Placebo             0.06                 50              15
+# 4 Study 2    Drug B             0.20                 14              18
+# (plus columns `Recurring AE` and `Rare SAE`)
 
 # Define clinical scales
 clinical_scales <- list(
-  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+  `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+  `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+  `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+  `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
 # Define weights from stakeholder elicitation
 weights <- c(
-  `Benefit 1` = 0.30,
-  `Benefit 2` = 0.20,
-  `Benefit 3` = 0.10,
-  `Risk 1` = 0.30,
-  `Risk 2` = 0.10
+  `Primary Efficacy` = 0.30,
+  `Secondary Efficacy` = 0.20,
+  `Quality of Life` = 0.10,
+  `Recurring AE` = 0.30,
+  `Rare SAE` = 0.10
 )
 
 # Create comparison barplot for a specific study
@@ -99,8 +100,8 @@ weights <- c(
 barplot_comp_a <- create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 1",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug A",
   clinical_scales = clinical_scales,
   weights = weights

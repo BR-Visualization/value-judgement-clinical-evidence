@@ -185,10 +185,10 @@ font_image01 <- max(10, fonts_7x5$p)
 dotforest_4pub <- create_forest_dot_plot(
   prepared_data,
   outcomes_with_thresholds = list(
-    "Benefit 1" = 0.10,
-    "Benefit 2" = -20,
-    "Risk 1" = -0.05,
-    "Risk 2" = -0.07
+    "Primary Efficacy" = 0.10,
+    "Secondary Efficacy" = -20,
+    "Recurring AE" = -0.05,
+    "Rare SAE" = -0.07
   ),
   base_font_size = font_image01
 )
@@ -203,7 +203,7 @@ save_pub_plot(
 
 # Trade-off plot (5×5)
 effects_table_filtered <- effects_table %>%
-  filter(Outcome %in% c("Risk 1", "Benefit 1"))
+  filter(Outcome %in% c("Recurring AE", "Primary Efficacy"))
 
 fonts_5x5 <- journal_fonts("double", 5, 5)
 font_image02 <- max(10, fonts_5x5$p)
@@ -211,8 +211,8 @@ tradeoff <- generate_tradeoff_plot(
   data = effects_table_filtered,
   filter = "None",
   category = "All",
-  benefit = "Benefit 1",
-  risk = "Risk 1",
+  benefit = "Primary Efficacy",
+  risk = "Recurring AE",
   type_risk = "Crude proportions",
   type_graph = "Absolute risk",
   ci = "Yes",
@@ -434,11 +434,11 @@ ggsave_custom(
 fonts_12x6 <- font_config(12, 6)
 data("mcda_data")
 clinical_scales <- list(
-  `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-  `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-  `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-  `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-  `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+  `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+  `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+  `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+  `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+  `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 )
 
 value_func_multiple <- plot_multiple_value_functions(
@@ -496,8 +496,8 @@ save_pub_plot(
 # ============================================================================
 
 weights <- c(
-  `Benefit 1` = 0.30, `Benefit 2` = 0.20, `Benefit 3` = 0.10,
-  `Risk 1` = 0.30, `Risk 2` = 0.10
+  `Primary Efficacy` = 0.30, `Secondary Efficacy` = 0.20, `Quality of Life` = 0.10,
+  `Recurring AE` = 0.30, `Rare SAE` = 0.10
 )
 
 # MCDA Comparison Plots (16×6)
@@ -506,8 +506,8 @@ fonts_16x6 <- journal_fonts("double", 16, 6, ncol = 2)
 barplot_comp_a <- create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 1",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug A",
   clinical_scales = clinical_scales,
   weights = weights,
@@ -526,8 +526,8 @@ save_pub_plot(
 barplot_comp_b <- create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 2",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug B",
   clinical_scales = clinical_scales,
   weights = weights,
@@ -547,8 +547,8 @@ ggsave_custom(
 barplot_comp_c <- create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 3",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug C",
   clinical_scales = clinical_scales,
   weights = weights,
@@ -568,8 +568,8 @@ ggsave_custom(
 barplot_comp_d <- create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 4",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug D",
   clinical_scales = clinical_scales,
   weights = weights,
@@ -590,8 +590,8 @@ ggsave_custom(
 waterfall_all <- create_mcda_waterfall(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales,
   base_font_size = fonts_16x6$p
@@ -610,8 +610,8 @@ fonts_8x8 <- journal_fonts("double", 8, 8)
 brmap_all <- create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales,
   show_frontier = TRUE,

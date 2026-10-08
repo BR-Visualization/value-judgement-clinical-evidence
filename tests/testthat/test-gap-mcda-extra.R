@@ -12,7 +12,7 @@ test_that("create_mcda_waterfall validates missing data and criteria", {
     create_mcda_waterfall(
       data = create_sample_mcda_data_gap(),
       benefit_criteria = NULL,
-      risk_criteria = c("Risk 1")
+      risk_criteria = c("Recurring AE")
     ),
     "Both benefit_criteria and risk_criteria must be specified"
   )
@@ -24,8 +24,8 @@ test_that("create_mcda_waterfall returns ggplot object", {
   result <- create_mcda_waterfall(
     data = mcda_data,
     comparator_name = "Placebo",
-    benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-    risk_criteria = c("Risk 1", "Risk 2"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+    risk_criteria = c("Recurring AE", "Rare SAE"),
     clinical_scales = create_clinical_scales_gap()
   )
 
@@ -44,8 +44,8 @@ test_that("create_mcda_brmap validates missing data and returns ggplot", {
   result <- create_mcda_brmap(
     data = mcda_data,
     comparator_name = "Placebo",
-    benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-    risk_criteria = c("Risk 1", "Risk 2"),
+    benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+    risk_criteria = c("Recurring AE", "Rare SAE"),
     clinical_scales = create_clinical_scales_gap(),
     show_title = TRUE,
     show_subtitle = TRUE

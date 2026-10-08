@@ -1,6 +1,6 @@
 testthat::test_that("create_forest_dot_plot returns patchwork object", {
   test_data <- data.frame(
-    Outcome = rep(c("Benefit 1", "Benefit 2"), each = 2),
+    Outcome = rep(c("Primary Efficacy", "Secondary Efficacy"), each = 2),
     Type = rep("Continuous", 4),
     Factor = rep("Benefit", 4),
     Trt1 = rep("Drug A", 4),
@@ -15,7 +15,7 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
   )
 
   test_data_bin <- data.frame(
-    Outcome = c("Risk 1", "Risk 2"),
+    Outcome = c("Recurring AE", "Rare SAE"),
     Type = rep("Binary", 2),
     Factor = rep("Risk", 2),
     Trt1 = rep("Drug A", 2),
@@ -35,10 +35,10 @@ testthat::test_that("create_forest_dot_plot returns patchwork object", {
   # Use outcomes_with_thresholds with explicit directions
   # instead of direction parameter
   outcomes_with_thresholds <- list(
-    "Benefit 1" = list(threshold = 0.10, direction = "greater"),
-    "Benefit 2" = list(threshold = 0.08, direction = "greater"),
-    "Risk 1" = list(threshold = -0.05, direction = "less"),
-    "Risk 2" = list(threshold = -0.03, direction = "less")
+    "Primary Efficacy" = list(threshold = 0.10, direction = "greater"),
+    "Secondary Efficacy" = list(threshold = 0.08, direction = "greater"),
+    "Recurring AE" = list(threshold = -0.05, direction = "less"),
+    "Rare SAE" = list(threshold = -0.03, direction = "less")
   )
 
   # Create the plot with the correct parameter
@@ -56,7 +56,7 @@ testthat::test_that(paste(
 ), {
   # Test data for benefit outcomes
   test_data_benefit <- data.frame(
-    Outcome = c("Benefit 1", "Benefit 2"),
+    Outcome = c("Primary Efficacy", "Secondary Efficacy"),
     Type = rep("Continuous", 2),
     Factor = rep("Benefit", 2),
     Trt1 = rep("Drug A", 2),
@@ -76,8 +76,8 @@ testthat::test_that(paste(
   # Use thresholds with direction = "less" for benefit outcomes
   # This should trigger axis reversal
   outcomes_with_thresholds <- list(
-    "Benefit 1" = list(threshold = -0.15, direction = "less"),
-    "Benefit 2" = list(threshold = -0.12, direction = "less")
+    "Primary Efficacy" = list(threshold = -0.15, direction = "less"),
+    "Secondary Efficacy" = list(threshold = -0.12, direction = "less")
   )
 
   # Create the plot - should reverse axis

@@ -1,11 +1,11 @@
 create_sample_mcda_data_gap <- function() {
   data.frame(
     Treatment = c("Placebo", "Drug A", "Drug B"),
-    `Benefit 1` = c(0.05, 0.46, 0.20),
-    `Benefit 2` = c(65, 20, 50),
-    `Benefit 3` = c(9, 60, 58),
-    `Risk 1` = c(0.03, 0.19, 0.18),
-    `Risk 2` = c(0.002, 0.015, 0.010),
+    `Primary Efficacy` = c(0.05, 0.46, 0.20),
+    `Secondary Efficacy` = c(65, 20, 50),
+    `Quality of Life` = c(9, 60, 58),
+    `Recurring AE` = c(0.03, 0.19, 0.18),
+    `Rare SAE` = c(0.002, 0.015, 0.010),
     check.names = FALSE,
     stringsAsFactors = FALSE
   )
@@ -13,21 +13,21 @@ create_sample_mcda_data_gap <- function() {
 
 create_clinical_scales_gap <- function() {
   list(
-    `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-    `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-    `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-    `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-    `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+    `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+    `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+    `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+    `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+    `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
   )
 }
 
 create_sample_weights_gap <- function() {
   c(
-    `Benefit 1` = 0.30,
-    `Benefit 2` = 0.20,
-    `Benefit 3` = 0.10,
-    `Risk 1` = 0.30,
-    `Risk 2` = 0.10
+    `Primary Efficacy` = 0.30,
+    `Secondary Efficacy` = 0.20,
+    `Quality of Life` = 0.10,
+    `Recurring AE` = 0.30,
+    `Rare SAE` = 0.10
   )
 }
 
@@ -73,8 +73,8 @@ create_tradeoff_args_gap <- function(data) {
     data = data,
     filter = "None",
     category = "All",
-    benefit = "Benefit 1",
-    risk = "Risk 1",
+    benefit = "Primary Efficacy",
+    risk = "Recurring AE",
     type_risk = "Crude proportions",
     type_graph = "Absolute risk",
     ci = "Yes",

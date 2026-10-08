@@ -68,7 +68,7 @@ Click to learn more
 - Documentation: Use `?create_forest_dot_plot` or
   `?prepare_forest_dot_data` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -113,7 +113,7 @@ Click to learn more
 - Documentation: Use `?generate_tradeoff_plot` for detailed function
   help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -131,14 +131,14 @@ Click to view sample code
 library(valueJudgementCE)
 
 effects_table_filtered <- effects_table |>
-  dplyr::filter(Outcome %in% c("Risk 1", "Benefit 1"))
+  dplyr::filter(Outcome %in% c("Recurring AE", "Primary Efficacy"))
 
 generate_tradeoff_plot(
   data = effects_table_filtered,
   filter = "None",
   category = "All",
-  benefit = "Benefit 1",
-  risk = "Risk 1",
+  benefit = "Primary Efficacy",
+  risk = "Recurring AE",
   type_risk = "Crude proportions",
   type_graph = "Absolute risk",
   ci = "Yes",
@@ -177,7 +177,7 @@ Click to learn more
 
 - Documentation: Use `?create_correlogram` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -214,7 +214,7 @@ Click to learn more
 
 - Documentation: Use `?scatter_plot` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -253,7 +253,7 @@ Click to learn more
 - Documentation: Use `?divergent_stacked_barchart` and
   `?stacked_barchart` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -338,7 +338,7 @@ Click to learn more
 
 - Documentation: Use `?gensurv_combined` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -386,7 +386,7 @@ Click to learn more
 - Documentation: Use `?compare_value_function_types` for detailed
   function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -436,7 +436,7 @@ Click to learn more
 - Documentation: Use `?create_mcda_barplot_comparison` for detailed
   function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -456,8 +456,8 @@ library(valueJudgementCE)
 create_mcda_barplot_comparison(
   data = mcda_data,
   study = "Study 1",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   comparison_drug = "Drug A",
   clinical_scales = clinical_scales,
   weights = weights
@@ -481,7 +481,7 @@ Click to learn more
 
 - Documentation: Use `?create_mcda_waterfall` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -501,8 +501,8 @@ library(valueJudgementCE)
 create_mcda_waterfall(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales
 )
@@ -525,7 +525,7 @@ Click to learn more
 
 - Documentation: Use `?create_mcda_brmap` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub
@@ -545,8 +545,8 @@ library(valueJudgementCE)
 create_mcda_brmap(
   data = mcda_data,
   comparator_name = "Placebo",
-  benefit_criteria = c("Benefit 1", "Benefit 2", "Benefit 3"),
-  risk_criteria = c("Risk 1", "Risk 2"),
+  benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
+  risk_criteria = c("Recurring AE", "Rare SAE"),
   weights = weights,
   clinical_scales = clinical_scales,
   show_frontier = TRUE,
@@ -571,7 +571,7 @@ Click to learn more
 
 - Documentation: Use `?mcda_tornado` for detailed function help
 - Issues: Report bugs at [GitHub
-  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
 - Discussions: Join discussions at [GitHub
   Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
 - Contact: Reach out to the package maintainers via GitHub

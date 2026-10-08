@@ -14,7 +14,7 @@ labs_bold(cond, bold, nonbold)
 \item{nonbold}{(\code{character})\cr which level to bold.}
 }
 \description{
-Selectively bold label for \code{\link[ggplot2:ggplot2-package]{ggplot2::ggplot2()}}.
+Selectively bold label for \code{\link[ggplot2:ggplot2]{ggplot2::ggplot2()}}.
 }
 \details{
 The function bold text in variable (\code{bold}) and concatenates it

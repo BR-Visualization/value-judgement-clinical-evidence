@@ -1,5 +1,24 @@
 # valueJudgementCE (Development)
 
+## ⚠️ Breaking Changes
+
+### Example Outcome Names Match the brcharts Publication
+
+- Renamed the generic outcomes in the example datasets (`effects_table`, `mcda_data`, `corr`, `clinical_scales`, `weights`). Code that refers to the old names must be updated:
+  - `Benefit 1` → `Primary Efficacy`
+  - `Benefit 2` → `Secondary Efficacy`
+  - `Benefit 3` → `Quality of Life`
+  - `Risk 1` → `Recurring AE`
+  - `Risk 2` → `Rare SAE`
+  - `Risk 3` → `Liver Toxicity`
+- Values are unchanged; only the names differ
+
+## 🐛 Bug Fixes
+
+- `effects_table`: Drug B's toxicity row was labelled `Risk 2` instead of `Risk 3`; it is now `Liver Toxicity`
+- `create_correlogram()`: x-axis label colors were shifted by one position (a risk outcome could appear in the benefit color); long axis labels now wrap instead of overlapping
+- `create_mcda_barplot_comparison()`, `create_mcda_walkthrough()` and `create_mcda_waterfall()`: value labels are no longer clipped at the panel edge
+
 ## ✨ New Features
 
 ### Value Function Visualization

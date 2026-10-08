@@ -4,11 +4,11 @@ library(valueJudgementCE)
 # Helper function to create sample clinical scales
 create_sample_clinical_scales <- function() {
   list(
-    `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-    `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-    `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-    `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-    `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+    `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+    `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+    `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+    `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+    `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
   )
 }
 
@@ -282,7 +282,7 @@ test_that("plot_multiple_value_functions handles specific criteria", {
 
   result <- plot_multiple_value_functions(
     clinical_scales = clinical_scales,
-    criteria = c("Benefit 1", "Risk 1")
+    criteria = c("Primary Efficacy", "Recurring AE")
   )
 
   expect_true(inherits(result, "patchwork"))
@@ -376,16 +376,16 @@ test_that("Integration: Full workflow with example data", {
 
   # Define clinical scales
   clinical_scales <- list(
-    `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-    `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-    `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-    `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-    `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+    `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+    `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+    `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+    `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+    `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
   )
 
   # Test single value function plot
   single_plot <- create_value_function_plot(
-    criterion_name = "Benefit 1",
+    criterion_name = "Primary Efficacy",
     min_val = 0,
     max_val = 1,
     direction = "increasing"
@@ -412,7 +412,7 @@ test_that("Integration: Full workflow with example data", {
   # Test with subset of criteria
   subset_plot <- plot_multiple_value_functions(
     clinical_scales = clinical_scales,
-    criteria = c("Benefit 1", "Risk 1", "Risk 2"),
+    criteria = c("Primary Efficacy", "Recurring AE", "Rare SAE"),
     ncol = 3
   )
   expect_true(inherits(subset_plot, "patchwork"))

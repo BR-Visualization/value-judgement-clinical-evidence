@@ -36,27 +36,29 @@
 #'
 #' # View the data structure - each row has raw values for a treatment
 #' head(mcda_data)
-#' #   Treatment Benefit 1 Benefit 2 Benefit 3 Risk 1 Risk 2
-#' # 1   Placebo      0.05        65         9   0.30  0.087
-#' # 2    Drug A      0.46        20        60   0.46  0.100
-#' # 3    Drug B      ...
+#' #     Study Treatment Primary Efficacy Secondary Efficacy Quality of Life
+#' # 1 Study 1   Placebo             0.05                 65               9
+#' # 2 Study 1    Drug A             0.46                 20              60
+#' # 3 Study 2   Placebo             0.06                 50              15
+#' # 4 Study 2    Drug B             0.20                 14              18
+#' # (plus columns `Recurring AE` and `Rare SAE`)
 #'
 #' # Define clinical scales
 #' clinical_scales <- list(
-#'   `Benefit 1` = list(min = 0, max = 1, direction = "increasing"),
-#'   `Benefit 2` = list(min = 0, max = 100, direction = "decreasing"),
-#'   `Benefit 3` = list(min = 0, max = 100, direction = "increasing"),
-#'   `Risk 1` = list(min = 0, max = 0.5, direction = "decreasing"),
-#'   `Risk 2` = list(min = 0, max = 0.3, direction = "decreasing")
+#'   `Primary Efficacy` = list(min = 0, max = 1, direction = "increasing"),
+#'   `Secondary Efficacy` = list(min = 0, max = 100, direction = "decreasing"),
+#'   `Quality of Life` = list(min = 0, max = 100, direction = "increasing"),
+#'   `Recurring AE` = list(min = 0, max = 0.5, direction = "decreasing"),
+#'   `Rare SAE` = list(min = 0, max = 0.3, direction = "decreasing")
 #' )
 #'
 #' # Define weights
 #' weights <- c(
-#'   `Benefit 1` = 0.30,
-#'   `Benefit 2` = 0.20,
-#'   `Benefit 3` = 0.10,
-#'   `Risk 1` = 0.30,
-#'   `Risk 2` = 0.10
+#'   `Primary Efficacy` = 0.30,
+#'   `Secondary Efficacy` = 0.20,
+#'   `Quality of Life` = 0.10,
+#'   `Recurring AE` = 0.30,
+#'   `Rare SAE` = 0.10
 #' )
 #'
 #' # Create sensitivity plot toggling criterion weight by 20 percent
@@ -82,7 +84,7 @@ mcda_tornado <- function(
 
   if (!is.numeric(weights)) {
     stop(
-      "`weights` must be a named numeric vector (e.g., c(`Benefit 1` = 0.3, ...)). ",
+      "`weights` must be a named numeric vector (e.g., c(`Primary Efficacy` = 0.3, ...)). ",
       "The name `weights` conflicts with a base R function \u2014 ensure you have defined ",
       "your own weights object, or load the example via data(weights)."
     )

@@ -1,7 +1,7 @@
 testthat::test_that("prepare_forest_dot_data computes CIs correctly", {
   # Test data with mixed continuous and binary data structure like real data
   test_data <- data.frame(
-    Outcome = c("Benefit 1", "Benefit 2", "Risk 1", "Risk 2"),
+    Outcome = c("Primary Efficacy", "Secondary Efficacy", "Recurring AE", "Rare SAE"),
     Type = c("Continuous", "Continuous", "Binary", "Binary"),
     Factor = c("Benefit", "Benefit", "Risk", "Risk"),
     Trt1 = rep("Drug A", 4),
@@ -22,7 +22,7 @@ testthat::test_that("prepare_forest_dot_data computes CIs correctly", {
 
   result <- valueJudgementCE::prepare_forest_dot_data(
     test_data,
-    outcomes_of_interest = c("Benefit 1", "Benefit 2", "Risk 1", "Risk 2"),
+    outcomes_of_interest = c("Primary Efficacy", "Secondary Efficacy", "Recurring AE", "Rare SAE"),
     treatment1 = "Drug A",
     treatment2 = "Placebo",
     filter_value = "None",
@@ -38,7 +38,7 @@ testthat::test_that("prepare_forest_dot_data computes CIs correctly", {
 
 testthat::test_that("prepare_forest_dot_data handles binary data", {
   test_data_bin <- data.frame(
-    Outcome = c("Risk 1", "Risk 2"),
+    Outcome = c("Recurring AE", "Rare SAE"),
     Type = rep("Binary", 2),
     Factor = rep("Risk", 2),
     Trt1 = rep("Drug A", 2),
@@ -61,7 +61,7 @@ testthat::test_that("prepare_forest_dot_data handles binary data", {
 
 testthat::test_that("prepare_forest_dot_data validates precalculated data", {
   test_data_bin <- data.frame(
-    Outcome = c("Risk 1"),
+    Outcome = c("Recurring AE"),
     Type = "Binary",
     Factor = "Risk",
     Trt1 = "Drug A",
@@ -88,7 +88,7 @@ testthat::test_that("prepare_forest_dot_data validates precalculated data", {
 
 testthat::test_that("prepare_forest_dot_data works with precalculated stats", {
   test_data <- data.frame(
-    Outcome = c("Benefit 1", "Benefit 2"),
+    Outcome = c("Primary Efficacy", "Secondary Efficacy"),
     Type = rep("Continuous", 2),
     Factor = rep("Benefit", 2),
     Trt1 = rep("Drug A", 2),
