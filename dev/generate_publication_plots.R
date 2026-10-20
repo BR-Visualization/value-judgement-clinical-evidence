@@ -705,7 +705,7 @@ ggsave_custom(
   dpi = 600
 )
 
-# MCDA Weight Sensitivity Plots (7×5), one chart per outcome for Drug A
+# MCDA Weight Sensitivity Plots (7×7), one chart per outcome for Drug A
 weight_sensitivity_data <- mcda_data |> dplyr::filter(Study == "Study 1")
 
 weight_sensitivity_sae <- mcda_weight_sensitivity(
@@ -714,7 +714,7 @@ weight_sensitivity_sae <- mcda_weight_sensitivity(
   clinical_scales = clinical_scales,
   criteria = "Rare SAE",
   shading = "hiview",
-  base_font_size = fonts_7x5$p
+  base_font_size = fonts_7x7$p
 )
 
 save_pub_plot(
@@ -722,7 +722,7 @@ save_pub_plot(
   weight_sensitivity_sae,
   layout = "double",
   original_width_in = 7,
-  original_height_in = 5
+  original_height_in = 7
 )
 
 for (criterion in setdiff(names(weights), "Rare SAE")) {
@@ -731,7 +731,7 @@ for (criterion in setdiff(names(weights), "Rare SAE")) {
     weights = weights,
     clinical_scales = clinical_scales,
     criteria = criterion,
-    base_font_size = fonts_7x5$p
+    base_font_size = fonts_7x7$p
   )
 
   ggsave_custom(
@@ -743,7 +743,7 @@ for (criterion in setdiff(names(weights), "Rare SAE")) {
     imgpath = "./",
     inplot = weight_sensitivity,
     wdth = 7,
-    hght = 5,
+    hght = 7,
     unts = "in",
     dpi = 600
   )

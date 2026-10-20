@@ -715,11 +715,11 @@ mcda_tornado(
 
 ## Figure - MCDA Weight Sensitivity Plot
 
-```{r mcda_weight_sensitivity, fig.width=7, fig.height=5, fig.retina=1, dpi=600, message = FALSE, echo = FALSE}
+```{r mcda_weight_sensitivity, fig.width=7, fig.height=7, fig.retina=1, dpi=600, message = FALSE, echo = FALSE}
 library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
-fonts <- font_config(7, 5)
+fonts <- font_config(7, 7)
 
 mcda_weight_sensitivity(
   data = mcda_data |> dplyr::filter(Study == "Study 1"),
