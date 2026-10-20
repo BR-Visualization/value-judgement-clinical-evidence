@@ -94,3 +94,38 @@ testthat::test_that(paste(
   # - Positive values on left, negative values on right
   # - Green shading extends towards negative values (right side)
 })
+
+testthat::test_that(paste(
+  "benefit outcomes with opposite directions get separate panels,",
+  "so only the lower-is-better one is drawn on a reversed axis"
+), {
+  prepared <- valueJudgementCE::prepare_forest_dot_data(
+    valueJudgementCE::effects_table
+  )
+  x_transform <- function(panel) {
+    panel[[1]]$scales$get_scales("x")$trans$name
+  }
+
+  # Secondary Efficacy: lower is better; Quality of Life: higher is better
+  mixed <- valueJudgementCE::create_forest_dot_plot(
+    prepared,
+    outcomes_with_thresholds = list(
+      "Secondary Efficacy" = -20,
+      "Quality of Life" = 10
+    )
+  )
+  testthat::expect_length(mixed, 2)
+  testthat::expect_equal(x_transform(mixed[[1]]), "reverse")
+  testthat::expect_equal(x_transform(mixed[[2]]), "identity")
+
+  # Outcomes with the same direction still share one panel
+  same <- valueJudgementCE::create_forest_dot_plot(
+    prepared,
+    outcomes_with_thresholds = list(
+      "Secondary Efficacy" = -20,
+      "Quality of Life" = list(threshold = 10, direction = "less")
+    )
+  )
+  testthat::expect_length(same, 1)
+  testthat::expect_equal(x_transform(same[[1]]), "reverse")
+})

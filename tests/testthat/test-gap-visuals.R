@@ -113,3 +113,10 @@ test_that("gensurv simulates expected columns", {
     c("eventtime", "diff", "obsv_duration", "obsv_unit")
   )
 })
+
+test_that("cumulative excess plot labels the risk outcome as AESI by default", {
+  # The plot counts subjects with an event (an incidence), so it uses AESI
+  # rather than Recurring AE, which is an event rate in the example data
+  expect_equal(formals(gensurv_plot)$risk_name, "AESI")
+  expect_equal(formals(gensurv_combined)$risk_name_p, "AESI")
+})
