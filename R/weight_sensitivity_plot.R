@@ -117,7 +117,7 @@ mcda_weight_sensitivity <- function(
   if (!is.numeric(weights) || is.null(names(weights))) {
     stop(
       "`weights` must be a named numeric vector (e.g., c(`Primary Efficacy` = 0.3, ...)). ",
-      "The name `weights` conflicts with a base R function — ensure you have defined ",
+      "The name `weights` conflicts with a base R function \u2014 ensure you have defined ",
       "your own weights object, or load the example via data(weights)."
     )
   }
