@@ -86,6 +86,8 @@
   Example MCDA data in wide format
 - [`mcda_tornado()`](https://pkgdown.r-lib.org/reference/mcda_tornado.md)
   : Create MCDA Tornado Plot
+- [`mcda_weight_sensitivity()`](https://pkgdown.r-lib.org/reference/mcda_weight_sensitivity.md)
+  : Create MCDA Weight Sensitivity Plot
 - [`plot_multiple_value_functions()`](https://pkgdown.r-lib.org/reference/plot_multiple_value_functions.md)
   : Compare Multiple Value Functions
 - [`prepare_br_calculated_ci()`](https://pkgdown.r-lib.org/reference/prepare_br_calculated_ci.md)

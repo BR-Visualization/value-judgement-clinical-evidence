@@ -19,6 +19,8 @@ clinical evidence”.
 - [Figure - MCDA Waterfall Plot](#figure---mcda-waterfall-plot)
 - [Figure - MCDA Benefit-Risk Map](#figure---mcda-benefit-risk-map)
 - [Figure - MCDA Tornado Plot](#figure---mcda-tornado-plot)
+- [Figure - MCDA Weight Sensitivity
+  Plot](#figure---mcda-weight-sensitivity-plot)
 
 ## Installation
 
@@ -463,6 +465,73 @@ mcda_tornado(
   data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
   comparator_name = "Placebo",
   comparison_drug = "Drug A",
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+```
+
+## Figure - MCDA Weight Sensitivity Plot
+
+![](reference/figures/README-mcda_weight_sensitivity-1.png)
+
+Click to learn more
+
+**About This Plot**
+
+- One-way sensitivity analysis on criterion weights, following Figures 6
+  and 7 of [Angelis and Phillips
+  (2021)](https://doi.org/10.1111/bcp.14425)
+- The weight on one criterion (here Rare SAE) is varied from 0% to 100%;
+  the other weights are rescaled proportionally so all weights still sum
+  to 1
+- Each line is a treatment’s overall weighted score; the red vertical
+  line marks the current weight
+- Open circles mark weights at which the preferred treatment changes
+- This figure uses `shading = "hiview"`, which reproduces the shading in
+  the article: the first band and every other band after it are shaded,
+  and nothing is shaded when the preferred treatment never changes
+- The default, `shading = "change"`, instead shades the weights at which
+  a different treatment would be preferred than at the current weight,
+  so the unshaded band around the red line shows how far the weight can
+  move before the decision changes; `shading = "none"` turns shading off
+
+**Getting Help**
+
+- Documentation: Use
+  [`?mcda_weight_sensitivity`](https://pkgdown.r-lib.org/reference/mcda_weight_sensitivity.md)
+  for detailed function help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)  
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+Click to view sample code
+
+``` r
+
+library(valueJudgementCE)
+
+# A single criterion, with shading as in Angelis and Phillips (2021)
+mcda_weight_sensitivity(
+  data = mcda_data |> dplyr::filter(Study == "Study 1"),
+  weights = weights,
+  clinical_scales = clinical_scales,
+  criteria = "Rare SAE",
+  shading = "hiview"
+)
+
+# Default shading: weights at which the preferred treatment would change
+mcda_weight_sensitivity(
+  data = mcda_data |> dplyr::filter(Study == "Study 1"),
+  weights = weights,
+  clinical_scales = clinical_scales,
+  criteria = "Recurring AE"
+)
+
+# All criteria, one panel each
+mcda_weight_sensitivity(
+  data = mcda_data |> dplyr::filter(Study == "Study 1"),
   weights = weights,
   clinical_scales = clinical_scales
 )
