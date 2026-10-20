@@ -705,23 +705,42 @@ ggsave_custom(
   dpi = 600
 )
 
-# MCDA Weight Sensitivity Plot (10×6)
-weight_sensitivity_b <- mcda_weight_sensitivity(
-  data = mcda_data |> dplyr::filter(Study == "Study 2"),
+# MCDA Weight Sensitivity Plots (10×6)
+weight_sensitivity_a <- mcda_weight_sensitivity(
+  data = mcda_data |> dplyr::filter(Study == "Study 1"),
   weights = weights,
   clinical_scales = clinical_scales,
   base_font_size = fonts_10x6$p
 )
 
-ggsave_custom(
-  "inst/img/other/mcda_weight_sensitivity_drug_b.png",
-  imgpath = "./",
-  inplot = weight_sensitivity_b,
-  wdth = 10,
-  hght = 6,
-  unts = "in",
-  dpi = 600
+save_pub_plot(
+  "inst/img/pub/image12_weight_sensitivity.tiff",
+  weight_sensitivity_a,
+  layout = "double",
+  original_width_in = 10,
+  original_height_in = 6
 )
+
+# Similar for drugs B, C, D...
+for (drug in c("B", "C", "D")) {
+  study <- c(B = "Study 2", C = "Study 3", D = "Study 4")[[drug]]
+  weight_sensitivity <- mcda_weight_sensitivity(
+    data = mcda_data |> dplyr::filter(Study == study),
+    weights = weights,
+    clinical_scales = clinical_scales,
+    base_font_size = fonts_10x6$p
+  )
+
+  ggsave_custom(
+    paste0("inst/img/other/mcda_weight_sensitivity_drug_", tolower(drug), ".png"),
+    imgpath = "./",
+    inplot = weight_sensitivity,
+    wdth = 10,
+    hght = 6,
+    unts = "in",
+    dpi = 600
+  )
+}
 
 message("All publication plots generated with journal-ready widths and consistent font scaling.")
 message("\nFont sizes used:")
