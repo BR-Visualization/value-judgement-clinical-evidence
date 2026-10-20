@@ -12,6 +12,8 @@ mcda_weight_sensitivity(
   fig_colors = NULL,
   ref_line_color = "#ca0020",
   show_crossovers = TRUE,
+  shading = c("change", "hiview", "none"),
+  shade_color = "#4EADD0",
   base_font_size = 9
 )
 }
@@ -44,14 +46,30 @@ weight. Default is "#ca0020".}
 \item{show_crossovers}{Logical; if TRUE (default), mark and label the
 weights at which the treatment with the highest overall score changes.}
 
+\item{shading}{Character string selecting how weight ranges are shaded.
+The ranges are the bands between crossovers, each with one preferred
+treatment.
+\itemize{
+\item \code{"change"} (default): shade the bands in which a different
+treatment is preferred than at the current weight.
+\item \code{"hiview"}: shade the first band and every other band
+after it, as in the Hiview software used for Figures 6 and 7 of
+Angelis and Phillips (2021). Nothing is shaded when the preferred
+treatment never changes.
+\item \code{"none"}: no shading.
+}}
+
+\item{shade_color}{Fill color for the shading. Default is "#4EADD0".}
+
 \item{base_font_size}{Numeric; base font size in points for all text
 elements in the plot (default: 9).}
 }
 \value{
 A ggplot object showing overall weighted score against the
 weight on each selected criterion, with one line per treatment.
-The underlying lines and crossover points are attached as the
-attributes \code{"sensitivity_lines"} and \code{"crossovers"}.
+The underlying lines, crossover points and preferred-treatment
+regions are attached as the attributes \code{"sensitivity_lines"},
+\code{"crossovers"} and \code{"preferred_regions"}.
 }
 \description{
 One-way sensitivity analysis on criterion weights, in the style of
@@ -63,6 +81,11 @@ a straight line in the weight: at 0\% it equals the score obtained from
 the other criteria alone, and at 100\% it equals the treatment's
 preference value on the varied criterion. A vertical line marks the
 current weight and points mark where the preferred treatment changes.
+Shading under the highest line highlights weight ranges according to
+\code{shading}. By default it marks the weights at which a different
+treatment would be preferred than at the current weight, so the unshaded
+band around the vertical line shows how far the weight can move before
+the decision changes.
 }
 \examples{
 # Load example MCDA data

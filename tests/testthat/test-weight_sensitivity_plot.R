@@ -112,15 +112,114 @@ test_that("crossovers are where the leading treatment changes", {
   }
 })
 
-test_that("crossover layer can be turned off", {
+test_that("crossover and shading layers can be turned off", {
   p <- mcda_weight_sensitivity(
     data = create_sensitivity_data(),
     weights = create_sensitivity_weights(),
     clinical_scales = create_sensitivity_scales(),
     criteria = "Recurring AE",
-    show_crossovers = FALSE
+    show_crossovers = FALSE,
+    shading = "none"
   )
-  expect_equal(length(p$layers), 4)
+  expect_equal(length(p$layers), 3)
+
+  layer_geoms <- function(plot) {
+    vapply(plot$layers, function(l) class(l$geom)[1], character(1))
+  }
+  p_default <- mcda_weight_sensitivity(
+    data = create_sensitivity_data(),
+    weights = create_sensitivity_weights(),
+    clinical_scales = create_sensitivity_scales(),
+    criteria = "Recurring AE"
+  )
+  expect_true("GeomRibbon" %in% layer_geoms(p_default))
+  expect_false("GeomRibbon" %in% layer_geoms(p))
+})
+
+test_that("shaded regions are where a different treatment is preferred", {
+  w <- create_sensitivity_weights()
+  p <- mcda_weight_sensitivity(
+    data = create_sensitivity_data(),
+    weights = w,
+    clinical_scales = create_sensitivity_scales()
+  )
+  regions <- attr(p, "preferred_regions")
+  lines <- attr(p, "sensitivity_lines")
+
+  for (cr in names(w)) {
+    r <- regions[regions$Criterion == cr, ]
+    # Regions tile the full weight range
+    expect_equal(r$weight_from[1], 0)
+    expect_equal(r$weight_to[nrow(r)], 1)
+    expect_equal(r$weight_from[-1], r$weight_to[-nrow(r)])
+
+    # The region containing the current weight is never shaded
+    in_current <- r$weight_from <= w[[cr]] & w[[cr]] <= r$weight_to
+    expect_false(any(r$differs_from_current[in_current]))
+
+    # Shading follows the upper envelope of the lines
+    d <- lines[lines$Criterion == cr, ]
+    top_at <- function(wt) {
+      max(d$score_at_0 + wt * (d$score_at_100 - d$score_at_0))
+    }
+    expect_equal(r$score_from, vapply(r$weight_from, top_at, 1))
+    expect_equal(r$score_to, vapply(r$weight_to, top_at, 1))
+  }
+  expect_true(any(regions$differs_from_current))
+  expect_equal(regions$shaded, regions$differs_from_current)
+})
+
+test_that("hiview shading alternates bands starting from the first", {
+  # Three treatments whose lead changes twice as the weight on Risk rises,
+  # as in Figure 7 of Angelis and Phillips (2021)
+  dat <- data.frame(
+    Treatment = c("High dose", "Low dose", "Placebo"),
+    Benefit = c(90, 60, 30),
+    Risk = c(0, 90, 100)
+  )
+  scales <- list(
+    Benefit = list(min = 0, max = 100, direction = "increasing"),
+    Risk = list(min = 0, max = 100, direction = "increasing")
+  )
+  w <- c(Benefit = 0.7, Risk = 0.3)
+
+  p <- mcda_weight_sensitivity(
+    dat, w, scales, criteria = "Risk", shading = "hiview"
+  )
+  r <- attr(p, "preferred_regions")
+  expect_equal(r$preferred, c("High dose", "Low dose", "Placebo"))
+  expect_equal(r$shaded, c(TRUE, FALSE, TRUE))
+
+  # Default shading marks the bands that differ from the current leader
+  p_change <- mcda_weight_sensitivity(dat, w, scales, criteria = "Risk")
+  r_change <- attr(p_change, "preferred_regions")
+  expect_equal(r_change$shaded, r_change$preferred != "Low dose")
+})
+
+test_that("hiview shading leaves panels without a change unshaded", {
+  p <- mcda_weight_sensitivity(
+    data = create_sensitivity_data(),
+    weights = create_sensitivity_weights(),
+    clinical_scales = create_sensitivity_scales(),
+    shading = "hiview"
+  )
+  r <- attr(p, "preferred_regions")
+  n_bands <- table(r$Criterion)
+  single <- names(n_bands)[n_bands == 1]
+  expect_false(any(r$shaded[r$Criterion %in% single]))
+  multi <- r[!r$Criterion %in% single, ]
+  first_band <- !duplicated(multi$Criterion)
+  expect_true(all(multi$shaded[first_band]))
+})
+
+test_that("shading argument is validated", {
+  expect_error(
+    mcda_weight_sensitivity(
+      create_sensitivity_data(), create_sensitivity_weights(),
+      create_sensitivity_scales(), shading = "stripes"
+    ),
+    "should be one of"
+  )
 })
 
 test_that("works with a single study from mcda_data", {

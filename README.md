@@ -617,12 +617,19 @@ Click to learn more
 - One-way sensitivity analysis on criterion weights, following Figures 6
   and 7 of [Angelis and Phillips
   (2021)](https://doi.org/10.1111/bcp.14425)
-- Each panel varies the weight on one criterion from 0% to 100%; the
-  other weights are rescaled proportionally so all weights still sum to
-  1
+- The weight on one criterion (here Rare SAE) is varied from 0% to 100%;
+  the other weights are rescaled proportionally so all weights still sum
+  to 1
 - Each line is a treatment’s overall weighted score; the red vertical
   line marks the current weight
 - Open circles mark weights at which the preferred treatment changes
+- This figure uses `shading = "hiview"`, which reproduces the shading in
+  the article: the first band and every other band after it are shaded,
+  and nothing is shaded when the preferred treatment never changes
+- The default, `shading = "change"`, instead shades the weights at which
+  a different treatment would be preferred than at the current weight,
+  so the unshaded band around the red line shows how far the weight can
+  move before the decision changes; `shading = "none"` turns shading off
 
 **Getting Help**
 
@@ -646,19 +653,28 @@ Click to view sample code
 ``` r
 library(valueJudgementCE)
 
-# All criteria, one panel each
+# A single criterion, with shading as in Angelis and Phillips (2021)
 mcda_weight_sensitivity(
-  data = mcda_data |> dplyr::filter(Study == "Study 2"),
+  data = mcda_data |> dplyr::filter(Study == "Study 1"),
   weights = weights,
-  clinical_scales = clinical_scales
+  clinical_scales = clinical_scales,
+  criteria = "Rare SAE",
+  shading = "hiview"
 )
 
-# A single criterion, with current scores labelled
+# Default shading: weights at which the preferred treatment would change
 mcda_weight_sensitivity(
-  data = mcda_data |> dplyr::filter(Study == "Study 2"),
+  data = mcda_data |> dplyr::filter(Study == "Study 1"),
   weights = weights,
   clinical_scales = clinical_scales,
   criteria = "Recurring AE"
+)
+
+# All criteria, one panel each
+mcda_weight_sensitivity(
+  data = mcda_data |> dplyr::filter(Study == "Study 1"),
+  weights = weights,
+  clinical_scales = clinical_scales
 )
 ```
 

@@ -98,5 +98,6 @@ utils::globalVariables(c(
   "score_at_100",
   "xend",
   "weight",
-  "score"
+  "score",
+  "region"
 ))

@@ -9,6 +9,11 @@
 #' the other criteria alone, and at 100% it equals the treatment's
 #' preference value on the varied criterion. A vertical line marks the
 #' current weight and points mark where the preferred treatment changes.
+#' Shading under the highest line highlights weight ranges according to
+#' \code{shading}. By default it marks the weights at which a different
+#' treatment would be preferred than at the current weight, so the unshaded
+#' band around the vertical line shows how far the weight can move before
+#' the decision changes.
 #'
 #' @param data A data frame in wide format with Treatment column and
 #'   criteria columns. Required parameter - must be provided. Each row
@@ -31,13 +36,27 @@
 #'   weight. Default is "#ca0020".
 #' @param show_crossovers Logical; if TRUE (default), mark and label the
 #'   weights at which the treatment with the highest overall score changes.
+#' @param shading Character string selecting how weight ranges are shaded.
+#'   The ranges are the bands between crossovers, each with one preferred
+#'   treatment.
+#'   \itemize{
+#'     \item \code{"change"} (default): shade the bands in which a different
+#'       treatment is preferred than at the current weight.
+#'     \item \code{"hiview"}: shade the first band and every other band
+#'       after it, as in the Hiview software used for Figures 6 and 7 of
+#'       Angelis and Phillips (2021). Nothing is shaded when the preferred
+#'       treatment never changes.
+#'     \item \code{"none"}: no shading.
+#'   }
+#' @param shade_color Fill color for the shading. Default is "#4EADD0".
 #' @param base_font_size Numeric; base font size in points for all text
 #'   elements in the plot (default: 9).
 #'
 #' @return A ggplot object showing overall weighted score against the
 #'   weight on each selected criterion, with one line per treatment.
-#'   The underlying lines and crossover points are attached as the
-#'   attributes \code{"sensitivity_lines"} and \code{"crossovers"}.
+#'   The underlying lines, crossover points and preferred-treatment
+#'   regions are attached as the attributes \code{"sensitivity_lines"},
+#'   \code{"crossovers"} and \code{"preferred_regions"}.
 #' @references Angelis A, Phillips LD. Advancing structured decision-making
 #'   in drug regulation at the FDA and EMA. Br J Clin Pharmacol.
 #'   2021;87(2):395-405. \doi{10.1111/bcp.14425}
@@ -88,9 +107,12 @@ mcda_weight_sensitivity <- function(
     fig_colors = NULL,
     ref_line_color = "#ca0020",
     show_crossovers = TRUE,
+    shading = c("change", "hiview", "none"),
+    shade_color = "#4EADD0",
     base_font_size = 9
 ) {
   typography <- publication_typography(base_font_size = base_font_size)
+  shading <- match.arg(shading)
 
   if (!is.numeric(weights) || is.null(names(weights))) {
     stop(
@@ -246,9 +268,45 @@ mcda_weight_sensitivity <- function(
     )
   }
 
+  # Weight ranges between crossovers, with the treatment preferred in each
+  regions <- do.call(rbind, lapply(criteria, function(cr) {
+    d <- lines[lines$Criterion == cr, ]
+    score_at <- function(wt) d$score_at_0 + wt * (d$score_at_100 - d$score_at_0)
+    breaks <- sort(c(0, crossovers$weight[crossovers$Criterion == cr], 1))
+    lo <- breaks[-length(breaks)]
+    hi <- breaks[-1]
+    leader <- vapply((lo + hi) / 2, function(wt) which.max(score_at(wt)), 1L)
+    current_leader <- which.max(score_at(weights[[cr]]))
+    data.frame(
+      Criterion = cr,
+      weight_from = lo,
+      weight_to = hi,
+      preferred = d$Treatment[leader],
+      score_from = vapply(seq_along(lo), function(i) score_at(lo[i])[leader[i]], 1),
+      score_to = vapply(seq_along(hi), function(i) score_at(hi[i])[leader[i]], 1),
+      differs_from_current = leader != current_leader,
+      shaded = switch(shading,
+        change = leader != current_leader,
+        hiview = length(lo) > 1 & seq_along(lo) %% 2 == 1,
+        none = rep(FALSE, length(lo))
+      ),
+      stringsAsFactors = FALSE
+    )
+  }))
+  rownames(regions) <- NULL
+
   lines$Criterion <- factor(lines$Criterion, levels = criteria)
   lines$Treatment <- factor(lines$Treatment, levels = treatments)
   crossovers$Criterion <- factor(crossovers$Criterion, levels = criteria)
+  regions$Criterion <- factor(regions$Criterion, levels = criteria)
+
+  shaded <- regions[regions$shaded, ]
+  df_shade <- data.frame(
+    Criterion = rep(shaded$Criterion, each = 2),
+    region = rep(seq_len(nrow(shaded)), each = 2),
+    x = 100 * as.vector(rbind(shaded$weight_from, shaded$weight_to)),
+    ymax = as.vector(rbind(shaded$score_from, shaded$score_to))
+  )
 
   df_segments <- lines
   df_segments$x <- 0
@@ -266,7 +324,18 @@ mcda_weight_sensitivity <- function(
     treatments
   )
 
-  p <- ggplot2::ggplot() +
+  p <- ggplot2::ggplot()
+
+  if (nrow(df_shade) > 0) {
+    p <- p +
+      ggplot2::geom_ribbon(
+        data = df_shade,
+        ggplot2::aes(x = x, ymin = 0, ymax = ymax, group = region),
+        fill = shade_color, alpha = 0.3
+      )
+  }
+
+  p <- p +
     ggplot2::geom_vline(
       data = df_ref,
       ggplot2::aes(xintercept = 100 * current_weight),
@@ -286,23 +355,6 @@ mcda_weight_sensitivity <- function(
       ggplot2::aes(x = 100 * current_weight, y = current_score, color = Treatment),
       size = 2.2
     )
-
-  # Current overall scores are the same in every panel, so only label them
-  # when a single criterion is shown
-  if (length(criteria) == 1) {
-    p <- p +
-      ggrepel::geom_text_repel(
-        data = lines,
-        ggplot2::aes(
-          x = 100 * current_weight, y = current_score,
-          label = sprintf("%.1f", current_score), color = Treatment
-        ),
-        nudge_x = -6, direction = "y", hjust = 1, segment.size = 0.3,
-        min.segment.length = 0, box.padding = 0.15, seed = 1,
-        show.legend = FALSE,
-        size = publication_geom_text_size(typography$data_label)
-      )
-  }
 
   if (show_crossovers && nrow(crossovers) > 0) {
     p <- p +
@@ -358,5 +410,6 @@ mcda_weight_sensitivity <- function(
 
   attr(p, "sensitivity_lines") <- lines
   attr(p, "crossovers") <- crossovers
+  attr(p, "preferred_regions") <- regions
   p
 }
