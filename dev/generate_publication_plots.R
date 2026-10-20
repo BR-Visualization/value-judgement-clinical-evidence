@@ -705,6 +705,50 @@ ggsave_custom(
   dpi = 600
 )
 
+# MCDA Weight Sensitivity Plots (7×7), one chart per outcome for Drug A
+weight_sensitivity_data <- mcda_data |> dplyr::filter(Study == "Study 1")
+
+weight_sensitivity_sae <- mcda_weight_sensitivity(
+  data = weight_sensitivity_data,
+  weights = weights,
+  clinical_scales = clinical_scales,
+  criteria = "Rare SAE",
+  shading = "hiview",
+  base_font_size = fonts_7x7$p
+)
+
+save_pub_plot(
+  "inst/img/pub/image12_weight_sensitivity.tiff",
+  weight_sensitivity_sae,
+  layout = "double",
+  original_width_in = 7,
+  original_height_in = 7
+)
+
+for (criterion in setdiff(names(weights), "Rare SAE")) {
+  weight_sensitivity <- mcda_weight_sensitivity(
+    data = weight_sensitivity_data,
+    weights = weights,
+    clinical_scales = clinical_scales,
+    criteria = criterion,
+    base_font_size = fonts_7x7$p
+  )
+
+  ggsave_custom(
+    paste0(
+      "inst/img/other/mcda_weight_sensitivity_drug_a_",
+      gsub(" ", "_", tolower(criterion)),
+      ".png"
+    ),
+    imgpath = "./",
+    inplot = weight_sensitivity,
+    wdth = 7,
+    hght = 7,
+    unts = "in",
+    dpi = 600
+  )
+}
+
 message("All publication plots generated with journal-ready widths and consistent font scaling.")
 message("\nFont sizes used:")
 message("  5×4 plots:  ", round(fonts_5x4$p, 1), "pt")

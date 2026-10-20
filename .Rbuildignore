@@ -30,3 +30,4 @@
 ^setup-git-hooks\.R$
 ^test-lintr-hook\.R$
 ^verify-precommit-ready\.R$
+^reviewer-comments$

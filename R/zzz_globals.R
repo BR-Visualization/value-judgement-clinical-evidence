@@ -91,5 +91,13 @@ utils::globalVariables(c(
   "left_join",
   "row_number",
   "summarise",
-  "ungroup"
+  "ungroup",
+  "current_weight",
+  "current_score",
+  "score_at_0",
+  "score_at_100",
+  "xend",
+  "weight",
+  "score",
+  "region"
 ))

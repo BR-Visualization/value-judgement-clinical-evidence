@@ -21,6 +21,14 @@
 
 ## ✨ New Features
 
+### Weight Sensitivity Plot
+
+- New `mcda_weight_sensitivity()` draws one-way sensitivity analyses on criterion weights, following Figures 6 and 7 of Angelis and Phillips (2021, Br J Clin Pharmacol 87:395-405)
+  - The weight on each criterion is varied from 0% to 100% with the other weights rescaled proportionally; each treatment's overall weighted score is drawn as a line
+  - A vertical line marks the current weight, and points mark where the preferred treatment changes
+  - Shading under the top line marks the weights at which a different treatment would be preferred than at the current weight; `shading = "hiview"` instead reproduces the article's Hiview shading (first band and every other band after it), and `shading = "none"` turns it off
+  - The line endpoints, crossover weights and preferred-treatment regions are returned as attributes for reporting
+
 ### Value Function Visualization
 
 - `create_value_function_plot()`: Creates visualizations showing how raw clinical values are transformed to normalized scores (0-100) using linear value functions
