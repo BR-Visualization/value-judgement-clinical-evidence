@@ -705,6 +705,24 @@ ggsave_custom(
   dpi = 600
 )
 
+# MCDA Weight Sensitivity Plot (10×6)
+weight_sensitivity_b <- mcda_weight_sensitivity(
+  data = mcda_data |> dplyr::filter(Study == "Study 2"),
+  weights = weights,
+  clinical_scales = clinical_scales,
+  base_font_size = fonts_10x6$p
+)
+
+ggsave_custom(
+  "inst/img/other/mcda_weight_sensitivity_drug_b.png",
+  imgpath = "./",
+  inplot = weight_sensitivity_b,
+  wdth = 10,
+  hght = 6,
+  unts = "in",
+  dpi = 600
+)
+
 message("All publication plots generated with journal-ready widths and consistent font scaling.")
 message("\nFont sizes used:")
 message("  5×4 plots:  ", round(fonts_5x4$p, 1), "pt")

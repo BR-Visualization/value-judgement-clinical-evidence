@@ -30,6 +30,8 @@ clinical evidence”.
 - [Figure - MCDA Waterfall Plot](#figure---mcda-waterfall-plot)
 - [Figure - MCDA Benefit-Risk Map](#figure---mcda-benefit-risk-map)
 - [Figure - MCDA Tornado Plot](#figure---mcda-tornado-plot)
+- [Figure - MCDA Weight Sensitivity
+  Plot](#figure---mcda-weight-sensitivity-plot)
 
 ## Installation
 
@@ -594,6 +596,69 @@ mcda_tornado(
   comparison_drug = "Drug A",
   weights = weights,
   clinical_scales = clinical_scales
+)
+```
+
+</details>
+
+## Figure - MCDA Weight Sensitivity Plot
+
+<img src="man/figures/README-mcda_weight_sensitivity-1.png" alt="" width="100%" />
+
+<details>
+
+<summary>
+
+Click to learn more
+</summary>
+
+**About This Plot**
+
+- One-way sensitivity analysis on criterion weights, following Figures 6
+  and 7 of [Angelis and Phillips
+  (2021)](https://doi.org/10.1111/bcp.14425)
+- Each panel varies the weight on one criterion from 0% to 100%; the
+  other weights are rescaled proportionally so all weights still sum to
+  1
+- Each line is a treatment’s overall weighted score; the red vertical
+  line marks the current weight
+- Open circles mark weights at which the preferred treatment changes
+
+**Getting Help**
+
+- Documentation: Use `?mcda_weight_sensitivity` for detailed function
+  help
+- Issues: Report bugs at [GitHub
+  Issues](https://github.com/BR-Visualization/value-judgement-clinical-evidence/issues)\
+- Discussions: Join discussions at [GitHub
+  Discussions](https://github.com/BR-Visualization/value-judgement-clinical-evidence/discussions)
+- Contact: Reach out to the package maintainers via GitHub
+
+</details>
+
+<details>
+
+<summary>
+
+Click to view sample code
+</summary>
+
+``` r
+library(valueJudgementCE)
+
+# All criteria, one panel each
+mcda_weight_sensitivity(
+  data = mcda_data |> dplyr::filter(Study == "Study 2"),
+  weights = weights,
+  clinical_scales = clinical_scales
+)
+
+# A single criterion, with current scores labelled
+mcda_weight_sensitivity(
+  data = mcda_data |> dplyr::filter(Study == "Study 2"),
+  weights = weights,
+  clinical_scales = clinical_scales,
+  criteria = "Recurring AE"
 )
 ```
 
