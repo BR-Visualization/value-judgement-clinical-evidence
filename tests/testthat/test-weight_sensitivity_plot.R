@@ -265,3 +265,85 @@ test_that("mcda_weight_sensitivity validates inputs", {
     "must be unique"
   )
 })
+
+test_that("compares Drugs A-D on one chart", {
+  data("mcda_data", package = "valueJudgementCE")
+  drugs <- dplyr::filter(mcda_data, Treatment != "Placebo")
+  p <- mcda_weight_sensitivity(
+    data = drugs,
+    weights = create_sensitivity_weights(),
+    clinical_scales = create_sensitivity_scales(),
+    criteria = "Rare SAE",
+    shading = "hiview"
+  )
+  lines <- attr(p, "sensitivity_lines")
+  expect_setequal(
+    as.character(lines$Treatment), c("Drug A", "Drug B", "Drug C", "Drug D")
+  )
+  regions <- attr(p, "preferred_regions")
+  expect_equal(regions$preferred[1], "Drug A")
+  expect_true(regions$shaded[1])
+})
+
+test_that("comparator_name scores each drug against its own study's comparator", {
+  data("mcda_data", package = "valueJudgementCE")
+  w <- create_sensitivity_weights()
+  scales <- create_sensitivity_scales()
+
+  p <- mcda_weight_sensitivity(
+    mcda_data, w, scales,
+    comparator_name = "Placebo", criteria = "Rare SAE"
+  )
+  lines <- attr(p, "sensitivity_lines")
+  expect_equal(
+    as.character(lines$Treatment), c("Drug A", "Drug B", "Drug C", "Drug D")
+  )
+
+  # Current scores equal each drug's overall score minus its own placebo's
+  overall <- function(study, treatment) {
+    row <- mcda_data[mcda_data$Study == study & mcda_data$Treatment == treatment, ]
+    sw <- mcda_weight_sensitivity(
+      row[c(1, 1), ] |> transform(Treatment = c("x", "y")),
+      w, scales, criteria = "Rare SAE"
+    )
+    attr(sw, "sensitivity_lines")$current_score[1]
+  }
+  expected <- vapply(1:4, function(i) {
+    study <- paste("Study", i)
+    overall(study, paste("Drug", LETTERS[i])) - overall(study, "Placebo")
+  }, numeric(1))
+  expect_equal(lines$current_score, expected)
+
+  # A single comparator row is used when data has no Study column
+  one_study <- dplyr::select(dplyr::filter(mcda_data, Study == "Study 1"), -Study)
+  p_one <- mcda_weight_sensitivity(
+    one_study, w, scales, comparator_name = "Placebo", criteria = "Rare SAE"
+  )
+  expect_equal(attr(p_one, "sensitivity_lines")$current_score, expected[1])
+  expect_equal(p_one$labels$y, "Weighted score difference vs Placebo")
+})
+
+test_that("comparator_name is validated", {
+  data("mcda_data", package = "valueJudgementCE")
+  w <- create_sensitivity_weights()
+  scales <- create_sensitivity_scales()
+
+  expect_error(
+    mcda_weight_sensitivity(mcda_data, w, scales, comparator_name = "Vehicle"),
+    "not found"
+  )
+  no_study <- dplyr::select(mcda_data, -Study)
+  expect_error(
+    mcda_weight_sensitivity(no_study, w, scales, comparator_name = "Placebo"),
+    "exactly one"
+  )
+  missing_comparator <- dplyr::filter(
+    mcda_data, !(Study == "Study 4" & Treatment == "Placebo")
+  )
+  expect_error(
+    mcda_weight_sensitivity(
+      missing_comparator, w, scales, comparator_name = "Placebo"
+    ),
+    "No comparator row for study: Study 4"
+  )
+})

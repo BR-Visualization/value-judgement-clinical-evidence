@@ -15,17 +15,30 @@
 #' band around the vertical line shows how far the weight can move before
 #' the decision changes.
 #'
+#' With \code{comparator_name}, each treatment is instead scored by its
+#' difference from the comparator in the same study (as in
+#' \code{\link{create_mcda_waterfall}} and \code{\link{mcda_tornado}}).
+#' The differences are also linear in the weight, so lines, crossovers and
+#' shading work in the same way.
+#'
 #' @param data A data frame in wide format with Treatment column and
 #'   criteria columns. Required parameter - must be provided. Each row
 #'   should contain raw values for a treatment on their original
-#'   measurement scales. Columns other than Treatment and the criteria
-#'   named in \code{weights} (e.g., Study) are ignored. Treatment names
-#'   must be unique. See \code{\link{mcda_data}} for example format.
+#'   measurement scales. Other columns are ignored, except Study when
+#'   \code{comparator_name} is given. Treatment names must be unique
+#'   (excluding comparator rows). See \code{\link{mcda_data}} for example
+#'   format.
 #' @param weights Named numeric vector of criterion weights. Must sum to 1.
 #' @param clinical_scales List defining clinical reference levels for
 #'   each criterion. Each element should be a list with: min (lower
 #'   threshold), max (upper threshold), direction ("increasing" for
 #'   higher is better, "decreasing" for lower is better).
+#' @param comparator_name Character string naming the comparator treatment
+#'   (e.g., "Placebo"). If NULL (default), each treatment's overall weighted
+#'   score is plotted. If given, each other treatment is plotted as its
+#'   score minus the score of the comparator row in the same Study (or the
+#'   single comparator row when \code{data} has no Study column), and the
+#'   comparator itself is not drawn.
 #' @param criteria Character vector of criteria whose weight is varied.
 #'   One panel is drawn per criterion. If NULL (default), all criteria in
 #'   \code{weights} are shown.
@@ -52,8 +65,9 @@
 #' @param base_font_size Numeric; base font size in points for all text
 #'   elements in the plot (default: 9).
 #'
-#' @return A ggplot object showing overall weighted score against the
-#'   weight on each selected criterion, with one line per treatment.
+#' @return A ggplot object showing overall weighted score (or the
+#'   difference from the comparator) against the weight on each selected
+#'   criterion, with one line per treatment.
 #'   The underlying lines, crossover points and preferred-treatment
 #'   regions are attached as the attributes \code{"sensitivity_lines"},
 #'   \code{"crossovers"} and \code{"preferred_regions"}.
@@ -103,6 +117,7 @@ mcda_weight_sensitivity <- function(
     data,
     weights,
     clinical_scales,
+    comparator_name = NULL,
     criteria = NULL,
     fig_colors = NULL,
     ref_line_color = "#ca0020",
@@ -160,17 +175,6 @@ mcda_weight_sensitivity <- function(
     )
   }
 
-  treatments <- as.character(data$Treatment)
-  if (length(treatments) < 2) {
-    stop("Need at least two treatments present in data.")
-  }
-  if (anyDuplicated(treatments)) {
-    stop(
-      "Treatment names must be unique. If `data` holds several studies, ",
-      "filter to one study first (e.g., dplyr::filter(Study == \"Study 1\"))."
-    )
-  }
-
   normalize_value <- function(x, scale) {
     if (scale$direction == "increasing") {
       values <- 100 * (x - scale$min) / (scale$max - scale$min)
@@ -188,17 +192,63 @@ mcda_weight_sensitivity <- function(
     values
   }
 
-  # Preference values: rows = treatments, columns = criteria
+  # Preference values: rows = data rows, columns = criteria
   pref <- vapply(
     all_criteria,
     function(cr) normalize_value(data[[cr]], clinical_scales[[cr]]),
-    numeric(length(treatments))
+    numeric(nrow(data))
   )
   pref <- matrix(
     pref,
-    nrow = length(treatments),
-    dimnames = list(treatments, all_criteria)
+    nrow = nrow(data),
+    dimnames = list(NULL, all_criteria)
   )
+  treatments <- as.character(data$Treatment)
+
+  if (is.null(comparator_name)) {
+    if (length(treatments) < 2) {
+      stop("Need at least two treatments present in data.")
+    }
+  } else {
+    # Score each treatment by its difference from the comparator in the
+    # same study
+    is_comparator <- treatments == comparator_name
+    if (!any(is_comparator)) {
+      stop("`comparator_name` \"", comparator_name, "\" not found in data$Treatment.")
+    }
+    study <- if ("Study" %in% colnames(data)) {
+      as.character(data$Study)
+    } else {
+      rep("", nrow(data))
+    }
+    if (anyDuplicated(study[is_comparator])) {
+      stop("Each study must have exactly one `comparator_name` row.")
+    }
+    comparator_row <- which(is_comparator)[
+      match(study[!is_comparator], study[is_comparator])
+    ]
+    if (anyNA(comparator_row)) {
+      stop(
+        "No comparator row for study: ",
+        paste(unique(study[!is_comparator][is.na(comparator_row)]), collapse = ", ")
+      )
+    }
+    pref <- pref[!is_comparator, , drop = FALSE] -
+      pref[comparator_row, , drop = FALSE]
+    treatments <- treatments[!is_comparator]
+    if (length(treatments) < 1) {
+      stop("Need at least one treatment besides the comparator.")
+    }
+  }
+
+  if (anyDuplicated(treatments)) {
+    stop(
+      "Treatment names must be unique. If `data` holds several studies, ",
+      "filter to one study first (e.g., dplyr::filter(Study == \"Study 1\")), ",
+      "drop the shared comparator rows, or set `comparator_name`."
+    )
+  }
+  rownames(pref) <- treatments
 
   # For each criterion, score(w) = w * v_i + (1 - w) * score without i,
   # where the other weights are rescaled proportionally to sum to 1 - w.
@@ -221,6 +271,9 @@ mcda_weight_sensitivity <- function(
   # Weights where the top-ranked treatment changes
   crossovers <- do.call(rbind, lapply(criteria, function(cr) {
     d <- lines[lines$Criterion == cr, ]
+    if (nrow(d) < 2) {
+      return(NULL)
+    }
     slope <- d$score_at_100 - d$score_at_0
     pairs <- which(upper.tri(diag(nrow(d))), arr.ind = TRUE)
     w <- apply(pairs, 1, function(p) {
@@ -314,6 +367,17 @@ mcda_weight_sensitivity <- function(
 
   df_ref <- unique(lines[, c("Criterion", "current_weight")])
 
+  # Overall scores lie on 0-100; differences from the comparator can be
+  # negative, so fit the axis to the lines and mark zero
+  if (is.null(comparator_name)) {
+    y_breaks <- seq(0, 100, 20)
+    y_title <- "Overall weighted score"
+  } else {
+    y_breaks <- pretty(c(0, lines$score_at_0, lines$score_at_100))
+    y_title <- paste0("Weighted score difference vs ", comparator_name)
+  }
+  y_limits <- range(y_breaks)
+
   if (is.null(fig_colors)) {
     fig_colors <- c(
       "#0571b0", "#EE8000", "#96BA39", "#5E366E", "#4EADD0", "#CF004D"
@@ -330,9 +394,14 @@ mcda_weight_sensitivity <- function(
     p <- p +
       ggplot2::geom_ribbon(
         data = df_shade,
-        ggplot2::aes(x = x, ymin = 0, ymax = ymax, group = region),
+        ggplot2::aes(x = x, ymin = y_limits[1], ymax = ymax, group = region),
         fill = shade_color, alpha = 0.3
       )
+  }
+
+  if (!is.null(comparator_name)) {
+    p <- p +
+      ggplot2::geom_hline(yintercept = 0, color = "grey40", linewidth = 0.5)
   }
 
   p <- p +
@@ -369,7 +438,7 @@ mcda_weight_sensitivity <- function(
           x = 100 * weight, y = score,
           label = sprintf("%.1f%%", 100 * weight)
         ),
-        nudge_y = -8, direction = "x", segment.size = 0.3,
+        nudge_y = -0.08 * diff(y_limits), direction = "x", segment.size = 0.3,
         min.segment.length = 0, box.padding = 0.15, seed = 1,
         color = "black",
         size = publication_geom_text_size(typography$data_label)
@@ -382,10 +451,10 @@ mcda_weight_sensitivity <- function(
       limits = c(0, 100), breaks = seq(0, 100, 20),
       expand = ggplot2::expansion(mult = c(0.02, 0.04))
     ) +
-    ggplot2::scale_y_continuous(limits = c(0, 100), breaks = seq(0, 100, 20)) +
+    ggplot2::scale_y_continuous(limits = y_limits, breaks = y_breaks) +
     ggplot2::labs(
       x = "Weight on criterion (%)",
-      y = "Overall weighted score"
+      y = y_title
     ) +
     ggplot2::theme_minimal(base_size = base_font_size) +
     ggplot2::theme(

@@ -676,6 +676,17 @@ mcda_weight_sensitivity(
   weights = weights,
   clinical_scales = clinical_scales
 )
+
+# Drugs A-D on one chart, to compare their sensitivity to weighting; each
+# drug is scored as its difference from the placebo in its own study
+mcda_weight_sensitivity(
+  data = mcda_data,
+  weights = weights,
+  clinical_scales = clinical_scales,
+  comparator_name = "Placebo",
+  criteria = "Rare SAE",
+  shading = "hiview"
+)
 ```
 
 </details>

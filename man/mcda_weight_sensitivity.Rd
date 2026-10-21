@@ -8,6 +8,7 @@ mcda_weight_sensitivity(
   data,
   weights,
   clinical_scales,
+  comparator_name = NULL,
   criteria = NULL,
   fig_colors = NULL,
   ref_line_color = "#ca0020",
@@ -21,9 +22,10 @@ mcda_weight_sensitivity(
 \item{data}{A data frame in wide format with Treatment column and
 criteria columns. Required parameter - must be provided. Each row
 should contain raw values for a treatment on their original
-measurement scales. Columns other than Treatment and the criteria
-named in \code{weights} (e.g., Study) are ignored. Treatment names
-must be unique. See \code{\link{mcda_data}} for example format.}
+measurement scales. Other columns are ignored, except Study when
+\code{comparator_name} is given. Treatment names must be unique
+(excluding comparator rows). See \code{\link{mcda_data}} for example
+format.}
 
 \item{weights}{Named numeric vector of criterion weights. Must sum to 1.}
 
@@ -31,6 +33,13 @@ must be unique. See \code{\link{mcda_data}} for example format.}
 each criterion. Each element should be a list with: min (lower
 threshold), max (upper threshold), direction ("increasing" for
 higher is better, "decreasing" for lower is better).}
+
+\item{comparator_name}{Character string naming the comparator treatment
+(e.g., "Placebo"). If NULL (default), each treatment's overall weighted
+score is plotted. If given, each other treatment is plotted as its
+score minus the score of the comparator row in the same Study (or the
+single comparator row when \code{data} has no Study column), and the
+comparator itself is not drawn.}
 
 \item{criteria}{Character vector of criteria whose weight is varied.
 One panel is drawn per criterion. If NULL (default), all criteria in
@@ -65,8 +74,9 @@ treatment never changes.
 elements in the plot (default: 9).}
 }
 \value{
-A ggplot object showing overall weighted score against the
-weight on each selected criterion, with one line per treatment.
+A ggplot object showing overall weighted score (or the
+difference from the comparator) against the weight on each selected
+criterion, with one line per treatment.
 The underlying lines, crossover points and preferred-treatment
 regions are attached as the attributes \code{"sensitivity_lines"},
 \code{"crossovers"} and \code{"preferred_regions"}.
@@ -86,6 +96,13 @@ Shading under the highest line highlights weight ranges according to
 treatment would be preferred than at the current weight, so the unshaded
 band around the vertical line shows how far the weight can move before
 the decision changes.
+}
+\details{
+With \code{comparator_name}, each treatment is instead scored by its
+difference from the comparator in the same study (as in
+\code{\link{create_mcda_waterfall}} and \code{\link{mcda_tornado}}).
+The differences are also linear in the weight, so lines, crossovers and
+shading work in the same way.
 }
 \examples{
 # Load example MCDA data
