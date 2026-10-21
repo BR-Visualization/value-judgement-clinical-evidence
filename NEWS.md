@@ -28,6 +28,8 @@
   - A vertical line marks the current weight, and points mark where the preferred treatment changes
   - Shading under the top line marks the weights at which a different treatment would be preferred than at the current weight; `shading = "hiview"` instead reproduces the article's Hiview shading (first band and every other band after it), and `shading = "none"` turns it off
   - The line endpoints, crossover weights and preferred-treatment regions are returned as attributes for reporting
+  - New `comparator_name` argument scores each treatment as its difference from the comparator in the same study, as in `create_mcda_waterfall()` and `mcda_tornado()`, so Drugs A-D can be compared on one chart; publication figure `image13` shows this for Rare SAE, with the other outcomes in `inst/img/other`
+  - Publication figure `image14` shows the overall weighted scores of Drugs A-D for Rare SAE (without `comparator_name`), alongside the differences from placebo in `image13`, with the other outcomes in `inst/img/other`
 
 ### Value Function Visualization
 
