@@ -732,12 +732,102 @@ for (criterion in setdiff(names(weights), "Rare SAE")) {
     weights = weights,
     clinical_scales = clinical_scales,
     criteria = criterion,
+    shading = "hiview",
     base_font_size = fonts_7x7$p
   )
 
   ggsave_custom(
     paste0(
       "inst/img/other/mcda_weight_sensitivity_drug_a_",
+      gsub(" ", "_", tolower(criterion)),
+      ".png"
+    ),
+    imgpath = "./",
+    inplot = weight_sensitivity,
+    wdth = 7,
+    hght = 7,
+    unts = "in",
+    dpi = 600
+  )
+}
+
+# MCDA Weight Sensitivity Plots (7×7), Drugs A-D compared on one chart as
+# differences from each study's placebo, matching the waterfall and tornado
+weight_sensitivity_drugs_sae <- mcda_weight_sensitivity(
+  data = mcda_data,
+  weights = weights,
+  clinical_scales = clinical_scales,
+  comparator_name = "Placebo",
+  criteria = "Rare SAE",
+  shading = "hiview",
+  base_font_size = fonts_7x7$p
+)
+
+save_pub_plot(
+  "inst/img/pub/image13_weight_sensitivity_drugs.tiff",
+  weight_sensitivity_drugs_sae,
+  layout = "double",
+  original_width_in = 7,
+  original_height_in = 7
+)
+
+for (criterion in setdiff(names(weights), "Rare SAE")) {
+  weight_sensitivity <- mcda_weight_sensitivity(
+    data = mcda_data,
+    weights = weights,
+    clinical_scales = clinical_scales,
+    comparator_name = "Placebo",
+    criteria = criterion,
+    shading = "hiview",
+    base_font_size = fonts_7x7$p
+  )
+
+  ggsave_custom(
+    paste0(
+      "inst/img/other/mcda_weight_sensitivity_drugs_",
+      gsub(" ", "_", tolower(criterion)),
+      ".png"
+    ),
+    imgpath = "./",
+    inplot = weight_sensitivity,
+    wdth = 7,
+    hght = 7,
+    unts = "in",
+    dpi = 600
+  )
+}
+
+# MCDA Weight Sensitivity Plot (7×7), overall scores of Drugs A-D
+ws_treatments_sae <- mcda_weight_sensitivity(
+  data = mcda_data |> dplyr::filter(Treatment != "Placebo"),
+  weights = weights,
+  clinical_scales = clinical_scales,
+  criteria = "Rare SAE",
+  shading = "hiview",
+  base_font_size = fonts_7x7$p
+)
+
+save_pub_plot(
+  "inst/img/pub/image14_weight_sensitivity_treatments.tiff",
+  ws_treatments_sae,
+  layout = "double",
+  original_width_in = 7,
+  original_height_in = 7
+)
+
+for (criterion in setdiff(names(weights), "Rare SAE")) {
+  weight_sensitivity <- mcda_weight_sensitivity(
+    data = mcda_data |> dplyr::filter(Treatment != "Placebo"),
+    weights = weights,
+    clinical_scales = clinical_scales,
+    criteria = criterion,
+    shading = "hiview",
+    base_font_size = fonts_7x7$p
+  )
+
+  ggsave_custom(
+    paste0(
+      "inst/img/other/mcda_weight_sensitivity_treatments_",
       gsub(" ", "_", tolower(criterion)),
       ".png"
     ),
