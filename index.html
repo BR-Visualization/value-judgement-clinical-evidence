@@ -527,6 +527,17 @@ Click to view sample code
 <span>  data <span class="op">=</span> <span class="va">mcda_data</span> <span class="op">|&gt;</span> <span class="fu">dplyr</span><span class="fu">::</span><span class="fu"><a href="https://dplyr.tidyverse.org/reference/filter.html" class="external-link">filter</a></span><span class="op">(</span><span class="va">Study</span> <span class="op">==</span> <span class="st">"Study 1"</span><span class="op">)</span>,</span>
 <span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
 <span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span></span>
+<span><span class="op">)</span></span>
+<span></span>
+<span><span class="co"># Drugs A-D on one chart, to compare their sensitivity to weighting; each</span></span>
+<span><span class="co"># drug is scored as its difference from the placebo in its own study</span></span>
+<span><span class="fu"><a href="reference/mcda_weight_sensitivity.html">mcda_weight_sensitivity</a></span><span class="op">(</span></span>
+<span>  data <span class="op">=</span> <span class="va">mcda_data</span>,</span>
+<span>  weights <span class="op">=</span> <span class="va">weights</span>,</span>
+<span>  clinical_scales <span class="op">=</span> <span class="va">clinical_scales</span>,</span>
+<span>  comparator_name <span class="op">=</span> <span class="st">"Placebo"</span>,</span>
+<span>  criteria <span class="op">=</span> <span class="st">"Rare SAE"</span>,</span>
+<span>  shading <span class="op">=</span> <span class="st">"hiview"</span></span>
 <span><span class="op">)</span></span></code></pre></div>
 </details>
 </div>

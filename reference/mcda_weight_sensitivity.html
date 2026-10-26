@@ -87,6 +87,7 @@ the decision changes.</p>
 <span>  <span class="va">data</span>,</span>
 <span>  <span class="va">weights</span>,</span>
 <span>  <span class="va">clinical_scales</span>,</span>
+<span>  comparator_name <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  criteria <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  fig_colors <span class="op">=</span> <span class="cn">NULL</span>,</span>
 <span>  ref_line_color <span class="op">=</span> <span class="st">"#ca0020"</span>,</span>
@@ -105,9 +106,10 @@ the decision changes.</p>
 <dd><p>A data frame in wide format with Treatment column and
 criteria columns. Required parameter - must be provided. Each row
 should contain raw values for a treatment on their original
-measurement scales. Columns other than Treatment and the criteria
-named in <code>weights</code> (e.g., Study) are ignored. Treatment names
-must be unique. See <code><a href="mcda_data.html">mcda_data</a></code> for example format.</p></dd>
+measurement scales. Other columns are ignored, except Study when
+<code>comparator_name</code> is given. Treatment names must be unique
+(excluding comparator rows). See <code><a href="mcda_data.html">mcda_data</a></code> for example
+format.</p></dd>
 
 
 <dt id="arg-weights">weights<a class="anchor" aria-label="anchor" href="#arg-weights"></a></dt>
@@ -119,6 +121,15 @@ must be unique. See <code><a href="mcda_data.html">mcda_data</a></code> for exam
 each criterion. Each element should be a list with: min (lower
 threshold), max (upper threshold), direction ("increasing" for
 higher is better, "decreasing" for lower is better).</p></dd>
+
+
+<dt id="arg-comparator-name">comparator_name<a class="anchor" aria-label="anchor" href="#arg-comparator-name"></a></dt>
+<dd><p>Character string naming the comparator treatment
+(e.g., "Placebo"). If NULL (default), each treatment's overall weighted
+score is plotted. If given, each other treatment is plotted as its
+score minus the score of the comparator row in the same Study (or the
+single comparator row when <code>data</code> has no Study column), and the
+comparator itself is not drawn.</p></dd>
 
 
 <dt id="arg-criteria">criteria<a class="anchor" aria-label="anchor" href="#arg-criteria"></a></dt>
@@ -167,11 +178,20 @@ elements in the plot (default: 9).</p></dd>
 </dl></div>
     <div class="section level2">
     <h2 id="value">Value<a class="anchor" aria-label="anchor" href="#value"></a></h2>
-    <p>A ggplot object showing overall weighted score against the
-weight on each selected criterion, with one line per treatment.
+    <p>A ggplot object showing overall weighted score (or the
+difference from the comparator) against the weight on each selected
+criterion, with one line per treatment.
 The underlying lines, crossover points and preferred-treatment
 regions are attached as the attributes <code>"sensitivity_lines"</code>,
 <code>"crossovers"</code> and <code>"preferred_regions"</code>.</p>
+    </div>
+    <div class="section level2">
+    <h2 id="details">Details<a class="anchor" aria-label="anchor" href="#details"></a></h2>
+    <p>With <code>comparator_name</code>, each treatment is instead scored by its
+difference from the comparator in the same study (as in
+<code><a href="create_mcda_waterfall.html">create_mcda_waterfall</a></code> and <code><a href="mcda_tornado.html">mcda_tornado</a></code>).
+The differences are also linear in the weight, so lines, crossovers and
+shading work in the same way.</p>
     </div>
     <div class="section level2">
     <h2 id="references">References<a class="anchor" aria-label="anchor" href="#references"></a></h2>

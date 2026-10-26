@@ -22,6 +22,7 @@ mcda_weight_sensitivity(
   data,
   weights,
   clinical_scales,
+  comparator_name = NULL,
   criteria = NULL,
   fig_colors = NULL,
   ref_line_color = "#ca0020",
@@ -39,8 +40,8 @@ mcda_weight_sensitivity(
   A data frame in wide format with Treatment column and criteria
   columns. Required parameter - must be provided. Each row should
   contain raw values for a treatment on their original measurement
-  scales. Columns other than Treatment and the criteria named in
-  `weights` (e.g., Study) are ignored. Treatment names must be unique.
+  scales. Other columns are ignored, except Study when `comparator_name`
+  is given. Treatment names must be unique (excluding comparator rows).
   See [`mcda_data`](https://pkgdown.r-lib.org/reference/mcda_data.md)
   for example format.
 
@@ -54,6 +55,15 @@ mcda_weight_sensitivity(
   element should be a list with: min (lower threshold), max (upper
   threshold), direction ("increasing" for higher is better, "decreasing"
   for lower is better).
+
+- comparator_name:
+
+  Character string naming the comparator treatment (e.g., "Placebo"). If
+  NULL (default), each treatment's overall weighted score is plotted. If
+  given, each other treatment is plotted as its score minus the score of
+  the comparator row in the same Study (or the single comparator row
+  when `data` has no Study column), and the comparator itself is not
+  drawn.
 
 - criteria:
 
@@ -102,11 +112,21 @@ mcda_weight_sensitivity(
 
 ## Value
 
-A ggplot object showing overall weighted score against the weight on
-each selected criterion, with one line per treatment. The underlying
-lines, crossover points and preferred-treatment regions are attached as
-the attributes `"sensitivity_lines"`, `"crossovers"` and
-`"preferred_regions"`.
+A ggplot object showing overall weighted score (or the difference from
+the comparator) against the weight on each selected criterion, with one
+line per treatment. The underlying lines, crossover points and
+preferred-treatment regions are attached as the attributes
+`"sensitivity_lines"`, `"crossovers"` and `"preferred_regions"`.
+
+## Details
+
+With `comparator_name`, each treatment is instead scored by its
+difference from the comparator in the same study (as in
+[`create_mcda_waterfall`](https://pkgdown.r-lib.org/reference/create_mcda_waterfall.md)
+and
+[`mcda_tornado`](https://pkgdown.r-lib.org/reference/mcda_tornado.md)).
+The differences are also linear in the weight, so lines, crossovers and
+shading work in the same way.
 
 ## References
 
