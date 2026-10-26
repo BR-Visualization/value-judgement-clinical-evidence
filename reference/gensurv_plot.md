@@ -12,7 +12,7 @@ gensurv_plot(
   fig_colors = c("#0571b0", "#ca0020"),
   titlename = NULL,
   ben_name = "Primary Efficacy",
-  risk_name = "Recurring AE",
+  risk_name = "AESI",
   legend_position = c(-0.03, 1.15),
   mar,
   mab,

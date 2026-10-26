@@ -19,7 +19,7 @@ gensurv_combined(
   rel_adjust = 0.12,
   rel_heights_table = c(1, 0.4),
   ben_name_p = "Primary Efficacy",
-  risk_name_p = "Recurring AE",
+  risk_name_p = "AESI",
   legend_position_p = c(-0.03, 1.15),
   base_font_size = 9
 )
