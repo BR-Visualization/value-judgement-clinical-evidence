@@ -64,7 +64,7 @@ gensurv_plot <- function(
   fig_colors = c("#0571b0", "#ca0020"),
   titlename = NULL,
   ben_name = "Primary Efficacy",
-  risk_name = "Recurring AE",
+  risk_name = "AESI",
   legend_position = c(-0.03, 1.15),
   mar,
   mab,
@@ -842,7 +842,7 @@ gensurv_combined <- function(
   rel_adjust = .12,
   rel_heights_table = c(1, 0.4),
   ben_name_p = "Primary Efficacy",
-  risk_name_p = "Recurring AE",
+  risk_name_p = "AESI",
   legend_position_p = c(-0.03, 1.15),
   base_font_size = 9
 ) {

@@ -78,6 +78,7 @@ library(rlang)
 #'   outcomes_with_thresholds = list(
 #'     "Primary Efficacy" = 0.10,
 #'     "Secondary Efficacy" = -20,
+#'     "Quality of Life" = 10,
 #'     "Recurring AE" = -0.05,
 #'     "Rare SAE" = -0.07
 #'   )
@@ -273,20 +274,38 @@ create_forest_dot_plot <- function(
   plot_outcome_counts <- numeric(0) # Store number of outcomes for each plot
   factors <- unique(filtered_data$Factor)
 
-  # Loop through factors and types to create plots
+  # Benefit outcomes whose clinically meaningful direction is "less" are
+  # drawn on a reversed axis, so they cannot share a panel with benefit
+  # outcomes that are not
+  reversed_outcomes <- character(0)
+  if (show_thresholds && nrow(clin_thresholds) > 0) {
+    reversed_outcomes <- clin_thresholds$Outcome[
+      clin_thresholds$Direction == "less" | clin_thresholds$Threshold < 0
+    ]
+  }
+
+  # Loop through factors and panels to create plots. Each panel holds one
+  # outcome type, split further when its outcomes need different axis
+  # directions
   for (factor in factors) {
     factor_data <- filtered_data |> dplyr::filter(Factor == factor)
-    types <- unique(factor_data$Type)
+    panel_keys <- paste(
+      factor_data$Type,
+      factor == "Benefit" & factor_data$Outcome %in% reversed_outcomes,
+      sep = "_"
+    )
+    panels <- unique(panel_keys)
 
-    for (type in types) {
+    for (panel in panels) {
       # Check if this is the last plot (for legend and x-axis title
       # display)
       is_last_plot <- (
-        factor == tail(factors, 1) && type == tail(types, 1)
+        factor == tail(factors, 1) && panel == tail(panels, 1)
       )
 
-      # Filter data for current type
-      type_data <- factor_data |> dplyr::filter(Type == type)
+      # Filter data for current panel
+      type_data <- factor_data[panel_keys == panel, ]
+      type <- type_data$Type[1]
 
       # Skip if no data for this factor/type combination
       if (nrow(type_data) == 0) {
@@ -845,7 +864,7 @@ create_forest_dot_plot <- function(
         )
 
       # Store combined plot
-      plots[[paste(factor, type, sep = "_")]] <- combined_plot
+      plots[[paste(factor, panel, sep = "_")]] <- combined_plot
       # Store number of outcomes for this plot
       plot_outcome_counts <- c(plot_outcome_counts, length(y_levels))
     }

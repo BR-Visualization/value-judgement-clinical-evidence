@@ -15,6 +15,9 @@
 
 ## 🐛 Bug Fixes
 
+- `create_forest_dot_plot()`: benefit outcomes of the same type but opposite directions (e.g. Secondary Efficacy, where lower is better, and Quality of Life, where higher is better) are now drawn in separate panels. Previously the whole panel used a reversed axis, so a higher-is-better outcome appeared on the "Favours Placebo" side
+- Quality of Life (threshold 10) is now shown on the forest dot plot in the README and publication figure (`image01`)
+- `gensurv_plot()` and `gensurv_combined()`: the default risk label on the cumulative excess plot is now `AESI` instead of `Recurring AE`. The plot counts subjects with an event (an incidence), whereas Recurring AE in the example data is an event rate; Recurring AE is unchanged elsewhere
 - `effects_table`: Drug B's toxicity row was labelled `Risk 2` instead of `Risk 3`; it is now `Liver Toxicity`
 - `create_correlogram()`: x-axis label colors were shifted by one position (a risk outcome could appear in the benefit color); long axis labels now wrap instead of overlapping
 - `create_mcda_barplot_comparison()`, `create_mcda_walkthrough()` and `create_mcda_waterfall()`: value labels are no longer clipped at the panel edge

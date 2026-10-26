@@ -187,6 +187,7 @@ dotforest_4pub <- create_forest_dot_plot(
   outcomes_with_thresholds = list(
     "Primary Efficacy" = 0.10,
     "Secondary Efficacy" = -20,
+    "Quality of Life" = 10,
     "Recurring AE" = -0.05,
     "Rare SAE" = -0.07
   ),
