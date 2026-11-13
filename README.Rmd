@@ -1,4 +1,4 @@
----
+  ---
 output: 
   github_document:
     html_preview: true
@@ -85,7 +85,6 @@ result_plot <- create_forest_dot_plot(
   outcomes_with_thresholds = list(
     "Primary Efficacy" = 0.10,
     "Secondary Efficacy" = -20,
-    "Quality of Life" = 10,
     "Recurring AE" = -0.05,
     "Rare SAE" = -0.07
   ),
@@ -716,18 +715,16 @@ mcda_tornado(
 
 ## Figure - MCDA Weight Sensitivity Plot
 
-```{r mcda_weight_sensitivity, fig.width=7, fig.height=7, fig.retina=1, dpi=600, message = FALSE, echo = FALSE}
+```{r mcda_weight_sensitivity, fig.width=10, fig.height=6, fig.retina=1, dpi=600, message = FALSE, echo = FALSE}
 library(valueJudgementCE)
 
 # Configure fonts for plot dimensions
-fonts <- font_config(7, 7)
+fonts <- font_config(10, 6)
 
 mcda_weight_sensitivity(
-  data = mcda_data |> dplyr::filter(Study == "Study 1"),
+  data = mcda_data |> dplyr::filter(Study == "Study 2"),
   weights = weights,
   clinical_scales = clinical_scales,
-  criteria = "Rare SAE",
-  shading = "hiview",
   base_font_size = fonts$p
 )
 ```
@@ -737,11 +734,10 @@ mcda_weight_sensitivity(
 **About This Plot**
 
 - One-way sensitivity analysis on criterion weights, following Figures 6 and 7 of [Angelis and Phillips (2021)](https://doi.org/10.1111/bcp.14425)
-- The weight on one criterion (here Rare SAE) is varied from 0% to 100%; the other weights are rescaled proportionally so all weights still sum to 1
+- Each panel varies the weight on one criterion from 0% to 100%; the other weights are rescaled proportionally so all weights still sum to 1
 - Each line is a treatment's overall weighted score; the red vertical line marks the current weight
 - Open circles mark weights at which the preferred treatment changes
-- This figure uses `shading = "hiview"`, which reproduces the shading in the article: the first band and every other band after it are shaded, and nothing is shaded when the preferred treatment never changes
-- The default, `shading = "change"`, instead shades the weights at which a different treatment would be preferred than at the current weight, so the unshaded band around the red line shows how far the weight can move before the decision changes; `shading = "none"` turns shading off
+- Shading marks the weights at which a different treatment would be preferred than at the current weight; the unshaded band around the red line shows how far the weight can move before the decision changes
 
 **Getting Help**
 
@@ -756,39 +752,19 @@ mcda_weight_sensitivity(
 ```{r, echo = TRUE, eval = FALSE}
 library(valueJudgementCE)
 
-# A single criterion, with shading as in Angelis and Phillips (2021)
-mcda_weight_sensitivity(
-  data = mcda_data |> dplyr::filter(Study == "Study 1"),
-  weights = weights,
-  clinical_scales = clinical_scales,
-  criteria = "Rare SAE",
-  shading = "hiview"
-)
-
-# Default shading: weights at which the preferred treatment would change
-mcda_weight_sensitivity(
-  data = mcda_data |> dplyr::filter(Study == "Study 1"),
-  weights = weights,
-  clinical_scales = clinical_scales,
-  criteria = "Recurring AE"
-)
-
 # All criteria, one panel each
 mcda_weight_sensitivity(
-  data = mcda_data |> dplyr::filter(Study == "Study 1"),
+  data = mcda_data |> dplyr::filter(Study == "Study 2"),
   weights = weights,
   clinical_scales = clinical_scales
 )
 
-# Drugs A-D on one chart, to compare their sensitivity to weighting; each
-# drug is scored as its difference from the placebo in its own study
+# A single criterion, with current scores labelled
 mcda_weight_sensitivity(
-  data = mcda_data,
+  data = mcda_data |> dplyr::filter(Study == "Study 2"),
   weights = weights,
   clinical_scales = clinical_scales,
-  comparator_name = "Placebo",
-  criteria = "Rare SAE",
-  shading = "hiview"
+  criteria = "Recurring AE"
 )
 ```
 </details>
