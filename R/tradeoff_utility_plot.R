@@ -166,10 +166,12 @@ tradeoff_utility_plot <- function(
       ) +
       geom_text(
         aes(
-          x = .data$x, y = .data$y,
+          x = x_max - 0.01 * (x_max - x_min), y = .data$y,
           label = paste0("U = +", format(.data$u))
         ),
-        data = df_iso_lab, hjust = -0.15, size = text_size,
+        # right-aligned against the panel edge, level with the end of each
+        # curve, so the label stays inside the panel at any font size
+        data = df_iso_lab, hjust = 1, vjust = 0.5, size = text_size,
         colour = "gray30"
       )
   }
