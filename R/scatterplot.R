@@ -30,7 +30,12 @@
 #' probability text color.
 #' @param base_font_size Numeric; base font size in points for all text
 #' elements in the plot (default: 9).
-#'
+#' @param style Either `"classic"` (default) or `"publication"`. The
+#' publication style labels the axes as Active minus Comparator differences,
+#' uses MAB\eqn{_0}, MAR\eqn{_{max}} and \eqn{\mu = 1} labels, reports
+#' the proportion of patients in the acceptance region and the correlation
+#' coefficient, and adds a key for the mean, the data ellipse and the
+#' acceptance region below the plot.
 #'
 #' @return A scatterplot.
 #' @export
@@ -50,8 +55,11 @@ scatter_plot <- function(
   ellipse_level = 0.95,
   marginal_type = "densigram",
   fig_colors = colfun()$fig11_colors,
-  base_font_size = 9
+  base_font_size = 9,
+  style = c("classic", "publication")
 ) {
+  style <- match.arg(style)
+  publication <- style == "publication"
   typography <- publication_typography(
     base_font_size = base_font_size,
     annotation_ratio = 1.15
@@ -145,6 +153,28 @@ scatter_plot <- function(
     )
   )
 
+  corr_val <- stats::cor(diff1, diff2)
+  if (publication) {
+    mar_lab <- "MAR[max]"
+    mab_lab <- "MAB[0]"
+    diag_lab <- "mu == 1 ~ '(Benefit = Risk)'"
+    stats_lab <- paste0(
+      "Patients in acceptance\nregion: ",
+      sprintf("%1.1f", 100 * prob_good), "%\n",
+      "Correlation r = ", sprintf("%1.2f", corr_val)
+    )
+    x_lab <- paste0("Predicted Incremental ", outcome[1],
+                    " (Active \u2212 Comparator)")
+    y_lab <- paste0("Predicted Incremental ", outcome[2],
+                    " (Active \u2212 Comparator)")
+  } else {
+    mar_lab <- "MAR"
+    mab_lab <- "MAB"
+    diag_lab <- "Benefit = Risk"
+    x_lab <- paste("Predicted Incremental", outcome[1], " ")
+    y_lab <- paste("Predicted Incremental", outcome[2], " ")
+  }
+
   scatter <- ggplot(dfdiff, aes(x = diff1, y = diff2)) +
     geom_point(color = fig_colors[1], size = 2, shape = 1) +
     geom_point(
@@ -204,7 +234,9 @@ scatter_plot <- function(
       "text",
       x = min(diff1, diff2) - 0.1,
       y = mar + 0.01,
-      label = "MAR",
+      label = mar_lab,
+      parse = publication,
+      hjust = if (publication) 0 else 0.5,
       color = colfun()$fig11_colors[3],
       size = publication_geom_text_size(typography$annotation),
       vjust = -0.25
@@ -213,46 +245,21 @@ scatter_plot <- function(
       "text",
       x = mab,
       y = min(diff1, diff2) - 0.1,
-      label = "MAB",
+      label = mab_lab,
+      parse = publication,
+      vjust = if (publication) 0.2 else 0.5,
       color = colfun()$fig11_colors[3],
       size = publication_geom_text_size(typography$annotation),
       hjust = -0.25
     ) +
-    labs(y = paste("Predicted Incremental", outcome[2], " ")) +
-    labs(x = paste("Predicted Incremental", outcome[1], " ")) +
-    annotate(
-      "text",
-      x = max1 * 0.9,
-      y = max1 * 0.6,
-      label = paste0("Prob.==", sprintf("%1.1f", 100 * prob_good), "*\'%\'"),
-      parse = TRUE,
-      color = fig_colors[3],
-      size = publication_geom_text_size(typography$annotation),
-      fontface = "bold"
-    ) +
-    annotate(
-      "text",
-      x = max1 * 0.9,
-      y = max1 * 0.55,
-      label = paste0(
-        "Corr.==",
-        sprintf(
-          "%1.1f",
-          100 * stats::cor(diff1, diff2)
-        ),
-        "*\'%\'"
-      ),
-      parse = TRUE,
-      color = colfun()$fig11_colors[3],
-      size = publication_geom_text_size(typography$annotation),
-      fontface = "bold"
-    ) +
+    labs(x = x_lab, y = y_lab) +
     coord_fixed(5.3 / 5) +
     annotate(
       "text",
       x = 0.85 * max1,
       y = 0.89 * max1,
-      label = "Benefit = Risk",
+      label = diag_lab,
+      parse = publication,
       color = fig_colors[3],
       size = publication_geom_text_size(typography$annotation),
       vjust = 0,
@@ -273,6 +280,50 @@ scatter_plot <- function(
       plot.margin = margin(20, 0, 0, 0)
     )
 
+  if (publication) {
+    scatter <- scatter +
+      annotate(
+        "text",
+        x = max1 * 0.63,
+        y = max1 * 0.55,
+        label = stats_lab,
+        hjust = 0,
+        lineheight = 0.95,
+        color = fig_colors[3],
+        size = publication_geom_text_size(typography$annotation) * 0.85
+      ) +
+      theme(legend.position = "none")
+  } else {
+    scatter <- scatter +
+      annotate(
+        "text",
+        x = max1 * 0.9,
+        y = max1 * 0.6,
+        label = paste0("Prob.==", sprintf("%1.1f", 100 * prob_good), "*\'%\'"),
+        parse = TRUE,
+        color = fig_colors[3],
+        size = publication_geom_text_size(typography$annotation),
+        fontface = "bold"
+      ) +
+      annotate(
+        "text",
+        x = max1 * 0.9,
+        y = max1 * 0.55,
+        label = paste0(
+          "Corr.==",
+          sprintf(
+            "%1.1f",
+            100 * stats::cor(diff1, diff2)
+          ),
+          "*\'%\'"
+        ),
+        parse = TRUE,
+        color = colfun()$fig11_colors[3],
+        size = publication_geom_text_size(typography$annotation),
+        fontface = "bold"
+      )
+  }
+
   if (!is.null(ellipse_type)) {
     scatter <- scatter +
       stat_ellipse(
@@ -292,5 +343,64 @@ scatter_plot <- function(
     )
   }
 
+  if (publication) {
+    scatter <- cowplot::plot_grid(
+      scatter,
+      scatter_publication_key(
+        mean_label = paste0(
+          "Mean predicted difference (",
+          sprintf("%1.2f", mean(diff1)), ", ",
+          sprintf("%1.2f", mean(diff2)), ")"
+        ),
+        point_color = fig_colors[2],
+        ellipse_color = colfun()$fig11_colors[1],
+        ellipse_level = ellipse_level,
+        show_ellipse = !is.null(ellipse_type),
+        text_size = publication_geom_text_size(typography$annotation) * 0.85
+      ),
+      ncol = 1,
+      rel_heights = c(1, 0.09)
+    )
+  }
+
   scatter
+}
+
+#' Key drawn below the publication-style scatter plot
+#' @noRd
+scatter_publication_key <- function(
+  mean_label,
+  point_color,
+  ellipse_color,
+  ellipse_level,
+  show_ellipse,
+  text_size
+) {
+  theta <- seq(0, 2 * pi, length.out = 60)
+  ell <- data.frame(x = 0.52 + 0.022 * cos(theta), y = 0.72 + 0.12 * sin(theta))
+  p <- ggplot() +
+    annotate("point", x = 0.03, y = 0.72, shape = 17, size = 2.4,
+             colour = point_color) +
+    annotate("text", x = 0.055, y = 0.72, label = mean_label, hjust = 0,
+             size = text_size) +
+    annotate("rect", xmin = 0.02, xmax = 0.04, ymin = 0.14, ymax = 0.34,
+             fill = "white", colour = "gray50", linewidth = 0.3) +
+    annotate("text", x = 0.055, y = 0.24, hjust = 0, size = text_size,
+             parse = TRUE,
+             label = paste0(
+               "'Acceptance region: right of '*MAB[0]*', below the '*mu ",
+               "== 1*' line, and below '*MAR[max]"
+             ))
+  if (isTRUE(show_ellipse)) {
+    p <- p +
+      geom_path(aes(x = .data$x, y = .data$y), data = ell,
+                colour = ellipse_color, linewidth = 0.5) +
+      annotate("text", x = 0.555, y = 0.72, hjust = 0, size = text_size,
+               label = paste0(round(100 * ellipse_level),
+                              "% data ellipse of predictions"))
+  }
+  p +
+    scale_x_continuous(limits = c(0, 1), expand = c(0, 0)) +
+    scale_y_continuous(limits = c(0, 1), expand = c(0, 0)) +
+    theme_void()
 }

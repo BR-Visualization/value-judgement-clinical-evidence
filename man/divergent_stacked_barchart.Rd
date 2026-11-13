@@ -10,7 +10,8 @@ divergent_stacked_barchart(
   favcat,
   unfavcat,
   ylabel = "Visit",
-  base_font_size = 9
+  base_font_size = 9,
+  fav_side = c("right", "left")
 )
 }
 \arguments{
@@ -36,6 +37,11 @@ plot order}
 
 \item{base_font_size}{Numeric; base font size in points for all text
 elements in the plot (default: 9).}
+
+\item{fav_side}{\code{character} side of the zero line on which the favorable
+categories are drawn: \code{"right"} (default) or \code{"left"}. The unfavorable
+categories are drawn on the other side. Within each side, the last category
+listed in \code{favcat} or \code{unfavcat} is placed next to zero.}
 }
 \value{
 a ggplot object

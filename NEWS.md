@@ -24,6 +24,25 @@
 
 ## ✨ New Features
 
+### Publication Figures Match the Submitted Manuscript (#82)
+
+- New `tradeoff_utility_plot()` draws the trade-off plot with iso-utility curves (Figure 3)
+  - Utility is the vertical distance below the trade-off curve, U = TC(ΔB) − ΔR, so the trade-off curve is U = 0 and each dashed iso-utility curve is the trade-off curve shifted down by U
+  - Each treatment is labelled with its U, and the utilities are returned as the `"utilities"` attribute
+  - The trade-off curve runs from MAB₀ to MAR_max; MAB₀ and MAR_max are labelled with subscripts and the axes as incremental benefit and risk
+  - `generate_tradeoff_plot()` (used by the Shiny app) is unchanged
+- New `cumexcess_incidence_plot()` draws the cumulative excess plot as described in the manuscript (Figure 6)
+  - Cumulative incidence in each arm uses a fixed denominator of all randomized patients, joined by a monotone spline across weeks (`smooth = FALSE` gives step functions)
+  - Bands are pointwise Wald confidence intervals for the difference in cumulative incidence, in percentage points, on a single y-axis
+  - The benefit curve is grey until it first reaches MAB₀; the table beneath gives the patients remaining and the cumulative number with each event by arm
+  - `gensurv_plot()`, `gensurv_table()` and `gensurv_combined()` are unchanged
+- `scatter_plot()`: new `style = "publication"` (Figure 4)
+  - Axis titles read "(Active − Comparator)", and the labels become MAB₀, MAR_max and μ = 1 (Benefit = Risk)
+  - The annotation reports the proportion of patients in the acceptance region and the correlation r
+  - A key below the plot explains the mean, the data ellipse and the acceptance region
+- `divergent_stacked_barchart()`: new `fav_side` argument; `fav_side = "left"` puts the favorable categories left of zero (Figure 5)
+- `dev/generate_publication_plots.R` uses these for `image02`, `image04`, `image05` and `image06`. The cumulative excess thresholds are now MAB₀ = 10 and MAR_max = 5 percentage points (previously MAB 10, MAR 30, MCD 15). The recurring risk outcome is labelled "AESI" in `image01`, `image08`, `image09` and `image11` (and the matching Drug B-D files), as in the manuscript; the package datasets keep "Recurring AE"
+
 ### Weight Sensitivity Plot
 
 - New `mcda_weight_sensitivity()` draws one-way sensitivity analyses on criterion weights, following Figures 6 and 7 of Angelis and Phillips (2021, Br J Clin Pharmacol 87:395-405)
