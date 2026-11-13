@@ -31,3 +31,4 @@
 ^test-lintr-hook\.R$
 ^verify-precommit-ready\.R$
 ^reviewer-comments$
+^inst/img/aigen$
