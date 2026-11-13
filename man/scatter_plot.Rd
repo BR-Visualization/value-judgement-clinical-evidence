@@ -13,7 +13,8 @@ scatter_plot(
   ellipse_level = 0.95,
   marginal_type = "densigram",
   fig_colors = colfun()$fig11_colors,
-  base_font_size = 9
+  base_font_size = 9,
+  style = c("classic", "publication")
 )
 }
 \arguments{
@@ -55,6 +56,13 @@ probability text color.}
 
 \item{base_font_size}{Numeric; base font size in points for all text
 elements in the plot (default: 9).}
+
+\item{style}{Either \code{"classic"} (default) or \code{"publication"}. The
+publication style labels the axes as Active minus Comparator differences,
+uses MAB\eqn{_0}, MAR\eqn{_{max}} and \eqn{\mu = 1} labels, reports
+the proportion of patients in the acceptance region and the correlation
+coefficient, and adds a key for the mean, the data ellipse and the
+acceptance region below the plot.}
 }
 \value{
 A scatterplot.

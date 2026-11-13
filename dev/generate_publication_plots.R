@@ -154,6 +154,18 @@ save_pub_plot <- function(
 # Formula: base_font_size = 9 × sqrt((width × height) / 49)
 
 # ============================================================================
+# OUTCOME LABELS USED IN THE MANUSCRIPT
+# ============================================================================
+# The manuscript (Figs 2, 8, 9 and 11) labels the recurring risk outcome
+# "AESI". Relabel copies of the example data for those figures only; the
+# package datasets keep "Recurring AE".
+pub_risk_label <- "AESI"
+relabel_risk <- function(x) {
+  x[x == "Recurring AE"] <- pub_risk_label
+  x
+}
+
+# ============================================================================
 # SINGLE-COLUMN PLOTS (5-7 inches wide)
 # ============================================================================
 
@@ -167,7 +179,8 @@ scatter_plot_fig <- scatter_plot(
   outcome,
   mab = 0.2,
   mar = 0.6,
-  base_font_size = fonts_7x7$p
+  base_font_size = fonts_7x7$p,
+  style = "publication"
 )
 save_pub_plot(
   "inst/img/pub/image04_scatter.tiff",
@@ -179,7 +192,9 @@ save_pub_plot(
 
 # Forest dot plot (7×5)
 data(effects_table)
-prepared_data <- prepare_forest_dot_data(effects_table)
+effects_table_pub <- effects_table
+effects_table_pub$Outcome <- relabel_risk(effects_table_pub$Outcome)
+prepared_data <- prepare_forest_dot_data(effects_table_pub)
 fonts_7x5 <- journal_fonts("double", 7, 5)
 font_image01 <- max(10, fonts_7x5$p)
 dotforest_4pub <- create_forest_dot_plot(
@@ -188,7 +203,7 @@ dotforest_4pub <- create_forest_dot_plot(
     "Primary Efficacy" = 0.10,
     "Secondary Efficacy" = -20,
     "Quality of Life" = 10,
-    "Recurring AE" = -0.05,
+    "AESI" = -0.05,
     "Rare SAE" = -0.07
   ),
   base_font_size = font_image01
@@ -208,29 +223,17 @@ effects_table_filtered <- effects_table %>%
 
 fonts_5x5 <- journal_fonts("double", 5, 5)
 font_image02 <- max(10, fonts_5x5$p)
-tradeoff <- generate_tradeoff_plot(
+tradeoff <- tradeoff_utility_plot(
   data = effects_table_filtered,
-  filter = "None",
-  category = "All",
   benefit = "Primary Efficacy",
   risk = "Recurring AE",
-  type_risk = "Crude proportions",
-  type_graph = "Absolute risk",
-  ci = "Yes",
-  ci_method = "Calculated",
-  cl = 0.95,
   mab = 0.05,
   mar = 0.45,
-  threshold = "Segmented line",
-  ratio = 4,
-  b1 = 0.05, b2 = 0.1, b3 = 0.15, b4 = 0.2, b5 = 0.25,
-  b6 = 0.3, b7 = 0.35, b8 = 0.4, b9 = 0.45, b10 = 0.5,
-  r1 = 0.09, r2 = 0.17, r3 = 0.24, r4 = 0.3, r5 = 0.35,
-  r6 = 0.39, r7 = 0.42, r8 = 0.44, r9 = 0.45, r10 = 0.45,
-  testdrug = "Yes",
-  type_scale = "Free",
-  lower_x = 0, upper_x = 0.5,
-  lower_y = 0, upper_y = 0.5,
+  tc_benefit = c(0.05, 0.1, 0.15, 0.2, 0.25, 0.3, 0.35, 0.4, 0.45),
+  tc_risk = c(0.09, 0.17, 0.24, 0.3, 0.35, 0.39, 0.42, 0.44, 0.45),
+  utility_levels = c(0.1, 0.2, 0.3),
+  x_limits = c(0, 0.5),
+  y_limits = c(0, 0.5),
   chartcolors = colfun()$fig7_colors,
   base_font_size = font_image02
 )
@@ -245,16 +248,14 @@ save_pub_plot(
 
 # Combined survival plot (7×7)
 data(cumexcess)
-cumulative_excess_plot <- gensurv_combined(
-  df_plot = cumexcess,
-  subjects_pt = 100,
-  visits_pt = 6,
-  df_table = cumexcess,
-  fig_colors_pt = colfun()$fig13_colors,
-  mar = 30,
+# Cumulative incidence with a fixed denominator (N randomized per arm);
+# MAB0 = 10 and MARmax = 5 percentage points
+cumulative_excess_plot <- cumexcess_incidence_plot(
+  data = cumexcess,
   mab = 10,
-  mcd = 15,
-  titlename_p = "",
+  mar = 5,
+  visits = 6,
+  fig_colors = colfun()$fig13_colors,
   base_font_size = fonts_7x7$p
 )
 
@@ -299,7 +300,8 @@ divergent_stacked_bar_fig <- divergent_stacked_barchart(
     "Benefit less than threshold, with AE"
   ),
   ylabel = "Study Week",
-  base_font_size = fonts_14x9$p
+  base_font_size = fonts_14x9$p,
+  fav_side = "left"
 )
 
 # Extract legend from one plot using ggplotGrob
@@ -501,17 +503,27 @@ weights <- c(
   `Recurring AE` = 0.30, `Rare SAE` = 0.10
 )
 
+# Copies with the manuscript risk label for Figs 8, 9 and 11 (and the
+# matching Drug B-D versions). Weight sensitivity plots keep the dataset names.
+mcda_data_pub <- mcda_data
+names(mcda_data_pub) <- relabel_risk(names(mcda_data_pub))
+clinical_scales_pub <- clinical_scales
+names(clinical_scales_pub) <- relabel_risk(names(clinical_scales_pub))
+weights_pub <- weights
+names(weights_pub) <- relabel_risk(names(weights_pub))
+risk_criteria_pub <- relabel_risk(c("Recurring AE", "Rare SAE"))
+
 # MCDA Comparison Plots (16×6)
 fonts_16x6 <- journal_fonts("double", 16, 6, ncol = 2)
 
 barplot_comp_a <- create_mcda_barplot_comparison(
-  data = mcda_data,
+  data = mcda_data_pub,
   study = "Study 1",
   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
-  risk_criteria = c("Recurring AE", "Rare SAE"),
+  risk_criteria = risk_criteria_pub,
   comparison_drug = "Drug A",
-  clinical_scales = clinical_scales,
-  weights = weights,
+  clinical_scales = clinical_scales_pub,
+  weights = weights_pub,
   base_font_size = fonts_16x6$p
 )
 
@@ -525,13 +537,13 @@ save_pub_plot(
 
 # Similar for drugs B, C, D...
 barplot_comp_b <- create_mcda_barplot_comparison(
-  data = mcda_data,
+  data = mcda_data_pub,
   study = "Study 2",
   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
-  risk_criteria = c("Recurring AE", "Rare SAE"),
+  risk_criteria = risk_criteria_pub,
   comparison_drug = "Drug B",
-  clinical_scales = clinical_scales,
-  weights = weights,
+  clinical_scales = clinical_scales_pub,
+  weights = weights_pub,
   base_font_size = fonts_16x6$p
 )
 
@@ -546,13 +558,13 @@ ggsave_custom(
 )
 
 barplot_comp_c <- create_mcda_barplot_comparison(
-  data = mcda_data,
+  data = mcda_data_pub,
   study = "Study 3",
   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
-  risk_criteria = c("Recurring AE", "Rare SAE"),
+  risk_criteria = risk_criteria_pub,
   comparison_drug = "Drug C",
-  clinical_scales = clinical_scales,
-  weights = weights,
+  clinical_scales = clinical_scales_pub,
+  weights = weights_pub,
   base_font_size = fonts_16x6$p
 )
 
@@ -567,13 +579,13 @@ ggsave_custom(
 )
 
 barplot_comp_d <- create_mcda_barplot_comparison(
-  data = mcda_data,
+  data = mcda_data_pub,
   study = "Study 4",
   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
-  risk_criteria = c("Recurring AE", "Rare SAE"),
+  risk_criteria = risk_criteria_pub,
   comparison_drug = "Drug D",
-  clinical_scales = clinical_scales,
-  weights = weights,
+  clinical_scales = clinical_scales_pub,
+  weights = weights_pub,
   base_font_size = fonts_16x6$p
 )
 
@@ -589,12 +601,12 @@ ggsave_custom(
 
 # MCDA Waterfall (16×6)
 waterfall_all <- create_mcda_waterfall(
-  data = mcda_data,
+  data = mcda_data_pub,
   comparator_name = "Placebo",
   benefit_criteria = c("Primary Efficacy", "Secondary Efficacy", "Quality of Life"),
-  risk_criteria = c("Recurring AE", "Rare SAE"),
-  weights = weights,
-  clinical_scales = clinical_scales,
+  risk_criteria = risk_criteria_pub,
+  weights = weights_pub,
+  clinical_scales = clinical_scales_pub,
   base_font_size = fonts_16x6$p
 )
 
@@ -632,11 +644,11 @@ save_pub_plot(
 fonts_10x6 <- journal_fonts("double", 10, 6)
 
 tornado_a <- mcda_tornado(
-  data = mcda_data |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
+  data = mcda_data_pub |> dplyr::filter(Study == "Study 1") |> dplyr::select(-Study),
   comparator_name = "Placebo",
   comparison_drug = "Drug A",
-  weights = weights,
-  clinical_scales = clinical_scales,
+  weights = weights_pub,
+  clinical_scales = clinical_scales_pub,
   base_font_size = fonts_10x6$p
 )
 
@@ -650,11 +662,11 @@ save_pub_plot(
 
 # Similar for drugs B, C, D...
 tornado_b <- mcda_tornado(
-  data = mcda_data |> dplyr::filter(Study == "Study 2") |> dplyr::select(-Study),
+  data = mcda_data_pub |> dplyr::filter(Study == "Study 2") |> dplyr::select(-Study),
   comparator_name = "Placebo",
   comparison_drug = "Drug B",
-  weights = weights,
-  clinical_scales = clinical_scales,
+  weights = weights_pub,
+  clinical_scales = clinical_scales_pub,
   base_font_size = fonts_10x6$p
 )
 
@@ -669,11 +681,11 @@ ggsave_custom(
 )
 
 tornado_c <- mcda_tornado(
-  data = mcda_data |> dplyr::filter(Study == "Study 3") |> dplyr::select(-Study),
+  data = mcda_data_pub |> dplyr::filter(Study == "Study 3") |> dplyr::select(-Study),
   comparator_name = "Placebo",
   comparison_drug = "Drug C",
-  weights = weights,
-  clinical_scales = clinical_scales,
+  weights = weights_pub,
+  clinical_scales = clinical_scales_pub,
   base_font_size = fonts_10x6$p
 )
 
@@ -688,11 +700,11 @@ ggsave_custom(
 )
 
 tornado_d <- mcda_tornado(
-  data = mcda_data |> dplyr::filter(Study == "Study 4") |> dplyr::select(-Study),
+  data = mcda_data_pub |> dplyr::filter(Study == "Study 4") |> dplyr::select(-Study),
   comparator_name = "Placebo",
   comparison_drug = "Drug D",
-  weights = weights,
-  clinical_scales = clinical_scales,
+  weights = weights_pub,
+  clinical_scales = clinical_scales_pub,
   base_font_size = fonts_10x6$p
 )
 

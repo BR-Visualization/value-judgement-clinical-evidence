@@ -105,6 +105,10 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit", base_font_size
 #' @param ylabel `character` y label name, default is "Visit"
 #' @param base_font_size Numeric; base font size in points for all text
 #' elements in the plot (default: 9).
+#' @param fav_side `character` side of the zero line on which the favorable
+#' categories are drawn: `"right"` (default) or `"left"`. The unfavorable
+#' categories are drawn on the other side. Within each side, the last category
+#' listed in `favcat` or `unfavcat` is placed next to zero.
 #'
 #' @return a ggplot object
 #' @importFrom dplyr summarise
@@ -123,7 +127,10 @@ stacked_barchart <- function(data, chartcolors, ylabel = "Visit", base_font_size
 #' )
 #'
 divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
-                                       ylabel = "Visit", base_font_size = 9) {
+                                       ylabel = "Visit", base_font_size = 9,
+                                       fav_side = c("right", "left")) {
+  fav_side <- match.arg(fav_side)
+  left_cats <- if (fav_side == "right") unfavcat else favcat
   typography <- publication_typography(
     base_font_size = base_font_size,
     annotation_ratio = 1.15
@@ -162,8 +169,8 @@ divergent_stacked_barchart <- function(data, chartcolors, favcat, unfavcat,
 
   df_stacked_new <- df_stacked |>
     mutate(brcat = factor(brcat, levels = c(unfavcat, favcat))) |>
-    mutate(percentage = ifelse(brcat %in% unfavcat, -percentage, percentage),
-           side = ifelse(brcat %in% unfavcat, "Left", "Right"))
+    mutate(percentage = ifelse(brcat %in% left_cats, -percentage, percentage),
+           side = ifelse(brcat %in% left_cats, "Left", "Right"))
 
   fig <- ggplot(df_stacked_new, aes(x = percentage, y = visit, fill = brcat)) +
     facet_wrap(~trt, scales = "free_x", ncol = 1) +
